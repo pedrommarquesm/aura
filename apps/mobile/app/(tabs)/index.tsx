@@ -29,7 +29,7 @@ function FeedHeader() {
     <View className="px-gutter pb-1 pt-2">
       <View className="flex-row items-center justify-between">
         <Text variant="title" className="tracking-aura">
-          {t('common.brand')}
+          {t('common.aura')}
         </Text>
 
         <View className="flex-row items-center gap-3">

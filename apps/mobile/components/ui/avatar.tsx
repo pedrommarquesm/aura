@@ -42,7 +42,7 @@ export function Avatar({ uri, username, size = 'md', ring = false, className }: 
           contentFit="cover"
           transition={120}
           style={{ width: '100%', height: '100%' }}
-          accessibilityLabel={t('common.a11y.avatar', { username })}
+          accessibilityLabel={t('common.avatarAlt', { username })}
         />
       ) : (
         <Text variant={sizing.initial} tone="secondary">

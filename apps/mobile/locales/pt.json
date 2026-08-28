@@ -1,15 +1,13 @@
 {
   "common": {
-    "brand": "Aura",
+    "aura": "Aura",
     "auraAmount": "{amount, number} Aura",
     "actions": {
       "retry": "Tentar outra vez",
       "cancel": "Cancelar",
       "share": "Partilhar"
     },
-    "a11y": {
-      "avatar": "Avatar de {username}"
-    }
+    "avatarAlt": "Avatar de {username}"
   },
   "nav": {
     "home": "Início",

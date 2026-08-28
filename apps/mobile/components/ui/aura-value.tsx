@@ -59,7 +59,7 @@ export function AuraValue({
       </Text>
       {showUnit ? (
         <Text variant="label" tone="muted">
-          {t('common.brand')}
+          {t('common.aura')}
         </Text>
       ) : null}
     </View>
