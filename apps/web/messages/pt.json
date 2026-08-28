@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "home": {
+      "title": "Aura — O jogo social onde os likes são a pontuação",
+      "description": "A Aura é um jogo social. Publica fotos e vídeos, junta likes, farma Aura e sobe na classificação global. Grátis em iOS e Android."
+    },
+    "about": {
+      "title": "Sobre",
+      "socialTitle": "Sobre a Aura",
+      "description": "O que é a Aura, como os likes se transformam numa pontuação pública e os níveis que sobes pelo caminho."
+    },
+    "keywords": "Aura, jogo social, classificação, partilha de fotos, vídeo curto",
+    "og": {
+      "title": "Transforma likes em Aura.",
+      "subtitle": "Um jogo social com um número que conta. iOS e Android.",
+      "alt": "Aura — transforma likes em Aura e sobe na classificação global"
+    },
+    "app": {
+      "name": "Aura — O jogo social onde os likes são a pontuação",
+      "description": "Publica fotos e vídeos, junta likes, farma Aura e sobe na classificação global."
+    }
+  },
+  "common": {
+    "aura": "Aura",
+    "avatarAlt": "Avatar de {username}",
+    "actions": {
+      "getApp": "Instala a app",
+      "getAuraApp": "Instala a app Aura",
+      "seeTrending": "Ver o que está a dar",
+      "downloadIphone": "Descarregar para iPhone",
+      "downloadAndroid": "Descarregar para Android"
+    }
+  },
+  "nav": {
+    "sections": {
+      "label": "Secções",
+      "whatIsAura": "O que é a Aura",
+      "howItWorks": "Como funciona",
+      "trending": "Em destaque",
+      "leaderboard": "Classificação",
+      "download": "Descarregar",
+      "about": "Sobre"
+    },
+    "footer": {
+      "label": "Rodapé"
+    },
+    "locale": {
+      "label": "Idioma"
+    },
+    "tabs": {
+      "home": "Início",
+      "discover": "Descobrir",
+      "rank": "Ranking",
+      "profile": "Eu"
+    }
+  },
+  "landing": {
+    "hero": {
+      "badge": "Beta aberta · iOS e Android",
+      "title": "Transforma likes em Aura.<break></break><accent>Sobe na tabela.</accent>",
+      "body": "A Aura é um jogo social construído à volta de um número. Publica uma foto ou um vídeo, junta likes, e cada like paga-te Aura na hora. Todos veem exatamente em que lugar estás.",
+      "leader": "Neste momento #{rank, number} no mundo",
+      "preview": {
+        "title": "Em destaque",
+        "auraGain": "+{aura, number} Aura",
+        "globalRank": "#{rank, number} global"
+      }
+    },
+    "whatIsAura": {
+      "eyebrow": "A ideia",
+      "title": "O que é a Aura?",
+      "description": "A Aura é uma pontuação que só vem de outras pessoas. Não se compra nem se recebe de mão beijada: vem dos likes, e é pública.",
+      "points": {
+        "oneNumber": {
+          "title": "Um número, em todo o lado",
+          "body": "A tua Aura aparece ao lado do teu nome no feed, no perfil e na classificação. Não há outra pontuação para explicar."
+        },
+        "likesPay": {
+          "title": "Os likes pagam",
+          "body": "Cada like no teu post credita-te Aura no instante em que chega. Não é um contador de vaidade que reinicia — é um saldo que só sobe à medida que as pessoas apostam no teu conteúdo."
+        },
+        "onRecord": {
+          "title": "Fica tudo registado",
+          "body": "A Aura é um livro de registos, não uma contagem. Cada ponto remonta ao like que o criou, por isso um like falso pode ser revertido e a tabela continua a valer a subida."
+        }
+      },
+      "quote": "A Aura não é uma rede social com gamificação. É um jogo social em que a rede social é o tabuleiro."
+    },
+    "howItWorks": {
+      "eyebrow": "O ciclo",
+      "title": "Como funciona",
+      "description": "Cinco passos, e o quinto manda-te de volta ao primeiro. Esse ciclo é o produto todo.",
+      "steps": {
+        "discover": {
+          "label": "Descobre",
+          "body": "Abre o feed. Fotos e vídeos, ordenados por quem está a ganhar Aura mais depressa neste momento."
+        },
+        "like": {
+          "label": "Dá like",
+          "body": "Um toque. O like fica registado num instante — nada fica à espera de uma roda a girar."
+        },
+        "gainAura": {
+          "label": "Ganha Aura",
+          "body": "Quem publicou recebe Aura no momento em que tocas, e o número mexe-se à tua frente."
+        },
+        "climb": {
+          "label": "Sobe",
+          "body": "O teu total decide o teu lugar na tabela global. Vês sempre a tua posição exata."
+        },
+        "post": {
+          "label": "Publica",
+          "body": "Depois é a tua vez. Câmara, legenda, publicado em segundos — e o ciclo começa outra vez."
+        }
+      },
+      "repeat": "Repete. É este o jogo."
+    },
+    "trending": {
+      "eyebrow": "Ao vivo da app",
+      "title": "Em destaque agora",
+      "description": "Em destaque não é contagem de seguidores. É Aura ganha por minuto, ponderada pela idade do post — por isso um primeiro post pode passar à frente de um criador estabelecido no mesmo dia.",
+      "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Dar like e publicar continuam a ser coisas da app."
+    },
+    "leaderboard": {
+      "eyebrow": "Classificação",
+      "title": "A tabela global",
+      "description": "Aura de sempre, de cima para baixo, atualizada à medida que os likes chegam. Na app também vês a tua própria posição — mesmo quando estás muito longe do top 100.",
+      "aside": {
+        "title": "Ainda não estás nesta tabela.",
+        "body": "Todos começam com zero Aura e o título de NPC. A maneira mais rápida de sair do fundo é publicar algo que valha um like."
+      }
+    },
+    "download": {
+      "eyebrow": "Descarregar",
+      "title": "Zero Aura é uma escolha. Resolve isso em cerca de noventa segundos.",
+      "body": "Instala a app, publica uma vez e vê o que o feed faz com isso. Grátis em iOS e Android, sem convite.",
+      "note": "Fotos e vídeos, likes, Aura e a classificação global. Publicar só acontece na app."
+    },
+    "footer": {
+      "note": "Publicar, dar like e tudo o que é competitivo acontece na app. A web está aqui para te mostrar o jogo e dar-te um link público para qualquer post.",
+      "copyright": "© {year} Aura"
+    }
+  },
+  "about": {
+    "intro": {
+      "eyebrow": "O produto",
+      "title": "Sobre a Aura",
+      "body": "A Aura é um jogo social, e a rede social é o tabuleiro. Publicas uma foto ou um vídeo, as pessoas dão like, e cada like paga Aura a quem publicou. Um número público, um lugar na tabela, à vista de todos."
+    },
+    "levels": {
+      "eyebrow": "Progressão",
+      "title": "Níveis",
+      "description": "Cada patamar que passas muda o título ao lado do teu nome. Não há nada para comprar nem para desbloquear — só a Aura te faz subir.",
+      "start": "Onde todos começam",
+      "from": "A partir de {aura, number} Aura"
+    },
+    "principles": {
+      "eyebrow": "As regras",
+      "title": "Como se comporta a pontuação",
+      "ledger": {
+        "title": "Cada ponto tem recibo",
+        "body": "A Aura é um livro de registos, não um contador. Cada ponto remonta ao like que o criou, por isso um like retirado ou um post removido levam a Aura com eles. É isso que faz um lugar alto valer a pena."
+      },
+      "levels": {
+        "title": "Os títulos são cosméticos",
+        "body": "Um nível muda o título ao lado do teu nome e mais nada. Não compra alcance, não dá mais Aura por like e não te põe à frente de ninguém."
+      },
+      "web": {
+        "title": "Para que serve este site",
+        "body": "A web é descoberta e partilha: vês o que está em destaque, abres qualquer post a partir de um link e consultas a tabela global. Publicar, dar like e tudo o que é competitivo acontece na app."
+      }
+    }
+  },
+  "feed": {
+    "post": {
+      "likes": "{count, plural, one {# like} other {# likes}}",
+      "video": "Vídeo"
+    }
+  },
+  "leaderboard": {
+    "rank": "#{rank, number}",
+    "header": {
+      "rankCreator": "Posição / criador",
+      "aura": "Aura"
+    }
+  },
+  "errors": {
+    "bad_request": "Havia algo de errado nesse pedido. Tenta outra vez.",
+    "validation_failed": "Alguns dados não são válidos. Verifica e tenta outra vez.",
+    "unauthorized": "Tens de iniciar sessão para fazer isso.",
+    "forbidden": "Não tens acesso a isso.",
+    "not_found": "Não conseguimos encontrar isso.",
+    "conflict": "Isso mudou noutro sítio entretanto. Atualiza e tenta outra vez.",
+    "rate_limited": "Vai com calma e tenta outra vez dentro de um momento.",
+    "internal_error": "Avariou algo do nosso lado. Tenta outra vez dentro de um momento.",
+    "service_unavailable": "A Aura está indisponível por uns instantes. Tenta outra vez dentro de um momento.",
+    "invalid_token": "A tua sessão já não é válida. Inicia sessão outra vez.",
+    "token_expired": "A tua sessão expirou. Inicia sessão outra vez.",
+    "refresh_reuse_detected": "Terminámos a tua sessão para proteger a conta. Inicia sessão outra vez.",
+    "upload_expired": "Esse carregamento demorou demasiado. Começa outra vez.",
+    "upload_too_large": "Esse ficheiro é demasiado grande.",
+    "unsupported_media_type": "Esse tipo de ficheiro não é suportado.",
+    "post_not_published": "Esse post ainda não está publicado.",
+    "already_liked": "Já deste like a este post.",
+    "not_liked": "Ainda não deste like a este post.",
+    "cannot_like_own_post": "Não podes dar like ao teu próprio post.",
+    "unknown": "Algo falhou. Tenta outra vez."
+  }
+}

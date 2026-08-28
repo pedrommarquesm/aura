@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "home": {
+      "title": "Aura — The social game where likes are the score",
+      "description": "Aura is a social game. Post photos and videos, collect likes, farm Aura and climb the global leaderboard. Free on iOS and Android."
+    },
+    "about": {
+      "title": "About",
+      "socialTitle": "About Aura",
+      "description": "What Aura is, how likes turn into a public score, and the levels you climb on the way up."
+    },
+    "keywords": "Aura, social game, leaderboard, photo sharing, short video",
+    "og": {
+      "title": "Turn likes into Aura.",
+      "subtitle": "A social game with one number that matters. iOS and Android.",
+      "alt": "Aura — turn likes into Aura and climb the global leaderboard"
+    },
+    "app": {
+      "name": "Aura — The social game where likes are the score",
+      "description": "Post photos and videos, collect likes, farm Aura and climb the global leaderboard."
+    }
+  },
+  "common": {
+    "aura": "Aura",
+    "avatarAlt": "{username}'s avatar",
+    "actions": {
+      "getApp": "Get the app",
+      "getAuraApp": "Get the Aura app",
+      "seeTrending": "See what's trending",
+      "downloadIphone": "Download for iPhone",
+      "downloadAndroid": "Download for Android"
+    }
+  },
+  "nav": {
+    "sections": {
+      "label": "Sections",
+      "whatIsAura": "What is Aura",
+      "howItWorks": "How it works",
+      "trending": "Trending",
+      "leaderboard": "Leaderboard",
+      "download": "Download",
+      "about": "About"
+    },
+    "footer": {
+      "label": "Footer"
+    },
+    "locale": {
+      "label": "Language"
+    },
+    "tabs": {
+      "home": "Home",
+      "discover": "Discover",
+      "rank": "Rank",
+      "profile": "Me"
+    }
+  },
+  "landing": {
+    "hero": {
+      "badge": "Open beta · iOS and Android",
+      "title": "Turn likes into Aura.<break></break><accent>Climb the board.</accent>",
+      "body": "Aura is a social game built on one number. Post a photo or a video, collect likes, and every like pays Aura straight to you. Everyone can see exactly where you rank.",
+      "leader": "Currently #{rank, number} globally",
+      "preview": {
+        "title": "Trending",
+        "auraGain": "+{aura, number} Aura",
+        "globalRank": "#{rank, number} global"
+      }
+    },
+    "whatIsAura": {
+      "eyebrow": "The idea",
+      "title": "What is Aura?",
+      "description": "Aura is a score you can only get from other people. You cannot buy it and nobody hands it to you. It comes from likes, and it is public.",
+      "points": {
+        "oneNumber": {
+          "title": "One number, everywhere",
+          "body": "Your Aura sits next to your name in the feed, on your profile and on the leaderboard. There is no other score to explain."
+        },
+        "likesPay": {
+          "title": "Likes pay out",
+          "body": "Every like on your post credits Aura to you the moment it lands. Not a vanity counter that resets — a balance that only goes up as people back your content."
+        },
+        "onRecord": {
+          "title": "Kept on the record",
+          "body": "Aura is a ledger, not a tally. Each point traces back to the like that created it, so a fake like can be reversed and the board stays worth climbing."
+        }
+      },
+      "quote": "Aura is not a social network with gamification. It is a social game where the social network is the game board."
+    },
+    "howItWorks": {
+      "eyebrow": "The loop",
+      "title": "How it works",
+      "description": "Five steps, and the fifth one sends you back to the first. That loop is the whole product.",
+      "steps": {
+        "discover": {
+          "label": "Discover",
+          "body": "Open the feed. Photos and videos, ordered by what is gaining Aura fastest right now."
+        },
+        "like": {
+          "label": "Like",
+          "body": "One tap. The like registers instantly — nothing sits there waiting on a spinner."
+        },
+        "gainAura": {
+          "label": "Gain Aura",
+          "body": "The creator is paid in Aura the moment you tap, and the number moves in front of you."
+        },
+        "climb": {
+          "label": "Climb",
+          "body": "Your total decides your place on the global board. You can always see your exact rank."
+        },
+        "post": {
+          "label": "Post",
+          "body": "Then it is your turn. Camera, caption, published in seconds — and the loop starts again."
+        }
+      },
+      "repeat": "Repeat. That is the game."
+    },
+    "trending": {
+      "eyebrow": "Live from the app",
+      "title": "Trending right now",
+      "description": "Trending is not a follower count. It is Aura earned per minute, weighted by how recent a post is — so a first post can outrank an established creator on the same day.",
+      "note": "Every post has a public link, so anything made in the app is shareable outside it. Liking and posting stay in the app."
+    },
+    "leaderboard": {
+      "eyebrow": "Leaderboard",
+      "title": "The global board",
+      "description": "Lifetime Aura, top to bottom, updated as likes land. In the app you also see your own position — even when you are nowhere near the top 100.",
+      "aside": {
+        "title": "You are not on this board yet.",
+        "body": "Everyone starts at zero Aura and the title of NPC. The fastest way off the bottom is to post something worth liking."
+      }
+    },
+    "download": {
+      "eyebrow": "Download",
+      "title": "Zero Aura is a choice. Fix it in about ninety seconds.",
+      "body": "Install the app, post once, and watch what the feed does with it. Free on iOS and Android, no invite needed.",
+      "note": "Photos and videos, likes, Aura and the global leaderboard. Posting only happens in the app."
+    },
+    "footer": {
+      "note": "Posting, liking and everything competitive happens in the app. The web is here to show you the game and hand you a public link to any post.",
+      "copyright": "© {year} Aura"
+    }
+  },
+  "about": {
+    "intro": {
+      "eyebrow": "The product",
+      "title": "About Aura",
+      "body": "Aura is a social game, and the social network is the game board. You post a photo or a video, people like it, and every like pays Aura straight to the creator. One public number, one place on the board, visible to everyone."
+    },
+    "levels": {
+      "eyebrow": "Progression",
+      "title": "Levels",
+      "description": "Every threshold you cross changes the title next to your name. Nothing to buy and nothing to unlock — only Aura moves you up.",
+      "start": "Where everyone starts",
+      "from": "From {aura, number} Aura"
+    },
+    "principles": {
+      "eyebrow": "The rules",
+      "title": "How the score behaves",
+      "ledger": {
+        "title": "Every point has a receipt",
+        "body": "Aura is a ledger, not a counter. Each point traces back to the like that created it, so an unlike or a removed post takes its Aura with it. That is what keeps a high position worth having."
+      },
+      "levels": {
+        "title": "Titles are cosmetic",
+        "body": "A level changes the title next to your name and nothing else. It buys no reach, no extra Aura per like and no advantage over anyone below you."
+      },
+      "web": {
+        "title": "What this site is for",
+        "body": "The web is discovery and sharing: see what is trending, open any post from a link, look at the global board. Posting, liking and everything competitive happens in the app."
+      }
+    }
+  },
+  "feed": {
+    "post": {
+      "likes": "{count, plural, one {# like} other {# likes}}",
+      "video": "Video"
+    }
+  },
+  "leaderboard": {
+    "rank": "#{rank, number}",
+    "header": {
+      "rankCreator": "Rank / creator",
+      "aura": "Aura"
+    }
+  },
+  "errors": {
+    "bad_request": "Something in that request was off. Try again.",
+    "validation_failed": "Some of that information is not valid. Check it and try again.",
+    "unauthorized": "You need to be signed in to do that.",
+    "forbidden": "You do not have access to that.",
+    "not_found": "We could not find that.",
+    "conflict": "That changed somewhere else in the meantime. Refresh and try again.",
+    "rate_limited": "Slow down for a moment, then try again.",
+    "internal_error": "Something broke on our side. Try again in a moment.",
+    "service_unavailable": "Aura is briefly unavailable. Try again in a moment.",
+    "invalid_token": "Your session is no longer valid. Sign in again.",
+    "token_expired": "Your session expired. Sign in again.",
+    "refresh_reuse_detected": "We signed you out to keep your account safe. Sign in again.",
+    "upload_expired": "That upload took too long. Start it again.",
+    "upload_too_large": "That file is too large.",
+    "unsupported_media_type": "That file type is not supported.",
+    "post_not_published": "That post is not published yet.",
+    "already_liked": "You already liked this post.",
+    "not_liked": "You have not liked this post.",
+    "cannot_like_own_post": "You cannot like your own post.",
+    "unknown": "Something went wrong. Try again."
+  }
+}
