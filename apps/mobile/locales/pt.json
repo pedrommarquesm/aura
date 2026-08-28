@@ -189,6 +189,10 @@
     "post_not_published": "Essa publicação ainda não está no ar.",
     "already_liked": "Já deste like a esta publicação.",
     "not_liked": "Ainda não deste like a esta publicação.",
-    "cannot_like_own_post": "Não podes dar like à tua própria publicação. Boa tentativa."
+    "cannot_like_own_post": "Não podes dar like à tua própria publicação. Boa tentativa.",
+    "already_reported": "Já reportaste isso.",
+    "already_blocked": "Já bloqueaste essa conta.",
+    "cannot_block_self": "Não podes bloquear-te a ti próprio.",
+    "cannot_report_self": "Não podes reportar-te a ti próprio."
   }
 }

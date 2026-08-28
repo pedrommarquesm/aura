@@ -37,6 +37,17 @@ export const likeKind = pgEnum('like_kind', ['like', 'super_like']);
 /**
  * Every movement of Aura. REVERSAL covers unlikes and moderation takedowns.
  */
+export const reportTargetType = pgEnum('report_target_type', ['user', 'post']);
+
+export const reportReason = pgEnum('report_reason', [
+  'spam',
+  'harassment',
+  'hate',
+  'sexual',
+  'violence',
+  'other',
+]);
+
 export const auraEventType = pgEnum('aura_event_type', [
   'LIKE',
   'SUPER_LIKE',

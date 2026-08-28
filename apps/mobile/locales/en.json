@@ -189,6 +189,10 @@
     "post_not_published": "That post is not live yet.",
     "already_liked": "You already liked this post.",
     "not_liked": "You have not liked this post.",
-    "cannot_like_own_post": "You cannot like your own post. Nice try."
+    "cannot_like_own_post": "You cannot like your own post. Nice try.",
+    "already_reported": "You already reported that.",
+    "already_blocked": "You already blocked that account.",
+    "cannot_block_self": "You cannot block yourself.",
+    "cannot_report_self": "You cannot report yourself."
   }
 }

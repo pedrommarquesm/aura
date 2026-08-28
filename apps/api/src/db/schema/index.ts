@@ -5,3 +5,5 @@ export * from './posts';
 export * from './media';
 export * from './likes';
 export * from './aura-events';
+export * from './reports';
+export * from './blocks';

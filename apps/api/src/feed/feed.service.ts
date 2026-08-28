@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, inArray, lt, or, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, lt, notInArray, or, sql } from 'drizzle-orm';
 
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
 import { likes, mediaAssets, posts, users } from '../db/schema';
 import { MediaUrlResolver } from '../media/media-url.resolver';
+import { SafetyService } from '../safety/safety.service';
 
 import { decodeCursor, encodeCursor } from './cursor';
 
@@ -59,6 +60,7 @@ export class FeedService {
     @Inject(DB) private readonly db: Database,
     @Inject(ENV) private readonly env: Env,
     private readonly mediaUrls: MediaUrlResolver,
+    private readonly safety: SafetyService,
   ) {}
 
   async getFeed(query: FeedQuery): Promise<FeedPage> {
@@ -67,7 +69,11 @@ export class FeedService {
 
     // Fetch one extra row to learn whether another page exists, rather than
     // running a second count query on the hottest read in the product.
-    const rows = await this.selectPage(query.kind, cursor, limit + 1);
+    const hiddenAuthors = query.viewerId
+      ? await this.safety.hiddenAuthorIds(query.viewerId)
+      : new Set<string>();
+
+    const rows = await this.selectPage(query.kind, cursor, limit + 1, hiddenAuthors);
 
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
@@ -95,8 +101,16 @@ export class FeedService {
     return kind === 'trending' ? row.trendingScore : (row.publishedAt?.getTime() ?? 0);
   }
 
-  private async selectPage(kind: FeedKind, cursor: FeedCursorValue, limit: number) {
+  private async selectPage(
+    kind: FeedKind,
+    cursor: FeedCursorValue,
+    limit: number,
+    hiddenAuthors: Set<string> = new Set(),
+  ) {
     const published = eq(posts.status, 'published');
+    const visible =
+      hiddenAuthors.size > 0 ? notInArray(posts.authorId, [...hiddenAuthors]) : undefined;
+    const scope = visible ? and(published, visible) : published;
 
     // Keyset pagination on (sortValue, id). Offset pagination would drift as
     // new posts arrive, showing duplicates and skipping items mid-scroll.
@@ -146,7 +160,7 @@ export class FeedService {
         // Left join: a post whose asset row is missing should still render rather
         // than vanish from the feed.
         .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id))
-        .where(keyset ? and(published, keyset) : published)
+        .where(keyset ? and(scope, keyset) : scope)
         .orderBy(...order)
         .limit(limit)
     );

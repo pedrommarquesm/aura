@@ -32,6 +32,12 @@ export const ErrorCode = {
   ALREADY_LIKED: 'already_liked',
   NOT_LIKED: 'not_liked',
   CANNOT_LIKE_OWN_POST: 'cannot_like_own_post',
+
+  // Trust and safety
+  ALREADY_REPORTED: 'already_reported',
+  ALREADY_BLOCKED: 'already_blocked',
+  CANNOT_BLOCK_SELF: 'cannot_block_self',
+  CANNOT_REPORT_SELF: 'cannot_report_self',
 } as const;
 
 export type ErrorCodeValue = (typeof ErrorCode)[keyof typeof ErrorCode];

@@ -271,6 +271,10 @@
     "already_liked": "Já deste like a este post.",
     "not_liked": "Ainda não deste like a este post.",
     "cannot_like_own_post": "Não podes dar like ao teu próprio post.",
+    "already_reported": "Já reportaste isso.",
+    "already_blocked": "Já bloqueaste essa conta.",
+    "cannot_block_self": "Não podes bloquear-te a ti próprio.",
+    "cannot_report_self": "Não podes reportar-te a ti próprio.",
     "unknown": "Algo falhou. Tenta outra vez."
   }
 }
