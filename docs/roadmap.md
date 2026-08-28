@@ -53,12 +53,12 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | ID | Task | Status | PR |
 |---|---|---|---|
 | FND-01 | Product spec + backend architecture proposal in-repo | Done | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
-| FND-02 | Work plan & tracker (this file) | In review | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
+| FND-02 | Work plan & tracker (this file) | In review | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types | Not started | |
 | FND-05 | CI: typecheck, lint, test on PR | Not started | |
 | FND-06 | Environment/secrets convention (`.env.example` per app) | Not started | |
-| FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | In review | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
+| FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | In review | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 
 ### Mobile bootstrap
 
