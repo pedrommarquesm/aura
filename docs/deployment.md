@@ -212,6 +212,8 @@ inheriting these.
 
 ## Troubleshooting
 
+**A Railway URL returns `{"error":{"code":"not_found","message":"Cannot GET /"}}`.** That JSON is the API, not the web app. The API's routes live under `/v1`; opening the API hostname at `/` used to 404 with that envelope. `GET /` now returns a service index. The landing page is the **web** domain in the table above. Confirm which service you hit with `GET /health` on the API (reports `environment`) or `GET /api/health` on the web.
+
 **502 on a service that logs a successful start.** Port mismatch. See above.
 
 **`railway add` prints "Project not found" but the resource appears anyway.**
