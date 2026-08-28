@@ -15,6 +15,13 @@ import { cn } from "@/lib/cn";
  * the homepage. Clicking also writes the locale cookie, which is what makes an
  * explicit choice outlive `accept-language`.
  */
+// The link to English renders as `/en/about` even though English is unprefixed,
+// and that is load-bearing rather than a leak. With the cookie set to `pt` the
+// proxy reads an unprefixed `/about` as "no locale stated" and sends it back to
+// `/pt/sobre`, so a clean href could never switch away from Portuguese. The
+// prefix states the locale, so the proxy rewrites the cookie and then redirects
+// on to the canonical `/about`. The `<link rel="alternate">` tags in the head
+// are generated separately and always point at canonical URLs.
 export function LocaleSwitcher() {
   const pathname = usePathname();
   const activeLocale = useLocale();
@@ -32,7 +39,9 @@ export function LocaleSwitcher() {
           <Link
             key={locale}
             href={pathname}
-            locale={locale}
+            // The active locale is left implicit: passing it would force a
+            // prefix and cost a redirect to say what the URL already says.
+            locale={isActive ? undefined : locale}
             hrefLang={htmlLang[locale]}
             aria-label={localeLabels[locale].name}
             aria-current={isActive ? "true" : undefined}
