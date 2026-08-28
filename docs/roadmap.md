@@ -58,6 +58,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types | Not started | |
 | FND-05 | CI: typecheck, lint, test on PR | Not started | |
 | FND-06 | Environment/secrets convention (`.env.example` per app) | Not started | |
+| FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | In review | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
 
 ### Mobile bootstrap
 
