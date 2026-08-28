@@ -77,12 +77,12 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| WEB-01 | Next.js app scaffold (App Router, TypeScript) | In review | |
-| WEB-02 | Tailwind setup sharing the mobile design tokens | In review | |
-| WEB-03 | Landing page: hero, what is Aura, how it works, download CTA | In review | |
-| WEB-04 | Base UI primitives matching the mobile visual language | In review | |
-| WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | In review | |
-| WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | In review | |
+| WEB-01 | Next.js app scaffold (App Router, TypeScript) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-02 | Tailwind setup sharing the mobile design tokens | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-03 | Landing page: hero, what is Aura, how it works, download CTA | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-04 | Base UI primitives matching the mobile visual language | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 
 ---
 
