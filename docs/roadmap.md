@@ -52,7 +52,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| FND-01 | Product spec + backend architecture proposal in-repo | In review | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
+| FND-01 | Product spec + backend architecture proposal in-repo | Done | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
 | FND-02 | Work plan & tracker (this file) | In review | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types | Not started | |
