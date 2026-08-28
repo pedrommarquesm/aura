@@ -38,13 +38,13 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — the media plane, starting with the provider ports (`MEDIA-00`), then auth (`API-10` … `API-13`). Backend foundations are deployed and healthy; nothing else in the loop moves until a post can be created and seen.
+**Now** — the media plane, starting with the provider ports (`MEDIA-00`), then auth (`API-10` … `API-13`). Backend foundations are merged and deployed; nothing else in the loop moves until a post can be created and seen.
 
 **Next** — auth, then the feed and the Aura ledger. Both clients are scaffolded and running on mocks, so they can adopt real endpoints as those land.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
-Worth doing early rather than late: `FND-04` and `FND-09`. Both client apps currently hold their own copy of the API types and the design tokens, so every day they run in parallel is a day they drift.
+Worth doing early rather than late: `FND-03`, and the three things waiting on it — `FND-04` (API types), `FND-09` (design tokens), and `FND-11` (message catalogs). Each client currently holds its own copy of all three, so every parallel PR widens the gap.
 
 ---
 
@@ -63,7 +63,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-08 | Media storage/CDN portability design (architecture §6.6) | Done | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
-| FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | In review | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
+| FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 
 ### Mobile bootstrap
@@ -82,15 +82,15 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| WEB-01 | Next.js app scaffold (App Router, TypeScript) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-02 | Tailwind setup sharing the mobile design tokens | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-03 | Landing page: hero, what is Aura, how it works, download CTA | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-04 | Base UI primitives matching the mobile visual language | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-01 | Next.js app scaffold (App Router, TypeScript) | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-02 | Tailwind setup sharing the mobile design tokens | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-03 | Landing page: hero, what is Aura, how it works, download CTA | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-04 | Base UI primitives matching the mobile visual language | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
-| WEB-09 | Containerize the web app and deploy it to Railway | In review | |
+| WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
 
 ---
 
@@ -102,13 +102,13 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| API-01 | NestJS (Fastify adapter) app skeleton, health check, config module | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| API-02 | Postgres + Drizzle schema and migrations (users, posts, media, likes, aura_events) | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| API-03 | Redis + BullMQ wiring, worker process | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| API-04 | Error envelope, stable error codes, request logging | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| API-05 | Rate limiting middleware (Redis-backed, shared across replicas) | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-01 | NestJS (Fastify adapter) app skeleton, health check, config module | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-02 | Postgres + Drizzle schema and migrations (users, posts, media, likes, aura_events) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-03 | Redis + BullMQ wiring, worker process | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-04 | Error envelope, stable error codes, request logging | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-05 | Rate limiting middleware (Redis-backed, shared across replicas) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-06 | OpenTelemetry tracing (split out of API-04, not yet wired) | Not started | |
-| API-07 | `users.locale` + `Accept-Language` negotiation for server-rendered copy | In review | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
+| API-07 | `users.locale` + `Accept-Language` negotiation for server-rendered copy | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 
 ### Auth
 
@@ -144,7 +144,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-20 | `GET /feed` latest, cursor pagination | Not started | |
 | API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | Not started | |
 | API-22 | `GET /feed/trending` backed by `trendingScore` | Not started | |
-| API-23 | Trending worker + tunable scoring config | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Not started | |
 | MOB-31 | Loading, empty, and error/retry states | Not started | |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
@@ -174,12 +174,12 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | TS-02 | User status enforcement (suspend/ban revokes sessions) | Not started | |
 | TS-03 | Post removal → `REVERSAL` of Aura earned | Not started | |
 | TS-04 | Upload quotas and like rate limits | Not started | |
-| OPS-01 | Production environment on Railway (api, worker, Postgres, Redis, web) | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| OPS-01 | Production environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-02 | Deploy pipeline | Not started | |
 | OPS-03 | Dashboards + alerts for feed and like latency | Not started | |
 | OPS-04 | Postgres connection pooling (PgBouncer) | Not started | |
 | OPS-05 | Staging environment | Not started | |
-| OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
