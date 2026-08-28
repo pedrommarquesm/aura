@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
-import { buildMetadata } from "@/lib/seo";
+import { htmlLang, routing } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site";
 
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,40 +14,56 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  ...buildMetadata(),
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s · ${siteConfig.name}`,
-  },
-  applicationName: siteConfig.name,
-  category: "social",
-  keywords: [
-    "Aura",
-    "social game",
-    "leaderboard",
-    "photo sharing",
-    "short video",
-  ],
-  robots: { index: true, follow: true },
-  formatDetection: { telephone: false, address: false },
-  appleWebApp: {
-    capable: true,
-    title: siteConfig.name,
-    statusBarStyle: "black-translucent",
-  },
-};
+/** Renders both locales at build time; see next-intl static rendering. */
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: t("home.title"),
+      template: `%s · ${siteConfig.name}`,
+    },
+    description: t("home.description"),
+    applicationName: siteConfig.name,
+    category: "social",
+    keywords: t("keywords")
+      .split(",")
+      .map((keyword) => keyword.trim()),
+    robots: { index: true, follow: true },
+    formatDetection: { telephone: false, address: false },
+    appleWebApp: {
+      capable: true,
+      title: siteConfig.name,
+      statusBarStyle: "black-translucent",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0A0A0F",
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function LocaleLayout({
+  children,
+}: LayoutProps<"/[locale]">) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className={`${inter.variable} antialiased`}>
-      <body className="min-h-dvh bg-bg text-text">{children}</body>
+    <html lang={htmlLang[locale]} className={`${inter.variable} antialiased`}>
+      <body className="min-h-dvh bg-bg text-text">
+        {/* Only the locale switcher runs on the client, so it is the only
+            namespace worth shipping there. */}
+        <NextIntlClientProvider messages={{ nav: messages.nav }}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

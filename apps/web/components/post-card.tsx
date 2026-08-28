@@ -1,3 +1,5 @@
+import { useFormatter, useTranslations } from "next-intl";
+
 import { HeartIcon } from "@/components/icons";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar, Card } from "@/components/ui";
@@ -11,6 +13,9 @@ export function PostCard({
   post: FeedCard;
   priority?: boolean;
 }) {
+  const format = useFormatter();
+  const t = useTranslations("feed.post");
+
   return (
     <Card interactive className="flex flex-col overflow-hidden">
       <PostMedia
@@ -30,12 +35,17 @@ export function PostCard({
           </div>
         </div>
 
+        {/* The caption is user content and stays in the language it was
+            written in. */}
         <p className="text-body text-text-secondary">{post.caption}</p>
 
         <div className="mt-auto flex items-center justify-between border-t border-border/70 pt-3">
           <span className="inline-flex items-center gap-1.5 text-label text-text-secondary">
             <HeartIcon className="size-4 text-like" />
-            {formatCount(post.likeCount)}
+            <span aria-hidden>{formatCount(format, post.likeCount)}</span>
+            <span className="sr-only">
+              {t("likes", { count: post.likeCount })}
+            </span>
           </span>
           <AuraValue value={post.aura} size="md" tone="aura" />
         </div>

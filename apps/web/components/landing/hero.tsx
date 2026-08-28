@@ -1,15 +1,21 @@
+import { getLocale, getTranslations } from "next-intl/server";
+
 import { ArrowRightIcon } from "@/components/icons";
 import { AppPreview } from "@/components/landing/app-preview";
 import { Container } from "@/components/landing/section";
 import { AuraValue, ButtonLink } from "@/components/ui";
+import { sectionHash } from "@/i18n/sections";
 import { api } from "@/lib/api";
-import { siteConfig } from "@/lib/site";
+import { downloadHref } from "@/lib/site";
 
 export async function Hero() {
   const [trending, leaderboard] = await Promise.all([
     api.getTrendingFeed({ limit: 1 }),
     api.getGlobalLeaderboard({ limit: 10 }),
   ]);
+  const locale = await getLocale();
+  const t = await getTranslations("landing.hero");
+  const actions = await getTranslations("common.actions");
 
   const topPost = trending.items[0];
   const leader = leaderboard.items[0];
@@ -33,34 +39,44 @@ export async function Hero() {
         <div className="animate-rise">
           <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-caption text-text-secondary backdrop-blur-sm">
             <span aria-hidden className="size-1.5 rounded-full bg-success" />
-            Open beta · iOS and Android
+            {t("badge")}
           </p>
 
           <h1 className="mt-6 text-display tracking-tight text-balance sm:text-[3.5rem] sm:leading-[1.05] lg:text-[4.25rem]">
-            Turn likes into Aura.
-            <br />
-            <span className="text-aura-gradient">Climb the board.</span>
+            {/* One message, so the line break and the accent stay with the
+                sentence instead of being glued together in JSX. */}
+            {t.rich("title", {
+              break: () => <br />,
+              accent: (chunks) => (
+                <span className="text-aura-gradient">{chunks}</span>
+              ),
+            })}
           </h1>
 
           <p className="mt-6 max-w-xl text-body text-text-secondary">
-            Aura is a social game built on one number. Post a photo or a video,
-            collect likes, and every like pays Aura straight to you. Everyone can
-            see exactly where you rank.
+            {t("body")}
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <ButtonLink href={siteConfig.appDownloadUrl} size="lg">
-              Get the Aura app
+            <ButtonLink
+              href={downloadHref(sectionHash(locale, "download"))}
+              size="lg"
+            >
+              {actions("getAuraApp")}
             </ButtonLink>
-            <ButtonLink href="#trending" size="lg" variant="secondary">
-              See what&rsquo;s trending
+            <ButtonLink
+              href={sectionHash(locale, "trending")}
+              size="lg"
+              variant="secondary"
+            >
+              {actions("seeTrending")}
               <ArrowRightIcon className="size-4" />
             </ButtonLink>
           </div>
 
           {leader ? (
             <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-label text-text-muted">
-              <span>Currently #1 globally</span>
+              <span>{t("leader", { rank: leader.rank })}</span>
               <span aria-hidden>·</span>
               <span className="text-text-secondary">
                 @{leader.user.username}

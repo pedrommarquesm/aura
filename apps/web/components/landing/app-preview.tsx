@@ -1,10 +1,10 @@
+import { useFormatter, useTranslations } from "next-intl";
+
 import { HeartIcon } from "@/components/icons";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar } from "@/components/ui";
 import type { FeedCard } from "@/lib/api";
-import { formatCount, formatRank } from "@/lib/format";
-
-const TABS = ["Home", "Discover", "Create", "Rank", "Me"];
+import { formatCount } from "@/lib/format";
 
 /**
  * Static rendition of the mobile feed card. It exists to show the product on a
@@ -17,6 +17,19 @@ export function AppPreview({
   post: FeedCard;
   rank: number | null;
 }) {
+  const format = useFormatter();
+  const t = useTranslations("landing.hero.preview");
+  const tabs = useTranslations("nav.tabs");
+  const feed = useTranslations("feed");
+
+  const tabLabels = [
+    tabs("home"),
+    tabs("discover"),
+    null,
+    tabs("rank"),
+    tabs("profile"),
+  ];
+
   return (
     <div className="relative mx-auto w-full max-w-[336px]">
       <div
@@ -27,7 +40,7 @@ export function AppPreview({
       <div className="relative rounded-[2.25rem] border border-border bg-surface-elevated p-2.5 shadow-aura-glow">
         <div className="overflow-hidden rounded-[1.85rem] bg-bg">
           <div className="flex items-center justify-between px-4 py-3">
-            <span className="text-label">Trending</span>
+            <span className="text-label">{t("title")}</span>
             <AuraValue value={post.author.aura} size="sm" tone="aura" />
           </div>
 
@@ -40,7 +53,7 @@ export function AppPreview({
               className="aspect-4/5"
             />
             <span className="absolute bottom-3 left-3 rounded-full bg-aura-gradient px-3 py-1 text-caption font-semibold">
-              +10 Aura
+              {t("auraGain", { aura: 10 })}
             </span>
           </div>
 
@@ -55,7 +68,7 @@ export function AppPreview({
               <span className="text-label">@{post.author.username}</span>
               {rank === null ? null : (
                 <span className="ml-auto text-caption text-text-muted">
-                  {formatRank(rank)} global
+                  {t("globalRank", { rank })}
                 </span>
               )}
             </div>
@@ -63,17 +76,21 @@ export function AppPreview({
             <div className="flex items-center gap-4 text-label text-text-secondary">
               <span className="inline-flex items-center gap-1.5 text-like">
                 <HeartIcon className="size-4" />
-                {formatCount(post.likeCount)}
+                <span aria-hidden>{formatCount(format, post.likeCount)}</span>
+                <span className="sr-only">
+                  {feed("post.likes", { count: post.likeCount })}
+                </span>
               </span>
               <AuraValue value={post.aura} size="sm" tone="secondary" />
             </div>
           </div>
 
           <div className="flex items-center justify-between border-t border-border/70 px-4 py-3 text-caption text-text-muted">
-            {TABS.map((tab, index) =>
-              tab === "Create" ? (
+            {tabLabels.map((tab, index) =>
+              tab === null ? (
                 <span
-                  key={tab}
+                  key="create"
+                  aria-hidden
                   className="grid size-7 place-items-center rounded-full bg-aura-gradient text-text shadow-aura-glow-sm"
                 >
                   +

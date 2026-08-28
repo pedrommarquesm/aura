@@ -10,5 +10,10 @@ import type { AuraApi } from "./types";
 export const api: AuraApi = apiConfig.useMock ? mockApi : httpApi;
 
 export { apiConfig } from "./config";
+export {
+  API_ERROR_CODES,
+  type ApiErrorCode,
+  apiErrorMessage,
+} from "./error-message";
 export { ApiError } from "./errors";
 export type * from "./types";

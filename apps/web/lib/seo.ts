@@ -1,12 +1,25 @@
 import type { Metadata } from "next";
 
+import { getPathname } from "@/i18n/navigation";
+import {
+  type AppLocale,
+  type AppPathname,
+  htmlLang,
+  ogLocale,
+  routing,
+} from "@/i18n/routing";
+
 import { absoluteUrl, siteConfig } from "./site";
 
 type BuildMetadataInput = {
-  title?: string;
-  description?: string;
-  /** Route path, used for the canonical URL and the Open Graph URL. */
-  path?: string;
+  locale: AppLocale;
+  /** Internal route, e.g. `/about`. Localized per locale for every URL below. */
+  pathname: AppPathname;
+  /** `<title>`. A string gets the `· Aura` suffix; `{absolute}` replaces it. */
+  title?: Metadata["title"];
+  /** Open Graph and Twitter title, which should read on its own. */
+  socialTitle: string;
+  description: string;
   /**
    * Absolute or root-relative image. Omit to inherit the route's file-based
    * `opengraph-image`, which is what most pages should do.
@@ -17,42 +30,64 @@ type BuildMetadataInput = {
 };
 
 /**
+ * Every locale's URL for one route, plus the `x-default` search engines fall
+ * back to. Shared with `app/sitemap.ts` so the head and the sitemap cannot
+ * disagree about which URLs are alternates of each other.
+ */
+export function alternateUrls(pathname: AppPathname) {
+  const languages: Record<string, string> = {};
+
+  for (const locale of routing.locales) {
+    languages[htmlLang[locale]] = absoluteUrl(getPathname({ href: pathname, locale }));
+  }
+  languages["x-default"] = absoluteUrl(
+    getPathname({ href: pathname, locale: routing.defaultLocale }),
+  );
+
+  return languages;
+}
+
+/**
  * Single source of page metadata. A dynamic route such as
  * `/a/@username/post/[postId]` only has to call this from `generateMetadata`
- * with the post's title, description and OG image.
+ * with the post's locale, title, description and OG image.
  */
 export function buildMetadata({
+  locale,
+  pathname,
   title,
-  description = siteConfig.description,
-  path = "/",
+  socialTitle,
+  description,
   image,
   type = "website",
   noIndex = false,
-}: BuildMetadataInput = {}): Metadata {
-  const url = absoluteUrl(path);
-  const resolvedTitle = title ?? `${siteConfig.name} — ${siteConfig.tagline}`;
+}: BuildMetadataInput): Metadata {
+  const url = absoluteUrl(getPathname({ href: pathname, locale }));
   // An explicit `images: undefined` would suppress the file-based
   // opengraph-image, so the key is only set when there is a value.
-  const images = image ? { images: [{ url: image, alt: resolvedTitle }] } : {};
+  const images = image ? { images: [{ url: image, alt: socialTitle }] } : {};
 
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages: alternateUrls(pathname) },
     openGraph: {
       type,
       url,
       siteName: siteConfig.name,
-      title: resolvedTitle,
+      title: socialTitle,
       description,
-      locale: "en_US",
+      locale: ogLocale[locale],
+      alternateLocale: routing.locales
+        .filter((candidate) => candidate !== locale)
+        .map((candidate) => ogLocale[candidate]),
       ...images,
     },
     twitter: {
       card: "summary_large_image",
       site: siteConfig.twitter,
       creator: siteConfig.twitter,
-      title: resolvedTitle,
+      title: socialTitle,
       description,
       ...images,
     },
