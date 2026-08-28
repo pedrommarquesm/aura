@@ -85,8 +85,8 @@ Chosen for speed of iteration, mobile-first clients, and a clean path to scale. 
 | Primary DB | **PostgreSQL** | Relational integrity for users/likes/events. JSONB only for non-query metadata. |
 | Cache / ranks | **Redis** | Sorted sets for leaderboards, short-TTL feed cache, rate limits. |
 | Jobs | **Redis queue** (BullMQ) | Media processing, trending recompute, notification aggregation. |
-| Object storage | **Cloudflare R2** | Decided. Zero egress fees matter a lot when the product is mostly video bytes. S3-compatible API, so the storage client stays swappable. |
-| CDN | **Cloudflare** in front of storage | Image resizing, cache, public post pages. |
+| Object storage | **Cloudflare R2**, behind an `ObjectStore` port | Decided. Zero egress fees matter a lot when the product is mostly video bytes. Provider is per-asset and swappable (§6.6). |
+| CDN | **Cloudflare**, served from our own `cdn.aura.app` | Image resizing, cache, public post pages. Our domain, so the vendor is a DNS change (§6.6). Bunny is a post-V0 candidate. |
 | Video | **Managed transcoding first** (Cloudflare Stream / Mux) *or* ffmpeg workers | V0 should not invent a video platform. See §6. |
 | Auth | **First-party. Apple + Google on mobile, API-issued JWT access + rotating refresh** | The API owns identity; providers only prove it. See §12. |
 | Observability | OpenTelemetry + structured logs + one APM | Feed and like latency must be visible from day one. |
@@ -125,10 +125,15 @@ Post
 
 MediaAsset
   id, postId
-  storageKey                    -- original object
+  storageProvider               -- r2 | s3 | bunny | ...  per asset, never global (§6.6)
+  storageBucket, storageRegion
+  storageKey                    -- provider-neutral path to the ORIGINAL master
   contentType, byteSize, checksum
   width, height, durationMs
-  variants JSON                 -- { "feed": url, "thumb": url, "hls": url, "poster": url }
+  variants JSON                 -- { "feed": key, "thumb": key, "hls": key, "poster": key }
+                                -- storage KEYS, never absolute URLs (§6.6)
+  externalProvider              -- nullable: managed video vendor holding renditions
+  externalAssetId               -- nullable: that vendor's asset id
   processingStatus
 
 Like
@@ -236,7 +241,7 @@ Posts in `uploading` / `processing` **do not appear in feeds**. The public URL c
 - Accept jpeg/heic/webp/png
 - Normalize to jpeg/webp feed rendition + jpeg thumb
 - Store original for later reprocess
-- CDN image resizing as a safety net (`/cdn-cgi/image/...` or equivalent) so the app can request the size it needs without a combinatorial explosion of variants
+- CDN image resizing as a safety net, requested through the URL resolver (§6.6) rather than hand-built transform URLs, so the app can ask for the size it needs without a combinatorial explosion of stored variants
 
 **Video (V0, do not build a transcoder farm)**
 
@@ -273,9 +278,104 @@ Feed payloads never contain storage keys. They contain **CDN URLs** already size
 }
 ```
 
+Those URLs are **computed at read time** by the URL resolver (§6.6), never read from a URL column. The database stores keys; the edge domain and transform syntax are a deployment concern.
+
 CDN cache: long TTL for immutable variant objects (`/media/{assetId}/v1/feed.jpg`). Cache-bust by version in the path, not query strings the CDN might ignore.
 
 The API can stay cache-Control: private. Media should be publicly cacheable (no cookies on the CDN host).
+
+### 6.6 Storage and CDN portability
+
+We should assume we will change providers at least once. Media is the most expensive thing to move and the easiest thing to accidentally cement, so the seams go in now.
+
+#### The mistake to avoid
+
+Persisting absolute URLs (`https://cdn.aura.app/media/abc/feed.jpg`) in `variants`. That single shortcut means a provider change requires rewriting every row in the largest table we have, and any URL already shared to Instagram or WhatsApp breaks. In a product whose growth loop *is* shared links (spec §23), dead media URLs are lost acquisition, permanently.
+
+#### Three rules
+
+**1. Store coordinates, not URLs.** The database holds `storageProvider` + `storageBucket` + `storageKey`. A resolver turns those into a URL at read time. Changing provider, domain, or transform syntax then touches one module rather than the data.
+
+**2. Serve from our own domain.** `cdn.aura.app` is a CNAME we control, pointed at whichever vendor is in front today. Swapping CDN becomes a DNS change: no data migration, no client release, and **every previously shared link keeps working**. If we ever serve media from a vendor's hostname, we have handed them our URL namespace.
+
+**3. Provider is per-asset, never a global setting.** A single "current provider" flag forces a big-bang migration where everything must move at once. Per-asset provenance lets old objects keep resolving from wherever they already live while new uploads go somewhere else, with both working simultaneously and indefinitely.
+
+#### Two ports, because origin and edge are separate decisions
+
+```ts
+// Origin: where bytes live. R2, S3, B2, Bunny Storage.
+interface ObjectStore {
+  presignUpload(key, opts): Promise<PresignedUpload>;
+  head(key): Promise<ObjectMeta | null>;
+  delete(key): Promise<void>;
+  copyFrom(source: ObjectStore, key): Promise<void>;  // migration
+}
+
+// Edge: how bytes are addressed publicly, including image transforms.
+interface MediaUrlResolver {
+  url(asset: MediaAsset, variant: VariantName, t?: Transform): string;
+}
+```
+
+Both are resolved from a registry keyed by `asset.storageProvider`, so a single request can serve one post from R2 and the next from somewhere else without knowing the difference.
+
+Worth being explicit that these are independent choices: **R2 origin with Bunny at the edge** is a perfectly reasonable combination, and more likely than a wholesale move.
+
+#### Key layout must be provider-neutral
+
+```text
+media/{assetId}/v1/feed.jpg
+media/{assetId}/v1/thumb.jpg
+media/{assetId}/v1/master.mp4
+```
+
+No provider name, no bucket name, no region in the key. A bulk copy then preserves paths byte-for-byte, and migrating an asset changes one column rather than recomputing paths.
+
+#### Transform syntax belongs to the resolver
+
+This is the detail that quietly leaks vendor lock-in into application code, because every provider spells resizing differently:
+
+| Provider | Syntax for 1080px wide |
+|---|---|
+| Cloudflare | `/cdn-cgi/image/width=1080,quality=85/<path>` |
+| Bunny Optimizer | `<path>?width=1080&quality=85` |
+| imgix | `<path>?w=1080&q=85` |
+
+Callers must always ask for `resolver.url(asset, "feed", { width: 1080 })` and never assemble a query string. Signed/token-authenticated URLs differ per vendor too, and belong behind the same interface for when private or moderated content needs them.
+
+#### Always keep the master
+
+Even when a managed video service holds the playable renditions, the **original upload stays in our own bucket**. Managed video (Cloudflare Stream, Mux, Bunny Stream) is far stickier lock-in than object storage, because transcoded renditions frequently cannot be extracted in any usable form — the exit path is re-encoding from sources you had better still have.
+
+That is why `MediaAsset` separates `storageKey` (our master, always ours) from `variants` and `externalAssetId` (may be vendor-held). Masters cost storage, which is cheap. Not having them costs the ability to leave, which is not.
+
+#### Migration playbook
+
+This is what per-asset provenance actually buys, and it is why "where does older data live" stays answerable:
+
+```sql
+SELECT storage_provider, count(*), pg_size_pretty(sum(byte_size))
+FROM media_assets GROUP BY 1;
+```
+
+1. Register the new provider. Old one stays the default.
+2. Flip **new uploads** to the new provider via config. Nothing existing moves.
+3. Backfill worker, per asset: copy → verify checksum → update `storageProvider` → verify it resolves. Idempotent and resumable, throttled so it never competes with live traffic.
+4. Serving is dual-read throughout, so there is no cutover moment and no window where the feed breaks.
+5. Decommission only when that query returns zero rows for the old provider.
+
+Because URLs come from our own domain, none of this is visible to clients or to already-shared links.
+
+#### On Bunny specifically
+
+Worth evaluating after V0 is working, not before. The case for it is real — bandwidth pricing is typically well below the alternatives at video-heavy volume, Bunny Optimizer covers image transforms, and Bunny Stream is a credible managed-video option.
+
+Two caveats:
+
+- R2's zero egress is genuinely hard to beat as an **origin**, and R2 → Bunny pull is free. The interesting configuration is likely R2 origin with Bunny edge, not replacing both.
+- At V0 volumes the price difference is rounding error. Evaluate when video bandwidth is an actual line item, using our own traffic mix, since CDN comparisons are extremely workload-dependent.
+
+The point of this section is that the answer can be "yes" later without it being a project. Tracked as `MEDIA-10` in the roadmap.
 
 ### 6.5 Cost / abuse controls on upload
 
@@ -748,7 +848,7 @@ The spec wants optimistic likes and a feed that never waits. Server implications
 
 Cannot launch without a baseline, even if the admin dashboard is V1.
 
-- Auth: hashed passwords, refresh rotation, device-ish rate limits
+- Auth: provider-verified sign-in, refresh rotation with reuse detection, per-device sessions (§12)
 - No self-like
 - Unique like constraint
 - Upload quotas
@@ -823,12 +923,14 @@ Settled:
 | 5 | Auth | **First-party**, API is the identity authority (§12) |
 | 6 | Mobile auth | **Sign in with Apple + Google**, native providers, API-issued tokens. No passwords in V0 |
 | 7 | Web auth | **None in V0** (web is public read-only). NextAuth later, as a thin client of the API |
+| 8 | Media portability | **Provider stored per asset**, keys not URLs, served from our own domain (§6.6) |
 
 Still open, but not blocking the bootstrap work:
 
-1. **Managed video (Stream/Mux) vs ffmpeg workers** — proposal: managed for V0. Decide before video upload lands.
-2. **Phone verification as a trust tier** — proposal: after V0, gating Aura earning rather than signup (§12.3).
-3. **Username vs display name** — spec shows `@username`. Proposal: one public handle, rename rate-limited.
+1. **Managed video (Stream/Mux) vs ffmpeg workers** — proposal: managed for V0, while always retaining our own master file (§6.6). Decide before video upload lands.
+2. **Bunny for CDN and/or storage** — evaluate after V0 works, most likely as R2 origin + Bunny edge (§6.6).
+3. **Phone verification as a trust tier** — proposal: after V0, gating Aura earning rather than signup (§12.3).
+4. **Username vs display name** — spec shows `@username`. Proposal: one public handle, rename rate-limited.
 
 ---
 
@@ -837,7 +939,7 @@ Still open, but not blocking the bootstrap work:
 Once we agree on this shape:
 
 1. Postgres schema + `AuraLedger` + auth
-2. Presigned upload + image processing + publish
+2. `ObjectStore` + `MediaUrlResolver` ports, then presigned upload + image processing + publish
 3. Latest feed (cursor) + like/unlike
 4. Global leaderboard (Redis + SQL fallback)
 5. Trending worker + `/feed/trending`
@@ -853,4 +955,4 @@ That order matches the product loop: you cannot compete until Aura moves, and Au
 
 V0 backend = **stateless API + Postgres ledger + Redis projections + object storage/CDN + async media workers**.
 
-Scale the **media plane** and the **like write path** independently of the **feed read path**. Keep every Aura change in `AuraEvent`. Rank and trending are projections you can recompute. That is enough to feel instant on mobile, survive a traffic spike that is mostly video bytes, and grow into Vote Power / Aura Sense without a second economy.
+Scale the **media plane** and the **like write path** independently of the **feed read path**. Keep every Aura change in `AuraEvent`. Rank and trending are projections you can recompute. Store media as provider coordinates behind our own domain, so the CDN and object store stay replaceable. That is enough to feel instant on mobile, survive a traffic spike that is mostly video bytes, and grow into Vote Power / Aura Sense without a second economy.

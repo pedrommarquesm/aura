@@ -115,12 +115,14 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| MEDIA-01 | R2 buckets, CDN domain, cache policy | Not started | |
+| MEDIA-00 | `ObjectStore` + `MediaUrlResolver` ports, per-asset provider registry (architecture §6.6) | Not started | |
+| MEDIA-01 | R2 buckets, own CDN domain (`cdn.aura.app`), cache policy | Not started | |
 | MEDIA-02 | `POST /posts/uploads` presigned upload + validation | Not started | |
 | MEDIA-03 | `POST /posts/:id/complete` + object verification | Not started | |
 | MEDIA-04 | Image processing worker: feed/thumb variants, blurhash | Not started | |
 | MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | Not started | |
-| MEDIA-06 | Video: managed provider integration (decision open, see architecture §18) | Not started | |
+| MEDIA-06 | Video: managed provider integration, always retaining our own master (decision open, architecture §18) | Not started | |
+| MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
 | MOB-20 | Create flow: camera, picker, preview, caption | Not started | |
 | MOB-21 | Resilient upload: progress, cancel, retry, background-safe | Not started | |
 
@@ -191,6 +193,7 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | TS-10 | Like-ring / multi-account detection over the ledger | Not started | |
 | TS-11 | NSFW + spam detection in the media worker | Not started | |
 | TS-12 | Admin/moderation dashboard | Not started | |
+| MEDIA-10 | Evaluate Bunny (CDN and/or storage) against real traffic — likely R2 origin + Bunny edge | Not started | |
 
 ---
 
@@ -200,6 +203,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Media portability: provider stored per asset, keys not URLs, served from our own domain. Bunny to be evaluated post-V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | 2026-08-28 | Mobile auth: Apple + Google native, API-issued tokens, no passwords in V0. Web has no auth in V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | 2026-08-28 | NestJS on Fastify; Cloudflare R2 for storage | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | 2026-08-28 | Aura unit: flat 10 per like in V0, integer always, Vote Power deferred behind `auraForLike()` | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
