@@ -83,6 +83,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-04 | Base UI primitives matching the mobile visual language | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
+| WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
+| WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
 
 ---
 
