@@ -29,7 +29,7 @@ export default tseslint.config(
   },
   {
     // Migrations and scripts run outside Nest and log directly to stdout.
-    files: ['src/db/migrate.ts'],
+    files: ['src/db/migrate.ts', 'src/db/seed.ts'],
     rules: { 'no-console': 'off' },
   },
   {
