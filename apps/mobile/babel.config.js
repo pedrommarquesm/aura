@@ -1,3 +1,6 @@
+// `babel-preset-expo` is an explicit devDependency even though `expo` already depends on
+// it: npm installs it nested under `expo/node_modules`, and Babel resolves preset names
+// from the project root, so without the top-level entry this config cannot find it.
 module.exports = function (api) {
   api.cache(true);
 
