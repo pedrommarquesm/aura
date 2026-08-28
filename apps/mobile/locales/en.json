@@ -1,0 +1,129 @@
+{
+  "common": {
+    "brand": "Aura",
+    "auraAmount": "{amount, number} Aura",
+    "actions": {
+      "retry": "Try again",
+      "cancel": "Cancel",
+      "share": "Share"
+    },
+    "a11y": {
+      "avatar": "{username}'s avatar"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "discover": "Discover",
+    "create": "Create",
+    "rank": "Rank",
+    "profile": "Profile",
+    "a11y": {
+      "create": "Create a post"
+    }
+  },
+  "feed": {
+    "ranking": {
+      "latest": "Latest",
+      "trending": "Trending"
+    },
+    "empty": {
+      "title": "Nothing here yet",
+      "body": "Post something and the Aura starts moving."
+    },
+    "post": {
+      "likes": "{count, plural, one {# like} other {# likes}}",
+      "auraGain": "+{amount, number} Aura",
+      "a11y": {
+        "like": "Like",
+        "unlike": "Remove like",
+        "options": "Post options"
+      }
+    }
+  },
+  "discover": {
+    "title": "Discover",
+    "subtitle": "Find Aura before everyone else",
+    "challenges": {
+      "title": "Today's challenges",
+      "endsIn": "{hours}h left",
+      "entries": "{count, plural, one {# entry} other {# entries}}"
+    },
+    "trending": {
+      "title": "Trending now"
+    },
+    "battles": {
+      "title": "Aura Battles",
+      "subtitle": "Head-to-head voting. Arrives with V1 (roadmap API-32)."
+    }
+  },
+  "create": {
+    "title": "Post something with Aura",
+    "subtitle": "Every like you get is Aura. Every point of Aura moves you up the board.",
+    "actions": {
+      "takePhoto": "Take a photo",
+      "chooseFromLibrary": "Choose from library"
+    },
+    "comingSoon": "Camera, picker and upload land in roadmap MOB-20 and MOB-21."
+  },
+  "leaderboard": {
+    "title": "Rank",
+    "subtitle": "Global · all time",
+    "rank": "#{rank, number}",
+    "place": "{rank, selectordinal, one {#st place} two {#nd place} few {#rd place} other {#th place}}",
+    "you": "You"
+  },
+  "profile": {
+    "globalRank": "{rank, selectordinal, one {#st} two {#nd} few {#rd} other {#th}} globally",
+    "stats": {
+      "posts": "Posts",
+      "followers": "Followers",
+      "streak": "Streak"
+    },
+    "actions": {
+      "edit": "Edit profile"
+    },
+    "posts": {
+      "title": "Posts"
+    },
+    "comingSoon": "Aura Sense and Vote Power join this card in V1 (roadmap AURA-11, AURA-10)."
+  },
+  "settings": {
+    "language": {
+      "title": "Language",
+      "subtitle": "Wins over your device language.",
+      "options": {
+        "system": "Device",
+        "en": "English",
+        "pt": "Português"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Nothing here",
+    "body": "This screen does not exist, which is a shame because it has no Aura.",
+    "backToFeed": "Back to the feed"
+  },
+  "errors": {
+    "unknown": "Something went wrong. Try again.",
+    "network": "No connection. Check your internet and try again.",
+    "bad_request": "That did not work. Try again.",
+    "validation_failed": "Check what you entered and try again.",
+    "unauthorized": "Sign in to do that.",
+    "forbidden": "You are not allowed to do that.",
+    "not_found": "That is not here any more.",
+    "conflict": "Something changed. Refresh and try again.",
+    "rate_limited": "Slow down for a second, then try again.",
+    "internal_error": "That one is on us. Try again in a moment.",
+    "service_unavailable": "Aura is down for a moment. Try again shortly.",
+    "invalid_token": "Your session is not valid. Sign in again.",
+    "token_expired": "Your session expired. Sign in again.",
+    "refresh_reuse_detected": "We signed you out to keep your account safe. Sign in again.",
+    "upload_expired": "That upload timed out. Pick your photo or video again.",
+    "upload_too_large": "That file is too big.",
+    "unsupported_media_type": "That file type is not supported.",
+    "post_not_published": "That post is not live yet.",
+    "already_liked": "You already liked this post.",
+    "not_liked": "You have not liked this post.",
+    "cannot_like_own_post": "You cannot like your own post. Nice try."
+  }
+}

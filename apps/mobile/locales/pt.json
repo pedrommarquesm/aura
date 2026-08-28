@@ -1,0 +1,129 @@
+{
+  "common": {
+    "brand": "Aura",
+    "auraAmount": "{amount, number} Aura",
+    "actions": {
+      "retry": "Tentar outra vez",
+      "cancel": "Cancelar",
+      "share": "Partilhar"
+    },
+    "a11y": {
+      "avatar": "Avatar de {username}"
+    }
+  },
+  "nav": {
+    "home": "Início",
+    "discover": "Descobrir",
+    "create": "Criar",
+    "rank": "Ranking",
+    "profile": "Perfil",
+    "a11y": {
+      "create": "Criar uma publicação"
+    }
+  },
+  "feed": {
+    "ranking": {
+      "latest": "Recentes",
+      "trending": "Em alta"
+    },
+    "empty": {
+      "title": "Ainda não há nada aqui",
+      "body": "Publica algo e a Aura começa a mexer."
+    },
+    "post": {
+      "likes": "{count, plural, one {# like} other {# likes}}",
+      "auraGain": "+{amount, number} Aura",
+      "a11y": {
+        "like": "Dar like",
+        "unlike": "Retirar o like",
+        "options": "Opções da publicação"
+      }
+    }
+  },
+  "discover": {
+    "title": "Descobrir",
+    "subtitle": "Encontra Aura antes de todos",
+    "challenges": {
+      "title": "Desafios de hoje",
+      "endsIn": "{hours, plural, one {falta #h} other {faltam #h}}",
+      "entries": "{count, plural, one {# participação} other {# participações}}"
+    },
+    "trending": {
+      "title": "Em alta agora"
+    },
+    "battles": {
+      "title": "Aura Battles",
+      "subtitle": "Votação frente a frente. Chega na V1 (roadmap API-32)."
+    }
+  },
+  "create": {
+    "title": "Publica algo com Aura",
+    "subtitle": "Cada like que recebes é Aura. Cada ponto de Aura sobe-te no ranking.",
+    "actions": {
+      "takePhoto": "Tirar uma foto",
+      "chooseFromLibrary": "Escolher da galeria"
+    },
+    "comingSoon": "Câmara, galeria e envio chegam nos MOB-20 e MOB-21 do roadmap."
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Global · de sempre",
+    "rank": "#{rank, number}",
+    "place": "{rank, selectordinal, other {#.º lugar}}",
+    "you": "Tu"
+  },
+  "profile": {
+    "globalRank": "{rank, selectordinal, other {#.º}} do mundo",
+    "stats": {
+      "posts": "Publicações",
+      "followers": "Seguidores",
+      "streak": "Sequência"
+    },
+    "actions": {
+      "edit": "Editar perfil"
+    },
+    "posts": {
+      "title": "Publicações"
+    },
+    "comingSoon": "Aura Sense e Vote Power juntam-se a este cartão na V1 (roadmap AURA-11, AURA-10)."
+  },
+  "settings": {
+    "language": {
+      "title": "Idioma",
+      "subtitle": "Ganha à definição do dispositivo.",
+      "options": {
+        "system": "Dispositivo",
+        "en": "English",
+        "pt": "Português"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Não há nada aqui",
+    "body": "Este ecrã não existe, o que é uma pena porque não tem Aura nenhuma.",
+    "backToFeed": "Voltar ao feed"
+  },
+  "errors": {
+    "unknown": "Algo falhou. Tenta outra vez.",
+    "network": "Sem ligação. Verifica a tua internet e tenta outra vez.",
+    "bad_request": "Isso não funcionou. Tenta outra vez.",
+    "validation_failed": "Confirma o que escreveste e tenta outra vez.",
+    "unauthorized": "Inicia sessão para fazer isso.",
+    "forbidden": "Não tens permissão para fazer isso.",
+    "not_found": "Isto já não está aqui.",
+    "conflict": "Algo mudou. Atualiza e tenta outra vez.",
+    "rate_limited": "Calma aí. Espera um segundo e tenta outra vez.",
+    "internal_error": "Essa foi nossa. Tenta outra vez dentro de um momento.",
+    "service_unavailable": "A Aura está em baixo por uns momentos. Tenta daqui a pouco.",
+    "invalid_token": "A tua sessão não é válida. Inicia sessão outra vez.",
+    "token_expired": "A tua sessão expirou. Inicia sessão outra vez.",
+    "refresh_reuse_detected": "Terminámos a tua sessão para proteger a tua conta. Inicia sessão outra vez.",
+    "upload_expired": "O envio expirou. Escolhe outra vez a foto ou o vídeo.",
+    "upload_too_large": "Esse ficheiro é demasiado grande.",
+    "unsupported_media_type": "Esse tipo de ficheiro não é suportado.",
+    "post_not_published": "Essa publicação ainda não está no ar.",
+    "already_liked": "Já deste like a esta publicação.",
+    "not_liked": "Ainda não deste like a esta publicação.",
+    "cannot_like_own_post": "Não podes dar like à tua própria publicação. Boa tentativa."
+  }
+}
