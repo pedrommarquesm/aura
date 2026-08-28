@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 
 import { getPathname } from "@/i18n/navigation";
-import { type AppPathname, htmlLang, routing } from "@/i18n/routing";
+import { type AppPathname, routing } from "@/i18n/routing";
+import { alternateUrls } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 
 /**
@@ -22,12 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   return ROUTES.flatMap(({ pathname, priority, changeFrequency }) => {
-    const languages = Object.fromEntries(
-      routing.locales.map((locale) => [
-        htmlLang[locale],
-        absoluteUrl(getPathname({ href: pathname, locale })),
-      ]),
-    );
+    const languages = alternateUrls(pathname);
 
     return routing.locales.map((locale) => ({
       url: absoluteUrl(getPathname({ href: pathname, locale })),

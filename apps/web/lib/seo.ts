@@ -29,8 +29,12 @@ type BuildMetadataInput = {
   noIndex?: boolean;
 };
 
-/** Every locale's URL for one route, plus the `x-default` search engines want. */
-function alternateUrls(pathname: AppPathname) {
+/**
+ * Every locale's URL for one route, plus the `x-default` search engines fall
+ * back to. Shared with `app/sitemap.ts` so the head and the sitemap cannot
+ * disagree about which URLs are alternates of each other.
+ */
+export function alternateUrls(pathname: AppPathname) {
   const languages: Record<string, string> = {};
 
   for (const locale of routing.locales) {
