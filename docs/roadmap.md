@@ -90,6 +90,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | In review | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
+| WEB-09 | Containerize the web app and deploy it to Railway | In review | |
 
 ---
 
