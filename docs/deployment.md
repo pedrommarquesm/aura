@@ -197,9 +197,13 @@ code so the feed can be tuned without a deploy.
 
 Mobile sign-in needs `APPLE_CLIENT_ID` (the iOS bundle id `app.aura.mobile`) and
 `GOOGLE_CLIENT_IDS` (comma-separated iOS, Android, and web OAuth client ids) on
-the **api** service. Until those are set, `POST /v1/auth/apple` and
-`POST /v1/auth/google` return `service_unavailable`. The matching
-`EXPO_PUBLIC_GOOGLE_*_CLIENT_ID` values go in the mobile app at build time.
+the **api** service. Staging already has the iOS Google client
+(`37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f.apps.googleusercontent.com`).
+Until Apple's id is set, `POST /v1/auth/apple` still returns
+`service_unavailable`. The iOS Google id is baked into the mobile app; extra
+`EXPO_PUBLIC_GOOGLE_*_CLIENT_ID` values override it at build time. Google on
+iOS needs a development build (`npx expo run:ios`) — Expo Go cannot register
+the reversed client-id URL scheme.
 
 ## Current environment
 

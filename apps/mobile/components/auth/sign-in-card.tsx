@@ -6,7 +6,7 @@ import { View } from 'react-native';
 
 import { Button, Text } from '@/components/ui';
 import { isAppleAvailable } from '@/lib/auth/apple';
-import { isGoogleConfigured } from '@/lib/auth/google';
+import { googleNeedsDevelopmentBuild, isGoogleConfigured } from '@/lib/auth/google';
 import { useSignIn } from '@/lib/auth/use-sign-in';
 import type { AuthReason } from '@/store/auth-gate';
 import { colors, radius } from '@/theme/tokens';
@@ -42,6 +42,7 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
   }, []);
 
   const googleReady = isGoogleConfigured();
+  const googleDevBuild = googleNeedsDevelopmentBuild();
 
   return (
     <View className="gap-3">
@@ -72,7 +73,11 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
         />
       </View>
 
-      {notConfigured === 'google' || !googleReady ? (
+      {googleDevBuild ? (
+        <Text variant="caption" tone="muted">
+          {t('auth.unavailable.googleDevBuild')}
+        </Text>
+      ) : notConfigured === 'google' || !googleReady ? (
         <Text variant="caption" tone="muted">
           {t('auth.unavailable.google')}
         </Text>

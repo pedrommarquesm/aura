@@ -96,6 +96,10 @@ export default defineRailway(() => {
       PORT: '3000',
       CORS_ORIGINS: preserve(),
       RATE_LIMIT_MAX: preserve(),
+      // Public OAuth audiences, not secrets. preserve() so apply does not wipe
+      // Android/web clients added in the dashboard later.
+      GOOGLE_CLIENT_IDS: preserve(),
+      APPLE_CLIENT_ID: preserve(),
     },
   });
 

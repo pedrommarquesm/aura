@@ -110,9 +110,11 @@ Auth lives in `lib/auth/` and `store/session.ts`:
   sheet; after Apple/Google (and a username if this is a new account) the action
   replays.
 - Refresh tokens go in SecureStore. Access tokens stay in memory.
-- Sign in with Apple is `expo-apple-authentication`. Google uses an ID token from
-  `expo-auth-session` (the same JWT the API verifies). Both need matching client
-  ids on the API (`APPLE_CLIENT_ID`, `GOOGLE_CLIENT_IDS`).
+- Sign in with Apple is `expo-apple-authentication`. Google uses
+  `@react-native-google-signin/google-signin` on a native iOS build (the iOS
+  OAuth client is baked in) and falls back to `expo-auth-session` when that
+  module is missing. The API must list the same client as `GOOGLE_CLIENT_IDS`.
+  Expo Go cannot host an iOS-type Google client — run `npx expo run:ios`.
 
 The one non-obvious piece is the refresh interceptor in `lib/api/client.ts`: the backend
 rotates refresh tokens and revokes the whole family if one is replayed, so all concurrent
@@ -120,8 +122,10 @@ rotates refresh tokens and revokes the whole family if one is replayed, so all c
 
 ## Known gaps
 
-- Google/Apple client ids are not on staging yet, so the sheets cannot complete
-  against the live API until those are created.
+- Google Sign-In on iOS needs a development build (`npx expo run:ios`). The iOS
+  client id is in the app and on staging `GOOGLE_CLIENT_IDS`; Expo Go cannot
+  register the reversed client URL scheme. Apple still needs `APPLE_CLIENT_ID`
+  on the API (`app.aura.mobile`) plus a Sign in with Apple capability.
 - Video playback is not wired. `expo-video` arrives with `MOB-32`.
 - Preferences are in memory only — persistence needs a storage decision (`FND-06`). That
   includes the language override.

@@ -123,7 +123,8 @@
     },
     "unavailable": {
       "apple": "Iniciar sessão com a Apple não está disponível neste dispositivo.",
-      "google": "O Google Sign-In ainda não está configurado nesta build."
+      "google": "O Google Sign-In ainda não está configurado nesta build.",
+      "googleDevBuild": "O Google Sign-In precisa de uma development build neste iPhone. O Expo Go não consegue alojar um cliente Google iOS."
     },
     "username": {
       "title": "Escolhe o teu username",

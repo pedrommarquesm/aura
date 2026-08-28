@@ -123,7 +123,8 @@
     },
     "unavailable": {
       "apple": "Sign in with Apple is not available on this device.",
-      "google": "Google Sign-In is not configured in this build yet."
+      "google": "Google Sign-In is not configured in this build yet.",
+      "googleDevBuild": "Google Sign-In needs a development build on this iPhone. Expo Go cannot host an iOS Google client."
     },
     "username": {
       "title": "Pick your username",

@@ -38,7 +38,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Google and Apple client ids on staging so mobile sign-in can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
+**Now** — Apple `APPLE_CLIENT_ID` on staging (Google iOS is already there) so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
 
 **Next** — the rest of the client loop (profile as a competitive card, video autoplay) once posts have real media.
 
