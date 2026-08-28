@@ -93,8 +93,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
-| WEB-20 | i18n: next-intl, English + Portuguese, translated routes | In review | |
-| WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | In review | |
+| WEB-20 | i18n: next-intl, English + Portuguese, translated routes | In review | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
+| WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | In review | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 
 ---
 
@@ -224,6 +224,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Web i18n: next-intl, translated routes (`/about` → `/pt/sobre`), `hreflang` + `x-default`. Format Aura with `pt`, never `pt-PT` | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | 2026-08-28 | Staging-only deployments. `APP_ENV` (local/staging/production) guards unsafe operations, separate from `NODE_ENV` runtime mode | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
 | 2026-08-28 | Mobile i18n: i18next + ICU, English + European Portuguese, locale-aware Aura number formatting (`pt`, not `pt-PT`) | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 | 2026-08-28 | V0 API surface: auth, feed, likes on the ledger, leaderboard. Feed and leaderboard readable signed out, for guest browsing | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
