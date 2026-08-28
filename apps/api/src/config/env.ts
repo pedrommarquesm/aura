@@ -89,6 +89,25 @@ const envSchema = z.object({
    * Lets a storage migration serve old and new assets simultaneously.
    */
   MEDIA_PROVIDER_BASE_URLS: z.string().optional(),
+
+  /**
+   * Cloudflare R2 (S3-compatible). Optional so a fresh clone still boots; upload
+   * routes return `service_unavailable` until these are set. Staging has them.
+   */
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET: z.string().default('aura-media'),
+  /** Defaults to `https://<accountId>.r2.cloudflarestorage.com` when omitted. */
+  R2_ENDPOINT: z.string().optional(),
+  R2_REGION: z.string().default('auto'),
+
+  MEDIA_UPLOAD_TTL_SECONDS: z.coerce.number().int().positive().default(900),
+  MEDIA_PHOTO_MAX_BYTES: z.coerce.number().int().positive().default(20 * 1024 * 1024),
+  MEDIA_VIDEO_MAX_BYTES: z.coerce.number().int().positive().default(100 * 1024 * 1024),
+  MEDIA_VIDEO_MAX_DURATION_MS: z.coerce.number().int().positive().default(60_000),
+  MEDIA_DAILY_UPLOAD_QUOTA: z.coerce.number().int().positive().default(20),
+  MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
 });
 
 export type Env = z.infer<typeof envSchema>;

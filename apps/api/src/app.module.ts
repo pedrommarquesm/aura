@@ -9,6 +9,7 @@ import { HealthModule } from './health/health.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { LikesModule } from './likes/likes.module';
 import { MediaModule } from './media/media.module';
+import { PostsModule } from './posts/posts.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { TrendingModule } from './trending/trending.module';
@@ -33,6 +34,7 @@ import { TrendingModule } from './trending/trending.module';
     AuthModule,
     FeedModule,
     LikesModule,
+    PostsModule,
     LeaderboardModule,
   ],
 })

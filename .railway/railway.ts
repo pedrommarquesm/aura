@@ -72,6 +72,16 @@ export default defineRailway(() => {
     // Postgres is reached over Railway's private network, so the connection is
     // not additionally TLS-wrapped.
     DATABASE_SSL: 'false',
+    // Object storage. Secrets stay in the dashboard; applying this file must
+    // never clobber them. The public CDN hostname is preserve() until
+    // cdn.aura.app is attached to the bucket.
+    R2_ACCOUNT_ID: preserve(),
+    R2_ACCESS_KEY_ID: preserve(),
+    R2_SECRET_ACCESS_KEY: preserve(),
+    R2_ENDPOINT: preserve(),
+    R2_BUCKET: 'aura-media',
+    MEDIA_CDN_BASE_URL: preserve(),
+    MEDIA_EDGE: 'none',
   };
 
   const api = service('api', {

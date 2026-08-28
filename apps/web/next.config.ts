@@ -13,7 +13,10 @@ const nextConfig: NextConfig = {
   },
   images: {
     // Feed payloads only ever contain CDN URLs (architecture §6.6).
-    remotePatterns: [{ protocol: "https", hostname: "cdn.aura.app" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.aura.app" },
+      { protocol: "https", hostname: "*.r2.dev" },
+    ],
   },
 };
 

@@ -133,6 +133,7 @@ export class FeedService {
           avatarUrl: users.avatarUrl,
           authorAura: users.aura,
           authorTitle: users.title,
+          status: posts.status,
           assetProvider: mediaAssets.storageProvider,
           assetBucket: mediaAssets.storageBucket,
           assetVariants: mediaAssets.variants,
@@ -206,6 +207,49 @@ export class FeedService {
       aura: row.aura,
       likedByMe,
     };
+  }
+
+  /**
+   * One post by id. Does not hide unpublished rows — the caller decides
+   * whether the viewer is allowed to see a processing upload.
+   */
+  async getPost(
+    postId: string,
+    viewerId?: string,
+  ): Promise<{ card: FeedCard; authorId: string; status: FeedRow['status'] } | null> {
+    const [row] = await this.db
+      .select({
+        postId: posts.id,
+        caption: posts.caption,
+        mediaType: posts.mediaType,
+        likeCount: posts.likeCount,
+        aura: posts.aura,
+        trendingScore: posts.trendingScore,
+        publishedAt: posts.publishedAt,
+        status: posts.status,
+        authorId: users.id,
+        username: users.username,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+        authorAura: users.aura,
+        authorTitle: users.title,
+        assetProvider: mediaAssets.storageProvider,
+        assetBucket: mediaAssets.storageBucket,
+        assetVariants: mediaAssets.variants,
+        assetWidth: mediaAssets.width,
+        assetHeight: mediaAssets.height,
+        assetDurationMs: mediaAssets.durationMs,
+      })
+      .from(posts)
+      .innerJoin(users, eq(users.id, posts.authorId))
+      .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id))
+      .where(eq(posts.id, postId))
+      .limit(1);
+
+    if (!row) return null;
+
+    const likedIds = await this.likedPostIds(viewerId, [row.postId]);
+    return { card: this.toCard(row, likedIds.has(row.postId)), authorId: row.authorId, status: row.status };
   }
 
   async countPublished(): Promise<number> {

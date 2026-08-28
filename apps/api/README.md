@@ -61,6 +61,8 @@ src/
   redis/        Connection provider
   queue/        BullMQ queues shared by both processes
   trending/     Trending score recompute
+  media/        ObjectStore, URL resolver, upload + image processing
+  posts/        Presign, complete, GET /posts/:id
   health/       Liveness and readiness
 ```
 
@@ -100,6 +102,10 @@ Product endpoints live under `/v1`; health is deliberately outside it.
 | GET | `/v1/auth/me` | required | Current user |
 | GET | `/v1/feed` | optional | Latest, cursor paginated |
 | GET | `/v1/feed/trending` | optional | Precomputed `trending_score` order |
+| POST | `/v1/posts/uploads` | required | Presign a direct PUT to object storage |
+| POST | `/v1/posts/:id/uploads` | required | Refresh an expired presign |
+| POST | `/v1/posts/:id/complete` | required | Verify the object and enqueue processing |
+| GET | `/v1/posts/:id` | optional | Public when published; author can see processing |
 | POST | `/v1/posts/:id/like` | required | Idempotent |
 | DELETE | `/v1/posts/:id/like` | required | Writes a `REVERSAL` event |
 | GET | `/v1/leaderboards/global` | optional | Top N plus the viewer's own rank |

@@ -3,7 +3,7 @@
  * consumes). Kept in one file so the two processes cannot drift.
  */
 export const QueueName = {
-  /** Image and video processing for uploaded media. Consumed in MEDIA-04. */
+  /** Image and video processing for uploaded media. Consumed by the worker. */
   MEDIA: 'media',
   /** Recomputes `posts.trending_score`, never on a feed read. */
   TRENDING: 'trending',
@@ -17,6 +17,7 @@ export const TrendingJob = {
 
 export const MediaJob = {
   PROCESS: 'process',
+  SWEEP: 'sweep-orphans',
 } as const;
 
 export interface MediaProcessPayload {

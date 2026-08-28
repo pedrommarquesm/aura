@@ -97,3 +97,32 @@ export type LikeResult = {
   creatorAura: number;
   actorAuraDelta: number;
 };
+
+export type CreateUploadRequest = {
+  contentType: string;
+  byteSize: number;
+  checksum?: string;
+  width?: number;
+  height?: number;
+  durationMs?: number;
+};
+
+export type CreateUploadResponse = {
+  postId: string;
+  assetId: string;
+  uploadUrl: string;
+  uploadHeaders: Record<string, string>;
+  method: 'PUT';
+  maxBytes: number;
+  expiresAt: string;
+};
+
+export type CompleteUploadResponse = {
+  postId: string;
+  status: 'processing' | 'published';
+};
+
+export type PostDetail = FeedCard & {
+  status: 'uploading' | 'processing' | 'published' | 'failed' | 'removed';
+};
+
