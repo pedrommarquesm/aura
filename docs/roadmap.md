@@ -172,7 +172,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Not started | |
-| WEB-12 | Basic public leaderboard | Not started | |
+| WEB-12 | Basic public leaderboard | In review | |
 
 ### Launch minimums
 
@@ -226,6 +226,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Public `/leaderboard` (`/pt/classificacao`) reads `GET /v1/leaderboards/global`. Posting and liking stay in the app | |
 | 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |

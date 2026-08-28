@@ -16,14 +16,14 @@ export function SiteHeader() {
   // The sections live on the landing page, so the links carry the route as
   // well as the hash and keep working from any other page.
   const navLinks: Array<
-    | { label: string; href: "/feed" }
+    | { label: string; href: "/feed" | "/leaderboard" }
     | { label: string; hash: string }
   > = [
     { label: t("feed"), href: "/feed" },
+    { label: t("leaderboard"), href: "/leaderboard" },
     { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
     { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
     { label: t("trending"), hash: sectionId(locale, "trending") },
-    { label: t("leaderboard"), hash: sectionId(locale, "leaderboard") },
   ];
 
   return (

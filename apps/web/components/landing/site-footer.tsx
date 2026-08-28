@@ -12,14 +12,14 @@ export function SiteFooter() {
   const landing = useTranslations("landing.footer");
 
   const sectionLinks: Array<
-    | { label: string; href: "/feed" }
+    | { label: string; href: "/feed" | "/leaderboard" }
     | { label: string; hash: string }
   > = [
     { label: t("feed"), href: "/feed" },
+    { label: t("leaderboard"), href: "/leaderboard" },
     { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
     { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
     { label: t("trending"), hash: sectionId(locale, "trending") },
-    { label: t("leaderboard"), hash: sectionId(locale, "leaderboard") },
     { label: t("download"), hash: sectionId(locale, "download") },
   ];
 
