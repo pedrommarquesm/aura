@@ -52,11 +52,11 @@ together.
 
 `lib/api` mirrors the documented public endpoints (`GET /v1/feed/trending`,
 `GET /v1/posts/:id`, `GET /v1/leaderboards/global`) and their
-`{ items, nextCursor, hasMore }` envelope.
+`{ items, nextCursor, hasMore }` (feed) / `{ entries, viewer, total }`
+(leaderboard) envelopes.
 
-There is no backend yet, so `lib/api/index.ts` resolves to the mock
-implementation. Switching to the real API is that one file plus
-`NEXT_PUBLIC_USE_MOCK_API=false`. When `packages/contracts` lands (FND-04),
+The live staging API is the default. Set `NEXT_PUBLIC_USE_MOCK_API=true` to
+render local vector posters instead. When `packages/contracts` lands (FND-04),
 `lib/api/types.ts` becomes a re-export of the shared schemas.
 
 `lib/api/error-message.ts` turns an API error code into a sentence from the
@@ -185,8 +185,8 @@ declares each as an `ARG`. See `.env.example` for the full list.
 | Variable                       | Required | Notes                                                        |
 | ------------------------------ | -------- | ------------------------------------------------------------ |
 | `NEXT_PUBLIC_SITE_URL`         | Yes      | Public origin. Canonical URLs, Open Graph, sitemap, robots.  |
-| `NEXT_PUBLIC_API_BASE_URL`     | No       | Aura API origin. Unused while mocks are on.                  |
-| `NEXT_PUBLIC_USE_MOCK_API`     | No       | Defaults to mocks. Set `false` once the API is reachable.    |
+| `NEXT_PUBLIC_API_BASE_URL`     | No       | Aura API origin. Defaults to staging.                        |
+| `NEXT_PUBLIC_USE_MOCK_API`     | No       | Defaults to the live API. Set `true` for local mock posters. |
 | `NEXT_PUBLIC_APP_DOWNLOAD_URL` | No       | Primary CTA target; falls back to the download section.      |
 | `NEXT_PUBLIC_APP_STORE_URL`    | No       | Placeholder until `WEB-07`.                                  |
 | `NEXT_PUBLIC_PLAY_STORE_URL`   | No       | Placeholder until `WEB-07`.                                  |

@@ -20,7 +20,7 @@ export function PostCard({
     <Card interactive className="flex flex-col overflow-hidden">
       <PostMedia
         media={post.media}
-        alt={post.caption}
+        alt={post.caption ?? `@${post.author.username}`}
         priority={priority}
         sizes="(min-width: 1024px) 352px, (min-width: 640px) 45vw, 90vw"
         className="aspect-4/5"
@@ -37,7 +37,9 @@ export function PostCard({
 
         {/* The caption is user content and stays in the language it was
             written in. */}
-        <p className="text-body text-text-secondary">{post.caption}</p>
+        {post.caption ? (
+          <p className="text-body text-text-secondary">{post.caption}</p>
+        ) : null}
 
         <div className="mt-auto flex items-center justify-between border-t border-border/70 pt-3">
           <span className="inline-flex items-center gap-1.5 text-label text-text-secondary">

@@ -1,9 +1,8 @@
 import type { FeedCard } from '@/lib/api';
 
 /**
- * Local stand-in for `GET /feed` until the API exists (roadmap `API-20`). The shape is
- * the real §6.4 feed card so swapping in `fetchFeedPage` is a one-line change in the
- * screen. Delete this file when the endpoint lands.
+ * Local stand-in for `GET /feed`. Discover and Profile still read from here;
+ * Home and Rank hit the live API.
  */
 
 const photo = (seed: string, width: number, height: number) => ({
@@ -39,7 +38,7 @@ export const mockFeed: FeedCard[] = [
     likeCount: 1_284,
     aura: 12_840,
     likedByMe: false,
-    publishedAt: '2026-08-28T09:12:00.000Z',
+    createdAt: '2026-08-28T09:12:00.000Z',
   },
   {
     id: '01j0000000000000000000002',
@@ -63,7 +62,7 @@ export const mockFeed: FeedCard[] = [
     likeCount: 942,
     aura: 9_420,
     likedByMe: true,
-    publishedAt: '2026-08-28T08:44:00.000Z',
+    createdAt: '2026-08-28T08:44:00.000Z',
   },
   {
     id: '01j0000000000000000000003',
@@ -79,7 +78,7 @@ export const mockFeed: FeedCard[] = [
     likeCount: 611,
     aura: 6_110,
     likedByMe: false,
-    publishedAt: '2026-08-28T07:58:00.000Z',
+    createdAt: '2026-08-28T07:58:00.000Z',
   },
   {
     id: '01j0000000000000000000004',
@@ -95,7 +94,7 @@ export const mockFeed: FeedCard[] = [
     likeCount: 233,
     aura: 2_330,
     likedByMe: false,
-    publishedAt: '2026-08-28T06:31:00.000Z',
+    createdAt: '2026-08-28T06:31:00.000Z',
   },
   {
     id: '01j0000000000000000000005',
@@ -111,7 +110,7 @@ export const mockFeed: FeedCard[] = [
     likeCount: 87,
     aura: 870,
     likedByMe: false,
-    publishedAt: '2026-08-28T05:04:00.000Z',
+    createdAt: '2026-08-28T05:04:00.000Z',
   },
   {
     id: '01j0000000000000000000006',
@@ -127,6 +126,6 @@ export const mockFeed: FeedCard[] = [
     likeCount: 12,
     aura: 120,
     likedByMe: false,
-    publishedAt: '2026-08-28T04:20:00.000Z',
+    createdAt: '2026-08-28T04:20:00.000Z',
   },
 ];

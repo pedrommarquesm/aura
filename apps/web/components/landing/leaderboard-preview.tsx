@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
 import { Section } from "@/components/landing/section";
@@ -49,12 +50,38 @@ export function LeaderboardPreview() {
 }
 
 async function LeaderboardRows() {
-  const leaderboard = await api.getGlobalLeaderboard({ limit: 10 });
+  const t = await getTranslations("landing.leaderboard");
+
+  let entries: Awaited<ReturnType<typeof api.getGlobalLeaderboard>>["entries"] =
+    [];
+  let failed = false;
+
+  try {
+    entries = (await api.getGlobalLeaderboard({ limit: 10 })).entries;
+  } catch {
+    failed = true;
+  }
+
+  if (failed) {
+    return (
+      <p className="px-4 py-8 text-body text-text-secondary sm:px-5">
+        {t("unavailable")}
+      </p>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <p className="px-4 py-8 text-body text-text-secondary sm:px-5">
+        {t("empty")}
+      </p>
+    );
+  }
 
   return (
     <ol className="divide-y divide-border/70">
-      {leaderboard.items.map((entry) => (
-        <LeaderboardRow key={entry.user.username} entry={entry} />
+      {entries.map((entry) => (
+        <LeaderboardRow key={entry.userId} entry={entry} />
       ))}
     </ol>
   );

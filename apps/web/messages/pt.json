@@ -118,7 +118,9 @@
       "eyebrow": "Ao vivo da app",
       "title": "Em destaque agora",
       "description": "Em destaque não é contagem de seguidores. É Aura ganha por minuto, ponderada pela idade do post — por isso um primeiro post pode passar à frente de um criador estabelecido no mesmo dia.",
-      "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Dar like e publicar continuam a ser coisas da app."
+      "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Dar like e publicar continuam a ser coisas da app.",
+      "empty": "O feed está calmo neste momento. Volta quando alguém publicar.",
+      "unavailable": "Não foi possível carregar o que está em destaque."
     },
     "leaderboard": {
       "eyebrow": "Classificação",
@@ -127,7 +129,9 @@
       "aside": {
         "title": "Ainda não estás nesta tabela.",
         "body": "Todos começam com zero Aura e o título de NPC. A maneira mais rápida de sair do fundo é publicar algo que valha um like."
-      }
+      },
+      "empty": "A tabela está vazia. Toda a gente começa no zero.",
+      "unavailable": "Não foi possível carregar a classificação."
     },
     "download": {
       "eyebrow": "Descarregar",

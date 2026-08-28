@@ -28,6 +28,9 @@
       "title": "Nothing here yet",
       "body": "Post something and the Aura starts moving."
     },
+    "error": {
+      "title": "Could not load the feed"
+    },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "auraGain": "+{amount, number} Aura",
@@ -68,7 +71,14 @@
     "subtitle": "Global · all time",
     "rank": "#{rank, number}",
     "place": "{rank, selectordinal, one {#st place} two {#nd place} few {#rd place} other {#th place}}",
-    "you": "You"
+    "you": "You",
+    "empty": {
+      "title": "Nobody on the board yet",
+      "body": "Post something worth liking and the ranking starts moving."
+    },
+    "error": {
+      "title": "Could not load the ranking"
+    }
   },
   "profile": {
     "globalRank": "{rank, selectordinal, one {#st} two {#nd} few {#rd} other {#th}} globally",

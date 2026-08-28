@@ -1,6 +1,6 @@
 /**
- * Stand-in for `GET /leaderboards/global` (roadmap `AURA-05`), which returns the top
- * rows plus the viewer's own rank so it can be pinned even outside the top 100 (§15).
+ * Stand-in for `GET /leaderboards/global`. Rank reads the live API; this file
+ * stays for screens that still need a static board (none, currently).
  */
 export type LeaderboardRow = {
   rank: number;

@@ -9,19 +9,31 @@ import { api } from "@/lib/api";
 import { downloadHref } from "@/lib/site";
 
 export async function Hero() {
-  const [trending, leaderboard] = await Promise.all([
-    api.getTrendingFeed({ limit: 1 }),
-    api.getGlobalLeaderboard({ limit: 10 }),
-  ]);
   const locale = await getLocale();
   const t = await getTranslations("landing.hero");
   const actions = await getTranslations("common.actions");
 
-  const topPost = trending.items[0];
-  const leader = leaderboard.items[0];
+  let trendingItems: Awaited<ReturnType<typeof api.getTrendingFeed>>["items"] = [];
+  let leaderboardEntries: Awaited<
+    ReturnType<typeof api.getGlobalLeaderboard>
+  >["entries"] = [];
+
+  try {
+    const [trending, leaderboard] = await Promise.all([
+      api.getTrendingFeed({ limit: 1 }),
+      api.getGlobalLeaderboard({ limit: 10 }),
+    ]);
+    trendingItems = trending.items;
+    leaderboardEntries = leaderboard.entries;
+  } catch {
+    // Marketing copy still renders; the live previews stay off.
+  }
+
+  const topPost = trendingItems[0];
+  const leader = leaderboardEntries[0];
   const authorRank =
-    leaderboard.items.find(
-      (entry) => entry.user.username === topPost?.author.username,
+    leaderboardEntries.find(
+      (entry) => entry.username === topPost?.author.username,
     )?.rank ?? null;
 
   return (
@@ -79,7 +91,7 @@ export async function Hero() {
               <span>{t("leader", { rank: leader.rank })}</span>
               <span aria-hidden>·</span>
               <span className="text-text-secondary">
-                @{leader.user.username}
+                @{leader.username}
               </span>
               <AuraValue value={leader.aura} size="sm" tone="aura" />
             </p>

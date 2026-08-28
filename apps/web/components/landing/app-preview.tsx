@@ -47,7 +47,7 @@ export function AppPreview({
           <div className="relative">
             <PostMedia
               media={post.media}
-              alt={post.caption}
+              alt={post.caption ?? `@${post.author.username}`}
               priority
               sizes="336px"
               className="aspect-4/5"

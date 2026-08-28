@@ -118,7 +118,15 @@ export default defineRailway(() => {
     healthcheckTimeout: 120,
     replicas: { [REGION]: 1 },
     deploy: { restartPolicyMaxRetries: 5 },
-    env: { NEXT_PUBLIC_SITE_URL: preserve(), PORT: preserve() },
+    env: {
+      NEXT_PUBLIC_SITE_URL: preserve(),
+      PORT: preserve(),
+      // NEXT_PUBLIC_* is inlined at image build time. The hostname still says
+      // `-production-` because Railway does not rewrite domains on rename; it
+      // serves staging. Confirm with GET /health.
+      NEXT_PUBLIC_API_BASE_URL: 'https://api-production-aa71.up.railway.app',
+      NEXT_PUBLIC_USE_MOCK_API: 'false',
+    },
   });
 
   return project('aura', {

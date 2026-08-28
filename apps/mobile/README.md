@@ -7,7 +7,7 @@ landing, sharing and a read-only feed.
 
 ```bash
 npm install
-cp .env.example .env   # optional: the app runs on mock data without it
+cp .env.example .env   # optional: defaults to the staging API
 npm start
 ```
 
@@ -46,7 +46,7 @@ locales/                en.json · pt.json message catalogs
 scripts/                check-locales.mjs
 store/                  Zustand: session, preferences
 theme/                  tokens.js (single source) + typed motion/glow helpers
-mocks/                  stand-in data until the API exists
+mocks/                  stand-in data for Discover and Profile until those APIs exist
 ```
 
 ## Design tokens

@@ -7,7 +7,7 @@ import type {
   Post,
 } from "./types";
 
-/** Real implementation. Unused until the API is deployed; see `./index.ts`. */
+/** Real implementation of the public read surface. */
 export const httpApi: AuraApi = {
   getTrendingFeed(params) {
     return apiGet<CursorPage<FeedCard>>("/v1/feed/trending", {
@@ -21,7 +21,7 @@ export const httpApi: AuraApi = {
 
   getGlobalLeaderboard(params) {
     return apiGet<LeaderboardPage>("/v1/leaderboards/global", {
-      query: cursorQuery(params),
+      query: { limit: Math.min(params?.limit ?? 10, 100) },
     });
   },
 };

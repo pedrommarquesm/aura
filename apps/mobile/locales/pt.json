@@ -28,6 +28,9 @@
       "title": "Ainda não há nada aqui",
       "body": "Publica algo e a Aura começa a mexer."
     },
+    "error": {
+      "title": "Não foi possível carregar o feed"
+    },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "auraGain": "+{amount, number} Aura",
@@ -68,7 +71,14 @@
     "subtitle": "Global · de sempre",
     "rank": "#{rank, number}",
     "place": "{rank, selectordinal, other {#.º lugar}}",
-    "you": "Tu"
+    "you": "Tu",
+    "empty": {
+      "title": "Ainda ninguém no ranking",
+      "body": "Publica algo que valha um like e o ranking começa a mexer."
+    },
+    "error": {
+      "title": "Não foi possível carregar o ranking"
+    }
   },
   "profile": {
     "globalRank": "{rank, selectordinal, other {#.º}} do mundo",

@@ -22,18 +22,18 @@ export function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       </span>
 
       <Avatar
-        username={entry.user.username}
-        src={entry.user.avatarUrl}
+        username={entry.username}
+        src={entry.avatarUrl}
         size="sm"
         ring={entry.rank === 1}
       />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-label">@{entry.user.username}</p>
+        <p className="truncate text-label">@{entry.username}</p>
         {/* Level titles are deliberately untranslated (docs/i18n.md). */}
-        {entry.user.title ? (
+        {entry.title ? (
           <p className="truncate text-caption text-text-muted">
-            {entry.user.title}
+            {entry.title}
           </p>
         ) : null}
       </div>
