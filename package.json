@@ -1,0 +1,12 @@
+{
+  "name": "aura",
+  "private": true,
+  "description": "Root manifest for infrastructure tooling only. Application workspaces land with FND-03; each app in apps/ is currently self-contained.",
+  "scripts": {
+    "infra:plan": "railway config plan",
+    "infra:apply": "railway config apply"
+  },
+  "devDependencies": {
+    "railway": "^3.11.0"
+  }
+}
