@@ -195,6 +195,12 @@ sensible default.
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.
 
+Mobile sign-in needs `APPLE_CLIENT_ID` (the iOS bundle id `app.aura.mobile`) and
+`GOOGLE_CLIENT_IDS` (comma-separated iOS, Android, and web OAuth client ids) on
+the **api** service. Until those are set, `POST /v1/auth/apple` and
+`POST /v1/auth/google` return `service_unavailable`. The matching
+`EXPO_PUBLIC_GOOGLE_*_CLIENT_ID` values go in the mobile app at build time.
+
 ## Current environment
 
 Project `aura`, environment **`staging`**, region `europe-west4`.

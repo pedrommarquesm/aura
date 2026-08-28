@@ -95,6 +95,8 @@ const SAMPLES = [
   ['discover.challenges.entries', { count: 1 }],
   ['discover.challenges.entries', { count: 2140 }],
   ['nav.discover', {}],
+  ['auth.reasons.like.title', {}],
+  ['auth.username.submit', {}],
   ['errors.cannot_like_own_post', {}],
 ];
 

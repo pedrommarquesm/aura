@@ -29,24 +29,26 @@ npx expo export --platform all   # bundles all three platforms
 
 ```text
 app/                    Expo Router routes
-  _layout.tsx           providers: gesture handler root, safe area, i18n, TanStack Query
+  _layout.tsx           providers: gesture handler root, safe area, i18n, TanStack Query, auth sheets
   (tabs)/               Home · Discover · Create · Rank · Profile
 components/
-  ui/                   primitives: Text, Button, Avatar, Card, Skeleton, AuraValue
+  ui/                   primitives: Text, Button, Avatar, Card, Skeleton, AuraValue, TextField
+  auth/                 sign-in sheet, username claim, guest conversion overlay
   feed/                 feed card, skeleton, like animation
   layout/               Screen, ScreenHeader
   navigation/           the elevated Create button
   settings/             the language override
 lib/
   api/                  typed client, auth interceptor, single-flight refresh
+  auth/                 Apple/Google identity tokens, username rules
   i18n/                 i18next + ICU setup, Intl polyfills, formatting hooks
   query/                QueryClient defaults, provider, query keys
   cn · format · haptics · secure-storage
 locales/                en.json · pt.json message catalogs
 scripts/                check-locales.mjs
-store/                  Zustand: session, preferences
+store/                  Zustand: session, auth gate, preferences
 theme/                  tokens.js (single source) + typed motion/glow helpers
-mocks/                  stand-in data for Discover and Profile until those APIs exist
+mocks/                  stand-in data for Discover until those APIs exist
 ```
 
 ## Design tokens
@@ -98,9 +100,19 @@ polyfill decision.
 
 ## Data layer
 
-The API does not exist yet (`API-01`), so `EXPO_PUBLIC_API_URL` points at a placeholder
-and screens read from `mocks/`. The mock shapes match the documented feed card, so
-swapping in `fetchFeedPage` is a one-line change per screen.
+The live API is the default (`EXPO_PUBLIC_API_URL`, staging if unset). Home and Rank
+read it. Discover still uses `mocks/`. Profile is the signed-in user or a guest
+sign-in prompt.
+
+Auth lives in `lib/auth/` and `store/session.ts`:
+
+- Guest browsing is the default. The first like or Create tap opens the sign-in
+  sheet; after Apple/Google (and a username if this is a new account) the action
+  replays.
+- Refresh tokens go in SecureStore. Access tokens stay in memory.
+- Sign in with Apple is `expo-apple-authentication`. Google uses an ID token from
+  `expo-auth-session` (the same JWT the API verifies). Both need matching client
+  ids on the API (`APPLE_CLIENT_ID`, `GOOGLE_CLIENT_IDS`).
 
 The one non-obvious piece is the refresh interceptor in `lib/api/client.ts`: the backend
 rotates refresh tokens and revokes the whole family if one is replayed, so all concurrent
@@ -108,9 +120,9 @@ rotates refresh tokens and revokes the whole family if one is replayed, so all c
 
 ## Known gaps
 
-- No auth screens yet (`MOB-10`, `MOB-11`); the session store is the holder they plug into.
+- Google/Apple client ids are not on staging yet, so the sheets cannot complete
+  against the live API until those are created.
 - Video playback is not wired. `expo-video` arrives with `MOB-32`.
 - Preferences are in memory only — persistence needs a storage decision (`FND-06`). That
   includes the language override.
-- Mock media uses `picsum.photos`, so the placeholder feed needs a network connection to
-  show images.
+- Discover still uses `picsum.photos` stand-in tiles.

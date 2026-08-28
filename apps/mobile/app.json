@@ -10,7 +10,8 @@
     "backgroundColor": "#0A0A0F",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.aura.mobile"
+      "bundleIdentifier": "app.aura.mobile",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "app.aura.mobile",
@@ -38,7 +39,9 @@
       ],
       "expo-secure-store",
       "expo-font",
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true

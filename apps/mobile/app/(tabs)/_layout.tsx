@@ -1,11 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import type { ColorValue } from 'react-native';
+import type { ColorValue, PressableProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CreateTabButton } from '@/components/navigation/create-tab-button';
 import { Text } from '@/components/ui';
+import { useAuthGateStore } from '@/store/auth-gate';
+import { useSessionStore } from '@/store/session';
 import { colors } from '@/theme/tokens';
 
 const TAB_BAR_HEIGHT = 60;
@@ -47,6 +49,24 @@ function label(text: string) {
       </Text>
     );
   };
+}
+
+function GuardedCreateTab({ onPress }: { onPress?: PressableProps['onPress'] }) {
+  const status = useSessionStore((state) => state.status);
+  const requestAuth = useAuthGateStore((state) => state.requestAuth);
+
+  return (
+    <CreateTabButton
+      onPress={(event) => {
+        if (status === 'restoring') return;
+        if (status !== 'authenticated') {
+          requestAuth({ reason: 'create', pending: { type: 'create' } });
+          return;
+        }
+        onPress?.(event);
+      }}
+    />
+  );
 }
 
 export default function TabsLayout() {
@@ -92,7 +112,7 @@ export default function TabsLayout() {
         name="create"
         options={{
           title: t('nav.create'),
-          tabBarButton: ({ onPress }) => <CreateTabButton onPress={onPress} />,
+          tabBarButton: ({ onPress }) => <GuardedCreateTab onPress={onPress} />,
         }}
       />
       <Tabs.Screen
