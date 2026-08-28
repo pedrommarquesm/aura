@@ -6,11 +6,7 @@ import { View } from 'react-native';
 import { Screen, ScreenHeader } from '@/components/layout';
 import { AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import {
-  fetchGlobalLeaderboard,
-  messageForError,
-  type LeaderboardEntry,
-} from '@/lib/api';
+import { fetchGlobalLeaderboard, messageForError, type LeaderboardEntry } from '@/lib/api';
 import { queryKeys } from '@/lib/query/keys';
 
 /** The top three read as medals; everyone else gets a plain tabular rank number. */
@@ -111,7 +107,9 @@ export default function RankScreen() {
           <FlashList
             data={board.data.entries}
             keyExtractor={(item) => item.userId}
-            renderItem={({ item }) => <Row row={item} highlighted={item.userId === board.data.viewer?.userId} />}
+            renderItem={({ item }) => (
+              <Row row={item} highlighted={item.userId === board.data.viewer?.userId} />
+            )}
             ListEmptyComponent={
               <View className="px-gutter py-16">
                 <Text variant="title">{t('leaderboard.empty.title')}</Text>

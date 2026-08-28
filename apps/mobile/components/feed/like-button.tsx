@@ -27,18 +27,23 @@ const RISE_DISTANCE = 34;
 export type LikeButtonProps = {
   likeCount: number;
   initiallyLiked?: boolean;
-  onChange?: (liked: boolean) => void;
+  /** Guest likes open the auth gate instead of toggling. */
+  requireAuth?: boolean;
+  onRequireAuth?: () => void;
+  onChange?: (liked: boolean) => void | Promise<void>;
   size?: number;
 };
 
 /**
- * The product's signature interaction, and the reason Reanimated and Haptics are in the
- * dependency list. Everything here runs off local state and on the UI thread: the real
- * mutation (roadmap `MOB-40`) hangs off `onChange` and must never gate the animation.
+ * The product's signature interaction. Animation and haptics run immediately;
+ * `onChange` is the API write and must never gate the visual. A rejected promise
+ * rolls the heart back. Guests hit `onRequireAuth` instead of toggling.
  */
 export function LikeButton({
   likeCount,
   initiallyLiked = false,
+  requireAuth = false,
+  onRequireAuth,
   onChange,
   size = 26,
 }: LikeButtonProps) {
@@ -66,9 +71,14 @@ export function LikeButton({
   });
 
   const toggle = useCallback(() => {
+    if (requireAuth) {
+      onRequireAuth?.();
+      return;
+    }
+
     const next = !liked;
     setLiked(next);
-    onChange?.(next);
+    void Promise.resolve(onChange?.(next)).catch(() => setLiked(!next));
 
     if (!next) {
       // Unliking is a correction, not a celebration. Acknowledge it and get out of the way.
@@ -93,7 +103,7 @@ export function LikeButton({
     // Reset first so a rapid re-tap restarts the label instead of resuming it mid-flight.
     rise.set(0);
     rise.set(withTiming(1, celebrateTiming));
-  }, [liked, onChange, rise, scale]);
+  }, [liked, onChange, onRequireAuth, requireAuth, rise, scale]);
 
   const displayCount = likeCount + (liked === initiallyLiked ? 0 : liked ? 1 : -1);
 

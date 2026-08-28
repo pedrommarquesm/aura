@@ -195,6 +195,15 @@ sensible default.
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.
 
+Mobile sign-in needs `APPLE_CLIENT_ID` (the iOS bundle id `app.aura.mobile`) and
+`GOOGLE_CLIENT_IDS` (comma-separated iOS, Android, and web OAuth client ids) on
+the **api** service. Staging already has the iOS and web Google clients.
+Until Apple's id is set, `POST /v1/auth/apple` still returns
+`service_unavailable`. The iOS Google id is baked into the mobile app; extra
+`EXPO_PUBLIC_GOOGLE_*_CLIENT_ID` values override it at build time. Google on
+iOS needs a development build (`npx expo run:ios`) — Expo Go cannot register
+the reversed client-id URL scheme.
+
 Web Google Sign-In needs `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` on the **web**
 service (a Web application OAuth client, inlined at image build time) and the
 same id listed in the API's `GOOGLE_CLIENT_IDS` alongside the iOS client. The

@@ -96,6 +96,7 @@ export default defineRailway(() => {
       PORT: '3000',
       CORS_ORIGINS: preserve(),
       RATE_LIMIT_MAX: preserve(),
+      // Public OAuth audiences, not secrets. iOS + web clients we have today.
       GOOGLE_CLIENT_IDS:
         '37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f.apps.googleusercontent.com,37586478648-trc2amkrb29fv6h9undhkljfd7t69llh.apps.googleusercontent.com',
       APPLE_CLIENT_ID: preserve(),

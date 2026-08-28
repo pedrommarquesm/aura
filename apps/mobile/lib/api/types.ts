@@ -71,4 +71,29 @@ export type AuthTokens = {
   accessToken: string;
   /** Opaque, rotated on every use. Lives in SecureStore. */
   refreshToken: string;
+  expiresIn?: number;
+};
+
+/** `GET /auth/me` and the `user` half of a sign-in response. */
+export type PublicUser = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  aura: number;
+  title: string | null;
+  locale: string;
+};
+
+export type SignInResponse = AuthTokens & {
+  needsUsername: boolean;
+  user: PublicUser;
+};
+
+export type LikeResult = {
+  liked: boolean;
+  likeCount: number;
+  postAura: number;
+  creatorAura: number;
+  actorAuraDelta: number;
 };
