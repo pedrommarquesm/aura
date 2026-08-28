@@ -130,6 +130,20 @@ railway logs --service web        # when it is FAILED or CRASHED
 `NEXT_PUBLIC_SITE_URL` is baked into the bundle, set it to that domain and
 redeploy the first time a domain is created.
 
+Two things about `railway.json` are worth knowing before you rely on it:
+
+- Railway has deprecated config-as-code in favour of `.railway/railway.ts`
+  (existing files keep working until 2026-12-01). The **deploy** block is
+  already ignored by the platform, so the health check and restart policy also
+  have to be set on the service itself. They are, and they match this file.
+- The **build** block only applies to a deployment that carries the file, which
+  means `railway up` honours it but `railway redeploy` falls back to the
+  service's own builder. Setting `dockerfilePath` on the service pins the
+  Dockerfile builder for every path, and it is set.
+
+Keep this file and the service settings in step, and migrate both when the
+Railway TypeScript config lands.
+
 ## SEO
 
 Metadata comes from `lib/seo.ts` (`buildMetadata`) and share images from
