@@ -1,0 +1,136 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useCallback, useState } from 'react';
+import { Pressable, View } from 'react-native';
+import Animated, {
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+
+import { Text } from '@/components/ui';
+import { formatCount } from '@/lib/format';
+import { tapFeedback } from '@/lib/haptics';
+import { celebrate, celebrateTiming, instant, smooth } from '@/theme/motion';
+import { colors } from '@/theme/tokens';
+
+/** V0 awards a flat 10 Aura per like (roadmap `AURA-02`). */
+const AURA_PER_LIKE = 10;
+
+const PEAK_SCALE = 1.35;
+const RISE_DISTANCE = 34;
+
+export type LikeButtonProps = {
+  likeCount: number;
+  initiallyLiked?: boolean;
+  onChange?: (liked: boolean) => void;
+  size?: number;
+};
+
+/**
+ * The product's signature interaction, and the reason Reanimated and Haptics are in the
+ * dependency list. Everything here runs off local state and on the UI thread: the real
+ * mutation (roadmap `MOB-40`) hangs off `onChange` and must never gate the animation.
+ */
+export function LikeButton({
+  likeCount,
+  initiallyLiked = false,
+  onChange,
+  size = 26,
+}: LikeButtonProps) {
+  const [liked, setLiked] = useState(initiallyLiked);
+
+  const scale = useSharedValue(1);
+  const rise = useSharedValue(0);
+
+  const heartStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.get() }],
+  }));
+
+  const auraStyle = useAnimatedStyle(() => {
+    const progress = rise.get();
+
+    return {
+      opacity: interpolate(progress, [0, 0.1, 0.65, 1], [0, 1, 1, 0]),
+      transform: [
+        { translateY: interpolate(progress, [0, 1], [0, -RISE_DISTANCE]) },
+        { scale: interpolate(progress, [0, 1], [0.8, 1.1]) },
+      ],
+    };
+  });
+
+  const toggle = useCallback(() => {
+    const next = !liked;
+    setLiked(next);
+    onChange?.(next);
+
+    if (!next) {
+      // Unliking is a correction, not a celebration. Acknowledge it and get out of the way.
+      scale.set(withSequence(withTiming(0.88, instant), withSpring(1, smooth)));
+      rise.set(0);
+      return;
+    }
+
+    // The rise to the peak is a fixed 100ms curve rather than a spring so the haptic can
+    // be scheduled for the exact moment the heart is largest. Firing on touch-down feels
+    // detached from the visual and firing on settle reads as lag. The spring is the
+    // bounce back down, which is where the bounce is actually wanted.
+    scale.set(
+      withSequence(
+        withTiming(PEAK_SCALE, instant, (finished) => {
+          if (finished) runOnJS(tapFeedback)();
+        }),
+        withSpring(1, celebrate),
+      ),
+    );
+
+    // Reset first so a rapid re-tap restarts the label instead of resuming it mid-flight.
+    rise.set(0);
+    rise.set(withTiming(1, celebrateTiming));
+  }, [liked, onChange, rise, scale]);
+
+  const displayCount = likeCount + (liked === initiallyLiked ? 0 : liked ? 1 : -1);
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={liked ? 'Remove like' : 'Like'}
+      accessibilityState={{ selected: liked }}
+      hitSlop={12}
+      onPress={toggle}
+      className="flex-row items-center gap-2"
+    >
+      <View className="items-center justify-center">
+        {/* Absolute and un-clipped so the rising label can leave the button's bounds. */}
+        <Animated.View
+          pointerEvents="none"
+          style={auraStyle}
+          className="absolute -top-1 w-24 items-center"
+        >
+          <Text variant="caption" tone="aura" className="font-extrabold tracking-aura">
+            {`+${AURA_PER_LIKE} Aura`}
+          </Text>
+        </Animated.View>
+
+        <Animated.View style={heartStyle}>
+          <Ionicons
+            name={liked ? 'heart' : 'heart-outline'}
+            size={size}
+            color={liked ? colors.like : colors.text.secondary}
+          />
+        </Animated.View>
+      </View>
+
+      <Text
+        variant="label"
+        tone={liked ? 'like' : 'secondary'}
+        style={{ fontVariant: ['tabular-nums'] }}
+      >
+        {formatCount(displayCount)}
+      </Text>
+    </Pressable>
+  );
+}
