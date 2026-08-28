@@ -29,6 +29,13 @@
       "socialTitle": "Classificação global da Aura",
       "description": "Os 100 com mais Aura. Uma tabela, um número, visível para toda a gente."
     },
+    "post": {
+      "title": "@{username}",
+      "socialTitle": "@{username} na Aura",
+      "description": "{caption}",
+      "descriptionEmpty": "@{username} publicou na Aura. Abre a app para dares like e farmar Aura.",
+      "alt": "Um post de @{username} na Aura"
+    },
     "keywords": "Aura, jogo social, classificação, partilha de fotos, vídeo curto",
     "og": {
       "title": "Transforma likes em Aura.",
@@ -212,6 +219,15 @@
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "video": "Vídeo"
+    }
+  },
+  "post": {
+    "page": {
+      "eyebrow": "Partilhado a partir da app",
+      "openInApp": "Abrir na app Aura",
+      "installTitle": "Dá like na app",
+      "installBody": "Cada like paga Aura ao criador. Publicar e dar like continuam a ser coisas da app.",
+      "unavailable": "Este post desapareceu, ou nunca chegou a ser publicado."
     }
   },
   "auth": {

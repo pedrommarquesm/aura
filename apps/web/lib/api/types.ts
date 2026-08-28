@@ -56,7 +56,7 @@ export type FeedCard = {
   likedByMe: boolean;
 };
 
-/** `GET /v1/posts/:id` — the permalink is the feed card; not shipped yet (WEB-11). */
+/** `GET /v1/posts/:id` — the permalink is the feed card. */
 export type Post = FeedCard;
 
 export type LeaderboardEntry = {
