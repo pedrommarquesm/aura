@@ -1,10 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Screen, ScreenHeader } from '@/components/layout';
 import { AuraValue, Avatar, Card, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { formatRank } from '@/lib/format';
 import { mockViewer } from '@/mocks/feed';
 import { mockLeaderboard, type LeaderboardRow } from '@/mocks/leaderboard';
 
@@ -12,6 +12,7 @@ import { mockLeaderboard, type LeaderboardRow } from '@/mocks/leaderboard';
 const MEDALS = ['🥇', '🥈', '🥉'];
 
 function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: boolean }) {
+  const { t } = useTranslation();
   const medal = MEDALS[row.rank - 1];
 
   return (
@@ -21,12 +22,16 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
         highlighted && 'border border-aura-deep bg-aura-deep/25',
       )}
     >
-      <View className="w-9 items-center">
+      {/* The medal is decoration; the ordinal is what a screen reader should hear. */}
+      <View
+        className="w-9 items-center"
+        accessibilityLabel={t('leaderboard.place', { rank: row.rank })}
+      >
         {medal ? (
           <Text variant="heading">{medal}</Text>
         ) : (
           <Text variant="label" tone="muted" style={{ fontVariant: ['tabular-nums'] }}>
-            {formatRank(row.rank)}
+            {t('leaderboard.rank', { rank: row.rank })}
           </Text>
         )}
       </View>
@@ -48,9 +53,11 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
 }
 
 export default function RankScreen() {
+  const { t } = useTranslation();
+
   return (
     <Screen>
-      <ScreenHeader title="Rank" subtitle="Global · all time" />
+      <ScreenHeader title={t('leaderboard.title')} subtitle={t('leaderboard.subtitle')} />
 
       <FlashList
         data={mockLeaderboard}
@@ -61,7 +68,12 @@ export default function RankScreen() {
       />
 
       {/* Pinned so the user always sees their own position, even outside the top 100 (§15). */}
-      <Card surface="elevated" padded={false} className="mb-4 border-aura-deep">
+      <Card
+        surface="elevated"
+        padded={false}
+        className="mb-4 border-aura-deep"
+        accessibilityLabel={t('leaderboard.you')}
+      >
         <Row
           row={{
             rank: mockViewer.rank,

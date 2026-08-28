@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { LikeButton } from './like-button';
@@ -26,6 +27,7 @@ function formatDuration(durationMs: number): string {
  * card needs arrives as a single prop so the comparison stays a reference check.
  */
 export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCard }) {
+  const { t } = useTranslation();
   const { author, media } = post;
 
   return (
@@ -45,7 +47,11 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
           <AuraValue value={author.aura} size="sm" tone="secondary" />
         </View>
 
-        <Pressable accessibilityRole="button" accessibilityLabel="Post options" hitSlop={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('feed.post.a11y.options')}
+          hitSlop={8}
+        >
           <Ionicons name="ellipsis-horizontal" size={20} color={colors.text.muted} />
         </Pressable>
       </View>
@@ -76,7 +82,11 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
         <LikeButton likeCount={post.likeCount} initiallyLiked={post.likedByMe} />
 
         {/* Comments are V1 (roadmap `API-31`), so the V0 card carries like + share only. */}
-        <Pressable accessibilityRole="button" accessibilityLabel="Share" hitSlop={12}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('common.actions.share')}
+          hitSlop={12}
+        >
           <Ionicons name="arrow-redo-outline" size={22} color={colors.text.secondary} />
         </Pressable>
 

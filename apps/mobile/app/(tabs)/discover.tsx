@@ -1,14 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
 import { Screen, ScreenHeader } from '@/components/layout';
 import { AuraValue, Card, Skeleton, Text } from '@/components/ui';
-import { formatCount } from '@/lib/format';
 import { mockChallenges, mockTrendingTiles } from '@/mocks/discover';
 import { colors } from '@/theme/tokens';
 
 export default function DiscoverScreen() {
+  const { t } = useTranslation();
+
   return (
     <Screen padded={false}>
       <ScrollView
@@ -17,12 +19,12 @@ export default function DiscoverScreen() {
         stickyHeaderIndices={[0]}
       >
         <View className="bg-bg px-gutter">
-          <ScreenHeader title="Discover" subtitle="Find Aura before everyone else" />
+          <ScreenHeader title={t('discover.title')} subtitle={t('discover.subtitle')} />
         </View>
 
         <View className="px-gutter">
           <Text variant="heading" className="pb-3">
-            Today&apos;s challenges
+            {t('discover.challenges.title')}
           </Text>
         </View>
 
@@ -36,14 +38,14 @@ export default function DiscoverScreen() {
               <View className="flex-row items-center gap-2">
                 <Ionicons name="flame" size={16} color={colors.super} />
                 <Text variant="caption" tone="muted">
-                  {`${challenge.endsInHours}h left`}
+                  {t('discover.challenges.endsIn', { hours: challenge.endsInHours })}
                 </Text>
               </View>
               <Text variant="heading" className="pt-2">
                 {challenge.title}
               </Text>
               <Text variant="caption" tone="secondary" className="pt-1">
-                {`${formatCount(challenge.entries)} entries`}
+                {t('discover.challenges.entries', { count: challenge.entries })}
               </Text>
             </Card>
           ))}
@@ -51,7 +53,7 @@ export default function DiscoverScreen() {
 
         <View className="px-gutter pt-8">
           <Text variant="heading" className="pb-3">
-            Trending now
+            {t('discover.trending.title')}
           </Text>
 
           <View className="flex-row flex-wrap gap-1">
@@ -76,10 +78,10 @@ export default function DiscoverScreen() {
 
         <View className="px-gutter pt-8">
           <Text variant="heading" className="pb-1">
-            Aura Battles
+            {t('discover.battles.title')}
           </Text>
           <Text variant="caption" tone="muted" className="pb-3">
-            Head-to-head voting. Arrives with V1 (roadmap API-32).
+            {t('discover.battles.subtitle')}
           </Text>
 
           <View className="flex-row gap-3">

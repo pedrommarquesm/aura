@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View, type PressableProps } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -19,6 +20,7 @@ export type CreateTabButtonProps = {
  * places we spend it — this is the thing we want the thumb to find without looking.
  */
 export function CreateTabButton({ onPress }: CreateTabButtonProps) {
+  const { t } = useTranslation();
   const press = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -29,7 +31,7 @@ export function CreateTabButton({ onPress }: CreateTabButtonProps) {
     <View className="flex-1 items-center justify-start">
       <AnimatedPressable
         accessibilityRole="button"
-        accessibilityLabel="Create a post"
+        accessibilityLabel={t('nav.a11y.create')}
         onPress={onPress}
         onPressIn={() => press.set(withTiming(1, instant))}
         onPressOut={() => press.set(withTiming(0, instant))}
@@ -40,8 +42,8 @@ export function CreateTabButton({ onPress }: CreateTabButtonProps) {
         <Ionicons name="add" size={30} color={colors.text.DEFAULT} />
       </AnimatedPressable>
 
-      <Text variant="caption" tone="muted" className="-mt-1">
-        Create
+      <Text variant="caption" tone="muted" className="-mt-1" numberOfLines={1}>
+        {t('nav.create')}
       </Text>
     </View>
   );
