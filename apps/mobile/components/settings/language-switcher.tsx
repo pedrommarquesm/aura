@@ -61,8 +61,8 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
                 variant="label"
                 tone={selected ? 'default' : 'muted'}
                 numberOfLines={1}
-                // "Dispositivo" is nearly twice "Device"; three equal columns leave it
-                // ~100pt, so the label is allowed to shrink rather than truncate.
+                // "Dispositivo" is nearly twice the length of "Device" and three equal
+                // columns leave it ~100pt, so it shrinks instead of wrapping.
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}
               >

@@ -22,15 +22,19 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
         highlighted && 'border border-aura-deep bg-aura-deep/25',
       )}
     >
-      {/* The medal is decoration; the ordinal is what a screen reader should hear. */}
-      <View
-        className="w-9 items-center"
-        accessibilityLabel={t('leaderboard.place', { rank: row.rank })}
-      >
+      {/* A medal or a "#42" both read badly out loud, so both announce the ordinal. */}
+      <View className="w-9 items-center">
         {medal ? (
-          <Text variant="heading">{medal}</Text>
+          <Text variant="heading" accessibilityLabel={t('leaderboard.place', { rank: row.rank })}>
+            {medal}
+          </Text>
         ) : (
-          <Text variant="label" tone="muted" style={{ fontVariant: ['tabular-nums'] }}>
+          <Text
+            variant="label"
+            tone="muted"
+            style={{ fontVariant: ['tabular-nums'] }}
+            accessibilityLabel={t('leaderboard.place', { rank: row.rank })}
+          >
             {t('leaderboard.rank', { rank: row.rank })}
           </Text>
         )}
@@ -39,7 +43,16 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
       <Avatar uri={row.avatarUrl} username={row.username} size="sm" ring={row.rank <= 3} />
 
       <View className="flex-1">
-        <Text variant="label">@{row.username}</Text>
+        <View className="flex-row items-center gap-2">
+          <Text variant="label" numberOfLines={1}>
+            @{row.username}
+          </Text>
+          {highlighted ? (
+            <Text variant="caption" tone="aura">
+              {t('leaderboard.you')}
+            </Text>
+          ) : null}
+        </View>
         {row.title ? (
           <Text variant="caption" tone="muted">
             {row.title}
@@ -68,12 +81,7 @@ export default function RankScreen() {
       />
 
       {/* Pinned so the user always sees their own position, even outside the top 100 (§15). */}
-      <Card
-        surface="elevated"
-        padded={false}
-        className="mb-4 border-aura-deep"
-        accessibilityLabel={t('leaderboard.you')}
-      >
+      <Card surface="elevated" padded={false} className="mb-4 border-aura-deep">
         <Row
           row={{
             rank: mockViewer.rank,
