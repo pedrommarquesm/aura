@@ -28,6 +28,10 @@ function paginate<T>(items: T[], { cursor, limit }: CursorParams): CursorPage<T>
 }
 
 export const mockApi: AuraApi = {
+  async getFeed(params = {}) {
+    return paginate(mockPosts, params);
+  },
+
   async getTrendingFeed(params = {}) {
     return paginate(mockTrendingFeed, params);
   },

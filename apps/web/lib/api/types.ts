@@ -71,7 +71,7 @@ export type LeaderboardEntry = {
 
 /**
  * `GET /v1/leaderboards/global` — top N plus the caller's own rank. `viewer`
- * is always null on web: the public surface has no session in V0.
+ * is filled when the request carries a session.
  */
 export type LeaderboardPage = {
   entries: LeaderboardEntry[];
@@ -79,8 +79,30 @@ export type LeaderboardPage = {
   total: number;
 };
 
-/** Every read the public web surface is allowed to make. */
+export type PublicUser = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  aura: number;
+  title: string | null;
+  locale: string;
+};
+
+export type AuthTokens = {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+};
+
+export type SignInResponse = AuthTokens & {
+  needsUsername: boolean;
+  user: PublicUser;
+};
+
+/** Reads the public web surface is allowed to make. Auth is a separate BFF. */
 export type AuraApi = {
+  getFeed(params?: CursorParams): Promise<CursorPage<FeedCard>>;
   getTrendingFeed(params?: CursorParams): Promise<CursorPage<FeedCard>>;
   getPost(postId: string): Promise<Post>;
   getGlobalLeaderboard(params?: { limit?: number }): Promise<LeaderboardPage>;

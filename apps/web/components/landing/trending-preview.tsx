@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { Section } from "@/components/landing/section";
 import { PostCard } from "@/components/post-card";
 import { Card, Skeleton } from "@/components/ui";
+import { Link } from "@/i18n/navigation";
 import { sectionId } from "@/i18n/sections";
 import { api } from "@/lib/api";
 
@@ -24,6 +25,14 @@ export function TrendingPreview() {
       </Suspense>
 
       <p className="mt-8 text-label text-text-muted">{t("note")}</p>
+      <p className="mt-4">
+        <Link
+          href="/feed"
+          className="text-label text-aura-bright transition-colors duration-(--motion-quick) ease-out hover:text-text"
+        >
+          {t("seeAll")}
+        </Link>
+      </p>
     </Section>
   );
 }

@@ -3,9 +3,11 @@
 Public marketing and discovery surface for Aura. Next.js App Router, TypeScript,
 Tailwind v4.
 
-Per the product spec (§3.1) this app is **acquisition, discovery and sharing
-only**. There is no post creation, no upload, no battles and, in V0, **no
-authentication** — it is a public read-only surface.
+Per the product spec (§3.1) this app is **acquisition, discovery and sharing**.
+There is no post creation, no upload, no battles. Guests can read the public
+feed. Sign in with Google (a thin client of the Aura API) is optional, so a
+signed-in viewer sees `likedByMe` and can claim a username. Liking and posting
+stay in the app.
 
 ## Getting started
 
@@ -50,14 +52,20 @@ together.
 
 ## Data layer
 
-`lib/api` mirrors the documented public endpoints (`GET /v1/feed/trending`,
-`GET /v1/posts/:id`, `GET /v1/leaderboards/global`) and their
-`{ items, nextCursor, hasMore }` (feed) / `{ entries, viewer, total }`
+`lib/api` mirrors the documented public endpoints (`GET /v1/feed`,
+`GET /v1/feed/trending`, `GET /v1/posts/:id`, `GET /v1/leaderboards/global`) and
+their `{ items, nextCursor, hasMore }` (feed) / `{ entries, viewer, total }`
 (leaderboard) envelopes.
 
 The live staging API is the default. Set `NEXT_PUBLIC_USE_MOCK_API=true` to
 render local vector posters instead. When `packages/contracts` lands (FND-04),
 `lib/api/types.ts` becomes a re-export of the shared schemas.
+
+Auth is a BFF in `app/api/auth/*`: Google Identity Services returns an ID token,
+the route handler posts it to `POST /v1/auth/google`, and the API's access and
+refresh tokens land in httpOnly cookies. The proxy rotates refresh tokens so a
+page of Server Components cannot fire two refreshes and trip reuse detection.
+There is no NextAuth user table.
 
 `lib/api/error-message.ts` turns an API error code into a sentence from the
 `errors.*` catalog, falling back to `errors.unknown` for a code this build has
@@ -100,6 +108,9 @@ segment each locale shows:
 | -------- | ---- | ---- |
 | `/` | `/` | `/pt` |
 | `/about` | `/about` | `/pt/sobre` |
+| `/feed` | `/feed` | `/pt/explorar` |
+| `/login` | `/login` | `/pt/entrar` |
+| `/username` | `/username` | `/pt/nome` |
 
 Adding a localized route is one entry here plus the folder. Requests to the
 untranslated segment (`/pt/about`) redirect to the translated one, so there is a
@@ -190,6 +201,7 @@ declares each as an `ARG`. See `.env.example` for the full list.
 | `NEXT_PUBLIC_APP_DOWNLOAD_URL` | No       | Primary CTA target; falls back to the download section.      |
 | `NEXT_PUBLIC_APP_STORE_URL`    | No       | Placeholder until `WEB-07`.                                  |
 | `NEXT_PUBLIC_PLAY_STORE_URL`   | No       | Placeholder until `WEB-07`.                                  |
+| `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` | No   | Web application OAuth client for GIS. Must also be in the API `GOOGLE_CLIENT_IDS`. Rebuild after changing. |
 
 `PORT` and `HOSTNAME` are runtime-only. The image defaults to `3000` and
 `0.0.0.0`; Railway overrides `PORT`.

@@ -38,7 +38,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — seed staging (`OPS-08`) so the wired clients have data, then the upload pipeline (`MEDIA-02` … `MEDIA-05`), the last piece of the V0 loop that does not exist.
+**Now** — Public web feed + Google sign-in on the site, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
 
 **Next** — native auth on mobile (`MOB-10` … `MOB-12`), then likes and the rest of the client loop against the real API.
 
@@ -155,8 +155,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
-| WEB-10 | Public read-only feed | Not started | |
+| WEB-10 | Public read-only feed | In review | |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Not started | |
+| WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | In review | |
 
 ### Aura
 
@@ -225,6 +226,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
 | 2026-08-28 | Clients read the live API. Web landing and the mobile feed/rank screens hit staging; mocks stay only as an explicit opt-in | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | 2026-08-28 | Web i18n: next-intl, translated routes (`/about` → `/pt/sobre`), `hreflang` + `x-default`. Format Aura with `pt`, never `pt-PT` | [#14](https://github.com/pedrommarquesm/aura/pull/14) |

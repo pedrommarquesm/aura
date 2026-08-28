@@ -43,7 +43,11 @@ export function PostCard({
 
         <div className="mt-auto flex items-center justify-between border-t border-border/70 pt-3">
           <span className="inline-flex items-center gap-1.5 text-label text-text-secondary">
-            <HeartIcon className="size-4 text-like" />
+            <HeartIcon
+              className={
+                post.likedByMe ? "size-4 text-like" : "size-4 text-text-muted"
+              }
+            />
             <span aria-hidden>{formatCount(format, post.likeCount)}</span>
             <span className="sr-only">
               {t("likes", { count: post.likeCount })}

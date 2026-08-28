@@ -1,14 +1,48 @@
+import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { routing } from "./i18n/routing";
+import {
+  accessTokenNeedsRefresh,
+  clearSessionOnResponse,
+  readSessionCookiesFromRequest,
+  writeSessionOnResponse,
+} from "./lib/auth/cookies";
+import { rotateRefreshToken } from "./lib/auth/session";
 
 /**
  * Resolves the locale for every page request: an explicit prefix wins, then
  * the cookie set by the locale switcher, then `accept-language`.
  *
  * Named `proxy` rather than `middleware` — Next.js 16 renamed the file.
+ *
+ * Token rotation lives here so a page of Server Components cannot fire two
+ * refreshes and trip reuse detection on the API.
  */
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export default async function proxy(request: NextRequest) {
+  const response = intlMiddleware(request);
+  await attachRefreshedSession(request, response);
+  return response;
+}
+
+async function attachRefreshedSession(
+  request: NextRequest,
+  response: NextResponse,
+) {
+  const { accessToken, refreshToken, needsUsername } =
+    readSessionCookiesFromRequest(request);
+
+  if (!refreshToken || !accessTokenNeedsRefresh(accessToken)) return;
+
+  try {
+    const tokens = await rotateRefreshToken(refreshToken);
+    writeSessionOnResponse(response, tokens, needsUsername || undefined);
+  } catch {
+    clearSessionOnResponse(response);
+  }
+}
 
 export const config = {
   /**

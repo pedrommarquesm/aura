@@ -96,6 +96,8 @@ export default defineRailway(() => {
       PORT: '3000',
       CORS_ORIGINS: preserve(),
       RATE_LIMIT_MAX: preserve(),
+      GOOGLE_CLIENT_IDS: preserve(),
+      APPLE_CLIENT_ID: preserve(),
     },
   });
 
@@ -126,6 +128,9 @@ export default defineRailway(() => {
       // serves staging. Confirm with GET /health.
       NEXT_PUBLIC_API_BASE_URL: 'https://api-production-aa71.up.railway.app',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
+      // Web application OAuth client. preserve() so a dashboard value survives
+      // apply. GIS cannot use the iOS client id.
+      NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: preserve(),
     },
   });
 
