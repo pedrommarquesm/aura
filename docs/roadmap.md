@@ -152,6 +152,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-22 | `GET /feed/trending` backed by `trendingScore` | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| API-24 | `GET /v1/users/:username` — public competitive card (rank, title, Aura, post count) | In review | |
+| API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | In review | |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
@@ -227,6 +229,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Public profile is `GET /v1/users/:username` (rank + Aura + post count). The posts grid is `GET /v1/users/:id/posts`, same cursor as the feed. Banned users 404 | |
 | 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | 2026-08-28 | Public `/leaderboard` (`/pt/classificacao`) reads `GET /v1/leaderboards/global`. Posting and liking stay in the app | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 | 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |

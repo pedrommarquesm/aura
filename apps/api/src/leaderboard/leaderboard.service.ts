@@ -183,6 +183,29 @@ export class LeaderboardService {
     return new Map(rows.map((row) => [row.userId, row]));
   }
 
+  /**
+   * One user's global rank. Used by the public profile card so we do not have
+   * to load the whole board to say "#47".
+   */
+  async rankOf(userId: string): Promise<number | null> {
+    try {
+      const rank = await this.redis.zrevrank(GLOBAL_KEY, userId);
+      if (rank !== null) return rank + 1;
+    } catch (error) {
+      this.logger.warn(
+        `rankOf falling back to SQL: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+    }
+
+    const [row] = await this.db.execute<{ rank: number }>(sql`
+      SELECT (SELECT count(*) + 1 FROM users higher WHERE higher.aura > u.aura)::int AS rank
+      FROM users u
+      WHERE u.id = ${userId}
+    `);
+
+    return row?.rank ?? null;
+  }
+
   /** Rebuilds the sorted set from Postgres. Redis is a projection, not truth. */
   async rebuild(): Promise<number> {
     const rows = await this.db.select({ id: users.id, aura: users.aura }).from(users);
