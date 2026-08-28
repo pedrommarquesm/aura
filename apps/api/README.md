@@ -86,13 +86,52 @@ onto the `validation_failed` envelope.
 
 ## Endpoints
 
-| Method | Path | Notes |
-|---|---|---|
-| GET | `/health` | Liveness. Checks nothing external, so a dependency blip does not trigger a restart loop |
-| GET | `/health/ready` | Readiness. Verifies Postgres and Redis, returns 503 when either is down |
+Product endpoints live under `/v1`; health is deliberately outside it.
 
-Product endpoints live under `/v1`; health is deliberately outside it. The
-routes themselves land with the auth, feed, and Aura tasks in the roadmap.
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/health` | — | Liveness. Checks nothing external, so a dependency blip does not trigger a restart loop |
+| GET | `/health/ready` | — | Readiness. Verifies Postgres and Redis, 503 when either is down |
+| POST | `/v1/auth/apple` | — | Verify an Apple identity token, issue our tokens |
+| POST | `/v1/auth/google` | — | Verify a Google ID token, issue our tokens |
+| POST | `/v1/auth/refresh` | — | Rotate the refresh token, with reuse detection |
+| POST | `/v1/auth/logout` | required | Revoke the current device session |
+| POST | `/v1/auth/username` | required | Claim a handle during onboarding |
+| GET | `/v1/auth/me` | required | Current user |
+| GET | `/v1/feed` | optional | Latest, cursor paginated |
+| GET | `/v1/feed/trending` | optional | Precomputed `trending_score` order |
+| POST | `/v1/posts/:id/like` | required | Idempotent |
+| DELETE | `/v1/posts/:id/like` | required | Writes a `REVERSAL` event |
+| GET | `/v1/leaderboards/global` | optional | Top N plus the viewer's own rank |
+
+**Optional** auth means the endpoint works signed out. That is what makes guest
+browsing possible: a new install scrolls immediately and only meets an auth
+prompt on its first Aura action. Anonymous callers get `likedByMe: false`.
+
+An invalid token is still rejected on those routes — treating it as anonymous
+would hide client bugs and silently downgrade a signed-in user to a guest feed.
+
+### Feed pagination
+
+```text
+GET /v1/feed?cursor=<opaque>&limit=10   →   { items, nextCursor, hasMore }
+```
+
+Cursors are keyset-based and signed. Offset pagination would drift as new posts
+arrive, showing duplicates and skipping items mid-scroll — on an infinite feed
+that is the difference between smooth and broken. Signing keeps the cursor
+shape ours to change rather than an accidental part of the public contract.
+
+## Seeding
+
+```bash
+npm run db:seed
+```
+
+Creates users, published posts with media variants, likes, and the matching
+ledger events, so the clients have something real to render before the upload
+pipeline exists. Aura totals are derived from the ledger, exactly as the
+application does it. Refuses to run when `NODE_ENV=production`.
 
 ## Error format
 

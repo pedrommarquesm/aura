@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
 
+import { AuraModule } from './aura/aura.module';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { DbModule } from './db/db.module';
+import { FeedModule } from './feed/feed.module';
 import { HealthModule } from './health/health.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { LikesModule } from './likes/likes.module';
+import { MediaModule } from './media/media.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { TrendingModule } from './trending/trending.module';
@@ -15,6 +21,19 @@ import { TrendingModule } from './trending/trending.module';
  * processing is CPU-heavy and must never slow down a like.
  */
 @Module({
-  imports: [ConfigModule, DbModule, RedisModule, QueueModule, TrendingModule, HealthModule],
+  imports: [
+    ConfigModule,
+    DbModule,
+    RedisModule,
+    QueueModule,
+    MediaModule,
+    AuraModule,
+    TrendingModule,
+    HealthModule,
+    AuthModule,
+    FeedModule,
+    LikesModule,
+    LeaderboardModule,
+  ],
 })
 export class AppModule {}

@@ -38,6 +38,35 @@ const envSchema = z.object({
    * day. A small floor makes recency and engagement break the tie instead.
    */
   TRENDING_BASE_VELOCITY: z.coerce.number().nonnegative().default(0.05),
+
+  /**
+   * Signs access tokens and feed cursors. Required in production; the
+   * development fallback exists so a fresh clone runs without ceremony, and is
+   * refused outside development so it can never reach a real deployment.
+   */
+  JWT_SECRET: z.string().min(32).default('dev-only-insecure-secret-change-me-0000000000'),
+  /** Short-lived by design: a JWT cannot be revoked mid-life. */
+  ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().positive().default(900),
+  /** Long by design: a social app that logs you out is one you stop opening. */
+  REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(60),
+
+  /** Apple `aud` — the app's bundle id. Sign-in is disabled when unset. */
+  APPLE_CLIENT_ID: z.string().optional(),
+  /** Comma-separated Google client ids (iOS, Android, and web differ). */
+  GOOGLE_CLIENT_IDS: z.string().optional(),
+
+  /**
+   * Our own domain in front of whichever CDN is current, so changing vendor is
+   * a DNS change and every already-shared link keeps working.
+   */
+  MEDIA_CDN_BASE_URL: z.string().default('https://cdn.aura.app'),
+  /** Selects the edge transform syntax. See docs/backend-architecture.md §6.6. */
+  MEDIA_EDGE: z.enum(['cloudflare', 'bunny', 'none']).default('cloudflare'),
+  /**
+   * Optional per-provider base URLs as JSON, e.g. {"bunny":"https://b.aura.app"}.
+   * Lets a storage migration serve old and new assets simultaneously.
+   */
+  MEDIA_PROVIDER_BASE_URLS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -56,7 +85,15 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
     throw new Error(`Invalid environment configuration:\n${issues}`);
   }
 
-  return parsed.data;
+  const env = parsed.data;
+
+  if (env.NODE_ENV === 'production' && env.JWT_SECRET.startsWith('dev-only-')) {
+    throw new Error(
+      'JWT_SECRET is still the development default. Set a real secret before deploying.',
+    );
+  }
+
+  return env;
 }
 
 export const ENV = Symbol('ENV');
