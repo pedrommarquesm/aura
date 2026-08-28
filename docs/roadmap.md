@@ -176,12 +176,14 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | TS-02 | User status enforcement (suspend/ban revokes sessions) | Not started | |
 | TS-03 | Post removal → `REVERSAL` of Aura earned | Not started | |
 | TS-04 | Upload quotas and like rate limits | Not started | |
-| OPS-01 | Production environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| OPS-01 | Staging environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-02 | Deploy pipeline | Not started | |
 | OPS-03 | Dashboards + alerts for feed and like latency | Not started | |
 | OPS-04 | Postgres connection pooling (PgBouncer) | Not started | |
-| OPS-05 | Staging environment | Not started | |
+| OPS-05 | Separate `APP_ENV` from `NODE_ENV`; staging-only deployment | In review | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
 | OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
+| OPS-07 | Production environment — create when the product is ready for real users | Not started | |
+| OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -218,6 +220,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Staging-only deployments. `APP_ENV` (local/staging/production) guards unsafe operations, separate from `NODE_ENV` runtime mode | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
 | 2026-08-28 | V0 API surface: auth, feed, likes on the ledger, leaderboard. Feed and leaderboard readable signed out, for guest browsing | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | 2026-08-28 | i18n: English + European Portuguese, ICU catalogs, translated web routes. API stays locale-agnostic; clients translate stable error codes | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | 2026-08-28 | Backend deployed to Railway; infrastructure as code in `.railway/railway.ts` (Railway deprecated `railway.json`) | [#7](https://github.com/pedrommarquesm/aura/pull/7) |

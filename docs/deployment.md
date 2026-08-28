@@ -149,6 +149,22 @@ Migrations run automatically as the API's pre-deploy step
 (`node dist/db/migrate.js`), so schema changes land before new code serves
 traffic. The `drizzle/` directory is copied into the image for this reason.
 
+### Seeding staging
+
+`npm run db:seed` runs against `local` and `staging`, and refuses `production`.
+
+Staging's Postgres is only reachable on Railway's private network, and there is
+no public proxy, so the seed cannot be run from a laptop. Run it on the
+platform instead, as a one-off:
+
+1. Temporarily set the `worker` service's start command to `node dist/db/seed.js`
+2. Deploy it and wait for `[seed] done` in the logs
+3. Restore the start command and redeploy
+
+Do not leave the seed in any start or pre-deploy command. It **truncates every
+table** before inserting, which is fine for a disposable staging database and
+catastrophic anywhere else.
+
 To add a migration:
 
 ```bash
