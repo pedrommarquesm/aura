@@ -110,10 +110,10 @@ PORT=3001 HOSTNAME=0.0.0.0 node .next/standalone/server.js
 
 ### Deploy to Railway
 
-`railway.json` pins the builder to the Dockerfile and sets the health check, so
-the service configuration lives in source rather than in the dashboard. Deploys
-run from this directory, since `railway up` uploads the current directory as the
-build context.
+Service configuration lives in [`.railway/railway.ts`](../../.railway/railway.ts)
+at the repository root, which declares this service alongside the API, worker,
+and databases. Deploys run from this directory, since `railway up` uploads the
+current directory as the build context.
 
 ```bash
 export RAILWAY_TOKEN=<project token>
@@ -130,19 +130,20 @@ railway logs --service web        # when it is FAILED or CRASHED
 `NEXT_PUBLIC_SITE_URL` is baked into the bundle, set it to that domain and
 redeploy the first time a domain is created.
 
-Two things about `railway.json` are worth knowing before you rely on it:
+This service originally carried a `railway.json`. It was removed because
+Railway deprecated config-as-code and now rejects that model outright, and
+because managing one service with both `railway.json` and the TypeScript config
+is blocked. Two things learned while it was still in place are worth keeping:
 
-- Railway has deprecated config-as-code in favour of `.railway/railway.ts`
-  (existing files keep working until 2026-12-01). The **deploy** block is
-  already ignored by the platform, so the health check and restart policy also
-  have to be set on the service itself. They are, and they match this file.
-- The **build** block only applies to a deployment that carries the file, which
-  means `railway up` honours it but `railway redeploy` falls back to the
-  service's own builder. Setting `dockerfilePath` on the service pins the
-  Dockerfile builder for every path, and it is set.
+- The **deploy** block was silently ignored by the platform, so the health check
+  never ran even though the file declared one.
+- The **build** block only applied to a deployment that carried the file, so
+  `railway up` honoured it while `railway redeploy` fell back to the service's
+  own builder and started the app with `next start` — which does not work with
+  `output: "standalone"`. Setting `dockerfilePath` pins the Dockerfile builder
+  for every path.
 
-Keep this file and the service settings in step, and migrate both when the
-Railway TypeScript config lands.
+See [docs/deployment.md](../../docs/deployment.md) for the current workflow.
 
 ## SEO
 
