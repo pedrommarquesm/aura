@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -51,7 +52,9 @@ export const viewport: Viewport = {
 
 export default async function LocaleLayout({
   children,
-}: LayoutProps<"/[locale]">) {
+}: {
+  children: ReactNode;
+}) {
   const locale = await getLocale();
   const messages = await getMessages();
 
