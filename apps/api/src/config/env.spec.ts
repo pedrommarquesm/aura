@@ -34,6 +34,39 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ REDIS_URL: 'redis://localhost:6379' })).toThrow(/DATABASE_URL/);
   });
 
+  it('defaults APP_ENV to local, so nothing is treated as deployed by accident', () => {
+    expect(loadEnv(minimal).APP_ENV).toBe('local');
+  });
+
+  it('keeps APP_ENV independent of NODE_ENV', () => {
+    // Staging runs NODE_ENV=production so it executes the same optimized code
+    // paths as production, while APP_ENV still says staging. Conflating the two
+    // is what makes safety guards fire in the wrong environment.
+    const staging = loadEnv({
+      ...minimal,
+      NODE_ENV: 'production',
+      APP_ENV: 'staging',
+      JWT_SECRET: 'a-real-secret-that-is-long-enough-000000',
+    });
+
+    expect(staging.NODE_ENV).toBe('production');
+    expect(staging.APP_ENV).toBe('staging');
+  });
+
+  it('refuses the development JWT secret in any deployed environment', () => {
+    expect(() => loadEnv({ ...minimal, APP_ENV: 'staging' })).toThrow(/JWT_SECRET/);
+    expect(() => loadEnv({ ...minimal, APP_ENV: 'production' })).toThrow(/JWT_SECRET/);
+  });
+
+  it('allows the development JWT secret locally, so a fresh clone just runs', () => {
+    expect(() => loadEnv({ ...minimal, APP_ENV: 'local' })).not.toThrow();
+  });
+
+  it('does not refuse the dev secret merely because NODE_ENV is production', () => {
+    // The guard must key on APP_ENV. A local production build is not a deploy.
+    expect(() => loadEnv({ ...minimal, NODE_ENV: 'production', APP_ENV: 'local' })).not.toThrow();
+  });
+
   it('names every offending variable so one boot surfaces all problems', () => {
     expect(() => loadEnv({ ...minimal, PORT: 'not-a-number', LOG_LEVEL: 'loud' })).toThrow(
       /PORT[\s\S]*LOG_LEVEL|LOG_LEVEL[\s\S]*PORT/,

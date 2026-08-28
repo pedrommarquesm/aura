@@ -1,11 +1,16 @@
-import { Controller, Get, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Inject, Res } from '@nestjs/common';
 import type { FastifyReply } from 'fastify';
+
+import { ENV, type Env } from '../config/env';
 
 import { HealthService, type ReadinessReport } from './health.service';
 
 @Controller('health')
 export class HealthController {
-  constructor(private readonly health: HealthService) {}
+  constructor(
+    private readonly health: HealthService,
+    @Inject(ENV) private readonly env: Env,
+  ) {}
 
   /**
    * Liveness. Deliberately checks nothing external: this answers "is the
@@ -15,8 +20,14 @@ export class HealthController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  live(): { status: 'ok'; uptimeSeconds: number } {
-    return { status: 'ok', uptimeSeconds: Math.round(process.uptime()) };
+  live(): { status: 'ok'; environment: string; uptimeSeconds: number } {
+    // Reporting the environment makes "which deployment am I actually looking
+    // at" answerable in one request, instead of inferred from a hostname.
+    return {
+      status: 'ok',
+      environment: this.env.APP_ENV,
+      uptimeSeconds: Math.round(process.uptime()),
+    };
   }
 
   /**
