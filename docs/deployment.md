@@ -197,8 +197,9 @@ code so the feed can be tuned without a deploy.
 
 Web Google Sign-In needs `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` on the **web**
 service (a Web application OAuth client, inlined at image build time) and the
-same id listed in the API's `GOOGLE_CLIENT_IDS`. The iOS client cannot be reused
-for GIS.
+same id listed in the API's `GOOGLE_CLIENT_IDS` alongside the iOS client. The
+Google client secret is `GOOGLE_CLIENT_SECRET` on **web** only — GIS does not
+send it, and it must never be `NEXT_PUBLIC_*`.
 
 ## Current environment
 
