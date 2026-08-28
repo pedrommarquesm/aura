@@ -178,6 +178,68 @@ Commit the generated SQL. Never edit an applied migration; add a new one.
 
 ## Domains and ports
 
+The public hostnames are on **`aurarankd.com`**. Staging is the only
+environment, so these point at staging until production exists.
+
+| Hostname | Service | Notes |
+|---|---|---|
+| `aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
+| `www.aurarankd.com` | web | Same app. Optional later: Cloudflare redirect to apex |
+| `api.aurarankd.com` | api | Railway custom domain, port 3000 |
+| `cdn.aurarankd.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
+
+Railway already has the three HTTP hostnames. They stay unverified until DNS
+exists; certificates issue after the records below answer.
+
+Generated `*.up.railway.app` URLs keep working. Leave
+`NEXT_PUBLIC_API_BASE_URL` (and mobile `EXPO_PUBLIC_API_URL`) on the Railway
+API host until `api.aurarankd.com` resolves, then rebuild web / the app so the
+inlined URL is the custom one.
+
+### DNS records to create
+
+Best path: add `aurarankd.com` as a zone on the **same Cloudflare account as
+R2**, then point the registrar nameservers at Cloudflare. Apex CNAME needs
+Cloudflare's CNAME flattening (most registrars cannot CNAME `@`). R2 custom
+domains also require the zone to live on that Cloudflare account.
+
+Create these at the DNS host. Railway CNAMEs should be **DNS-only** (grey
+cloud) so Railway can terminate TLS. Orange-cloud proxying them through
+Cloudflare usually breaks certificate issuance.
+
+**Traffic (CNAME)**
+
+| Type | Name | Target | Proxy |
+|---|---|---|---|
+| CNAME | `@` | `4mgnbezx.up.railway.app` | DNS only |
+| CNAME | `www` | `1iloffwk.up.railway.app` | DNS only |
+| CNAME | `api` | `ttboedb9.up.railway.app` | DNS only |
+
+**Ownership (TXT)** — Railway will not issue a certificate without these.
+
+| Type | Name | Content |
+|---|---|---|
+| TXT | `_railway-verify` | `railway-verify=4e707f8bd074c62017a0d193e8e31dfb2514c4d1c0e28d44a6f7fa7160a4b856` |
+| TXT | `_railway-verify.www` | `railway-verify=aacd188e8e4bc897f8b607e7fa3054860823fc47e237e7ad912ad36ba6bc82c8` |
+| TXT | `_railway-verify.api` | `railway-verify=5c923769da78d691b7505fb5efa3070106fdd2343be9a92e4e018c330642603d` |
+
+**CDN** — do not CNAME `cdn` at the registrar by guesswork. In Cloudflare:
+R2 → bucket `aura-media` → Custom Domains → add `cdn.aurarankd.com`. If the
+zone is on this account, Cloudflare writes the record. If it is not, the
+dashboard shows the CNAME target to copy.
+
+After DNS answers:
+
+1. Railway marks the three HTTP domains verified and issues certificates.
+2. Set web `NEXT_PUBLIC_API_BASE_URL=https://api.aurarankd.com` and rebuild web.
+3. Point a new mobile build at `https://api.aurarankd.com/v1`.
+4. Confirm `MEDIA_CDN_BASE_URL=https://cdn.aurarankd.com` on api and worker
+   (already set; public reads stay 404 until the R2 custom domain is Active).
+
+Google Cloud Console, Web application OAuth client: add Authorized JavaScript
+origins `https://aurarankd.com` and `https://www.aurarankd.com` (keep
+`http://localhost:3000` and the current Railway web URL).
+
 Railway injects `PORT`, and a generated domain targets a fixed port. If those
 disagree the service returns **502 "Application failed to respond"** while
 looking perfectly healthy in its own logs — the app is up, the proxy is just
@@ -210,20 +272,25 @@ same id listed in the API's `GOOGLE_CLIENT_IDS` alongside the iOS client. The
 Google client secret is `GOOGLE_CLIENT_SECRET` on **web** only — GIS does not
 send it, and it must never be `NEXT_PUBLIC_*`.
 
+Public media URLs are built from `MEDIA_CDN_BASE_URL`, which is
+`https://cdn.aurarankd.com` on api and worker. That hostname has to be an R2
+custom domain on bucket `aura-media` before the feed can show uploaded bytes.
+
 ## Current environment
 
 Project `aura`, environment **`staging`**, region `europe-west4`.
 
-| Service | URL |
-|---|---|
-| api | https://api-production-aa71.up.railway.app |
-| web | https://web-production-e1282.up.railway.app |
+| Service | Generated URL | Custom domain (after DNS) |
+|---|---|---|
+| api | https://api-production-aa71.up.railway.app | https://api.aurarankd.com |
+| web | https://web-production-e1282.up.railway.app | https://aurarankd.com |
+| media | — | https://cdn.aurarankd.com |
 
-The hostnames still read `-production-` because Railway generated them before
-the environment was renamed and does not rewrite existing domains. They serve
-**staging**. Confirm with `curl <api>/health`, which reports `APP_ENV`, rather
-than trusting the hostname — and give production its own domains rather than
-inheriting these.
+The generated hostnames still read `-production-` because Railway created them
+before the environment was renamed and does not rewrite existing domains. They
+serve **staging**. Confirm with `curl <api>/health`, which reports `APP_ENV`,
+rather than trusting the hostname — and give production its own domains rather
+than inheriting these.
 
 ## Troubleshooting
 

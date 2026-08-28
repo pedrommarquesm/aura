@@ -72,6 +72,9 @@ export default defineRailway(() => {
     // Postgres is reached over Railway's private network, so the connection is
     // not additionally TLS-wrapped.
     DATABASE_SSL: 'false',
+    // Public CDN hostname. Attach `cdn.aurarankd.com` to the R2 bucket; until
+    // that DNS record exists this still 404s, same as the old placeholder.
+    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
   };
 
   const api = service('api', {
@@ -123,11 +126,12 @@ export default defineRailway(() => {
     replicas: { [REGION]: 1 },
     deploy: { restartPolicyMaxRetries: 5 },
     env: {
-      NEXT_PUBLIC_SITE_URL: preserve(),
+      NEXT_PUBLIC_SITE_URL: 'https://aurarankd.com',
       PORT: preserve(),
-      // NEXT_PUBLIC_* is inlined at image build time. The hostname still says
-      // `-production-` because Railway does not rewrite domains on rename; it
-      // serves staging. Confirm with GET /health.
+      // NEXT_PUBLIC_* is inlined at image build time. Keep the generated
+      // Railway API host until `api.aurarankd.com` DNS is live — baking the
+      // custom hostname in before that would take the landing offline.
+      // After DNS: set this to https://api.aurarankd.com and rebuild web.
       NEXT_PUBLIC_API_BASE_URL: 'https://api-production-aa71.up.railway.app',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
       // Public web OAuth client. The secret is GOOGLE_CLIENT_SECRET on the

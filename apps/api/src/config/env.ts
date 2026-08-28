@@ -81,11 +81,11 @@ const envSchema = z.object({
    * Our own domain in front of whichever CDN is current, so changing vendor is
    * a DNS change and every already-shared link keeps working.
    */
-  MEDIA_CDN_BASE_URL: z.string().default('https://cdn.aura.app'),
+  MEDIA_CDN_BASE_URL: z.string().default('https://cdn.aurarankd.com'),
   /** Selects the edge transform syntax. See docs/backend-architecture.md §6.6. */
   MEDIA_EDGE: z.enum(['cloudflare', 'bunny', 'none']).default('cloudflare'),
   /**
-   * Optional per-provider base URLs as JSON, e.g. {"bunny":"https://b.aura.app"}.
+   * Optional per-provider base URLs as JSON, e.g. {"bunny":"https://b-cdn.aurarankd.com"}.
    * Lets a storage migration serve old and new assets simultaneously.
    */
   MEDIA_PROVIDER_BASE_URLS: z.string().optional(),
