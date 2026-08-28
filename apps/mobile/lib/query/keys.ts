@@ -1,0 +1,17 @@
+import type { FeedRanking } from '@/lib/api';
+
+/**
+ * Every query key in the app is built here so invalidation stays greppable.
+ * Keys are hierarchical: invalidating `feed.all` drops every ranking.
+ */
+export const queryKeys = {
+  feed: {
+    all: ['feed'] as const,
+    ranking: (ranking: FeedRanking) => ['feed', ranking] as const,
+  },
+  me: ['me'] as const,
+  user: (username: string) => ['user', username] as const,
+  leaderboard: {
+    global: ['leaderboard', 'global'] as const,
+  },
+};
