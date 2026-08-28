@@ -713,6 +713,8 @@ Public web can call the same GET endpoints with optional auth. No upload routes 
 
 Errors: `{ error: { code, message } }` plus HTTP status. Stable `code` values for the app (`already_liked`, `cannot_like_own_post`, `upload_expired`, …).
 
+**Localization boundary:** the API is locale-agnostic for client-facing copy. `message` is for developers and logs; clients translate `code` themselves, which means shipping a new language needs no backend deploy. The exception is copy the server renders directly — push notifications and emails — which uses `users.locale`. See [i18n.md](./i18n.md).
+
 ---
 
 ## 12. Authentication
