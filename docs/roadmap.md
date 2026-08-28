@@ -190,7 +190,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
-| OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | In review | |
+| OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | In review | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -227,7 +227,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | |
+| 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
