@@ -85,6 +85,18 @@ export type PublicUser = {
   locale: string;
 };
 
+/** `GET /v1/users/:username` — public competitive card. */
+export type PublicProfile = {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  aura: number;
+  title: string | null;
+  rank: number;
+  postCount: number;
+};
+
 export type SignInResponse = AuthTokens & {
   needsUsername: boolean;
   user: PublicUser;

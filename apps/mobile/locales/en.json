@@ -107,7 +107,8 @@
       "edit": "Edit profile"
     },
     "posts": {
-      "title": "Posts"
+      "title": "Posts",
+      "empty": "Nothing posted yet. The grid fills as you publish."
     },
     "comingSoon": "Aura Sense and Vote Power join this card in V1 (roadmap AURA-11, AURA-10)."
   },
