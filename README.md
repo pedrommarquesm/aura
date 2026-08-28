@@ -17,7 +17,9 @@ A mobile-first social game for farming Aura. Users post photos and videos, like 
 | [`apps/mobile`](apps/mobile) | Mobile app (Expo, React Native) |
 | [`apps/web`](apps/web) | Landing page and public read-only feed (Next.js) |
 
-Every PR updates at least one row in the tracker.
+Every PR updates at least one row in the tracker. Copy `apps/<app>/.env.example`
+to `.env` for local config — secrets stay out of git ([deployment.md](docs/deployment.md)).
+PRs run typecheck, lint and tests per app.
 
 ## V0 loop
 

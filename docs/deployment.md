@@ -188,9 +188,24 @@ either let Railway pick the port and target the same one, or pin both.
 
 ## Environment variables
 
-`apps/api/.env.example` documents every variable the API reads, with defaults.
-Required in production: `DATABASE_URL`, `REDIS_URL`. Everything else has a
-sensible default.
+`apps/api/.env.example`, `apps/web/.env.example` and `apps/mobile/.env.example`
+are the contract for what each app reads. Copy to `.env` locally. `.env` is
+gitignored; the examples are the files that stay in the repo.
+
+Rules:
+
+1. **Never commit secrets.** Values that live only in the Railway dashboard
+   use `preserve()` in `.railway/railway.ts` so `config apply` cannot clobber
+   them. Database URLs are referenced from the managed services, not copied.
+2. **`NEXT_PUBLIC_*` and `EXPO_PUBLIC_*` are public.** They ship in the
+   browser / app binary and are inlined at **image or app build time**, not
+   read from the running container. Changing one requires a rebuild, not just
+   a variable edit.
+3. **`GOOGLE_CLIENT_SECRET` is on the web service only.** It is never
+   `NEXT_PUBLIC_*` and never in git. GIS does not send it.
+
+Required in a deployed API: `DATABASE_URL`, `REDIS_URL`. Everything else has a
+sensible default documented in the example file.
 
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.
