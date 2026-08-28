@@ -31,7 +31,9 @@ export function buildMetadata({
 }: BuildMetadataInput = {}): Metadata {
   const url = absoluteUrl(path);
   const resolvedTitle = title ?? `${siteConfig.name} — ${siteConfig.tagline}`;
-  const images = image ? [{ url: image, alt: resolvedTitle }] : undefined;
+  // An explicit `images: undefined` would suppress the file-based
+  // opengraph-image, so the key is only set when there is a value.
+  const images = image ? { images: [{ url: image, alt: resolvedTitle }] } : {};
 
   return {
     ...(title ? { title } : {}),
@@ -44,7 +46,7 @@ export function buildMetadata({
       title: resolvedTitle,
       description,
       locale: "en_US",
-      images,
+      ...images,
     },
     twitter: {
       card: "summary_large_image",
@@ -52,7 +54,7 @@ export function buildMetadata({
       creator: siteConfig.twitter,
       title: resolvedTitle,
       description,
-      images,
+      ...images,
     },
     ...(noIndex ? { robots: { index: false, follow: false } } : {}),
   };

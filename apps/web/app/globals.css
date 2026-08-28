@@ -105,11 +105,12 @@
   );
 }
 
+/* Stops short of aura-deep: text has to stay readable on the dark background. */
 @utility text-aura-gradient {
   background-image: linear-gradient(
-    135deg,
+    100deg,
     var(--color-aura-bright) 0%,
-    var(--color-aura-deep) 100%
+    var(--color-aura) 100%
   );
   background-clip: text;
   color: transparent;

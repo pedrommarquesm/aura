@@ -47,10 +47,7 @@ export function Avatar({
           className="size-full object-cover"
         />
       ) : (
-        <span
-          aria-hidden
-          className={cn("font-semibold text-text-secondary", text)}
-        >
+        <span aria-hidden className={cn("text-text-secondary", text)}>
           {initials}
         </span>
       )}
