@@ -63,7 +63,7 @@ async function bootstrap(): Promise<void> {
       ),
   });
 
-  app.setGlobalPrefix('v1', { exclude: ['health', 'health/ready'] });
+  app.setGlobalPrefix('v1', { exclude: ['health', 'health/ready', '/'] });
 
   // Request validation is Zod at the route level, not class-validator, so the
   // same schemas can be shared with the mobile and web clients. The exception
