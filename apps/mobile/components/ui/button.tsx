@@ -86,7 +86,19 @@ export function Button({
     >
       {variant === 'primary' ? <AuraGradient /> : null}
       {icon}
-      <Text variant={sizing.text} className={labelClass}>
+      {/*
+        The button height is fixed, so a label that wraps gets clipped rather than
+        pushing the button taller. Portuguese labels run 15-25% longer than the English
+        ones these were sized against ("Editar perfil" against "Edit profile"), so a
+        long label shrinks on iOS and ellipsizes on Android instead of wrapping.
+      */}
+      <Text
+        variant={sizing.text}
+        className={cn('shrink', labelClass)}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.85}
+      >
         {label}
       </Text>
     </AnimatedPressable>

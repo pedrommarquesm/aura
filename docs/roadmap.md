@@ -77,6 +77,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | MOB-05 | TanStack Query + API client with auth interceptor and single-flight refresh | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 | MOB-06 | Zustand store for client/session state | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 | MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-50 | i18n: i18next + expo-localization, English + Portuguese | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
+| MOB-51 | Locale-aware number and plural formatting for Aura values | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 
 ### Web bootstrap
 

@@ -1,10 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Screen, ScreenHeader } from '@/components/layout';
 import { AuraValue, Avatar, Card, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { formatRank } from '@/lib/format';
 import { mockViewer } from '@/mocks/feed';
 import { mockLeaderboard, type LeaderboardRow } from '@/mocks/leaderboard';
 
@@ -12,6 +12,7 @@ import { mockLeaderboard, type LeaderboardRow } from '@/mocks/leaderboard';
 const MEDALS = ['🥇', '🥈', '🥉'];
 
 function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: boolean }) {
+  const { t } = useTranslation();
   const medal = MEDALS[row.rank - 1];
 
   return (
@@ -21,12 +22,20 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
         highlighted && 'border border-aura-deep bg-aura-deep/25',
       )}
     >
+      {/* A medal or a "#42" both read badly out loud, so both announce the ordinal. */}
       <View className="w-9 items-center">
         {medal ? (
-          <Text variant="heading">{medal}</Text>
+          <Text variant="heading" accessibilityLabel={t('leaderboard.place', { rank: row.rank })}>
+            {medal}
+          </Text>
         ) : (
-          <Text variant="label" tone="muted" style={{ fontVariant: ['tabular-nums'] }}>
-            {formatRank(row.rank)}
+          <Text
+            variant="label"
+            tone="muted"
+            style={{ fontVariant: ['tabular-nums'] }}
+            accessibilityLabel={t('leaderboard.place', { rank: row.rank })}
+          >
+            {t('leaderboard.rank', { rank: row.rank })}
           </Text>
         )}
       </View>
@@ -34,7 +43,16 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
       <Avatar uri={row.avatarUrl} username={row.username} size="sm" ring={row.rank <= 3} />
 
       <View className="flex-1">
-        <Text variant="label">@{row.username}</Text>
+        <View className="flex-row items-center gap-2">
+          <Text variant="label" numberOfLines={1}>
+            @{row.username}
+          </Text>
+          {highlighted ? (
+            <Text variant="caption" tone="aura">
+              {t('leaderboard.you')}
+            </Text>
+          ) : null}
+        </View>
         {row.title ? (
           <Text variant="caption" tone="muted">
             {row.title}
@@ -48,9 +66,11 @@ function Row({ row, highlighted = false }: { row: LeaderboardRow; highlighted?: 
 }
 
 export default function RankScreen() {
+  const { t } = useTranslation();
+
   return (
     <Screen>
-      <ScreenHeader title="Rank" subtitle="Global · all time" />
+      <ScreenHeader title={t('leaderboard.title')} subtitle={t('leaderboard.subtitle')} />
 
       <FlashList
         data={mockLeaderboard}

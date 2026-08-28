@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import Animated, {
   interpolate,
@@ -12,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Text } from '@/components/ui';
-import { formatCount } from '@/lib/format';
+import { useFormat } from '@/lib/i18n';
 import { tapFeedback } from '@/lib/haptics';
 import { celebrate, celebrateTiming, instant, smooth } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
@@ -41,6 +42,8 @@ export function LikeButton({
   onChange,
   size = 26,
 }: LikeButtonProps) {
+  const { t } = useTranslation();
+  const format = useFormat();
   const [liked, setLiked] = useState(initiallyLiked);
 
   const scale = useSharedValue(1);
@@ -97,7 +100,9 @@ export function LikeButton({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={liked ? 'Remove like' : 'Like'}
+      // The count is the label because it is the information; the verb is the action.
+      accessibilityLabel={t('feed.post.likes', { count: displayCount })}
+      accessibilityHint={liked ? t('feed.post.a11y.unlike') : t('feed.post.a11y.like')}
       accessibilityState={{ selected: liked }}
       hitSlop={12}
       onPress={toggle}
@@ -111,7 +116,7 @@ export function LikeButton({
           className="absolute -top-1 w-24 items-center"
         >
           <Text variant="caption" tone="aura" className="font-extrabold tracking-aura">
-            {`+${AURA_PER_LIKE} Aura`}
+            {t('feed.post.auraGain', { amount: AURA_PER_LIKE })}
           </Text>
         </Animated.View>
 
@@ -129,7 +134,7 @@ export function LikeButton({
         tone={liked ? 'like' : 'secondary'}
         style={{ fontVariant: ['tabular-nums'] }}
       >
-        {formatCount(displayCount)}
+        {format.count(displayCount)}
       </Text>
     </Pressable>
   );

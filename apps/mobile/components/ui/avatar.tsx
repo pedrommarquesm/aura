@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { AuraGradient } from './aura-gradient';
@@ -24,6 +25,7 @@ export type AvatarProps = {
 };
 
 export function Avatar({ uri, username, size = 'md', ring = false, className }: AvatarProps) {
+  const { t } = useTranslation();
   const sizing = sizes[size];
 
   const face = (
@@ -40,7 +42,7 @@ export function Avatar({ uri, username, size = 'md', ring = false, className }: 
           contentFit="cover"
           transition={120}
           style={{ width: '100%', height: '100%' }}
-          accessibilityLabel={`${username} avatar`}
+          accessibilityLabel={t('common.avatarAlt', { username })}
         />
       ) : (
         <Text variant={sizing.initial} tone="secondary">

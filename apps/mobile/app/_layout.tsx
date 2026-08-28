@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { I18nProvider } from '@/lib/i18n';
 import { QueryProvider } from '@/lib/query/provider';
 import { useSessionStore } from '@/store/session';
 import { colors } from '@/theme/tokens';
@@ -24,15 +25,17 @@ export default function RootLayout() {
     // silently ignored on Android.
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryProvider>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.bg },
-            }}
-          />
-        </QueryProvider>
+        <I18nProvider>
+          <QueryProvider>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.bg },
+              }}
+            />
+          </QueryProvider>
+        </I18nProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

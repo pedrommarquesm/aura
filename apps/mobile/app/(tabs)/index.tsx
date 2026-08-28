@@ -1,5 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,17 +8,20 @@ import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { AuraValue, Text } from '@/components/ui';
 import type { FeedRanking } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { formatRank } from '@/lib/format';
 import { mockFeed, mockViewer } from '@/mocks/feed';
 import { usePreferencesStore } from '@/store/preferences';
 import { colors } from '@/theme/tokens';
 
-const RANKINGS: { value: FeedRanking; label: string }[] = [
-  { value: 'latest', label: 'Latest' },
-  { value: 'trending', label: 'Trending' },
+const RANKINGS: {
+  value: FeedRanking;
+  labelKey: 'feed.ranking.latest' | 'feed.ranking.trending';
+}[] = [
+  { value: 'latest', labelKey: 'feed.ranking.latest' },
+  { value: 'trending', labelKey: 'feed.ranking.trending' },
 ];
 
 function FeedHeader() {
+  const { t } = useTranslation();
   const ranking = usePreferencesStore((state) => state.feedRanking);
   const setRanking = usePreferencesStore((state) => state.setFeedRanking);
 
@@ -25,13 +29,13 @@ function FeedHeader() {
     <View className="px-gutter pb-1 pt-2">
       <View className="flex-row items-center justify-between">
         <Text variant="title" className="tracking-aura">
-          Aura
+          {t('common.aura')}
         </Text>
 
         <View className="flex-row items-center gap-3">
           <AuraValue value={mockViewer.aura} tone="aura" />
           <Text variant="label" tone="muted" style={{ fontVariant: ['tabular-nums'] }}>
-            {formatRank(mockViewer.rank)}
+            {t('leaderboard.rank', { rank: mockViewer.rank })}
           </Text>
         </View>
       </View>
@@ -52,7 +56,7 @@ function FeedHeader() {
               )}
             >
               <Text variant="label" tone={active ? 'default' : 'muted'}>
-                {option.label}
+                {t(option.labelKey)}
               </Text>
             </Pressable>
           );
