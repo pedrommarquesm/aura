@@ -169,9 +169,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| MOB-41 | Aura counter animation and `+Aura` feedback | In review | |
+| MOB-41 | Aura counter animation and `+Aura` feedback | In review | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
-| MOB-43 | Profile as competitive identity card | In review | |
+| MOB-43 | Profile as competitive identity card | In review | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | WEB-12 | Basic public leaderboard | Done | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 
 ### Launch minimums
@@ -227,7 +227,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Profile is a competitive card: rank, title, Aura, and a real posts grid from `GET /v1/users/:username` and `GET /v1/users/:id/posts`. Aura totals tick instead of snapping when a like lands | |
+| 2026-08-28 | Profile is a competitive card: rank, title, Aura, and a real posts grid from `GET /v1/users/:username` and `GET /v1/users/:id/posts`. Aura totals tick instead of snapping when a like lands | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | 2026-08-28 | Public `/leaderboard` (`/pt/classificacao`) reads `GET /v1/leaderboards/global`. Posting and liking stay in the app | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 | 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
