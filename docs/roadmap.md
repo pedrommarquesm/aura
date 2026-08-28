@@ -65,13 +65,13 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| MOB-01 | Expo + Expo Router app scaffold, runs on iOS and Android | Not started | |
-| MOB-02 | NativeWind / Tailwind setup + design tokens (Aura visual identity) | Not started | |
-| MOB-03 | Tab navigation shell: Home, Discover, Create, Rank, Profile | Not started | |
-| MOB-04 | Base UI primitives (Text, Button, Avatar, Card, Skeleton) | Not started | |
-| MOB-05 | TanStack Query + API client with auth interceptor and single-flight refresh | Not started | |
-| MOB-06 | Zustand store for client/session state | Not started | |
-| MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Not started | |
+| MOB-01 | Expo + Expo Router app scaffold, runs on iOS and Android | In review | |
+| MOB-02 | NativeWind / Tailwind setup + design tokens (Aura visual identity) | In review | |
+| MOB-03 | Tab navigation shell: Home, Discover, Create, Rank, Profile | In review | |
+| MOB-04 | Base UI primitives (Text, Button, Avatar, Card, Skeleton) | In review | |
+| MOB-05 | TanStack Query + API client with auth interceptor and single-flight refresh | In review | |
+| MOB-06 | Zustand store for client/session state | In review | |
+| MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | In review | |
 
 ### Web bootstrap
 
