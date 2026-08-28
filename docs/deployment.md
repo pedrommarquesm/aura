@@ -157,3 +157,25 @@ expand to a `postgres.railway.internal` host, not a literal `${{...}}` string.
 **Worker looks idle.** It has no HTTP surface, so there is nothing to curl.
 Check `railway logs --service worker` for the recompute line it logs on every
 run.
+
+**`railway config plan` always shows the same pending change.** `plan` reports
+`deploy.restartPolicyType` (and the worker's `restartPolicyMaxRetries`) as
+outstanding no matter how many times you apply, and `apply` reports success
+each time. The values are genuinely set; the diff reads a layer that stays
+null rather than the resolved service instance. Confirm actual state before
+chasing it:
+
+```bash
+curl -s -X POST https://backboard.railway.com/graphql/v2 \
+  -H "Authorization: Bearer $RAILWAY_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"query($e:String!,$s:String!){serviceInstance(environmentId:$e,serviceId:$s){serviceName restartPolicyType restartPolicyMaxRetries healthcheckPath startCommand dockerfilePath}}","variables":{"e":"<environmentId>","s":"<serviceId>"}}'
+```
+
+Treat any *other* pending change in the plan as real.
+
+**A service reports `builder: RAILPACK` but you configured a Dockerfile.**
+Expected. `dockerfilePath` is what selects the Dockerfile builder; the `builder`
+field keeps its default value. Confirm from the build log rather than the
+field — `railway logs --service api --build` shows `load build definition from
+Dockerfile` and your own stage names when the Dockerfile is in use.

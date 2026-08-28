@@ -8,6 +8,12 @@
  *   railway config plan    # review the diff against Railway
  *   railway config apply   # apply it
  *
+ * Known false drift: `plan` always reports `deploy.restartPolicyType` (and the
+ * worker's `restartPolicyMaxRetries`) as pending, however many times you apply.
+ * The values are set correctly on the services — the diff reads a layer that
+ * stays null rather than the resolved instance. Verify with the query in
+ * docs/deployment.md before assuming a real change is outstanding.
+ *
  * Secrets are never written here. Database credentials are referenced from the
  * managed services, and anything user-supplied uses preserve() so applying
  * this file never clobbers a value set in the dashboard.
@@ -58,6 +64,9 @@ export default defineRailway(() => {
   };
 
   const api = service('api', {
+    // `dockerfilePath` is what actually selects the Dockerfile builder;
+    // services keep reporting `builder: RAILPACK` regardless, which is a
+    // reporting quirk rather than a sign the Dockerfile is being ignored.
     build: { builder: 'DOCKERFILE', dockerfilePath: 'Dockerfile' },
     // Pinned rather than left to Railway's injected PORT so the generated
     // domain's target port and the port the app binds cannot drift apart.
