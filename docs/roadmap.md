@@ -38,11 +38,13 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — bootstrap both clients in parallel (`MOB-01`, `WEB-01`), so the mobile and web scaffolds exist before any feature work.
+**Now** — backend foundations (`API-01` … `API-05`), then the media plane starting with the provider ports (`MEDIA-00`). Nothing in the loop works until a post can be created and seen.
 
-**Next** — backend foundations (`API-01` … `API-04`) and the media pipeline, since nothing in the loop works until a post can be created and seen.
+**Next** — auth, then the feed and the Aura ledger. Both clients are scaffolded and running on mocks, so they can adopt real endpoints as those land.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
+
+Worth doing early rather than late: `FND-04` and `FND-09`. Both client apps currently hold their own copy of the API types and the design tokens, so every day they run in parallel is a day they drift.
 
 ---
 
@@ -55,23 +57,24 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-01 | Product spec + backend architecture proposal in-repo | Done | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
 | FND-02 | Work plan & tracker (this file) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
-| FND-04 | `packages/contracts` — shared Zod schemas + inferred types | Not started | |
+| FND-04 | `packages/contracts` — shared Zod schemas + inferred types, replacing the local `lib/api/types.ts` in both clients | Not started | |
 | FND-05 | CI: typecheck, lint, test on PR | Not started | |
 | FND-06 | Environment/secrets convention (`.env.example` per app) | Not started | |
 | FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
-| FND-08 | Media storage/CDN portability design (architecture §6.6) | In review | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
+| FND-08 | Media storage/CDN portability design (architecture §6.6) | Done | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
+| FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
 
 ### Mobile bootstrap
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| MOB-01 | Expo + Expo Router app scaffold, runs on iOS and Android | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-02 | NativeWind / Tailwind setup + design tokens (Aura visual identity) | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-03 | Tab navigation shell: Home, Discover, Create, Rank, Profile | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-04 | Base UI primitives (Text, Button, Avatar, Card, Skeleton) | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-05 | TanStack Query + API client with auth interceptor and single-flight refresh | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-06 | Zustand store for client/session state | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
-| MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | In review | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-01 | Expo + Expo Router app scaffold, runs on iOS and Android | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-02 | NativeWind / Tailwind setup + design tokens (Aura visual identity) | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-03 | Tab navigation shell: Home, Discover, Create, Rank, Profile | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-04 | Base UI primitives (Text, Button, Avatar, Card, Skeleton) | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-05 | TanStack Query + API client with auth interceptor and single-flight refresh | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-06 | Zustand store for client/session state | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
+| MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 
 ### Web bootstrap
 
