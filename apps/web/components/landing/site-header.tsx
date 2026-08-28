@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 
 import { AuraMark } from "@/components/aura-mark";
+import { SessionMenu } from "@/components/auth/session-menu";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ButtonLink } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
@@ -14,7 +15,11 @@ export function SiteHeader() {
 
   // The sections live on the landing page, so the links carry the route as
   // well as the hash and keep working from any other page.
-  const navLinks = [
+  const navLinks: Array<
+    | { label: string; href: "/feed" }
+    | { label: string; hash: string }
+  > = [
+    { label: t("feed"), href: "/feed" },
     { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
     { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
     { label: t("trending"), hash: sectionId(locale, "trending") },
@@ -30,22 +35,35 @@ export function SiteHeader() {
           aria-label={t("label")}
           className="hidden items-center gap-6 lg:flex"
         >
-          {navLinks.map((link) => (
-            <Link
-              key={link.hash}
-              href={{ pathname: "/", hash: link.hash }}
-              className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            "href" in link ? (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <Link
+                key={link.hash}
+                href={{ pathname: "/", hash: link.hash }}
+                className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
+              >
+                {link.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
           <LocaleSwitcher />
+          <SessionMenu />
           <ButtonLink
             href={downloadHref(sectionHash(locale, "download"))}
             size="sm"
+            variant="secondary"
+            className="hidden sm:inline-flex"
           >
             {actions("getApp")}
           </ButtonLink>

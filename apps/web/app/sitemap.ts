@@ -16,7 +16,9 @@ const ROUTES: ReadonlyArray<{
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
 }> = [
   { pathname: "/", priority: 1, changeFrequency: "daily" },
+  { pathname: "/feed", priority: 0.9, changeFrequency: "hourly" },
   { pathname: "/about", priority: 0.6, changeFrequency: "monthly" },
+  { pathname: "/login", priority: 0.4, changeFrequency: "monthly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

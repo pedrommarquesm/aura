@@ -38,7 +38,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Apple `APPLE_CLIENT_ID` on staging (Google iOS is already there) so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
+**Now** — Apple `APPLE_CLIENT_ID` on staging so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
 
 **Next** — the rest of the client loop (profile as a competitive card, video autoplay) once posts have real media.
 
@@ -124,9 +124,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-11 | Sign in with Apple: server-side identity token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-12 | Google Sign-In: server-side ID token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-13 | JWT access + opaque refresh, rotation with reuse detection | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| MOB-11 | Username claim / onboarding flow | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-11 | Username claim / onboarding flow | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 
 ### Media pipeline
 
@@ -155,8 +155,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
-| WEB-10 | Public read-only feed | Not started | |
+| WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Not started | |
+| WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 
 ### Aura
 
@@ -167,7 +168,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MOB-40 | Optimistic like with animation, haptics, and rollback on failure | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Not started | |
@@ -225,6 +226,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
 | 2026-08-28 | Clients read the live API. Web landing and the mobile feed/rank screens hit staging; mocks stay only as an explicit opt-in | [#15](https://github.com/pedrommarquesm/aura/pull/15) |

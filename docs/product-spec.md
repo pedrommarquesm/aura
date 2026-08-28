@@ -117,6 +117,9 @@ Características:
 - User profiles públicos
 - Shareable post URLs
 - Deep links para abrir a app
+- Sign in with Google (read-only: see the feed, claim a username)
+
+**Não haverá upload na web.**
 
 **Não haverá upload na web.**
 

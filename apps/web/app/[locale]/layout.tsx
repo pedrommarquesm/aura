@@ -58,9 +58,16 @@ export default async function LocaleLayout({
   return (
     <html lang={htmlLang[locale]} className={`${inter.variable} antialiased`}>
       <body className="min-h-dvh bg-bg text-text">
-        {/* Only the locale switcher runs on the client, so it is the only
-            namespace worth shipping there. */}
-        <NextIntlClientProvider messages={{ nav: messages.nav }}>
+        {/* Session menu and locale switcher run on the client. */}
+        <NextIntlClientProvider
+          messages={{
+            nav: messages.nav,
+            auth: messages.auth,
+            common: messages.common,
+            errors: messages.errors,
+            feed: messages.feed,
+          }}
+        >
           {children}
         </NextIntlClientProvider>
       </body>

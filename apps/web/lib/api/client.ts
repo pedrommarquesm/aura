@@ -6,6 +6,8 @@ type RequestOptions = {
   query?: Record<string, string | number | null | undefined>;
   /** Overrides the default trending-window revalidation. */
   revalidate?: number | false;
+  /** When set, the request is uncached and sent as that user. */
+  accessToken?: string | null;
 };
 
 function buildUrl(path: string, query: RequestOptions["query"]) {
@@ -34,16 +36,29 @@ async function readError(response: Response) {
 }
 
 /**
- * The only place the app talks to the network. Reads are anonymous by design:
- * web has no session in V0, so there is no Authorization header to attach.
+ * The only place the app talks to the network.
+ *
+ * Guest reads use the trending-window revalidate so the landing page can be
+ * cached. A signed-in request always bypasses that cache: `likedByMe` is
+ * per-user and a refresh token must never be mixed into a shared page.
  */
 export async function apiGet<T>(
   path: string,
-  { query, revalidate = apiConfig.revalidateSeconds }: RequestOptions = {},
+  {
+    query,
+    revalidate = apiConfig.revalidateSeconds,
+    accessToken,
+  }: RequestOptions = {},
 ): Promise<T> {
+  const signedIn = Boolean(accessToken);
   const response = await fetch(buildUrl(path, query), {
-    headers: { accept: "application/json" },
-    next: revalidate === false ? { revalidate: false } : { revalidate },
+    headers: {
+      accept: "application/json",
+      ...(signedIn ? { authorization: `Bearer ${accessToken}` } : {}),
+    },
+    ...(signedIn
+      ? { cache: "no-store" as const }
+      : { next: revalidate === false ? { revalidate: false } : { revalidate } }),
   });
 
   if (!response.ok) {

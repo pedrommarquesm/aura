@@ -9,6 +9,21 @@
       "socialTitle": "Sobre a Aura",
       "description": "O que é a Aura, como os likes se transformam numa pontuação pública e os níveis que sobes pelo caminho."
     },
+    "feed": {
+      "title": "Feed",
+      "socialTitle": "Feed da Aura",
+      "description": "Os posts mais recentes na Aura. Fotos e vídeos, pela ordem em que chegam, com a Aura que já renderam."
+    },
+    "login": {
+      "title": "Iniciar sessão",
+      "socialTitle": "Entra na Aura",
+      "description": "Inicia sessão com o Google. Sem palavra-passe. Publicar e dar like continuam a ser coisas da app."
+    },
+    "username": {
+      "title": "Escolhe o teu username",
+      "socialTitle": "Escolhe o teu username na Aura",
+      "description": "É o handle com que apareces na tabela."
+    },
     "keywords": "Aura, jogo social, classificação, partilha de fotos, vídeo curto",
     "og": {
       "title": "Transforma likes em Aura.",
@@ -27,6 +42,9 @@
       "getApp": "Instala a app",
       "getAuraApp": "Instala a app Aura",
       "seeTrending": "Ver o que está a dar",
+      "seeFeed": "Abrir o feed",
+      "loadMore": "Carregar mais",
+      "retry": "Tentar outra vez",
       "downloadIphone": "Descarregar para iPhone",
       "downloadAndroid": "Descarregar para Android"
     }
@@ -36,6 +54,7 @@
       "label": "Secções",
       "whatIsAura": "O que é a Aura",
       "howItWorks": "Como funciona",
+      "feed": "Feed",
       "trending": "Em destaque",
       "leaderboard": "Classificação",
       "download": "Descarregar",
@@ -119,6 +138,7 @@
       "title": "Em destaque agora",
       "description": "Em destaque não é contagem de seguidores. É Aura ganha por minuto, ponderada pela idade do post — por isso um primeiro post pode passar à frente de um criador estabelecido no mesmo dia.",
       "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Dar like e publicar continuam a ser coisas da app.",
+      "seeAll": "Abrir o feed completo",
       "empty": "O feed está calmo neste momento. Volta quando alguém publicar.",
       "unavailable": "Não foi possível carregar o que está em destaque."
     },
@@ -175,9 +195,40 @@
     }
   },
   "feed": {
+    "page": {
+      "eyebrow": "Ao vivo da app",
+      "title": "O feed",
+      "description": "Os posts mais recentes, pela ordem em que chegam. Inicia sessão com o Google para veres os que já gostaste. Dar like e publicar continuam a ser coisas da app.",
+      "empty": "O feed está calmo neste momento. Volta quando alguém publicar.",
+      "unavailable": "Não foi possível carregar o feed.",
+      "end": "Já viste tudo."
+    },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "video": "Vídeo"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar sessão",
+    "signOut": "Terminar sessão",
+    "providers": {
+      "google": "Continuar com o Google"
+    },
+    "page": {
+      "title": "Entra na Aura",
+      "body": "Google — sem palavra-passe. Publicar e dar like continuam a ser coisas da app."
+    },
+    "unavailable": {
+      "google": "O Google Sign-In ainda não está configurado nesta build."
+    },
+    "username": {
+      "title": "Escolhe o teu username",
+      "body": "É assim que apareces na tabela. 3–30 letras, números ou underscore.",
+      "placeholder": "username",
+      "submit": "Reservar username",
+      "taken": "Esse username já está ocupado.",
+      "reserved": "Esse username não está disponível.",
+      "invalid": "3–30 caracteres. Letras, números ou underscore."
     }
   },
   "leaderboard": {

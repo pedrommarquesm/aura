@@ -96,9 +96,9 @@ export default defineRailway(() => {
       PORT: '3000',
       CORS_ORIGINS: preserve(),
       RATE_LIMIT_MAX: preserve(),
-      // Public OAuth audiences, not secrets. preserve() so apply does not wipe
-      // Android/web clients added in the dashboard later.
-      GOOGLE_CLIENT_IDS: preserve(),
+      // Public OAuth audiences, not secrets. iOS + web clients we have today.
+      GOOGLE_CLIENT_IDS:
+        '37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f.apps.googleusercontent.com,37586478648-trc2amkrb29fv6h9undhkljfd7t69llh.apps.googleusercontent.com',
       APPLE_CLIENT_ID: preserve(),
     },
   });
@@ -130,6 +130,11 @@ export default defineRailway(() => {
       // serves staging. Confirm with GET /health.
       NEXT_PUBLIC_API_BASE_URL: 'https://api-production-aa71.up.railway.app',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
+      // Public web OAuth client. The secret is GOOGLE_CLIENT_SECRET on the
+      // service (preserve), never in this file.
+      NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID:
+        '37586478648-trc2amkrb29fv6h9undhkljfd7t69llh.apps.googleusercontent.com',
+      GOOGLE_CLIENT_SECRET: preserve(),
     },
   });
 

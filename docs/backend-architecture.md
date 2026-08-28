@@ -729,7 +729,7 @@ This matters because Aura's Aura ledger, Vote Power, bans, and rate limits are a
 
 So on NextAuth for web: **fine, with one constraint.** Use it for the browser cookie session only, with no database adapter and no user table of its own. It calls our API, gets our tokens, and wraps them in a Next.js session. It must not become a parallel identity store.
 
-Worth noting though: per the product spec, V0 web is landing + public read-only feed with no posting and no interaction. **There is likely nothing to log into on web in V0.** I'd defer NextAuth until web has a logged-in surface, rather than build a session layer that nothing consumes yet.
+Worth noting: V0 web is still landing + a public read-only feed. There is now a logged-in surface — seeing `likedByMe` and claiming a username — so the session layer earns its keep. NextAuth remains unnecessary: httpOnly cookies wrapping API-issued tokens are the thinner client.
 
 ### 12.2 Mobile: native providers, backend-issued tokens
 
@@ -924,7 +924,7 @@ Settled:
 | 4 | Vote Power | **Not in V0.** Seam is built now; economics guardrails in §7.5 must be met before enabling |
 | 5 | Auth | **First-party**, API is the identity authority (§12) |
 | 6 | Mobile auth | **Sign in with Apple + Google**, native providers, API-issued tokens. No passwords in V0 |
-| 7 | Web auth | **None in V0** (web is public read-only). NextAuth later, as a thin client of the API |
+| 7 | Web auth | **Google Sign-In as a thin API client** (httpOnly cookies, no NextAuth user store). Posting/liking stay in the app. |
 | 8 | Media portability | **Provider stored per asset**, keys not URLs, served from our own domain (§6.6) |
 
 Still open, but not blocking the bootstrap work:

@@ -9,6 +9,21 @@
       "socialTitle": "About Aura",
       "description": "What Aura is, how likes turn into a public score, and the levels you climb on the way up."
     },
+    "feed": {
+      "title": "Feed",
+      "socialTitle": "Aura feed",
+      "description": "The latest posts on Aura. Photos and videos, ordered as they land, with the Aura they have earned."
+    },
+    "login": {
+      "title": "Sign in",
+      "socialTitle": "Sign in to Aura",
+      "description": "Sign in with Google. No password. Posting and liking stay in the app."
+    },
+    "username": {
+      "title": "Pick your username",
+      "socialTitle": "Pick your Aura username",
+      "description": "Choose the handle you show up as on the board."
+    },
     "keywords": "Aura, social game, leaderboard, photo sharing, short video",
     "og": {
       "title": "Turn likes into Aura.",
@@ -27,6 +42,9 @@
       "getApp": "Get the app",
       "getAuraApp": "Get the Aura app",
       "seeTrending": "See what's trending",
+      "seeFeed": "Open the feed",
+      "loadMore": "Load more",
+      "retry": "Try again",
       "downloadIphone": "Download for iPhone",
       "downloadAndroid": "Download for Android"
     }
@@ -36,6 +54,7 @@
       "label": "Sections",
       "whatIsAura": "What is Aura",
       "howItWorks": "How it works",
+      "feed": "Feed",
       "trending": "Trending",
       "leaderboard": "Leaderboard",
       "download": "Download",
@@ -119,6 +138,7 @@
       "title": "Trending right now",
       "description": "Trending is not a follower count. It is Aura earned per minute, weighted by how recent a post is — so a first post can outrank an established creator on the same day.",
       "note": "Every post has a public link, so anything made in the app is shareable outside it. Liking and posting stay in the app.",
+      "seeAll": "Open the full feed",
       "empty": "The feed is quiet right now. Check back once someone posts.",
       "unavailable": "Could not load what is trending."
     },
@@ -175,9 +195,40 @@
     }
   },
   "feed": {
+    "page": {
+      "eyebrow": "Live from the app",
+      "title": "The feed",
+      "description": "Latest posts, as they land. Sign in with Google to see which ones you already liked. Liking and posting stay in the app.",
+      "empty": "The feed is quiet right now. Check back once someone posts.",
+      "unavailable": "Could not load the feed.",
+      "end": "You are caught up."
+    },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "video": "Video"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "providers": {
+      "google": "Continue with Google"
+    },
+    "page": {
+      "title": "Sign in to Aura",
+      "body": "Google — no password. Posting and liking stay in the app."
+    },
+    "unavailable": {
+      "google": "Google Sign-In is not configured in this build yet."
+    },
+    "username": {
+      "title": "Pick your username",
+      "body": "This is how you show up on the board. 3–30 letters, numbers or underscore.",
+      "placeholder": "username",
+      "submit": "Claim username",
+      "taken": "That username is taken.",
+      "reserved": "That username is not available.",
+      "invalid": "3–30 characters. Letters, numbers or underscore."
     }
   },
   "leaderboard": {

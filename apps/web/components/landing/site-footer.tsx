@@ -11,7 +11,11 @@ export function SiteFooter() {
   const footer = useTranslations("nav.footer");
   const landing = useTranslations("landing.footer");
 
-  const sectionLinks = [
+  const sectionLinks: Array<
+    | { label: string; href: "/feed" }
+    | { label: string; hash: string }
+  > = [
+    { label: t("feed"), href: "/feed" },
     { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
     { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
     { label: t("trending"), hash: sectionId(locale, "trending") },
@@ -28,15 +32,25 @@ export function SiteFooter() {
             aria-label={footer("label")}
             className="flex flex-wrap gap-x-6 gap-y-2 text-label text-text-secondary"
           >
-            {sectionLinks.map((link) => (
-              <Link
-                key={link.hash}
-                href={{ pathname: "/", hash: link.hash }}
-                className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {sectionLinks.map((link) =>
+              "href" in link ? (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <Link
+                  key={link.hash}
+                  href={{ pathname: "/", hash: link.hash }}
+                  className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
             <Link
               href="/about"
               className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
