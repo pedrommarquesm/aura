@@ -28,9 +28,13 @@ npm run dev
 ## Layout
 
 ```
-app/               routes, metadata, sitemap/robots/icons
+app/[locale]/      localized routes and per-locale metadata
+app/               locale-independent routes (sitemap/robots/icons/manifest, /api/health)
+i18n/              next-intl config: routing, request, navigation, formats, section ids
+messages/          en.json + pt.json message catalogs
 components/ui/     token-driven primitives (Button, Card, Avatar, Skeleton, AuraValue)
 components/landing/ landing page sections
+components/about/  /about page sections
 lib/api/           typed API layer + mock implementation
 lib/               design-token helpers, formatting, SEO
 public/mock/       placeholder post media
@@ -54,6 +58,110 @@ There is no backend yet, so `lib/api/index.ts` resolves to the mock
 implementation. Switching to the real API is that one file plus
 `NEXT_PUBLIC_USE_MOCK_API=false`. When `packages/contracts` lands (FND-04),
 `lib/api/types.ts` becomes a re-export of the shared schemas.
+
+`lib/api/error-message.ts` turns an API error code into a sentence from the
+`errors.*` catalog, falling back to `errors.unknown` for a code this build has
+never heard of. That fallback is the point: the API can add a code without the
+web app shipping a blank error.
+
+## i18n
+
+English and European Portuguese, via `next-intl`. `docs/i18n.md` is the contract
+both clients follow; this section is only how it is wired here.
+
+| File | Role |
+| ---- | ---- |
+| `i18n/routing.ts` | Locales, default, `localePrefix`, cookie, localized `pathnames` |
+| `i18n/request.ts` | Per-request locale, catalog, formats, time zone |
+| `i18n/navigation.ts` | Locale-aware `Link`, `redirect`, `usePathname`, `getPathname` |
+| `i18n/formats.ts` | Shared number formats (`aura`, `compact`) |
+| `i18n/sections.ts` | Per-locale anchor ids for the landing sections |
+| `i18n/static.ts` | Translator/formatter for code outside React (OG images) |
+| `proxy.ts` | `next-intl` middleware: detection, prefixing, pathname rewrites |
+| `next-intl.d.ts` | Types locale, message keys and formats from `en.json` |
+
+English is **unprefixed** (`localePrefix: "as-needed"`), so `/` is the English
+site and every URL that was already shared still resolves. Portuguese lives
+under `/pt`. `<html lang>` is `en` / `pt-PT` — `pt` alone would claim Brazilian
+Portuguese is equally intended.
+
+### Routes
+
+`pathnames` maps an internal route (the folder under `app/[locale]`) to the
+segment each locale shows:
+
+| Internal | `en` | `pt` |
+| -------- | ---- | ---- |
+| `/` | `/` | `/pt` |
+| `/about` | `/about` | `/pt/sobre` |
+
+Adding a localized route is one entry here plus the folder. Requests to the
+untranslated segment (`/pt/about`) redirect to the translated one, so there is a
+single indexable URL per locale.
+
+`getPathname` resolves those segments, which is why `sitemap.ts` and `lib/seo.ts`
+never concatenate URLs by hand — `hreflang`, canonical and sitemap entries all
+come out of the same map.
+
+Landing-page anchors are localized too (`#trending` / `#em-destaque`), from
+`i18n/sections.ts`. Nav links carry the route as well as the hash
+(`/pt#em-destaque`) so they work from `/sobre` and not just the landing page.
+
+**The public post URL stays out of this.** Per `docs/i18n.md`,
+`/a/@username/post/:postId` is the share URL and must be canonical and permanent
+with no prefix. Nothing above blocks that, but it needs two things when WEB-10
+builds it:
+
+- Put it at the app root, outside `[locale]`, and leave it out of `pathnames`.
+  `i18n/request.ts` falls back to the default locale when there is no `[locale]`
+  segment to read, so `next-intl` formatting works there anyway.
+- **Add `a` to the `proxy.ts` matcher's exclusion list.** Otherwise the proxy
+  treats the share URL as an unprefixed page, applies the visitor's cookie and
+  redirects `/a/@bob/post/1` to `/pt/a/@bob/post/1` — which is not a route. A
+  share link that 404s for anyone who once picked Portuguese is the exact
+  failure this URL exists to avoid.
+
+### Catalogs
+
+`messages/en.json` and `messages/pt.json`, ICU MessageFormat, keys namespaced and
+dot-separated per `docs/i18n.md`. `en.json` is the source of truth for the key
+set — `next-intl.d.ts` types `Messages` from it, so a key missing from `pt.json`
+is a typecheck error rather than a runtime blank.
+
+Not translated, deliberately: the word **Aura**, the level titles (NPC → Aura
+God) in `lib/aura.ts`, and user content. They are the game's vocabulary, not
+copy.
+
+### Formatting
+
+Every number goes through `useFormatter` / `format.number` — never a manual
+separator, because the separators invert between locales (`12,421` vs `12.421`).
+`AuraValue` is the component that matters; `lib/format.ts` takes a formatter
+rather than making its own so server and client render identically.
+
+Outside the React tree (`opengraph-image.tsx`) use `i18n/static.ts`, since the
+hooks need a request context that image generation does not have.
+
+### Locale switcher
+
+`components/locale-switcher.tsx`. Two plain links, so it is crawlable and works
+without JavaScript. It links to `usePathname()` — the *internal* pathname — in
+the other locale, so switching on `/sobre` lands on `/about` and not the
+homepage. First visit is detected from `accept-language`; an explicit choice is
+written to the locale cookie and wins from then on.
+
+One thing looks wrong and is not: from `/pt/sobre` the English link points at
+`/en/about`, a prefix English otherwise never uses. It is required. With the
+cookie set to `pt`, an unprefixed `/about` states no locale, so the proxy
+applies the cookie and sends it back to `/pt/sobre` — a clean href could never
+escape Portuguese. The prefixed URL states the locale, so the proxy rewrites the
+cookie and redirects on to the canonical `/about`. One extra hop, only when
+switching. Verify it with:
+
+```bash
+curl -sI -b NEXT_LOCALE=pt http://localhost:3000/about    # -> /pt/sobre
+curl -sI -b NEXT_LOCALE=pt http://localhost:3000/en/about # -> /about, sets NEXT_LOCALE=en
+```
 
 ## Deployment
 
@@ -151,3 +259,16 @@ Metadata comes from `lib/seo.ts` (`buildMetadata`) and share images from
 `lib/og-image.tsx` (`renderOgImage`). A future public post page at
 `/a/@username/post/:postId` only needs to call both with the post's data to get
 canonical URLs, Open Graph and Twitter cards.
+
+`buildMetadata` takes a locale and an internal pathname and derives the rest:
+canonical URL, `hreflang` alternates for every locale plus `x-default`,
+`og:locale` and `og:locale:alternate`. `sitemap.ts` lists both locales of every
+route with the same alternates. Adding a locale to `i18n/routing.ts` therefore
+extends the sitemap and every page's alternates without touching either file.
+
+Verify the localized head after a build:
+
+```bash
+curl -s http://localhost:3000/ | grep -oE '<link rel="alternate"[^>]*>'
+curl -s http://localhost:3000/sitemap.xml | grep -c hreflang
+```

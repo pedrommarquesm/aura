@@ -93,6 +93,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
+| WEB-20 | i18n: next-intl, English + Portuguese, translated routes | In review | |
+| WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | In review | |
 
 ---
 
