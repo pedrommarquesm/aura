@@ -53,12 +53,13 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | ID | Task | Status | PR |
 |---|---|---|---|
 | FND-01 | Product spec + backend architecture proposal in-repo | Done | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
-| FND-02 | Work plan & tracker (this file) | In review | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| FND-02 | Work plan & tracker (this file) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types | Not started | |
 | FND-05 | CI: typecheck, lint, test on PR | Not started | |
 | FND-06 | Environment/secrets convention (`.env.example` per app) | Not started | |
-| FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | In review | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| FND-08 | Media storage/CDN portability design (architecture §6.6) | In review | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 
 ### Mobile bootstrap
 
@@ -203,7 +204,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Media portability: provider stored per asset, keys not URLs, served from our own domain. Bunny to be evaluated post-V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| 2026-08-28 | Media portability: provider stored per asset, keys not URLs, served from our own domain. Bunny to be evaluated post-V0 | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | 2026-08-28 | Mobile auth: Apple + Google native, API-issued tokens, no passwords in V0. Web has no auth in V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | 2026-08-28 | NestJS on Fastify; Cloudflare R2 for storage | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | 2026-08-28 | Aura unit: flat 10 per like in V0, integer always, Vote Power deferred behind `auraForLike()` | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
