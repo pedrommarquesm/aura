@@ -124,9 +124,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-11 | Sign in with Apple: server-side identity token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-12 | Google Sign-In: server-side ID token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-13 | JWT access + opaque refresh, rotation with reuse detection | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | In review | |
-| MOB-11 | Username claim / onboarding flow | In review | |
-| MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | In review | |
+| MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-11 | Username claim / onboarding flow | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 
 ### Media pipeline
 
@@ -167,7 +167,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MOB-40 | Optimistic like with animation, haptics, and rollback on failure | In review | |
+| MOB-40 | Optimistic like with animation, haptics, and rollback on failure | In review | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Not started | |
@@ -225,7 +225,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | |
+| 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
 | 2026-08-28 | Clients read the live API. Web landing and the mobile feed/rank screens hit staging; mocks stay only as an explicit opt-in | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | 2026-08-28 | Web i18n: next-intl, translated routes (`/about` → `/pt/sobre`), `hreflang` + `x-default`. Format Aura with `pt`, never `pt-PT` | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
