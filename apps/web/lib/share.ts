@@ -21,7 +21,11 @@ export function publicPostPath(username: string, postId: string): string {
 
 /** Custom-scheme deep link. Universal links wait on store listings (WEB-07). */
 export function publicPostDeepLink(username: string, postId: string): string {
-  return `${APP_SCHEME}:${publicPostPath(username, postId)}`;
+  return `${APP_SCHEME}://${publicPostPath(username, postId).replace(/^\//, "")}`;
+}
+
+export function isSharePath(pathname: string) {
+  return pathname === "/a" || pathname.startsWith("/a/");
 }
 
 function safeDecode(value: string): string {
