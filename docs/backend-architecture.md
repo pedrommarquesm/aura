@@ -79,16 +79,16 @@ Chosen for speed of iteration, mobile-first clients, and a clean path to scale. 
 
 | Layer | Proposal | Why |
 |---|---|---|
-| API | **TypeScript + Fastify** (or NestJS if we want more batteries) | Same language as Expo. Fast enough. Easy to share Zod types with the app. |
+| API | **NestJS on the Fastify adapter** | Decided. Modules map cleanly onto the domain boundaries below, DI makes the ledger easy to isolate and test, and Fastify keeps the HTTP layer fast. |
 | Validation | **Zod** | Shared contracts with React Native / web. |
 | ORM | **Drizzle** | SQL-shaped, migrations we actually read, good enough for a ledger. |
 | Primary DB | **PostgreSQL** | Relational integrity for users/likes/events. JSONB only for non-query metadata. |
 | Cache / ranks | **Redis** | Sorted sets for leaderboards, short-TTL feed cache, rate limits. |
 | Jobs | **Redis queue** (BullMQ) | Media processing, trending recompute, notification aggregation. |
-| Object storage | **S3-compatible** (Cloudflare R2 or S3) | Cheap egress on R2 is attractive for video. |
+| Object storage | **Cloudflare R2** | Decided. Zero egress fees matter a lot when the product is mostly video bytes. S3-compatible API, so the storage client stays swappable. |
 | CDN | **Cloudflare** in front of storage | Image resizing, cache, public post pages. |
 | Video | **Managed transcoding first** (Cloudflare Stream / Mux) *or* ffmpeg workers | V0 should not invent a video platform. See §6. |
-| Auth | **Self-hosted JWT access + opaque refresh**, Apple/Google later | Mobile-native. Avoid a third-party auth bottleneck early; can revisit. |
+| Auth | **First-party. Apple + Google on mobile, API-issued JWT access + rotating refresh** | The API owns identity; providers only prove it. See §12. |
 | Observability | OpenTelemetry + structured logs + one APM | Feed and like latency must be visible from day one. |
 | Hosting (V0) | One region: API + worker + Postgres + Redis | Boring. Multi-region is a later problem. |
 
@@ -316,7 +316,7 @@ POST /posts/:id/like
   - reject if post not published
   - INSERT like (userId, postId) ON CONFLICT DO NOTHING
   - if conflict → 200 already-liked (idempotent, UI-safe)
-  - else AuraLedger.apply(LIKE, amount = votePower(actor) or 1 in V0)
+  - else AuraLedger.apply(LIKE, amount = auraForLike(actor))   -- flat 10 in V0, see §7.4
   - return { likeCount, postAura, actorAuraDelta: 0, creatorAura }
 ```
 
@@ -341,11 +341,60 @@ The spec requires auditing, fraud investigation, rollbacks, analytics, and recal
 
 `users.aura` is a **materialized sum**. If it ever diverges, a reconciliation job rebuilds it from events. That job should exist in V0 even if we rarely run it.
 
-### 7.4 V0 amount vs V1 Vote Power
+### 7.4 Aura unit: 10 per like, with a seam for Vote Power
 
-V0: `amount = 1` (or a small integer constant, e.g. 10, so we have room to tune).
+**Decided for V0:** a like is worth a flat **10 Aura**. Not 1.
 
-V1: `amount = f(votePower)`, diminishing returns, cap. The like handler already calls `votePower(actor)` — in V0 that function returns `1`. **Do not scatter `+1` in controllers.**
+The `10` exists so V1 can multiply without ever introducing decimals. Vote Power `1.4x` becomes `14`, `2.4x` becomes `24`. **Aura is always an integer**, in the database, in the API, and on screen. Floats in an economy produce rounding drift that nobody can reconcile later.
+
+The value must never be written as a literal in a controller. It lives in one place:
+
+```ts
+// packages/domain/src/aura/vote-power.ts
+
+/**
+ * Aura awarded for a single like.
+ *
+ * V0: flat rate for everyone.
+ *
+ * V1 will scale this by the voter's Vote Power, so that a like from a
+ * high-Aura curator is worth more than a like from a new account. Before
+ * turning that on, read docs/backend-architecture.md §7.5 — the multiplier
+ * needs diminishing returns and a hard cap, or the top of the leaderboard
+ * becomes unreachable and the economy inflates.
+ *
+ * Keep the return value an integer. Aura is never fractional.
+ */
+export function auraForLike(voter: User): number {
+  return BASE_LIKE_AURA; // 10
+}
+```
+
+Every caller already asks `auraForLike(actor)`. Switching V0 → V1 is editing this one function, not hunting `+ 10` across route handlers. **This comment is required in the implementation PR** so whoever turns on Vote Power sees the economic constraints first.
+
+### 7.5 Vote Power economics (read before implementing)
+
+The spec wants high-Aura users to award more Aura. That is a compounding loop, and compounding loops in a ranked economy fail in predictable ways:
+
+| Risk | What it looks like in the product |
+|---|---|
+| **Rich-get-richer** | Top 100 users mint far more Aura than everyone else. A new user cannot climb regardless of content quality. The leaderboard freezes and stops being a reason to return. |
+| **Inflation** | Total Aura in circulation grows faster than the user base. `10,000 Aura` means something different each month, so titles and historical records lose meaning. |
+| **Whale capture** | A handful of accounts effectively decide what trends, because their likes dominate `auraVelocity`. |
+| **Collusion payoff** | High Vote Power makes like-rings dramatically more profitable than they are at a flat rate. |
+
+Guardrails the multiplier must have, all of them:
+
+1. **Sublinear curve.** Vote Power grows with something like `log`, never linearly with Aura. Going from 1k → 10k Aura should feel meaningful; 100k → 1M should barely move it.
+2. **Hard cap.** A stated maximum (the spec suggests roughly `~3-4x`). Cap the multiplier, not just the input.
+3. **Floor of 1.0x.** A new user's like is never worth *less* than today's 10. We add upside for curators; we never devalue newcomers.
+4. **Daily minted-Aura budget per voter.** Vote Power raises the value of a like, but a user should not be able to mint unbounded Aura by liking a thousand posts. Cap Aura minted per voter per day.
+5. **Aura Sense drives it, not wealth alone.** Per the spec, Vote Power should follow *prediction quality*, not just balance. Prefer weighting Aura Sense more heavily than lifetime Aura — that rewards curation skill instead of seniority, which is the loop that makes Aura different.
+6. **Season reset as a pressure valve.** Season Aura resetting limits how far compounding can run inside one competitive cycle.
+
+Because everything is a ledger, we can **simulate before shipping**: replay real `aura_events` through a candidate formula and inspect the resulting distribution (Gini coefficient, top-1% share, time-to-first-1000 for a new user) before it ever touches production. Do that. Do not tune this live on real users.
+
+The multiplier constants belong in remote config, not a deploy.
 
 Voter rewards and Aura Sense are **async**: a later worker looks at whether liked posts performed well, then writes `VOTER_REWARD` events. The like request itself must not wait on that.
 
@@ -540,9 +589,11 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 
 | Method | Path | Notes |
 |---|---|---|
-| POST | `/v1/auth/signup` | username uniqueness, password hash (argon2id) |
-| POST | `/v1/auth/login` | |
-| POST | `/v1/auth/refresh` | rotate refresh tokens |
+| POST | `/v1/auth/apple` | verify Apple identity token → issue Aura tokens |
+| POST | `/v1/auth/google` | verify Google ID token → issue Aura tokens |
+| POST | `/v1/auth/refresh` | rotate refresh token, reuse detection |
+| POST | `/v1/auth/logout` | revoke current device session |
+| POST | `/v1/auth/username` | claim handle on first login (onboarding) |
 | GET | `/v1/me` | |
 | PATCH | `/v1/me` | |
 | GET | `/v1/feed` | latest |
@@ -564,7 +615,124 @@ Errors: `{ error: { code, message } }` plus HTTP status. Stable `code` values fo
 
 ---
 
-## 12. Consistency, UX, and failure
+## 12. Authentication
+
+### 12.1 The rule that decides everything else
+
+> **The NestJS API is the only identity authority. Everything else is a client.**
+
+Apple, Google, and NextAuth are **proof of identity**, never the owner of it. The API verifies a third-party proof, then mints **its own** tokens against its own `users` row.
+
+This matters because Aura's Aura ledger, Vote Power, bans, and rate limits are all keyed on our `userId`. If a second system (NextAuth, a vendor) can create users or sessions independently, we end up with two user tables, two ban lists, and a fraud surface where a suspended user still has a valid session somewhere.
+
+So on NextAuth for web: **fine, with one constraint.** Use it for the browser cookie session only, with no database adapter and no user table of its own. It calls our API, gets our tokens, and wraps them in a Next.js session. It must not become a parallel identity store.
+
+Worth noting though: per the product spec, V0 web is landing + public read-only feed with no posting and no interaction. **There is likely nothing to log into on web in V0.** I'd defer NextAuth until web has a logged-in surface, rather than build a session layer that nothing consumes yet.
+
+### 12.2 Mobile: native providers, backend-issued tokens
+
+NextAuth is the wrong tool on mobile. It is cookie/session and Next.js route-handler shaped, has no real React Native client, and would put the marketing web app in the critical path of every mobile login. Mobile is the product; it should not depend on the website being up.
+
+Recommended flow:
+
+```text
+1. Tap "Continue with Apple"
+     ↓
+2. Native sheet (expo-apple-authentication / Google Sign-In)
+   → returns a provider identity token (JWT signed by Apple/Google)
+     ↓
+3. POST /v1/auth/apple { identityToken, nonce }
+     ↓
+4. NestJS verifies signature against the provider JWKS,
+   checks aud / iss / exp / nonce,
+   finds or creates the user by provider `sub`
+     ↓
+5. API returns { accessToken, refreshToken, user, needsUsername }
+     ↓
+6. App stores refresh token in expo-secure-store (Keychain / Keystore)
+```
+
+The device never holds a client secret. Verification is server-side against the provider's public keys, so a forged token cannot mint a session.
+
+### 12.3 Which methods for V0
+
+| Method | Verdict | Reasoning |
+|---|---|---|
+| **Sign in with Apple** | **Yes** | Required by App Store rules once we offer Google. One tap, no password. |
+| **Google Sign-In** | **Yes** | Covers Android and most iOS users who avoid Apple ID. |
+| **Email + password** | **Skip in V0** | Worst conversion of the three, and it drags in password reset, email deliverability, and breach liability. Aura's loop dies on signup friction. |
+| **Phone / OTP** | **Later, as an anti-abuse tier** | SMS costs real money per signup and invites toll fraud. But a phone number is *expensive to farm*, which makes it the best anti-multi-account signal we have. |
+
+On phone verification, the useful framing is not "how do users log in" but "what does an account have to prove before its Aura counts". Gate **earning and ranking**, not signup:
+
+- Anyone can sign up with Apple/Google and browse, post, and like immediately
+- Unverified accounts can be excluded from leaderboards, or have their outgoing vote weight reduced, until they clear a trust threshold
+
+That keeps the funnel frictionless while making like-rings costly. It fits the existing design because vote weight already flows through `auraForLike()` (§7.4) and every award is a ledger row.
+
+**Apple gotchas to handle on day one:**
+
+- Apple returns the user's name and email **only on the very first authorization**. If we don't persist it in that first callback, it is gone forever and the only recovery is the user manually revoking the app in iOS settings.
+- Apple's private relay (`@privaterelay.appleid.com`) means email is not a reliable identity key. **Key on provider `sub`**, never on email.
+- The same human may sign in with Apple on iPhone and Google on Android. Support linking multiple provider identities to one user from the start.
+
+### 12.4 Data model
+
+```text
+AuthIdentity
+  id, userId
+  provider              -- apple | google | phone
+  providerSub           -- provider's stable subject id
+  emailAtSignup         -- may be a relay address; not an identity key
+  UNIQUE (provider, providerSub)
+
+DeviceSession
+  id, userId
+  refreshTokenHash      -- store a hash, never the token
+  familyId              -- rotation lineage, for reuse detection
+  deviceName, platform, appVersion
+  ipAtIssue, lastSeenAt, expiresAt
+  revokedAt
+```
+
+Splitting `AuthIdentity` from `User` is what makes account linking, adding phone later, and dropping a provider possible without touching the ledger.
+
+`DeviceSession` gives us three things we will want badly: "log out my other devices", instant global revocation on ban, and a device fingerprint for multi-account detection.
+
+### 12.5 Tokens
+
+| Token | Form | Lifetime | Stored |
+|---|---|---|---|
+| Access | JWT, signed (EdDSA/RS256) | ~15 min | Memory only. Never SecureStore, never AsyncStorage |
+| Refresh | Opaque random, 256-bit | ~60 days, sliding | `expo-secure-store`; hashed server-side |
+
+Access tokens are stateless so the feed and like endpoints validate with zero database round-trips — which is exactly what §8's latency target needs. Keeping them short-lived bounds the damage of a leak, since we cannot revoke a JWT mid-life.
+
+**Refresh rotation with reuse detection:** every refresh returns a new refresh token and invalidates the old one. If an already-used token is presented again, that means it was stolen and replayed, so we revoke **the entire family** and force re-login. This is the single highest-value auth security control for a mobile app, and it is cheap.
+
+Long refresh lifetimes are deliberate. A social app that logs you out is a social app you stop opening.
+
+**Client concurrency detail:** when several requests 401 at once (very likely, since the feed prefetches), the app must funnel them through a **single** refresh call and queue the rest. Naive per-request refresh will race, and with reuse detection turned on that race will log the user out. This belongs in one interceptor next to the API client.
+
+### 12.6 Guest mode
+
+Do not gate the feed behind login. Let a new install scroll immediately, and trigger auth on the **first Aura action** (like, post, follow):
+
+```text
+Install → browse feed → tap like → "Sign in to award Aura" → Apple → like applies
+```
+
+The user has already seen the product and has intent at that moment, so conversion is far better than a cold signup wall. The pending like should be replayed automatically after sign-in — a login that loses your action feels broken.
+
+Implementation: unauthenticated `GET /v1/feed` is allowed and simply returns `likedByMe: false` throughout.
+
+### 12.7 Recommendation
+
+**Apple + Google native on mobile, verified server-side, with our own JWT access and rotating refresh tokens in SecureStore.** No passwords in V0. No NextAuth on mobile. Phone verification later as a trust tier that gates Aura, not signup. Web stays public in V0, and adopts NextAuth as a thin client of the same API when it actually gets a logged-in surface.
+
+---
+
+## 13. Consistency, UX, and failure
 
 The spec wants optimistic likes and a feed that never waits. Server implications:
 
@@ -576,7 +744,7 @@ The spec wants optimistic likes and a feed that never waits. Server implications
 
 ---
 
-## 13. Trust, safety, anti-abuse (minimum for V0)
+## 14. Trust, safety, anti-abuse (minimum for V0)
 
 Cannot launch without a baseline, even if the admin dashboard is V1.
 
@@ -593,7 +761,7 @@ Like-rings and multi-accounting are V1 detection jobs reading the ledger. The le
 
 ---
 
-## 14. Analytics
+## 15. Analytics
 
 Application analytics (Amplitude/Posthog) for the north star: **Aura Actions / Active User / Day**.
 
@@ -606,18 +774,19 @@ Do not build an analytics warehouse in V0. A product analytics SDK + the ledger 
 
 ---
 
-## 15. Repository layout (when we start coding)
+## 16. Repository layout (when we start coding)
 
 Monorepo, because the mobile app, web, and API will share Zod schemas and types.
 
 ```text
 apps/
-  api/          Fastify HTTP
-  worker/       BullMQ processors (same domain modules as api)
-  mobile/       Expo
+  api/          NestJS (Fastify adapter) HTTP
+  worker/       NestJS standalone app running BullMQ processors
+  mobile/       Expo + Expo Router
   web/          landing + public feed
 packages/
-  domain/       AuraLedger, ranking formula, Zod contracts
+  domain/       AuraLedger, auraForLike/Vote Power, ranking formula
+  contracts/    Zod schemas + inferred types shared by api, mobile, web
   db/           Drizzle schema + migrations
 ```
 
@@ -625,7 +794,7 @@ The important part: **ledger and ranking live in `packages/domain`**, not in rou
 
 ---
 
-## 16. What this proposal deliberately refuses
+## 17. What this proposal deliberately refuses
 
 | Temptation | Why not in V0 |
 |---|---|
@@ -641,20 +810,29 @@ The important part: **ledger and ranking live in `packages/domain`**, not in rou
 
 ---
 
-## 17. Open decisions
+## 18. Decisions
 
-These are the few choices worth confirming before implementation:
+Settled:
 
-1. **Managed video (Stream/Mux) vs ffmpeg workers** — proposal: managed for V0.
-2. **Fastify vs NestJS** — proposal: Fastify + modular domain packages (less ceremony).
-3. **R2 vs S3** — proposal: R2 if we want cheap video egress; S3 if we want the broadest ecosystem. The `MediaAsset` interface hides this.
-4. **Auth: first-party vs Clerk/Auth0** — proposal: first-party email/username for V0, add Apple/Google as the real mobile requirement before public launch.
-5. **Aura unit** — integer `1` per like vs `10` to leave headroom for Vote Power fractions. Proposal: integer **10** per V0 like so V1 can do 12, 24, etc. without decimals. Store Aura as integer always.
-6. **Username vs display name** — spec shows `@username`. Keep one public handle, immutable or rate-limited rename.
+| # | Decision | Choice |
+|---|---|---|
+| 1 | API framework | **NestJS on Fastify** |
+| 2 | Object storage | **Cloudflare R2** (+ Cloudflare CDN) |
+| 3 | Aura unit | **Flat 10 per like in V0**, integer always, behind `auraForLike()` (§7.4) |
+| 4 | Vote Power | **Not in V0.** Seam is built now; economics guardrails in §7.5 must be met before enabling |
+| 5 | Auth | **First-party**, API is the identity authority (§12) |
+| 6 | Mobile auth | **Sign in with Apple + Google**, native providers, API-issued tokens. No passwords in V0 |
+| 7 | Web auth | **None in V0** (web is public read-only). NextAuth later, as a thin client of the API |
+
+Still open, but not blocking the bootstrap work:
+
+1. **Managed video (Stream/Mux) vs ffmpeg workers** — proposal: managed for V0. Decide before video upload lands.
+2. **Phone verification as a trust tier** — proposal: after V0, gating Aura earning rather than signup (§12.3).
+3. **Username vs display name** — spec shows `@username`. Proposal: one public handle, rename rate-limited.
 
 ---
 
-## 18. Suggested build order (backend)
+## 19. Suggested build order (backend)
 
 Once we agree on this shape:
 
@@ -671,7 +849,7 @@ That order matches the product loop: you cannot compete until Aura moves, and Au
 
 ---
 
-## 19. Summary
+## 20. Summary
 
 V0 backend = **stateless API + Postgres ledger + Redis projections + object storage/CDN + async media workers**.
 
