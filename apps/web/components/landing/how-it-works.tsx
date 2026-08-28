@@ -1,38 +1,29 @@
-import { Section } from "@/components/landing/section";
+import { useLocale, useTranslations } from "next-intl";
 
-const STEPS = [
-  {
-    label: "Discover",
-    body: "Open the feed. Photos and videos, ordered by what is gaining Aura fastest right now.",
-  },
-  {
-    label: "Like",
-    body: "One tap. The like registers instantly — nothing sits there waiting on a spinner.",
-  },
-  {
-    label: "Gain Aura",
-    body: "The creator is paid in Aura the moment you tap, and the number moves in front of you.",
-  },
-  {
-    label: "Climb",
-    body: "Your total decides your place on the global board. You can always see your exact rank.",
-  },
-  {
-    label: "Post",
-    body: "Then it is your turn. Camera, caption, published in seconds — and the loop starts again.",
-  },
-];
+import { Section } from "@/components/landing/section";
+import { sectionId } from "@/i18n/sections";
 
 export function HowItWorks() {
+  const locale = useLocale();
+  const t = useTranslations("landing.howItWorks");
+
+  const steps = [
+    { label: t("steps.discover.label"), body: t("steps.discover.body") },
+    { label: t("steps.like.label"), body: t("steps.like.body") },
+    { label: t("steps.gainAura.label"), body: t("steps.gainAura.body") },
+    { label: t("steps.climb.label"), body: t("steps.climb.body") },
+    { label: t("steps.post.label"), body: t("steps.post.body") },
+  ];
+
   return (
     <Section
-      id="how-it-works"
-      eyebrow="The loop"
-      title="How it works"
-      description="Five steps, and the fifth one sends you back to the first. That loop is the whole product."
+      id={sectionId(locale, "howItWorks")}
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
     >
       <ol className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-5">
-        {STEPS.map((step, index) => (
+        {steps.map((step, index) => (
           <li
             key={step.label}
             className="flex flex-col gap-3 bg-surface p-6 transition-colors duration-(--motion-quick) ease-out hover:bg-surface-elevated"
@@ -51,7 +42,7 @@ export function HowItWorks() {
 
       <p className="mt-6 flex items-center gap-3 text-label text-text-muted">
         <span aria-hidden className="h-px w-8 bg-aura" />
-        Repeat. That is the game.
+        {t("repeat")}
       </p>
     </Section>
   );

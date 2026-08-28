@@ -1,21 +1,22 @@
-const decimal = new Intl.NumberFormat("en-US");
-const compact = new Intl.NumberFormat("en-US", {
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
+import type { useFormatter } from "next-intl";
 
-/** Aura is always an integer and always grouped: 12421 -> "12,421". */
-export function formatAura(value: number) {
-  return decimal.format(Math.trunc(value));
+/** The formatter returned by `useFormatter()` / `getFormatter()`. */
+export type Formatter = ReturnType<typeof useFormatter>;
+
+/**
+ * Aura is always an integer and always grouped, in whichever way the active
+ * locale groups thousands: 12421 -> "12,421" in English, "12.421" in
+ * Portuguese. Both come from here, never from a hardcoded separator.
+ */
+export function formatAura(format: Formatter, value: number) {
+  return format.number(Math.trunc(value), "aura");
 }
 
 /** Engagement counts get compacted once they stop fitting a card: "1.3K". */
-export function formatCount(value: number) {
-  return value < 10_000 ? decimal.format(value) : compact.format(value);
-}
-
-export function formatRank(rank: number) {
-  return `#${decimal.format(rank)}`;
+export function formatCount(format: Formatter, value: number) {
+  return value < 10_000
+    ? format.number(value, "aura")
+    : format.number(value, "compact");
 }
 
 /** Clip length as it appears on a feed card: 7400 -> "0:07". */

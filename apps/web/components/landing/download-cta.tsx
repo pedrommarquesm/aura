@@ -1,10 +1,20 @@
+import { useLocale, useTranslations } from "next-intl";
+
 import { Container, Eyebrow } from "@/components/landing/section";
 import { ButtonLink } from "@/components/ui";
+import { sectionId } from "@/i18n/sections";
 import { siteConfig } from "@/lib/site";
 
 export function DownloadCta() {
+  const locale = useLocale();
+  const t = useTranslations("landing.download");
+  const actions = useTranslations("common.actions");
+
   return (
-    <section id="download" className="scroll-mt-16 py-20 sm:py-28">
+    <section
+      id={sectionId(locale, "download")}
+      className="scroll-mt-16 py-20 sm:py-28"
+    >
       <Container>
         <div className="relative overflow-hidden rounded-xl border border-aura/40 bg-surface p-8 shadow-aura-glow sm:p-14">
           <div
@@ -13,34 +23,28 @@ export function DownloadCta() {
           />
 
           <div className="relative flex flex-col gap-6">
-            <Eyebrow>Download</Eyebrow>
+            <Eyebrow>{t("eyebrow")}</Eyebrow>
 
             <h2 className="max-w-2xl text-title text-balance sm:text-display">
-              Zero Aura is a choice. Fix it in about ninety seconds.
+              {t("title")}
             </h2>
 
-            <p className="max-w-xl text-body text-text-secondary">
-              Install the app, post once, and watch what the feed does with it.
-              Free on iOS and Android, no invite needed.
-            </p>
+            <p className="max-w-xl text-body text-text-secondary">{t("body")}</p>
 
             <div className="flex flex-wrap items-center gap-3">
               <ButtonLink href={siteConfig.appStoreUrl} size="lg">
-                Download for iPhone
+                {actions("downloadIphone")}
               </ButtonLink>
               <ButtonLink
                 href={siteConfig.playStoreUrl}
                 size="lg"
                 variant="secondary"
               >
-                Download for Android
+                {actions("downloadAndroid")}
               </ButtonLink>
             </div>
 
-            <p className="text-caption text-text-muted">
-              Photos and videos, likes, Aura and the global leaderboard. Posting
-              only happens in the app.
-            </p>
+            <p className="text-caption text-text-muted">{t("note")}</p>
           </div>
         </div>
       </Container>

@@ -1,5 +1,8 @@
 import { ImageResponse } from "next/og";
 
+import type { AppLocale } from "@/i18n/routing";
+import { staticFormatter } from "@/i18n/static";
+
 import { AURA_GLYPH } from "./aura";
 import { formatAura } from "./format";
 import { siteConfig } from "./site";
@@ -8,6 +11,11 @@ export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
 export const OG_IMAGE_CONTENT_TYPE = "image/png";
 
 type OgImageInput = {
+  /**
+   * Passed explicitly: an image route renders outside the `[locale]` segment,
+   * so it cannot read the locale from root params.
+   */
+  locale: AppLocale;
   eyebrow?: string;
   title: string;
   subtitle?: string;
@@ -19,11 +27,14 @@ type OgImageInput = {
  * handle and Aura, so share cards stay consistent across the site.
  */
 export function renderOgImage({
+  locale,
   eyebrow = siteConfig.name,
   title,
   subtitle,
   aura,
 }: OgImageInput) {
+  const format = staticFormatter(locale);
+
   return new ImageResponse(
     (
       <div
@@ -87,7 +98,7 @@ export function renderOgImage({
           <span>{siteConfig.url.replace(/^https?:\/\//, "")}</span>
           {aura === undefined ? null : (
             <span style={{ color: "#FFFFFF", fontWeight: 800 }}>
-              {AURA_GLYPH} {formatAura(aura)}
+              {AURA_GLYPH} {formatAura(format, aura)}
             </span>
           )}
         </div>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/cn";
 
@@ -26,6 +27,7 @@ export function Avatar({
   ring = false,
   className,
 }: AvatarProps) {
+  const t = useTranslations("common");
   const { box, text, px } = sizes[size];
   const initials = username.replace(/^@/, "").slice(0, 2).toUpperCase();
 
@@ -41,7 +43,7 @@ export function Avatar({
       {src ? (
         <Image
           src={src}
-          alt={`${username} avatar`}
+          alt={t("avatarAlt", { username })}
           width={px}
           height={px}
           className="size-full object-cover"

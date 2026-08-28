@@ -4,20 +4,18 @@ function env(value: string | undefined, fallback: string) {
 }
 
 export const siteConfig = {
+  /** Product name, never translated (docs/i18n.md). Copy lives in the catalogs. */
   name: "Aura",
-  tagline: "The social game where likes are the score",
-  description:
-    "Aura is a social game. Post photos and videos, collect likes, farm Aura and climb the global leaderboard. Free on iOS and Android.",
   url: env(process.env.NEXT_PUBLIC_SITE_URL, "https://aura.app").replace(
     /\/$/,
     "",
   ),
   twitter: "@auraapp",
   /**
-   * Primary CTA target. Until a store smart link exists it falls back to the
-   * download section, which lists both stores.
+   * Primary CTA target. Empty until a store smart link exists, in which case
+   * callers fall back to the localized download section anchor.
    */
-  appDownloadUrl: env(process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL, "#download"),
+  appDownloadUrl: env(process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL, ""),
   appStoreUrl: env(
     process.env.NEXT_PUBLIC_APP_STORE_URL,
     "https://apps.apple.com/app/aura",
@@ -30,4 +28,12 @@ export const siteConfig = {
 
 export function absoluteUrl(path = "/") {
   return new URL(path, siteConfig.url).toString();
+}
+
+/**
+ * Where the primary CTA points. Without a store smart link it scrolls to the
+ * download section, whose anchor id is localized.
+ */
+export function downloadHref(sectionHash: string) {
+  return siteConfig.appDownloadUrl || sectionHash;
 }

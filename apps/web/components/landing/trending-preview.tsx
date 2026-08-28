@@ -1,26 +1,28 @@
+import { useLocale, useTranslations } from "next-intl";
 import { Suspense } from "react";
 
 import { Section } from "@/components/landing/section";
 import { PostCard } from "@/components/post-card";
 import { Card, Skeleton } from "@/components/ui";
+import { sectionId } from "@/i18n/sections";
 import { api } from "@/lib/api";
 
 export function TrendingPreview() {
+  const locale = useLocale();
+  const t = useTranslations("landing.trending");
+
   return (
     <Section
-      id="trending"
-      eyebrow="Live from the app"
-      title="Trending right now"
-      description="Trending is not a follower count. It is Aura earned per minute, weighted by how recent a post is — so a first post can outrank an established creator on the same day."
+      id={sectionId(locale, "trending")}
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
     >
       <Suspense fallback={<TrendingGridSkeleton />}>
         <TrendingGrid />
       </Suspense>
 
-      <p className="mt-8 text-label text-text-muted">
-        Every post has a public link, so anything made in the app is shareable
-        outside it. Liking and posting stay in the app.
-      </p>
+      <p className="mt-8 text-label text-text-muted">{t("note")}</p>
     </Section>
   );
 }

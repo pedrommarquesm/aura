@@ -1,3 +1,5 @@
+import { useFormatter, useTranslations } from "next-intl";
+
 import { AURA_GLYPH } from "@/lib/aura";
 import { cn } from "@/lib/cn";
 import { formatAura } from "@/lib/format";
@@ -33,6 +35,9 @@ export function AuraValue({
   tone = "default",
   className,
 }: AuraValueProps) {
+  const format = useFormatter();
+  const t = useTranslations("common");
+
   return (
     <span
       className={cn(
@@ -45,11 +50,12 @@ export function AuraValue({
       <span aria-hidden className="leading-none">
         {AURA_GLYPH}
       </span>
-      <span className="aura-numerals">{formatAura(value)}</span>
+      <span className="aura-numerals">{formatAura(format, value)}</span>
+      {/* "Aura" is the product's own word and is never translated. */}
       {showUnit ? (
-        <span className="font-medium text-text-secondary">Aura</span>
+        <span className="font-medium text-text-secondary">{t("aura")}</span>
       ) : (
-        <span className="sr-only">Aura</span>
+        <span className="sr-only">{t("aura")}</span>
       )}
     </span>
   );
