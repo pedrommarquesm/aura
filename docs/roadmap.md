@@ -133,16 +133,16 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | In review | |
-| MEDIA-01 | R2 bucket `aura-media` + immutable Cache-Control. `cdn.aura.app` still needs attaching | In review | |
-| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | In review | |
-| MEDIA-03 | `POST /posts/:id/complete` + object verification | In review | |
-| MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | In review | |
-| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | In review | |
+| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-01 | R2 bucket `aura-media` + immutable Cache-Control. `cdn.aura.app` still needs attaching | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-03 | `POST /posts/:id/complete` + object verification | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-06 | Video: managed provider integration, always retaining our own master (decision open, architecture §18) | Not started | |
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
-| MOB-20 | Create flow: camera, picker, preview, caption | In review | |
-| MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | In review | |
+| MOB-20 | Create flow: camera, picker, preview, caption | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 
 ### Feed
 
@@ -226,7 +226,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | |
+| 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
