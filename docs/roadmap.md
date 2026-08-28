@@ -200,6 +200,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-28 | Mobile auth: Apple + Google native, API-issued tokens, no passwords in V0. Web has no auth in V0 | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
-| 2026-08-28 | NestJS on Fastify; Cloudflare R2 for storage | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
-| 2026-08-28 | Aura unit: flat 10 per like in V0, integer always, Vote Power deferred behind `auraForLike()` | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
+| 2026-08-28 | Mobile auth: Apple + Google native, API-issued tokens, no passwords in V0. Web has no auth in V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| 2026-08-28 | NestJS on Fastify; Cloudflare R2 for storage | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| 2026-08-28 | Aura unit: flat 10 per like in V0, integer always, Vote Power deferred behind `auraForLike()` | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
+| 2026-08-28 | Backend architecture: modular monolith, ledger-based Aura, media plane off the API | [#1](https://github.com/pedrommarquesm/aura/pull/1) |
