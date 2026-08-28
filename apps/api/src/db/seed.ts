@@ -15,7 +15,11 @@ import { auraEvents, likes, mediaAssets, posts, users } from './schema';
  * pipeline is still being built: published posts with media variants, likes,
  * and a matching ledger so Aura totals reconcile instead of being invented.
  *
- * Refuses to run against production — this truncates.
+ * Runs against local and staging. Refuses production, because it truncates.
+ *
+ * Guarded on APP_ENV rather than NODE_ENV: staging correctly runs
+ * `NODE_ENV=production`, so a NODE_ENV check would refuse to seed the one
+ * deployed environment that is supposed to carry demo data.
  */
 const SAMPLE_USERS = [
   { username: 'alice', title: 'Aura Lord', country: 'PT', city: 'Lisboa' },
@@ -40,9 +44,11 @@ const CAPTIONS = [
 async function main(): Promise<void> {
   const env = loadEnv();
 
-  if (env.NODE_ENV === 'production') {
+  if (env.APP_ENV === 'production') {
     throw new Error('Refusing to seed a production database');
   }
+
+  console.log(`[seed] target: APP_ENV=${env.APP_ENV}`);
 
   const client = postgres(env.DATABASE_URL, {
     max: 1,

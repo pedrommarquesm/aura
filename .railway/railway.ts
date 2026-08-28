@@ -5,6 +5,14 @@
  * worker, and the public web app. Checked in so the environment can be
  * recreated from any machine rather than living only in the dashboard.
  *
+ * **There is only a `staging` environment today.** Production infrastructure
+ * is created when the product is ready for it, not before — an idle
+ * production environment invites someone to point real users at something that
+ * has never been through a release process.
+ *
+ * This same file provisions production when the time comes: create the
+ * environment, apply against it, and change `APP_ENV`. See docs/deployment.md.
+ *
  *   railway config plan    # review the diff against Railway
  *   railway config apply   # apply it
  *
@@ -56,7 +64,10 @@ export default defineRailway(() => {
   const backendEnv = {
     DATABASE_URL: Postgres.env.DATABASE_URL,
     REDIS_URL: Redis.env.REDIS_URL,
+    // Runtime mode, not a place. Staging runs the same optimized code paths as
+    // production; APP_ENV is what says which deployment this actually is.
     NODE_ENV: 'production',
+    APP_ENV: 'staging',
     LOG_LEVEL: 'info',
     // Postgres is reached over Railway's private network, so the connection is
     // not additionally TLS-wrapped.

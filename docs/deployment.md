@@ -4,6 +4,52 @@ Aura runs on Railway. Everything needed to recreate the environment is in this
 repository, so it can be rebuilt from any machine without clicking through a
 dashboard.
 
+## Environments
+
+**There is one deployed environment: `staging`.** Production does not exist
+yet and is created when the product is ready for real users. An idle production
+environment is worse than none — it invites someone to point traffic at
+something that has never been through a release process.
+
+| | Where | `NODE_ENV` | `APP_ENV` | Data |
+|---|---|---|---|---|
+| **Development** | Your machine | `development` | `local` | Seeded, disposable |
+| **Staging** | Railway | `production` | `staging` | Seeded, disposable |
+| **Production** | *not created yet* | `production` | `production` | Real. Never seeded |
+
+### Why there are two variables
+
+They answer different questions, and merging them causes real bugs.
+
+`NODE_ENV` is **runtime mode** for Node and the libraries beneath it —
+optimizations, warning output, dependency behaviour. Every deployed
+environment sets it to `production`, staging included, so staging executes the
+same code paths production will. Setting `NODE_ENV=staging` quietly changes
+library behaviour and makes staging stop resembling the thing it exists to
+rehearse.
+
+`APP_ENV` is **which deployment this is**, and it guards the unsafe
+operations:
+
+- `npm run db:seed` refuses to run when `APP_ENV=production`
+- The development `JWT_SECRET` is refused anywhere except `local`
+- `GET /health` reports it, so "which environment am I hitting" is one request
+  rather than a guess from a hostname
+
+Guarding on `NODE_ENV` instead is the classic mistake: staging correctly runs
+`NODE_ENV=production`, so the guard would treat staging as production and block
+exactly the things staging exists to allow.
+
+### Adding production later
+
+1. Create the environment: `railway environment new production`
+2. Apply this same IaC file against it
+3. Set `APP_ENV=production` and a fresh `JWT_SECRET`
+4. Provision its own Postgres and Redis — **never point it at staging's data**
+5. Add its domains, then deploy
+
+Nothing in the repository needs restructuring for that; it is configuration.
+
 ## What runs where
 
 | Service | Source | Role |
@@ -135,12 +181,18 @@ code so the feed can be tuned without a deploy.
 
 ## Current environment
 
-Project `aura`, environment `production`, region `europe-west4`.
+Project `aura`, environment **`staging`**, region `europe-west4`.
 
 | Service | URL |
 |---|---|
 | api | https://api-production-aa71.up.railway.app |
 | web | https://web-production-e1282.up.railway.app |
+
+The hostnames still read `-production-` because Railway generated them before
+the environment was renamed and does not rewrite existing domains. They serve
+**staging**. Confirm with `curl <api>/health`, which reports `APP_ENV`, rather
+than trusting the hostname — and give production its own domains rather than
+inheriting these.
 
 ## Troubleshooting
 

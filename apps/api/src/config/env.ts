@@ -5,7 +5,29 @@ const booleanish = z
   .transform((value) => (typeof value === 'boolean' ? value : value === 'true' || value === '1'));
 
 const envSchema = z.object({
+  /**
+   * Runtime mode for Node and the libraries under it. Controls optimizations,
+   * warning output, and dependency behaviour — nothing about *where* we run.
+   *
+   * Deployed environments all set this to `production`, staging included,
+   * because a staging box should execute the same optimized code paths that
+   * production will. Setting it to anything else silently changes library
+   * behaviour and makes staging stop resembling production, which defeats the
+   * point of having a staging environment at all.
+   */
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+
+  /**
+   * Which deployment this is. Never conflate with NODE_ENV.
+   *
+   * This is what guards destructive and unsafe operations: seeding refuses to
+   * run against `production`, and the development JWT secret is refused
+   * anywhere but `local`. Keying those guards off NODE_ENV instead is the
+   * classic mistake — staging correctly runs `NODE_ENV=production`, so a guard
+   * on NODE_ENV would treat staging as production and block the very things
+   * staging exists to allow.
+   */
+  APP_ENV: z.enum(['local', 'staging', 'production']).default('local'),
 
   // Railway injects PORT. Binding to 0.0.0.0 is required behind its proxy.
   PORT: z.coerce.number().int().positive().default(3000),
@@ -87,9 +109,10 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
 
   const env = parsed.data;
 
-  if (env.NODE_ENV === 'production' && env.JWT_SECRET.startsWith('dev-only-')) {
+  if (env.APP_ENV !== 'local' && env.JWT_SECRET.startsWith('dev-only-')) {
     throw new Error(
-      'JWT_SECRET is still the development default. Set a real secret before deploying.',
+      `JWT_SECRET is still the development default and APP_ENV is "${env.APP_ENV}". ` +
+        'Set a real secret before deploying.',
     );
   }
 
