@@ -85,6 +85,12 @@ site and every URL that was already shared still resolves. Portuguese lives
 under `/pt`. `<html lang>` is `en` / `pt-PT` — `pt` alone would claim Brazilian
 Portuguese is equally intended.
 
+The locale is deliberately `pt` while the language tag is `pt-PT`, and the two
+are not interchangeable. `docs/i18n.md` has the reasoning; the short version is
+that `Intl` with `pt-PT` groups thousands with a no-break space (`12 421`) while
+`pt` gives the dot (`12.421`) that mobile also produces. `htmlLang` in
+`i18n/routing.ts` is the only place `pt-PT` may appear.
+
 ### Routes
 
 `pathnames` maps an internal route (the folder under `app/[locale]`) to the

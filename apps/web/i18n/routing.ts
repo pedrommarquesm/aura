@@ -29,8 +29,13 @@ export type AppLocale = (typeof routing.locales)[number];
 export type AppPathname = keyof typeof routing.pathnames;
 
 /**
- * `pt` is European Portuguese: the URL segment stays short for sharing while
- * the language tag stays correct for `lang` and `hreflang`.
+ * Language tags for `lang` and `hreflang`, which want the territory. This is
+ * the only place `pt-PT` appears, and it must stay that way.
+ *
+ * The locale above is `pt`, not `pt-PT`, because that is what formats numbers
+ * (see docs/i18n.md). CLDR's `pt-PT` groups thousands with a no-break space —
+ * `12 421` rather than `12.421` — and mobile formats with `pt`, so widening
+ * the locale here would show the same user two different Aura totals.
  */
 export const htmlLang: Record<AppLocale, string> = {
   en: "en",
