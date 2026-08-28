@@ -58,8 +58,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-02 | Work plan & tracker (this file) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types, replacing the local `lib/api/types.ts` in both clients | Not started | |
-| FND-05 | CI: typecheck, lint, test on PR | Not started | |
-| FND-06 | Environment/secrets convention (`.env.example` per app) | Not started | |
+| FND-05 | CI: typecheck, lint, test on PR | In review | |
+| FND-06 | Environment/secrets convention (`.env.example` per app) | In review | |
 | FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-08 | Media storage/CDN portability design (architecture §6.6) | Done | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
@@ -226,6 +226,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | PRs run typecheck, lint and tests per app. Secrets stay in `.env` / Railway `preserve()`, never git | |
 | 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | 2026-08-28 | `GET /` on the API returns a service index instead of `Cannot GET /` | [#16](https://github.com/pedrommarquesm/aura/pull/16) |
