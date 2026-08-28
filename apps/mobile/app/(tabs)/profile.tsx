@@ -4,67 +4,75 @@ import { ScrollView, View } from 'react-native';
 
 import { Screen } from '@/components/layout';
 import { LanguageSwitcher } from '@/components/settings';
-import { AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui';
+import { AuraGradient, AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui';
 import { useFormat } from '@/lib/i18n';
-import { mockViewer } from '@/mocks/feed';
+import { useAuthGateStore } from '@/store/auth-gate';
+import { useSessionStore } from '@/store/session';
 import { colors } from '@/theme/tokens';
-
-/** Stand-in profile counters until the API exists (roadmap `MOB-43`). */
-const STATS = { posts: 18, followers: 204, streak: 6 };
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <View className="flex-1 items-center">
-      <Text variant="heading" style={{ fontVariant: ['tabular-nums'] }}>
-        {value}
-      </Text>
-      <Text variant="caption" tone="muted" numberOfLines={1}>
-        {label}
-      </Text>
-    </View>
-  );
-}
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const format = useFormat();
+  const status = useSessionStore((state) => state.status);
+  const user = useSessionStore((state) => state.user);
+  const signOut = useSessionStore((state) => state.signOut);
+  const requestAuth = useAuthGateStore((state) => state.requestAuth);
+
+  if (status !== 'authenticated' || !user) {
+    return (
+      <Screen className="justify-center">
+        <View className="items-center">
+          <View className="h-20 w-20 items-center justify-center overflow-hidden rounded-xl">
+            <AuraGradient />
+            <Ionicons name="person" size={36} color={colors.text.DEFAULT} />
+          </View>
+          <Text variant="title" className="pt-6 text-center">
+            {t('auth.reasons.profile.title')}
+          </Text>
+          <Text variant="body" tone="secondary" className="pt-2 text-center">
+            {t('auth.reasons.profile.body')}
+          </Text>
+          <Button
+            label={t('auth.signIn')}
+            className="mt-8"
+            glow
+            fullWidth
+            onPress={() => requestAuth({ reason: 'profile' })}
+          />
+        </View>
+        <LanguageSwitcher className="mt-10" />
+      </Screen>
+    );
+  }
 
   return (
     <Screen>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pb-8">
         <View className="items-center pt-4">
-          <Avatar uri={mockViewer.avatarUrl} username={mockViewer.username} size="xl" ring />
+          <Avatar uri={user.avatarUrl} username={user.username} size="xl" ring />
 
           <Text variant="heading" className="pt-3">
-            @{mockViewer.username}
+            @{user.username}
           </Text>
-          <Text variant="caption" tone="aura">
-            {mockViewer.title}
-          </Text>
+          {user.title ? (
+            <Text variant="caption" tone="aura">
+              {user.title}
+            </Text>
+          ) : null}
 
-          <AuraValue value={mockViewer.aura} size="xl" className="pt-4" />
-          <Text variant="label" tone="muted" className="pt-1">
-            {t('profile.globalRank', { rank: mockViewer.rank })}
-          </Text>
+          <AuraValue value={user.aura} size="xl" className="pt-4" />
         </View>
 
         <Card surface="elevated" className="mt-6 flex-row">
-          <Stat label={t('profile.stats.posts')} value={format.number(STATS.posts)} />
-          <View className="w-px bg-border" />
-          <Stat label={t('profile.stats.followers')} value={format.number(STATS.followers)} />
-          <View className="w-px bg-border" />
-          <Stat label={t('profile.stats.streak')} value={format.number(STATS.streak)} />
+          <View className="flex-1 items-center">
+            <Text variant="heading" style={{ fontVariant: ['tabular-nums'] }}>
+              {format.number(user.aura)}
+            </Text>
+            <Text variant="caption" tone="muted" numberOfLines={1}>
+              {t('common.aura')}
+            </Text>
+          </View>
         </Card>
-
-        <View className="flex-row gap-3 pt-4">
-          <Button label={t('profile.actions.edit')} variant="secondary" className="flex-1" />
-          <Button
-            label={t('common.actions.share')}
-            variant="secondary"
-            icon={<Ionicons name="arrow-redo-outline" size={16} color={colors.text.DEFAULT} />}
-            className="flex-1"
-          />
-        </View>
 
         <Text variant="heading" className="pb-3 pt-8">
           {t('profile.posts.title')}
@@ -78,9 +86,12 @@ export default function ProfileScreen() {
 
         <LanguageSwitcher className="mt-8" />
 
-        <Text variant="caption" tone="muted" className="pt-4">
-          {t('profile.comingSoon')}
-        </Text>
+        <Button
+          label={t('auth.signOut')}
+          variant="ghost"
+          className="mt-6"
+          onPress={() => void signOut()}
+        />
       </ScrollView>
     </Screen>
   );

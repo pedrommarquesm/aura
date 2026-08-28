@@ -95,6 +95,47 @@
     },
     "comingSoon": "Aura Sense and Vote Power join this card in V1 (roadmap AURA-11, AURA-10)."
   },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "notNow": "Not now",
+    "providers": {
+      "apple": "Continue with Apple",
+      "google": "Continue with Google"
+    },
+    "reasons": {
+      "like": {
+        "title": "Sign in to award Aura",
+        "body": "Likes are the score. Apple or Google — no password — then this like lands."
+      },
+      "create": {
+        "title": "Sign in to post",
+        "body": "Your post starts at zero Aura. Sign in and the climb begins."
+      },
+      "profile": {
+        "title": "Start farming Aura",
+        "body": "Sign in to claim a username, post, and climb the global board."
+      },
+      "generic": {
+        "title": "Sign in to Aura",
+        "body": "Apple or Google. No password."
+      }
+    },
+    "unavailable": {
+      "apple": "Sign in with Apple is not available on this device.",
+      "google": "Google Sign-In is not configured in this build yet.",
+      "googleDevBuild": "Google Sign-In needs a development build on this iPhone. Expo Go cannot host an iOS Google client."
+    },
+    "username": {
+      "title": "Pick your username",
+      "body": "This is how you show up on the board. 3–30 letters, numbers or underscore.",
+      "placeholder": "username",
+      "submit": "Claim username",
+      "taken": "That username is taken.",
+      "reserved": "That username is not available.",
+      "invalid": "3–30 characters. Letters, numbers or underscore."
+    }
+  },
   "settings": {
     "language": {
       "title": "Language",

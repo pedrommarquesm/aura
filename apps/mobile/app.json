@@ -2,7 +2,10 @@
   "expo": {
     "name": "Aura",
     "slug": "aura",
-    "scheme": "aura",
+    "scheme": [
+      "aura",
+      "com.googleusercontent.apps.37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f"
+    ],
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +13,8 @@
     "backgroundColor": "#0A0A0F",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.aura.mobile"
+      "bundleIdentifier": "app.aura.mobile",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "app.aura.mobile",
@@ -38,7 +42,15 @@
       ],
       "expo-secure-store",
       "expo-font",
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser",
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

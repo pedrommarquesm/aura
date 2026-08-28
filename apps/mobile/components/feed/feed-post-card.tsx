@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +8,10 @@ import { Pressable, View } from 'react-native';
 import { LikeButton } from './like-button';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
+import { likePost, unlikePost } from '@/lib/api/likes';
+import { applyLikeResult } from '@/lib/query/feed-cache';
+import { useAuthGateStore } from '@/store/auth-gate';
+import { useIsAuthenticated } from '@/store/session';
 import { colors } from '@/theme/tokens';
 
 /** Portrait 4:5 through landscape 1.91:1, matching what the media pipeline produces. */
@@ -30,6 +35,11 @@ function formatDuration(durationMs: number): string {
 export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCard }) {
   const { t } = useTranslation();
   const { author, media } = post;
+  const queryClient = useQueryClient();
+  const isAuthenticated = useIsAuthenticated();
+  const requestAuth = useAuthGateStore((state) => state.requestAuth);
+
+  const requireAuth = !isAuthenticated;
 
   return (
     <View className="pb-6">
@@ -80,7 +90,22 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
       </View>
 
       <View className="flex-row items-center gap-5 px-gutter pt-3">
-        <LikeButton likeCount={post.likeCount} initiallyLiked={post.likedByMe} />
+        <LikeButton
+          key={`${post.id}:${post.likedByMe}`}
+          likeCount={post.likeCount}
+          initiallyLiked={post.likedByMe}
+          requireAuth={requireAuth}
+          onRequireAuth={() =>
+            requestAuth({
+              reason: 'like',
+              pending: { type: post.likedByMe ? 'unlike' : 'like', postId: post.id },
+            })
+          }
+          onChange={async (liked) => {
+            const result = liked ? await likePost(post.id) : await unlikePost(post.id);
+            applyLikeResult(queryClient, post.id, result);
+          }}
+        />
 
         {/* Comments are V1 (roadmap `API-31`), so the V0 card carries like + share only. */}
         <Pressable

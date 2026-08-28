@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pressable, type PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, type PressableProps } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { AuraGradient } from './aura-gradient';
@@ -7,6 +7,7 @@ import { Text, type TextVariant } from './text';
 import { cn } from '@/lib/cn';
 import { auraGlow } from '@/theme/glow';
 import { instant } from '@/theme/motion';
+import { colors } from '@/theme/tokens';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -34,6 +35,8 @@ export type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   /** Aura glow. Reserved for the one action on screen the user is meant to take. */
   glow?: boolean;
   fullWidth?: boolean;
+  /** Disables the button and replaces the label with a spinner. */
+  busy?: boolean;
   className?: string;
 };
 
@@ -44,11 +47,12 @@ export function Button({
   icon,
   glow = false,
   fullWidth = false,
+  busy = false,
   disabled,
   className,
   ...props
 }: ButtonProps) {
-  const isDisabled = disabled ?? false;
+  const isDisabled = (disabled ?? false) || busy;
   const press = useSharedValue(0);
 
   // Touch feedback has to be immediate to feel right (§2.2), so it is driven on the UI
@@ -85,22 +89,28 @@ export function Button({
       {...props}
     >
       {variant === 'primary' ? <AuraGradient /> : null}
-      {icon}
-      {/*
-        The button height is fixed, so a label that wraps gets clipped rather than
-        pushing the button taller. Portuguese labels run 15-25% longer than the English
-        ones these were sized against ("Editar perfil" against "Edit profile"), so a
-        long label shrinks on iOS and ellipsizes on Android instead of wrapping.
-      */}
-      <Text
-        variant={sizing.text}
-        className={cn('shrink', labelClass)}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.85}
-      >
-        {label}
-      </Text>
+      {busy ? (
+        <ActivityIndicator color={colors.text.DEFAULT} />
+      ) : (
+        <>
+          {icon}
+          {/*
+            The button height is fixed, so a label that wraps gets clipped rather than
+            pushing the button taller. Portuguese labels run 15-25% longer than the English
+            ones these were sized against ("Editar perfil" against "Edit profile"), so a
+            long label shrinks on iOS and ellipsizes on Android instead of wrapping.
+          */}
+          <Text
+            variant={sizing.text}
+            className={cn('shrink', labelClass)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.85}
+          >
+            {label}
+          </Text>
+        </>
+      )}
     </AnimatedPressable>
   );
 }

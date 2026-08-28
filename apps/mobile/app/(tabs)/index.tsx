@@ -138,7 +138,9 @@ export default function HomeScreen() {
           </View>
         }
         ListFooterComponent={
-          isFetchingNextPage ? <FeedPostSkeleton /> : posts.length > 0 ? (
+          isFetchingNextPage ? (
+            <FeedPostSkeleton />
+          ) : posts.length > 0 ? (
             <View className="h-8" />
           ) : null
         }

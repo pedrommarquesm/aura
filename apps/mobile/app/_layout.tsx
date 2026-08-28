@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthModals } from '@/components/auth';
 import { I18nProvider } from '@/lib/i18n';
 import { QueryProvider } from '@/lib/query/provider';
 import { useSessionStore } from '@/store/session';
@@ -34,6 +35,7 @@ export default function RootLayout() {
                 contentStyle: { backgroundColor: colors.bg },
               }}
             />
+            <AuthModals />
           </QueryProvider>
         </I18nProvider>
       </SafeAreaProvider>

@@ -95,6 +95,47 @@
     },
     "comingSoon": "Aura Sense e Vote Power juntam-se a este cartão na V1 (roadmap AURA-11, AURA-10)."
   },
+  "auth": {
+    "signIn": "Iniciar sessão",
+    "signOut": "Terminar sessão",
+    "notNow": "Agora não",
+    "providers": {
+      "apple": "Continuar com a Apple",
+      "google": "Continuar com o Google"
+    },
+    "reasons": {
+      "like": {
+        "title": "Inicia sessão para dar Aura",
+        "body": "Os likes são a pontuação. Apple ou Google — sem palavra-passe — e este like conta."
+      },
+      "create": {
+        "title": "Inicia sessão para publicar",
+        "body": "A tua publicação começa com zero Aura. Entra e a subida começa."
+      },
+      "profile": {
+        "title": "Começa a farmar Aura",
+        "body": "Inicia sessão para escolheres um username, publicares e subires no ranking."
+      },
+      "generic": {
+        "title": "Entra na Aura",
+        "body": "Apple ou Google. Sem palavra-passe."
+      }
+    },
+    "unavailable": {
+      "apple": "Iniciar sessão com a Apple não está disponível neste dispositivo.",
+      "google": "O Google Sign-In ainda não está configurado nesta build.",
+      "googleDevBuild": "O Google Sign-In precisa de uma development build neste iPhone. O Expo Go não consegue alojar um cliente Google iOS."
+    },
+    "username": {
+      "title": "Escolhe o teu username",
+      "body": "É assim que apareces no ranking. 3–30 letras, números ou underscore.",
+      "placeholder": "username",
+      "submit": "Reservar username",
+      "taken": "Esse username já está ocupado.",
+      "reserved": "Esse username não está disponível.",
+      "invalid": "3–30 caracteres. Letras, números ou underscore."
+    }
+  },
   "settings": {
     "language": {
       "title": "Idioma",
