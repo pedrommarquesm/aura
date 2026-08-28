@@ -7,6 +7,7 @@ A mobile-first social game for farming Aura. Users post photos and videos, like 
 - Work plan & tracker: [docs/roadmap.md](docs/roadmap.md)
 - Design tokens: [docs/design-tokens.md](docs/design-tokens.md)
 - Deployment: [docs/deployment.md](docs/deployment.md)
+- Internationalization: [docs/i18n.md](docs/i18n.md)
 
 ## Apps
 

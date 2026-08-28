@@ -30,6 +30,13 @@ export const users = pgTable(
     city: varchar('city', { length: 120 }),
 
     /**
+     * Language for copy the *server* renders: push notifications and emails.
+     * In-app strings are translated by the clients from stable error codes, so
+     * this is not consulted on the request path. See docs/i18n.md.
+     */
+    locale: varchar('locale', { length: 10 }).notNull().default('en'),
+
+    /**
      * Materialized sum of this user's aura_events. The ledger is the source of
      * truth; if this ever drifts, the reconciliation job rebuilds it.
      * bigint because a popular account accumulates far past a 32-bit integer.

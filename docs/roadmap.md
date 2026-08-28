@@ -63,6 +63,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-08 | Media storage/CDN portability design (architecture §6.6) | Done | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
+| FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | In review | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
+| FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 
 ### Mobile bootstrap
 
@@ -105,6 +107,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-04 | Error envelope, stable error codes, request logging | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-05 | Rate limiting middleware (Redis-backed, shared across replicas) | In review | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-06 | OpenTelemetry tracing (split out of API-04, not yet wired) | Not started | |
+| API-07 | `users.locale` + `Accept-Language` negotiation for server-rendered copy | In review | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 
 ### Auth
 
@@ -212,6 +215,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | i18n: English + European Portuguese, ICU catalogs, translated web routes. API stays locale-agnostic; clients translate stable error codes | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | 2026-08-28 | Backend deployed to Railway; infrastructure as code in `.railway/railway.ts` (Railway deprecated `railway.json`) | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | 2026-08-28 | Media portability: provider stored per asset, keys not URLs, served from our own domain. Bunny to be evaluated post-V0 | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | 2026-08-28 | Mobile auth: Apple + Google native, API-issued tokens, no passwords in V0. Web has no auth in V0 | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
