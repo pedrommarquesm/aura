@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350" role="img">
+  <defs>
+    <linearGradient id="flash" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#0A0A0F" />
+      <stop offset="0.45" stop-color="#3B1D5E" />
+      <stop offset="1" stop-color="#FF3B5C" />
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#flash)" />
+  <g fill="#0A0A0F" opacity="0.86">
+    <ellipse cx="520" cy="470" rx="210" ry="250" />
+    <path d="M200 1350 C200 980 330 760 520 760 C710 760 840 980 840 1350 Z" />
+  </g>
+  <g fill="#FFFFFF" opacity="0.14">
+    <circle cx="880" cy="210" r="120" />
+    <circle cx="880" cy="210" r="220" />
+  </g>
+  <g stroke="#FF8A00" stroke-width="8" opacity="0.6" fill="none">
+    <path d="M120 200 L280 360" />
+    <path d="M120 360 L280 200" />
+  </g>
+  <rect y="1250" width="1080" height="100" fill="#0A0A0F" opacity="0.55" />
+</svg>

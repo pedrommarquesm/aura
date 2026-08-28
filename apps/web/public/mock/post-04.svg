@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350" role="img">
+  <defs>
+    <radialGradient id="water" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#22C55E" stop-opacity="0.55" />
+      <stop offset="0.5" stop-color="#0F3C46" />
+      <stop offset="1" stop-color="#0A0A0F" />
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#water)" />
+  <g stroke="#CBD5E1" stroke-width="4" opacity="0.28" fill="none">
+    <path d="M-40 900 C200 840 380 960 620 900 C820 850 960 930 1120 890" />
+    <path d="M-40 1000 C200 940 380 1060 620 1000 C820 950 960 1030 1120 990" />
+    <path d="M-40 1100 C200 1040 380 1160 620 1100 C820 1050 960 1130 1120 1090" />
+    <path d="M-40 1200 C200 1140 380 1260 620 1200 C820 1150 960 1230 1120 1190" />
+  </g>
+  <circle cx="760" cy="330" r="150" fill="#FACC15" opacity="0.8" />
+  <circle cx="760" cy="330" r="250" fill="#FACC15" opacity="0.16" />
+  <path d="M0 640 L240 470 L470 640 L700 430 L1080 660 L1080 780 L0 780 Z" fill="#0A0A0F" opacity="0.75" />
+</svg>
