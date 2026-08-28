@@ -58,8 +58,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-02 | Work plan & tracker (this file) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-03 | Monorepo tooling (workspaces, TypeScript config, lint/format) | Not started | |
 | FND-04 | `packages/contracts` — shared Zod schemas + inferred types, replacing the local `lib/api/types.ts` in both clients | Not started | |
-| FND-05 | CI: typecheck, lint, test on PR | In review | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
-| FND-06 | Environment/secrets convention (`.env.example` per app) | In review | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
+| FND-05 | CI: typecheck, lint, test on PR | Done | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
+| FND-06 | Environment/secrets convention (`.env.example` per app) | Done | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
 | FND-07 | Shared design tokens ([design-tokens.md](./design-tokens.md)) | Done | [#2](https://github.com/pedrommarquesm/aura/pull/2) |
 | FND-08 | Media storage/CDN portability design (architecture §6.6) | Done | [#3](https://github.com/pedrommarquesm/aura/pull/3) |
 | FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
@@ -133,16 +133,16 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-01 | R2 bucket `aura-media` + immutable Cache-Control. `cdn.aurarankd.com` still needs attaching | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-03 | `POST /posts/:id/complete` + object verification | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-01 | R2 bucket `aura-media` + immutable Cache-Control. `cdn.aurarankd.com` still needs attaching | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-03 | `POST /posts/:id/complete` + object verification | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-06 | Video: managed provider integration, always retaining our own master (decision open, architecture §18) | Not started | |
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
-| MOB-20 | Create flow: camera, picker, preview, caption | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MOB-20 | Create flow: camera, picker, preview, caption | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 
 ### Feed
 
@@ -172,7 +172,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Not started | |
-| WEB-12 | Basic public leaderboard | In review | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
+| WEB-12 | Basic public leaderboard | Done | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 
 ### Launch minimums
 
@@ -190,7 +190,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
-| OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | In review | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
+| OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
