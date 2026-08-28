@@ -183,6 +183,8 @@
     "invalid_token": "A tua sessão não é válida. Inicia sessão outra vez.",
     "token_expired": "A tua sessão expirou. Inicia sessão outra vez.",
     "refresh_reuse_detected": "Terminámos a tua sessão para proteger a tua conta. Inicia sessão outra vez.",
+    "account_suspended": "Esta conta está suspensa.",
+    "account_banned": "Esta conta foi banida.",
     "upload_expired": "O envio expirou. Escolhe outra vez a foto ou o vídeo.",
     "upload_too_large": "Esse ficheiro é demasiado grande.",
     "unsupported_media_type": "Esse tipo de ficheiro não é suportado.",

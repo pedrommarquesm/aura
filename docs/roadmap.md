@@ -179,8 +179,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | TS-01 | Report + block models and endpoints | Not started | |
-| TS-02 | User status enforcement (suspend/ban revokes sessions) | Not started | |
-| TS-03 | Post removal → `REVERSAL` of Aura earned | Not started | |
+| TS-02 | User status enforcement (suspend/ban revokes sessions) | In review | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
+| TS-03 | Post removal → `REVERSAL` of Aura earned | In review | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
 | TS-04 | Upload quotas and like rate limits | Not started | |
 | OPS-01 | Staging environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-02 | Deploy pipeline | Not started | |
@@ -227,6 +227,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Suspend/ban revokes every device session immediately and returns `account_suspended` / `account_banned`. Banned authors leave the feed and leaderboard. Removing a post (author or moderator) writes a ledger `REVERSAL` for the remaining Aura. `X-Moderation-Key` is the V0 stand-in for the admin dashboard | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
 | 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | 2026-08-28 | Public `/leaderboard` (`/pt/classificacao`) reads `GET /v1/leaderboards/global`. Posting and liking stay in the app | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 | 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |

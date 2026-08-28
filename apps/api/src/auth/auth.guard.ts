@@ -1,6 +1,7 @@
 import { Injectable, type CanActivate, type ExecutionContext } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 
+import { assertAccountActive } from '../common/errors/account-status';
 import { AppError } from '../common/errors/app-error';
 import type { User } from '../db/schema';
 
@@ -38,7 +39,7 @@ async function attachUser(
   const user = await auth.findUserById(claims.sub);
 
   if (!user) throw AppError.unauthorized('Account no longer exists');
-  if (user.status !== 'active') throw AppError.forbidden('This account is not active');
+  assertAccountActive(user.status);
 
   request.user = user;
   request.sessionId = claims.sid;

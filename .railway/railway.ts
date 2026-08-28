@@ -82,6 +82,8 @@ export default defineRailway(() => {
     R2_BUCKET: 'aura-media',
     MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
     MEDIA_EDGE: 'none',
+    // V0 stand-in for the admin dashboard. Unset parks /v1/moderation/*.
+    MODERATION_SECRET: preserve(),
   };
 
   const api = service('api', {

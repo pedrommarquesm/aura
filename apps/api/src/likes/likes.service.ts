@@ -55,6 +55,20 @@ export class LikesService {
       return { ...current, liked: true, actorAuraDelta: 0 };
     }
 
+    // A takedown can flip the post to `removed` between the first read and
+    // this write. Do not award Aura to a post that is no longer public.
+    const stillPublished = await this.db.query.posts.findFirst({
+      where: (table, { and: both, eq: equals }) =>
+        both(equals(table.id, postId), equals(table.status, 'published')),
+    });
+
+    if (!stillPublished) {
+      await this.db
+        .delete(likes)
+        .where(and(eq(likes.userId, actor.id), eq(likes.postId, postId)));
+      throw new AppError(ErrorCode.POST_NOT_PUBLISHED, 'This post is not available', 409);
+    }
+
     const amount = auraForLike(actor);
 
     const event = await this.ledger.apply({

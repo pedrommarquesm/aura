@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, inArray, lt, or, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, lt, ne, or, sql } from 'drizzle-orm';
 
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
@@ -96,7 +96,9 @@ export class FeedService {
   }
 
   private async selectPage(kind: FeedKind, cursor: FeedCursorValue, limit: number) {
-    const published = eq(posts.status, 'published');
+    // Banned authors leave the public surface. Suspended accounts keep their
+    // existing posts (they just cannot act) until a ban or a takedown.
+    const visible = and(eq(posts.status, 'published'), ne(users.status, 'banned'));
 
     // Keyset pagination on (sortValue, id). Offset pagination would drift as
     // new posts arrive, showing duplicates and skipping items mid-scroll.
@@ -146,7 +148,7 @@ export class FeedService {
         // Left join: a post whose asset row is missing should still render rather
         // than vanish from the feed.
         .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id))
-        .where(keyset ? and(published, keyset) : published)
+        .where(keyset ? and(visible, keyset) : visible)
         .orderBy(...order)
         .limit(limit)
     );
@@ -227,6 +229,7 @@ export class FeedService {
         trendingScore: posts.trendingScore,
         publishedAt: posts.publishedAt,
         status: posts.status,
+        authorStatus: users.status,
         authorId: users.id,
         username: users.username,
         displayName: users.displayName,
@@ -247,6 +250,7 @@ export class FeedService {
       .limit(1);
 
     if (!row) return null;
+    if (row.authorStatus === 'banned') return null;
 
     const likedIds = await this.likedPostIds(viewerId, [row.postId]);
     return { card: this.toCard(row, likedIds.has(row.postId)), authorId: row.authorId, status: row.status };
@@ -256,7 +260,8 @@ export class FeedService {
     const [row] = await this.db
       .select({ count: sql<number>`count(*)::int` })
       .from(posts)
-      .where(eq(posts.status, 'published'));
+      .innerJoin(users, eq(users.id, posts.authorId))
+      .where(and(eq(posts.status, 'published'), ne(users.status, 'banned')));
 
     return row?.count ?? 0;
   }

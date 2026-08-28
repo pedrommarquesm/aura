@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,6 +16,7 @@ import { AuthGuard, OptionalAuthGuard, type AuthenticatedRequest } from '../auth
 import { AppError } from '../common/errors/app-error';
 import { FeedService, type FeedCard } from '../feed/feed.service';
 import { UploadsService } from '../media/uploads.service';
+import { ModerationService } from '../moderation/moderation.service';
 
 const createUploadSchema = z.object({
   contentType: z.string().min(1).max(100),
@@ -38,6 +40,7 @@ export class PostsController {
   constructor(
     private readonly uploads: UploadsService,
     private readonly feed: FeedService,
+    private readonly moderation: ModerationService,
   ) {}
 
   @Post('uploads')
@@ -67,6 +70,17 @@ export class PostsController {
     if (!request.user) throw AppError.unauthorized();
     const input = completeUploadSchema.parse(body ?? {});
     return this.uploads.complete(request.user, postId, input);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') postId: string, @Req() request: AuthenticatedRequest) {
+    if (!request.user) throw AppError.unauthorized();
+    return this.moderation.removePost(postId, {
+      actorId: request.user.id,
+      reason: 'author_delete',
+    });
   }
 
   @Get(':id')

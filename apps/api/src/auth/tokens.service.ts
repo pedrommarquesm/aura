@@ -4,12 +4,13 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { and, eq, isNull } from 'drizzle-orm';
 import { SignJWT, jwtVerify } from 'jose';
 
+import { assertAccountActive } from '../common/errors/account-status';
 import { AppError } from '../common/errors/app-error';
 import { ErrorCode } from '../common/errors/error-codes';
 import { newId } from '../common/ids';
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
-import { deviceSessions } from '../db/schema';
+import { deviceSessions, users } from '../db/schema';
 
 export interface IssuedTokens {
   accessToken: string;
@@ -133,6 +134,25 @@ export class TokensService {
 
     if (!session) {
       throw new AppError(ErrorCode.INVALID_TOKEN, 'Refresh token is not valid', 401);
+    }
+
+    const [owner] = await this.db
+      .select({ status: users.status })
+      .from(users)
+      .where(eq(users.id, session.userId));
+
+    if (!owner) {
+      await this.revokeAllForUser(session.userId);
+      throw AppError.unauthorized('Account no longer exists');
+    }
+
+    try {
+      assertAccountActive(owner.status);
+    } catch (error) {
+      // Ban and suspend revoke every session. The next refresh must say that,
+      // not "stolen token" — reuse detection is a different event.
+      await this.revokeAllForUser(session.userId);
+      throw error;
     }
 
     if (session.revokedAt) {
