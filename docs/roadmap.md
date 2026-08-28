@@ -38,9 +38,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — wire the clients to the live API once the i18n branches merge, then the upload pipeline (`MEDIA-02` … `MEDIA-05`), which is the last piece of the V0 loop that does not exist.
+**Now** — web i18n (`WEB-20`, `WEB-21`), then wire both clients to the live API. Seed staging (`OPS-08`) so they have data. Then the upload pipeline (`MEDIA-02` … `MEDIA-05`), the last piece of the V0 loop that does not exist.
 
-**Next** — auth, then the feed and the Aura ledger. Both clients are scaffolded and running on mocks, so they can adopt real endpoints as those land.
+**Next** — native auth on mobile (`MOB-10` … `MOB-12`), then the rest of the client loop against the real API.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -108,17 +108,17 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-04 | Error envelope, stable error codes, request logging | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-05 | Rate limiting middleware (Redis-backed, shared across replicas) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-06 | OpenTelemetry tracing (split out of API-04, not yet wired) | Not started | |
-| API-08 | Seed script for client development | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-07 | `users.locale` + `Accept-Language` negotiation for server-rendered copy | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
+| API-08 | Seed script for client development | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 
 ### Auth
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| API-10 | `AuthIdentity` + `DeviceSession` models | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| API-11 | Sign in with Apple: server-side identity token verification | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| API-12 | Google Sign-In: server-side ID token verification | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| API-13 | JWT access + opaque refresh, rotation with reuse detection | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-10 | `AuthIdentity` + `DeviceSession` models | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-11 | Sign in with Apple: server-side identity token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-12 | Google Sign-In: server-side ID token verification | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-13 | JWT access + opaque refresh, rotation with reuse detection | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | Not started | |
 | MOB-11 | Username claim / onboarding flow | Not started | |
 | MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Not started | |
@@ -127,7 +127,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | Not started | |
 | MEDIA-01 | R2 buckets, own CDN domain (`cdn.aura.app`), cache policy | Not started | |
 | MEDIA-02 | `POST /posts/uploads` presigned upload + validation | Not started | |
@@ -143,9 +143,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| API-20 | `GET /feed` latest, cursor pagination | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| API-22 | `GET /feed/trending` backed by `trendingScore` | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-20 | `GET /feed` latest, cursor pagination | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| API-22 | `GET /feed/trending` backed by `trendingScore` | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Not started | |
 | MOB-31 | Loading, empty, and error/retry states | Not started | |
@@ -157,11 +157,11 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| AURA-01 | `AuraLedger`: single writer, transactional event + counter update | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-02 | `auraForLike()` seam, flat 10, with the Vote Power warning comment (architecture §7.4) | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | In review | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-01 | `AuraLedger`: single writer, transactional event + counter update | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-02 | `auraForLike()` seam, flat 10, with the Vote Power warning comment (architecture §7.4) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Not started | |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Not started | |
@@ -180,7 +180,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-02 | Deploy pipeline | Not started | |
 | OPS-03 | Dashboards + alerts for feed and like latency | Not started | |
 | OPS-04 | Postgres connection pooling (PgBouncer) | Not started | |
-| OPS-05 | Separate `APP_ENV` from `NODE_ENV`; staging-only deployment | In review | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
+| OPS-05 | Separate `APP_ENV` from `NODE_ENV`; staging-only deployment | Done | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
 | OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
@@ -221,6 +221,7 @@ Notable decisions, newest first. Link the PR that made them.
 | Date | Decision | PR |
 |---|---|---|
 | 2026-08-28 | Staging-only deployments. `APP_ENV` (local/staging/production) guards unsafe operations, separate from `NODE_ENV` runtime mode | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
+| 2026-08-28 | Mobile i18n: i18next + ICU, English + European Portuguese, locale-aware Aura number formatting (`pt`, not `pt-PT`) | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 | 2026-08-28 | V0 API surface: auth, feed, likes on the ledger, leaderboard. Feed and leaderboard readable signed out, for guest browsing | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | 2026-08-28 | i18n: English + European Portuguese, ICU catalogs, translated web routes. API stays locale-agnostic; clients translate stable error codes | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | 2026-08-28 | Backend deployed to Railway; infrastructure as code in `.railway/railway.ts` (Railway deprecated `railway.json`) | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
