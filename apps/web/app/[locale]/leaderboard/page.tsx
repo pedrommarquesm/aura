@@ -8,6 +8,9 @@ import { Container, Eyebrow } from "@/components/landing/section";
 import { api } from "@/lib/api";
 import { buildMetadata } from "@/lib/seo";
 
+/** Same window as the public feed cache (architecture §8.4). */
+export const revalidate = 10;
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = await getTranslations("meta.leaderboard");
