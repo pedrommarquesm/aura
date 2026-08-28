@@ -24,6 +24,11 @@
       "socialTitle": "Pick your Aura username",
       "description": "Choose the handle you show up as on the board."
     },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "socialTitle": "Aura global leaderboard",
+      "description": "The top 100 by lifetime Aura. One board, one number, visible to everyone."
+    },
     "keywords": "Aura, social game, leaderboard, photo sharing, short video",
     "og": {
       "title": "Turn likes into Aura.",
@@ -151,7 +156,8 @@
         "body": "Everyone starts at zero Aura and the title of NPC. The fastest way off the bottom is to post something worth liking."
       },
       "empty": "The board is empty. Everyone starts at zero.",
-      "unavailable": "Could not load the ranking."
+      "unavailable": "Could not load the ranking.",
+      "seeAll": "Open the full board"
     },
     "download": {
       "eyebrow": "Download",
@@ -236,6 +242,13 @@
     "header": {
       "rankCreator": "Rank / creator",
       "aura": "Aura"
+    },
+    "page": {
+      "eyebrow": "Leaderboard",
+      "title": "The global board",
+      "description": "Lifetime Aura, top to bottom, updated as likes land. In the app you also see your own position — even when you are nowhere near the top 100.",
+      "empty": "The board is empty. Everyone starts at zero.",
+      "unavailable": "Could not load the ranking."
     }
   },
   "errors": {

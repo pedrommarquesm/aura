@@ -17,6 +17,7 @@ const ROUTES: ReadonlyArray<{
 }> = [
   { pathname: "/", priority: 1, changeFrequency: "daily" },
   { pathname: "/feed", priority: 0.9, changeFrequency: "hourly" },
+  { pathname: "/leaderboard", priority: 0.8, changeFrequency: "hourly" },
   { pathname: "/about", priority: 0.6, changeFrequency: "monthly" },
   { pathname: "/login", priority: 0.4, changeFrequency: "monthly" },
 ];

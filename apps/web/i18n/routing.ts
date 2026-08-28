@@ -23,6 +23,7 @@ export const routing = defineRouting({
     "/": "/",
     "/about": { en: "/about", pt: "/sobre" },
     "/feed": { en: "/feed", pt: "/explorar" },
+    "/leaderboard": { en: "/leaderboard", pt: "/classificacao" },
     "/login": { en: "/login", pt: "/entrar" },
     "/username": { en: "/username", pt: "/nome" },
   },

@@ -24,6 +24,11 @@
       "socialTitle": "Escolhe o teu username na Aura",
       "description": "É o handle com que apareces na tabela."
     },
+    "leaderboard": {
+      "title": "Classificação",
+      "socialTitle": "Classificação global da Aura",
+      "description": "Os 100 com mais Aura. Uma tabela, um número, visível para toda a gente."
+    },
     "keywords": "Aura, jogo social, classificação, partilha de fotos, vídeo curto",
     "og": {
       "title": "Transforma likes em Aura.",
@@ -151,7 +156,8 @@
         "body": "Todos começam com zero Aura e o título de NPC. A maneira mais rápida de sair do fundo é publicar algo que valha um like."
       },
       "empty": "A tabela está vazia. Toda a gente começa no zero.",
-      "unavailable": "Não foi possível carregar a classificação."
+      "unavailable": "Não foi possível carregar a classificação.",
+      "seeAll": "Abrir a classificação completa"
     },
     "download": {
       "eyebrow": "Descarregar",
@@ -236,6 +242,13 @@
     "header": {
       "rankCreator": "Posição / criador",
       "aura": "Aura"
+    },
+    "page": {
+      "eyebrow": "Classificação",
+      "title": "A tabela global",
+      "description": "Aura de sempre, do primeiro ao último, atualizada à medida que os likes chegam. Na app também vês o teu lugar — mesmo quando ainda não estás no top 100.",
+      "empty": "A tabela está vazia. Toda a gente começa a zero.",
+      "unavailable": "Não foi possível carregar a classificação."
     }
   },
   "errors": {
