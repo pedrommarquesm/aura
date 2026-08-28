@@ -17,19 +17,21 @@ export type MediaType = 'photo' | 'video';
 
 export type FeedMedia = {
   type: MediaType;
-  /** Low-resolution placeholder, already sized for the card. */
-  thumbUrl: string;
-  feedUrl: string;
+  /** Low-resolution placeholder, already sized for the card. Null until processed. */
+  thumbUrl: string | null;
+  feedUrl: string | null;
+  posterUrl?: string | null;
   /** Videos only. */
-  hlsUrl?: string;
-  width: number;
-  height: number;
-  durationMs?: number;
+  hlsUrl?: string | null;
+  width: number | null;
+  height: number | null;
+  durationMs?: number | null;
 };
 
 export type FeedAuthor = {
   id: string;
   username: string;
+  displayName?: string | null;
   avatarUrl: string | null;
   aura: number;
   /** Cosmetic level title (§20). Null below the first threshold. */
@@ -40,12 +42,28 @@ export type FeedCard = {
   id: string;
   author: FeedAuthor;
   media: FeedMedia;
-  caption: string;
+  caption: string | null;
   likeCount: number;
   /** Aura this post has earned, not the author's total. */
   aura: number;
   likedByMe: boolean;
-  publishedAt: string;
+  createdAt: string;
+};
+
+export type LeaderboardEntry = {
+  rank: number;
+  userId: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  aura: number;
+  title: string | null;
+};
+
+export type LeaderboardPage = {
+  entries: LeaderboardEntry[];
+  viewer: LeaderboardEntry | null;
+  total: number;
 };
 
 export type AuthTokens = {

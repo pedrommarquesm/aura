@@ -41,6 +41,8 @@ export const mockApi: AuraApi = {
   },
 
   async getGlobalLeaderboard(params = {}): Promise<LeaderboardPage> {
-    return { ...paginate(mockLeaderboard, params), viewerRank: null };
+    const limit = Math.min(params.limit ?? apiConfig.defaultLimit, 100);
+    const entries = mockLeaderboard.slice(0, limit);
+    return { entries, viewer: null, total: mockLeaderboard.length };
   },
 };

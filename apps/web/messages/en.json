@@ -118,7 +118,9 @@
       "eyebrow": "Live from the app",
       "title": "Trending right now",
       "description": "Trending is not a follower count. It is Aura earned per minute, weighted by how recent a post is — so a first post can outrank an established creator on the same day.",
-      "note": "Every post has a public link, so anything made in the app is shareable outside it. Liking and posting stay in the app."
+      "note": "Every post has a public link, so anything made in the app is shareable outside it. Liking and posting stay in the app.",
+      "empty": "The feed is quiet right now. Check back once someone posts.",
+      "unavailable": "Could not load what is trending."
     },
     "leaderboard": {
       "eyebrow": "Leaderboard",
@@ -127,7 +129,9 @@
       "aside": {
         "title": "You are not on this board yet.",
         "body": "Everyone starts at zero Aura and the title of NPC. The fastest way off the bottom is to post something worth liking."
-      }
+      },
+      "empty": "The board is empty. Everyone starts at zero.",
+      "unavailable": "Could not load the ranking."
     },
     "download": {
       "eyebrow": "Download",

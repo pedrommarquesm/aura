@@ -1,14 +1,15 @@
 import { FlashList } from '@shopify/flash-list';
-import { useCallback, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
-import { AuraValue, Text } from '@/components/ui';
-import type { FeedRanking } from '@/lib/api';
+import { Button, Text } from '@/components/ui';
+import { fetchFeedPage, messageForError, type FeedRanking } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { mockFeed, mockViewer } from '@/mocks/feed';
+import { queryKeys } from '@/lib/query/keys';
 import { usePreferencesStore } from '@/store/preferences';
 import { colors } from '@/theme/tokens';
 
@@ -31,13 +32,6 @@ function FeedHeader() {
         <Text variant="title" className="tracking-aura">
           {t('common.aura')}
         </Text>
-
-        <View className="flex-row items-center gap-3">
-          <AuraValue value={mockViewer.aura} tone="aura" />
-          <Text variant="label" tone="muted" style={{ fontVariant: ['tabular-nums'] }}>
-            {t('leaderboard.rank', { rank: mockViewer.rank })}
-          </Text>
-        </View>
       </View>
 
       <View className="flex-row gap-2 pt-3">
@@ -67,29 +61,96 @@ function FeedHeader() {
 }
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const [refreshing, setRefreshing] = useState(false);
+  const ranking = usePreferencesStore((state) => state.feedRanking);
 
-  // There is no `GET /feed` yet (roadmap `API-20`), so this only exercises the gesture
-  // and its release animation. `MOB-30` replaces it with `refetch()`.
+  const feed = useInfiniteQuery({
+    queryKey: queryKeys.feed.ranking(ranking),
+    queryFn: ({ pageParam, signal }) => fetchFeedPage(ranking, pageParam, signal),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last) => (last.hasMore ? last.nextCursor : undefined),
+  });
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetchingNextPage,
+    isPending,
+    isRefetching,
+    refetch,
+  } = feed;
+
+  const posts = data?.pages.flatMap((page) => page.items) ?? [];
+  const pageCount = data?.pages.length ?? 0;
+
+  useEffect(() => {
+    if (pageCount === 1 && hasNextPage && !isFetchingNextPage) {
+      void fetchNextPage();
+    }
+  }, [pageCount, hasNextPage, isFetchingNextPage, fetchNextPage, ranking]);
+
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 600);
-  }, []);
+    void refetch();
+  }, [refetch]);
+
+  if (isPending) {
+    return (
+      <View className="flex-1 bg-bg" style={{ paddingTop: insets.top }}>
+        <FeedHeader />
+        <FeedPostSkeleton />
+        <FeedPostSkeleton />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View className="flex-1 bg-bg px-gutter" style={{ paddingTop: insets.top }}>
+        <FeedHeader />
+        <View className="flex-1 items-start justify-center gap-3 pb-24">
+          <Text variant="title">{t('feed.error.title')}</Text>
+          <Text variant="body" tone="secondary">
+            {messageForError(error)}
+          </Text>
+          <Button label={t('common.actions.retry')} onPress={() => void refetch()} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-bg" style={{ paddingTop: insets.top }}>
       <FlashList
-        data={mockFeed}
+        data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <FeedPostCard post={item} />}
         ListHeaderComponent={FeedHeader}
-        // Stands in for the next-page fetch, which is what the user will actually see
-        // here once pagination is wired.
-        ListFooterComponent={FeedPostSkeleton}
+        ListEmptyComponent={
+          <View className="px-gutter py-16">
+            <Text variant="title">{t('feed.empty.title')}</Text>
+            <Text variant="body" tone="secondary" className="pt-2">
+              {t('feed.empty.body')}
+            </Text>
+          </View>
+        }
+        ListFooterComponent={
+          isFetchingNextPage ? <FeedPostSkeleton /> : posts.length > 0 ? (
+            <View className="h-8" />
+          ) : null
+        }
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            void fetchNextPage();
+          }
+        }}
+        onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={isRefetching && !isFetchingNextPage}
             onRefresh={onRefresh}
             tintColor={colors.aura.bright}
             colors={[colors.aura.bright]}

@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import Redis from 'ioredis';
 import postgres from 'postgres';
 
 import { newId } from '../common/ids';
@@ -171,7 +172,12 @@ async function main(): Promise<void> {
 
       await db
         .update(posts)
-        .set({ likeCount: voters.length, aura: voters.length * BASE_LIKE_AURA })
+        .set({
+          likeCount: voters.length,
+          aura: voters.length * BASE_LIKE_AURA,
+          // Stand-in until the worker's first recompute; keeps /feed/trending ordered.
+          trendingScore: voters.length * BASE_LIKE_AURA,
+        })
         .where(eq(posts.id, post.id));
     }
 
@@ -182,6 +188,20 @@ async function main(): Promise<void> {
       UPDATE users u
       SET aura = COALESCE((SELECT SUM(e.amount) FROM aura_events e WHERE e.user_id = u.id), 0)
     `;
+
+    console.log('[seed] projecting the global leaderboard into Redis');
+    const redis = new Redis(env.REDIS_URL);
+    try {
+      const rows = await db.select({ id: users.id, aura: users.aura }).from(users);
+      const pipeline = redis.pipeline();
+      pipeline.del('lb:global');
+      for (const row of rows) {
+        pipeline.zadd('lb:global', row.aura, row.id);
+      }
+      await pipeline.exec();
+    } finally {
+      redis.disconnect();
+    }
 
     console.log(
       `[seed] done: ${created.length} users, ${createdPosts.length} posts, ${likeTotal} likes`,

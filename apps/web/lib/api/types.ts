@@ -6,7 +6,7 @@
  * the Zod-inferred types and nothing else in the app has to change.
  */
 
-/** Cursor pagination envelope used by every list endpoint. */
+/** Cursor pagination envelope used by feed endpoints. */
 export type CursorPage<T> = {
   items: T[];
   nextCursor: string | null;
@@ -19,22 +19,25 @@ export type CursorParams = {
   limit?: number;
 };
 
-export type MediaType = "image" | "video";
+export type MediaType = "photo" | "video";
 
 export type PostMedia = {
   type: MediaType;
-  /** CDN URL, already sized for the card. Never a storage key. */
-  feedUrl: string;
-  thumbUrl: string;
-  hlsUrl?: string;
-  width: number;
-  height: number;
-  durationMs?: number;
+  /** CDN URL, already sized for the card. Never a storage key. Null until processed. */
+  feedUrl: string | null;
+  thumbUrl: string | null;
+  posterUrl?: string | null;
+  hlsUrl?: string | null;
+  width: number | null;
+  height: number | null;
+  durationMs?: number | null;
   blurhash?: string;
 };
 
 export type PostAuthor = {
+  id?: string;
   username: string;
+  displayName?: string | null;
   aura: number;
   title: string | null;
   avatarUrl: string | null;
@@ -43,37 +46,42 @@ export type PostAuthor = {
 /** One item of `GET /v1/feed` and `GET /v1/feed/trending`. */
 export type FeedCard = {
   id: string;
+  createdAt: string;
   author: PostAuthor;
   media: PostMedia;
-  caption: string;
+  caption: string | null;
   likeCount: number;
   /** Aura this post has earned, not the author's total. */
   aura: number;
   likedByMe: boolean;
 };
 
-/** `GET /v1/posts/:id` — a feed card plus the fields a permalink needs. */
-export type Post = FeedCard & {
-  publishedAt: string;
-};
+/** `GET /v1/posts/:id` — the permalink is the feed card; not shipped yet (WEB-11). */
+export type Post = FeedCard;
 
 export type LeaderboardEntry = {
   rank: number;
-  user: PostAuthor;
+  userId: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
   aura: number;
+  title: string | null;
 };
 
 /**
- * `GET /v1/leaderboards/global` — top N plus the caller's own rank. `viewerRank`
+ * `GET /v1/leaderboards/global` — top N plus the caller's own rank. `viewer`
  * is always null on web: the public surface has no session in V0.
  */
-export type LeaderboardPage = CursorPage<LeaderboardEntry> & {
-  viewerRank: LeaderboardEntry | null;
+export type LeaderboardPage = {
+  entries: LeaderboardEntry[];
+  viewer: LeaderboardEntry | null;
+  total: number;
 };
 
 /** Every read the public web surface is allowed to make. */
 export type AuraApi = {
   getTrendingFeed(params?: CursorParams): Promise<CursorPage<FeedCard>>;
   getPost(postId: string): Promise<Post>;
-  getGlobalLeaderboard(params?: CursorParams): Promise<LeaderboardPage>;
+  getGlobalLeaderboard(params?: { limit?: number }): Promise<LeaderboardPage>;
 };

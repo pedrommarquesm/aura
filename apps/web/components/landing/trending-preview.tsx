@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
 import { Section } from "@/components/landing/section";
@@ -28,11 +29,28 @@ export function TrendingPreview() {
 }
 
 async function TrendingGrid() {
-  const trending = await api.getTrendingFeed({ limit: 6 });
+  const t = await getTranslations("landing.trending");
+
+  let items: Awaited<ReturnType<typeof api.getTrendingFeed>>["items"] = [];
+  let failed = false;
+
+  try {
+    items = (await api.getTrendingFeed({ limit: 6 })).items;
+  } catch {
+    failed = true;
+  }
+
+  if (failed) {
+    return <p className="text-body text-text-secondary">{t("unavailable")}</p>;
+  }
+
+  if (items.length === 0) {
+    return <p className="text-body text-text-secondary">{t("empty")}</p>;
+  }
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {trending.items.map((post, index) => (
+      {items.map((post, index) => (
         <PostCard key={post.id} post={post} priority={index === 0} />
       ))}
     </div>

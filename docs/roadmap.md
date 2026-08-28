@@ -38,9 +38,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — web i18n (`WEB-20`, `WEB-21`), then wire both clients to the live API. Seed staging (`OPS-08`) so they have data. Then the upload pipeline (`MEDIA-02` … `MEDIA-05`), the last piece of the V0 loop that does not exist.
+**Now** — seed staging (`OPS-08`) so the wired clients have data, then the upload pipeline (`MEDIA-02` … `MEDIA-05`), the last piece of the V0 loop that does not exist.
 
-**Next** — native auth on mobile (`MOB-10` … `MOB-12`), then the rest of the client loop against the real API.
+**Next** — native auth on mobile (`MOB-10` … `MOB-12`), then likes and the rest of the client loop against the real API.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -93,8 +93,9 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
-| WEB-20 | i18n: next-intl, English + Portuguese, translated routes | In review | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
-| WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | In review | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
+| WEB-20 | i18n: next-intl, English + Portuguese, translated routes | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
+| WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
+| WEB-22 | Point the public landing (trending + leaderboard) at the live API | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 
 ---
 
@@ -151,8 +152,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-22 | `GET /feed/trending` backed by `trendingScore` | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Not started | |
-| MOB-31 | Loading, empty, and error/retry states | Not started | |
+| MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
+| MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
 | WEB-10 | Public read-only feed | Not started | |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Not started | |
@@ -168,7 +169,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Not started | |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Not started | |
-| MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Not started | |
+| MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Not started | |
 | WEB-12 | Basic public leaderboard | Not started | |
 
@@ -224,6 +225,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Clients read the live API. Web landing and the mobile feed/rank screens hit staging; mocks stay only as an explicit opt-in | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | 2026-08-28 | Web i18n: next-intl, translated routes (`/about` → `/pt/sobre`), `hreflang` + `x-default`. Format Aura with `pt`, never `pt-PT` | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | 2026-08-28 | Staging-only deployments. `APP_ENV` (local/staging/production) guards unsafe operations, separate from `NODE_ENV` runtime mode | [#13](https://github.com/pedrommarquesm/aura/pull/13) |
 | 2026-08-28 | Mobile i18n: i18next + ICU, English + European Portuguese, locale-aware Aura number formatting (`pt`, not `pt-PT`) | [#12](https://github.com/pedrommarquesm/aura/pull/12) |

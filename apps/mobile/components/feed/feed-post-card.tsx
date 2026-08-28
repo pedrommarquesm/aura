@@ -13,7 +13,8 @@ import { colors } from '@/theme/tokens';
 const MIN_ASPECT = 0.8;
 const MAX_ASPECT = 1.91;
 
-function clampAspect(width: number, height: number): number {
+function clampAspect(width: number | null, height: number | null): number {
+  if (!width || !height) return MIN_ASPECT;
   return Math.min(Math.max(width / height, MIN_ASPECT), MAX_ASPECT);
 }
 
@@ -61,13 +62,13 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
         style={{ aspectRatio: clampAspect(media.width, media.height) }}
       >
         <Image
-          source={{ uri: media.feedUrl }}
-          placeholder={{ uri: media.thumbUrl }}
+          source={media.feedUrl ? { uri: media.feedUrl } : undefined}
+          placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
           contentFit="cover"
           transition={160}
           recyclingKey={post.id}
           style={{ width: '100%', height: '100%' }}
-          accessibilityLabel={post.caption}
+          accessibilityLabel={post.caption ?? `@${author.username}`}
         />
 
         {media.type === 'video' && media.durationMs ? (
