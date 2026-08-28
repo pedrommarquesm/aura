@@ -86,7 +86,7 @@ Chosen for speed of iteration, mobile-first clients, and a clean path to scale. 
 | Cache / ranks | **Redis** | Sorted sets for leaderboards, short-TTL feed cache, rate limits. |
 | Jobs | **Redis queue** (BullMQ) | Media processing, trending recompute, notification aggregation. |
 | Object storage | **Cloudflare R2**, behind an `ObjectStore` port | Decided. Zero egress fees matter a lot when the product is mostly video bytes. Provider is per-asset and swappable (§6.6). |
-| CDN | **Cloudflare**, served from our own `cdn.aura.app` | Image resizing, cache, public post pages. Our domain, so the vendor is a DNS change (§6.6). Bunny is a post-V0 candidate. |
+| CDN | **Cloudflare**, served from our own `cdn.aurarankd.com` | Image resizing, cache, public post pages. Our domain, so the vendor is a DNS change (§6.6). Bunny is a post-V0 candidate. |
 | Video | **Managed transcoding first** (Cloudflare Stream / Mux) *or* ffmpeg workers | V0 should not invent a video platform. See §6. |
 | Auth | **First-party. Apple + Google on mobile, API-issued JWT access + rotating refresh** | The API owns identity; providers only prove it. See §12. |
 | Observability | OpenTelemetry + structured logs + one APM | Feed and like latency must be visible from day one. |
@@ -264,9 +264,9 @@ Feed payloads never contain storage keys. They contain **CDN URLs** already size
   "author": { "username": "pedro", "aura": 28421, "title": "Aura Farmer" },
   "media": {
     "type": "video",
-    "thumbUrl": "https://cdn.aura.app/...",
-    "feedUrl": "https://cdn.aura.app/...",
-    "hlsUrl": "https://cdn.aura.app/.../manifest.m3u8",
+    "thumbUrl": "https://cdn.aurarankd.com/...",
+    "feedUrl": "https://cdn.aurarankd.com/...",
+    "hlsUrl": "https://cdn.aurarankd.com/.../manifest.m3u8",
     "width": 1080,
     "height": 1350,
     "durationMs": 7400
@@ -290,13 +290,13 @@ We should assume we will change providers at least once. Media is the most expen
 
 #### The mistake to avoid
 
-Persisting absolute URLs (`https://cdn.aura.app/media/abc/feed.jpg`) in `variants`. That single shortcut means a provider change requires rewriting every row in the largest table we have, and any URL already shared to Instagram or WhatsApp breaks. In a product whose growth loop *is* shared links (spec §23), dead media URLs are lost acquisition, permanently.
+Persisting absolute URLs (`https://cdn.aurarankd.com/media/abc/feed.jpg`) in `variants`. That single shortcut means a provider change requires rewriting every row in the largest table we have, and any URL already shared to Instagram or WhatsApp breaks. In a product whose growth loop *is* shared links (spec §23), dead media URLs are lost acquisition, permanently.
 
 #### Three rules
 
 **1. Store coordinates, not URLs.** The database holds `storageProvider` + `storageBucket` + `storageKey`. A resolver turns those into a URL at read time. Changing provider, domain, or transform syntax then touches one module rather than the data.
 
-**2. Serve from our own domain.** `cdn.aura.app` is a CNAME we control, pointed at whichever vendor is in front today. Swapping CDN becomes a DNS change: no data migration, no client release, and **every previously shared link keeps working**. If we ever serve media from a vendor's hostname, we have handed them our URL namespace.
+**2. Serve from our own domain.** `cdn.aurarankd.com` is a CNAME we control, pointed at whichever vendor is in front today. Swapping CDN becomes a DNS change: no data migration, no client release, and **every previously shared link keeps working**. If we ever serve media from a vendor's hostname, we have handed them our URL namespace.
 
 **3. Provider is per-asset, never a global setting.** A single "current provider" flag forces a big-bang migration where everything must move at once. Per-asset provenance lets old objects keep resolving from wherever they already live while new uploads go somewhere else, with both working simultaneously and indefinitely.
 

@@ -6,7 +6,7 @@ function env(value: string | undefined, fallback: string) {
 export const siteConfig = {
   /** Product name, never translated (docs/i18n.md). Copy lives in the catalogs. */
   name: "Aura",
-  url: env(process.env.NEXT_PUBLIC_SITE_URL, "https://aura.app").replace(
+  url: env(process.env.NEXT_PUBLIC_SITE_URL, "https://aurarankd.com").replace(
     /\/$/,
     "",
   ),

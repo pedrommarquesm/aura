@@ -38,7 +38,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Apple `APPLE_CLIENT_ID` on staging so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
+**Now** — Point DNS at the Railway / R2 records in [deployment.md](./deployment.md), then Apple `APPLE_CLIENT_ID` on staging so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
 
 **Next** — the rest of the client loop (profile as a competitive card, video autoplay) once posts have real media.
 
@@ -134,7 +134,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 |---|---|---|---|
 | MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | Not started | |
-| MEDIA-01 | R2 buckets, own CDN domain (`cdn.aura.app`), cache policy | Not started | |
+| MEDIA-01 | R2 buckets, own CDN domain (`cdn.aurarankd.com`), cache policy | Not started | |
 | MEDIA-02 | `POST /posts/uploads` presigned upload + validation | Not started | |
 | MEDIA-03 | `POST /posts/:id/complete` + object verification | Not started | |
 | MEDIA-04 | Image processing worker: feed/thumb variants, blurhash | Not started | |
@@ -190,6 +190,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-06 | Infrastructure as code (`.railway/railway.ts`) + local docker-compose | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
+| OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | In review | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -226,6 +227,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | 2026-08-28 | PRs run typecheck, lint and tests per app. Secrets stay in `.env` / Railway `preserve()`, never git | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
 | 2026-08-28 | Web Google sign-in is a thin BFF of the API (httpOnly cookies, no NextAuth user store). Public `/feed` is readable signed out. Posting and liking stay in the app | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | 2026-08-28 | Mobile auth: guest feed, Apple/Google sign-in, username claim, pending like/create replayed after session | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
