@@ -46,6 +46,14 @@
       "expo-web-browser",
       "expo-apple-authentication",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aura uses your photo library so you can post.",
+          "cameraPermission": "Aura uses the camera so you can post.",
+          "microphonePermission": "Aura uses the microphone when you record a video."
+        }
+      ],
+      [
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f"

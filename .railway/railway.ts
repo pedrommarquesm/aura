@@ -72,9 +72,16 @@ export default defineRailway(() => {
     // Postgres is reached over Railway's private network, so the connection is
     // not additionally TLS-wrapped.
     DATABASE_SSL: 'false',
-    // Public CDN hostname. Attach `cdn.aurarankd.com` to the R2 bucket; until
-    // that DNS record exists this still 404s, same as the old placeholder.
+    // Object storage. Secrets stay in the dashboard; applying this file must
+    // never clobber them. The public CDN hostname is set; attach
+    // cdn.aurarankd.com to the bucket before feed URLs resolve.
+    R2_ACCOUNT_ID: preserve(),
+    R2_ACCESS_KEY_ID: preserve(),
+    R2_SECRET_ACCESS_KEY: preserve(),
+    R2_ENDPOINT: preserve(),
+    R2_BUCKET: 'aura-media',
     MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_EDGE: 'none',
   };
 
   const api = service('api', {

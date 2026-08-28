@@ -62,9 +62,25 @@
     "subtitle": "Every like you get is Aura. Every point of Aura moves you up the board.",
     "actions": {
       "takePhoto": "Take a photo",
-      "chooseFromLibrary": "Choose from library"
+      "chooseFromLibrary": "Choose from library",
+      "chooseDifferent": "Choose a different file",
+      "post": "Post"
     },
-    "comingSoon": "Camera, picker and upload land in roadmap MOB-20 and MOB-21."
+    "caption": {
+      "label": "Caption",
+      "placeholder": "Say something"
+    },
+    "videoPicked": "Video ready to post",
+    "progress": {
+      "uploading": "Uploading {percent, number}%",
+      "processing": "Processing…"
+    },
+    "errors": {
+      "cameraPermission": "Allow camera access to take a photo.",
+      "libraryPermission": "Allow photo access to pick from your library.",
+      "unreadable": "Could not read that file. Try another.",
+      "processing": "That post failed to process. Try again."
+    }
   },
   "leaderboard": {
     "title": "Rank",

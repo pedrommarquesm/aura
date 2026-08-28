@@ -62,6 +62,11 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ ...minimal, APP_ENV: 'local' })).not.toThrow();
   });
 
+  it('boots without R2 credentials so a fresh clone does not need Cloudflare', () => {
+    expect(loadEnv(minimal).R2_ACCESS_KEY_ID).toBeUndefined();
+    expect(loadEnv(minimal).R2_BUCKET).toBe('aura-media');
+  });
+
   it('does not refuse the dev secret merely because NODE_ENV is production', () => {
     // The guard must key on APP_ENV. A local production build is not a deploy.
     expect(() => loadEnv({ ...minimal, NODE_ENV: 'production', APP_ENV: 'local' })).not.toThrow();

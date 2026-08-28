@@ -699,6 +699,7 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | GET | `/v1/feed` | latest |
 | GET | `/v1/feed/trending` | |
 | POST | `/v1/posts/uploads` | presign |
+| POST | `/v1/posts/:id/uploads` | refresh an expired presign for the same post |
 | POST | `/v1/posts/:id/complete` | caption + enqueue processing |
 | GET | `/v1/posts/:id` | public if published |
 | DELETE | `/v1/posts/:id` | author only; soft delete |

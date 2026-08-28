@@ -287,9 +287,19 @@ same id listed in the API's `GOOGLE_CLIENT_IDS` alongside the iOS client. The
 Google client secret is `GOOGLE_CLIENT_SECRET` on **web** only — GIS does not
 send it, and it must never be `NEXT_PUBLIC_*`.
 
-Public media URLs are built from `MEDIA_CDN_BASE_URL`, which is
-`https://cdn.aurarankd.com` on api and worker. That hostname has to be an R2
-custom domain on bucket `aura-media` before the feed can show uploaded bytes.
+Media lives on Cloudflare R2. The **api** and **worker** both need
+`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`
+(`aura-media`), and `R2_ENDPOINT`. Those are secrets except the bucket name —
+`preserve()` in the IaC file. Clients PUT directly to a presigned URL; the API
+never sees the bytes. Public reads go through `MEDIA_CDN_BASE_URL`, which is
+`https://cdn.aurarankd.com` once that hostname is attached to the bucket as an
+R2 custom domain. Until then, enable the bucket's `r2.dev` public development
+URL and point `MEDIA_CDN_BASE_URL` at it. `MEDIA_EDGE=none` until Cloudflare
+Image Resizing is on — we store our own 1080 / 400 JPEG variants.
+
+Do not `railway config apply` this file just to add R2 variables; set them on
+the two services (skip deploys, then `railway up` the image that reads them).
+The known `restartPolicy` false drift is still there.
 
 ## Current environment
 

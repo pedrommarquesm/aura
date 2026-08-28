@@ -62,9 +62,25 @@
     "subtitle": "Cada like que recebes é Aura. Cada ponto de Aura sobe-te no ranking.",
     "actions": {
       "takePhoto": "Tirar uma foto",
-      "chooseFromLibrary": "Escolher da galeria"
+      "chooseFromLibrary": "Escolher da galeria",
+      "chooseDifferent": "Escolher outro ficheiro",
+      "post": "Publicar"
     },
-    "comingSoon": "Câmara, galeria e envio chegam nos MOB-20 e MOB-21 do roadmap."
+    "caption": {
+      "label": "Legenda",
+      "placeholder": "Escreve qualquer coisa"
+    },
+    "videoPicked": "Vídeo pronto a publicar",
+    "progress": {
+      "uploading": "A enviar {percent, number}%",
+      "processing": "A processar…"
+    },
+    "errors": {
+      "cameraPermission": "Permite o acesso à câmara para tirar uma foto.",
+      "libraryPermission": "Permite o acesso às fotos para escolher da galeria.",
+      "unreadable": "Não foi possível ler esse ficheiro. Tenta outro.",
+      "processing": "Essa publicação falhou o processamento. Tenta outra vez."
+    }
   },
   "leaderboard": {
     "title": "Ranking",

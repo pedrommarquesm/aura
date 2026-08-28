@@ -41,6 +41,7 @@ components/
 lib/
   api/                  typed client, auth interceptor, single-flight refresh
   auth/                 Apple/Google identity tokens, username rules
+  upload/               presigned PUT with progress
   i18n/                 i18next + ICU setup, Intl polyfills, formatting hooks
   query/                QueryClient defaults, provider, query keys
   cn · format · haptics · secure-storage

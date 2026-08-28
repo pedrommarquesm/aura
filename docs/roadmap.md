@@ -38,9 +38,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Point DNS at the Railway / R2 records in [deployment.md](./deployment.md), then Apple `APPLE_CLIENT_ID` on staging so Sign in with Apple can complete against the live API, then the upload pipeline (`MEDIA-02` … `MEDIA-05`).
+**Now** — Point DNS at the Railway / R2 records in [deployment.md](./deployment.md) and attach `cdn.aurarankd.com` to the R2 bucket (or set `MEDIA_CDN_BASE_URL` to the `r2.dev` public URL). Then Cloudflare Stream for real video (`MEDIA-06`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
-**Next** — the rest of the client loop (profile as a competitive card, video autoplay) once posts have real media.
+**Next** — profile as a competitive card, video autoplay, once posts have real media on the CDN.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -133,16 +133,16 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | MEDIA-00 | `MediaUrlResolver` + per-asset provider registry (architecture §6.6) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | Not started | |
-| MEDIA-01 | R2 buckets, own CDN domain (`cdn.aurarankd.com`), cache policy | Not started | |
-| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | Not started | |
-| MEDIA-03 | `POST /posts/:id/complete` + object verification | Not started | |
-| MEDIA-04 | Image processing worker: feed/thumb variants, blurhash | Not started | |
-| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | Not started | |
+| MEDIA-09 | `ObjectStore` port (presign, head, delete, copy) — lands with uploads | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-01 | R2 bucket `aura-media` + immutable Cache-Control. `cdn.aurarankd.com` still needs attaching | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-02 | `POST /posts/uploads` presigned upload + validation | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-03 | `POST /posts/:id/complete` + object verification | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-06 | Video: managed provider integration, always retaining our own master (decision open, architecture §18) | Not started | |
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
-| MOB-20 | Create flow: camera, picker, preview, caption | Not started | |
-| MOB-21 | Resilient upload: progress, cancel, retry, background-safe | Not started | |
+| MOB-20 | Create flow: camera, picker, preview, caption | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
+| MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | In review | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 
 ### Feed
 
@@ -227,6 +227,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | 2026-08-28 | Public `/leaderboard` (`/pt/classificacao`) reads `GET /v1/leaderboards/global`. Posting and liking stay in the app | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 | 2026-08-28 | Public hostnames are `aurarankd.com` (web), `api.aurarankd.com` (api), `cdn.aurarankd.com` (R2). Staging is the only environment they point at | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | 2026-08-28 | PRs run typecheck, lint and tests per app. Secrets stay in `.env` / Railway `preserve()`, never git | [#21](https://github.com/pedrommarquesm/aura/pull/21) |
