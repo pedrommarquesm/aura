@@ -40,7 +40,7 @@ ID prefixes:
 
 **Now** — Point DNS at the Railway / R2 records in [deployment.md](./deployment.md) and attach `cdn.aurarankd.com` to the R2 bucket (or set `MEDIA_CDN_BASE_URL` to the `r2.dev` public URL). Then Cloudflare Stream for real video (`MEDIA-06`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
-**Next** — profile as a competitive card, video autoplay, once posts have real media on the CDN.
+**Next** — video autoplay once posts have real media on the CDN (`MEDIA-06`, then `MOB-32`).
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -91,7 +91,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
-| WEB-08 | Replace mock vector posters with real content once the feed API exists | In review | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
+| WEB-08 | Replace mock vector posters with real content once the feed API exists | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
 | WEB-20 | i18n: next-intl, English + Portuguese, translated routes | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
@@ -152,13 +152,13 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-21 | Feed card projection (author + media variants + `likedByMe`, no N+1) | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-22 | `GET /feed/trending` backed by `trendingScore` | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
-| API-24 | `GET /v1/users/:username` — public competitive card (rank, title, Aura, post count) | In review | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
-| API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | In review | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
+| API-24 | `GET /v1/users/:username` — public competitive card (rank, title, Aura, post count) | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
+| API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
-| WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | In review | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
+| WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 
 ### Aura
@@ -171,19 +171,19 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| MOB-41 | Aura counter animation and `+Aura` feedback | In review | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
+| MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
-| MOB-43 | Profile as competitive identity card | In review | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
+| MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | WEB-12 | Basic public leaderboard | Done | [#22](https://github.com/pedrommarquesm/aura/pull/22) |
 
 ### Launch minimums
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| TS-01 | Report + block models and endpoints | In review | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
-| TS-02 | User status enforcement (suspend/ban revokes sessions) | In review | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
-| TS-03 | Post removal → `REVERSAL` of Aura earned | In review | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
-| TS-04 | Upload quotas and like rate limits | In review | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
+| TS-01 | Report + block models and endpoints | Done | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
+| TS-02 | User status enforcement (suspend/ban revokes sessions) | Done | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
+| TS-03 | Post removal → `REVERSAL` of Aura earned | Done | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
+| TS-04 | Upload quotas and like rate limits | Done | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
 | OPS-01 | Staging environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-02 | Deploy pipeline | Not started | |
 | OPS-03 | Dashboards + alerts for feed and like latency | Not started | |
