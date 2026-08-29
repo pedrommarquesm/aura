@@ -70,7 +70,7 @@ export const LikeButton = forwardRef<LikeButtonHandle, LikeButtonProps>(function
     const progress = rise.get();
 
     return {
-      opacity: interpolate(progress, [0, 0.1, 0.65, 1], [0, 1, 1, 0]),
+      opacity: interpolate(progress, [0, 0.08, 0.7, 1], [0, 1, 1, 0]),
       transform: [
         { translateY: interpolate(progress, [0, 1], [0, -RISE_DISTANCE]) },
         { scale: interpolate(progress, [0, 1], [0.8, 1.1]) },

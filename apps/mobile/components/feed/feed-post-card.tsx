@@ -47,7 +47,9 @@ function DoubleTapHeart({ burst }: { burst: number }) {
     scale.set(0.4);
     opacity.set(1);
     scale.set(withSequence(withTiming(1.15, instant), withSpring(1, celebrate)));
-    opacity.set(withTiming(0, burstTiming));
+    opacity.set(
+      withSequence(withTiming(1, { duration: 550 }), withTiming(0, burstTiming)),
+    );
   }, [burst, opacity, scale]);
 
   const style = useAnimatedStyle(() => ({
