@@ -9,6 +9,7 @@ import {
   writeSessionOnResponse,
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
+import { isWwwHost } from "./lib/canonical-host";
 
 /**
  * Resolves the locale for every page request: an explicit prefix wins, then
@@ -22,6 +23,15 @@ import { rotateRefreshToken } from "./lib/auth/session";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  if (isWwwHost(host)) {
+    const url = request.nextUrl.clone();
+    url.protocol = "https";
+    url.hostname = "aurarankd.com";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   // Share URLs stay unprefixed (docs/i18n.md). next-intl would otherwise
   // rewrite `/a/@alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
   // still runs so `likedByMe` works when the viewer is signed in.

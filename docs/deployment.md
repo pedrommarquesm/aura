@@ -184,17 +184,17 @@ environment, so these point at staging until production exists.
 | Hostname | Service | Notes |
 |---|---|---|
 | `aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
-| `www.aurarankd.com` | web | Same app. Optional later: Cloudflare redirect to apex |
+| `www.aurarankd.com` | web | Same app. 308 to the apex |
 | `api.aurarankd.com` | api | Railway custom domain, port 3000 |
 | `cdn.aurarankd.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
 
-Railway already has the three HTTP hostnames. They stay unverified until DNS
-exists; certificates issue after the records below answer.
+Railway already has the three HTTP hostnames. DNS for `aurarankd.com`,
+`www.aurarankd.com`, and `api.aurarankd.com` answers; certificates are issued.
+`www` 308s to the apex so there is one public origin.
 
-Generated `*.up.railway.app` URLs keep working. Leave
-`NEXT_PUBLIC_API_BASE_URL` (and mobile `EXPO_PUBLIC_API_URL`) on the Railway
-API host until `api.aurarankd.com` resolves, then rebuild web / the app so the
-inlined URL is the custom one.
+Generated `*.up.railway.app` URLs keep working. Web and mobile now point at
+`https://api.aurarankd.com`. `NEXT_PUBLIC_*` is inlined at image build time, so
+a web rebuild is required after changing it.
 
 ### DNS records to create
 
@@ -228,13 +228,17 @@ R2 → bucket `aura-media` → Custom Domains → add `cdn.aurarankd.com`. If th
 zone is on this account, Cloudflare writes the record. If it is not, the
 dashboard shows the CNAME target to copy.
 
-After DNS answers:
+After DNS answers (web + api are live):
 
-1. Railway marks the three HTTP domains verified and issues certificates.
+1. Railway marks the three HTTP domains verified and issues certificates. **Done.**
 2. Set web `NEXT_PUBLIC_API_BASE_URL=https://api.aurarankd.com` and rebuild web.
+   The IaC value is set; the running image still needs a **new Docker build**,
+   not a restart of the old image.
 3. Point a new mobile build at `https://api.aurarankd.com/v1`.
-4. Confirm `MEDIA_CDN_BASE_URL=https://cdn.aurarankd.com` on api and worker
-   (already set; public reads stay 404 until the R2 custom domain is Active).
+4. Attach `cdn.aurarankd.com` to the R2 bucket `aura-media` as a custom domain.
+   Staging currently emits `https://cdn.aura.app/...` for media; public reads
+   on `cdn.aurarankd.com` stay 404 until that hostname is Active **and**
+   `MEDIA_CDN_BASE_URL` on api + worker matches it.
 
 Google Cloud Console, Web application OAuth client: add Authorized JavaScript
 origins `https://aurarankd.com` and `https://www.aurarankd.com` (keep
@@ -313,7 +317,7 @@ Project `aura`, environment **`staging`**, region `europe-west4`.
 | Service | Generated URL | Custom domain (after DNS) |
 |---|---|---|
 | api | https://api-production-aa71.up.railway.app | https://api.aurarankd.com |
-| web | https://web-production-e1282.up.railway.app | https://aurarankd.com |
+| web | https://web-production-e1282.up.railway.app | https://aurarankd.com (`www` 308s here) |
 | media | — | https://cdn.aurarankd.com |
 
 The generated hostnames still read `-production-` because Railway created them
