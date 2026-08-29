@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { AuraMark } from "@/components/aura-mark";
 import { SessionMenu } from "@/components/auth/session-menu";
-import { LocaleSwitcher } from "@/components/locale-switcher";
+import { SettingsMenu } from "@/components/settings-menu";
 import { ButtonLink } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { sectionHash, sectionId } from "@/i18n/sections";
@@ -67,7 +67,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LocaleSwitcher />
+          <SettingsMenu />
           <SessionMenu />
           <ButtonLink
             href={downloadHref(sectionHash(locale, "download"))}

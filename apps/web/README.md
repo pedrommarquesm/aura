@@ -173,11 +173,13 @@ hooks need a request context that image generation does not have.
 
 ### Locale switcher
 
-`components/locale-switcher.tsx`. Two plain links, so it is crawlable and works
-without JavaScript. It links to `usePathname()` — the *internal* pathname — in
-the other locale, so switching on `/sobre` lands on `/about` and not the
-homepage. First visit is detected from `accept-language`; an explicit choice is
-written to the locale cookie and wins from then on.
+`components/locale-switcher.tsx`. It lives in Settings (`/settings`,
+`/pt/definicoes`) and in the header settings menu — not as EN/PT pills in the
+header chrome. Two plain links, so it is crawlable and works without
+JavaScript. It links to `usePathname()` — the *internal* pathname — in the
+other locale, so switching on `/sobre` lands on `/about` and not the homepage.
+First visit is detected from `accept-language`; an explicit choice is written
+to the locale cookie and wins from then on.
 
 One thing looks wrong and is not: from `/pt/sobre` the English link points at
 `/en/about`, a prefix English otherwise never uses. It is required. With the

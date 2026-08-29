@@ -26,6 +26,7 @@ export const routing = defineRouting({
     "/leaderboard": { en: "/leaderboard", pt: "/classificacao" },
     "/login": { en: "/login", pt: "/entrar" },
     "/username": { en: "/username", pt: "/nome" },
+    "/settings": { en: "/settings", pt: "/definicoes" },
   },
 });
 

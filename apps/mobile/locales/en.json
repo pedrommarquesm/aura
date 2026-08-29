@@ -159,6 +159,9 @@
     }
   },
   "settings": {
+    "title": "Settings",
+    "open": "Settings",
+    "back": "Back",
     "language": {
       "title": "Language",
       "subtitle": "Wins over your device language.",

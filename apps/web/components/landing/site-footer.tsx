@@ -57,6 +57,12 @@ export function SiteFooter() {
             >
               {t("about")}
             </Link>
+            <Link
+              href="/settings"
+              className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
+            >
+              {t("settings")}
+            </Link>
           </nav>
         </div>
 
