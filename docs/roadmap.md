@@ -176,8 +176,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-24 | Like overlay and `+10 Aura` last longer (burst 1100ms, rise 1200ms) | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
 | WEB-25 | Photo like heart starts at the click and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
 | WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | Done | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
-| WEB-27 | Language switcher lives in Settings (`/settings`, `/pt/definicoes`) and a header settings menu — not EN/PT pills in the header | In review | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
-| WEB-28 | Double-click like on a feed card must fill the heart under the photo — one `useLikePost` per card, not a separate hook on the media and the button | In review | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
+| WEB-27 | Language switcher lives in Settings (`/settings`, `/pt/definicoes`) and a header settings menu — not EN/PT pills in the header | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
+| WEB-28 | Double-click like on a feed card must fill the heart under the photo — one `useLikePost` per card, not a separate hook on the media and the button | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 
 ### Aura
 
@@ -192,7 +192,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
 | MOB-56 | Photo like heart starts at the tap and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
-| MOB-57 | Language override lives on the Settings screen, not on the profile. Profile opens Settings via a gear | In review | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
+| MOB-57 | Language override lives on the Settings screen, not on the profile. Profile opens Settings via a gear | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
