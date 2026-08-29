@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { DownloadCta } from "@/components/landing/download-cta";
@@ -18,6 +19,12 @@ import { toInfinite } from "@/lib/query/infinite";
 import { queryKeys } from "@/lib/query/keys";
 import { buildMetadata } from "@/lib/seo";
 
+/**
+ * Same reason as `/feed` (WEB-19): a prerendered guest snapshot freezes
+ * `likedByMe: false` on the trending cards. The permalink already knows.
+ */
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = await getTranslations("meta.home");
@@ -32,6 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
+  await connection();
   const queryClient = makeQueryClient();
   const [trendingResult, leaderboardResult] = await Promise.allSettled([
     loadTrendingPage(6),

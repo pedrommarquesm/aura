@@ -4,7 +4,7 @@ import { ArrowRightIcon } from "@/components/icons";
 import { Container, Eyebrow } from "@/components/landing/section";
 import { ButtonLink, buttonClassName } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { sectionHash, sectionId } from "@/i18n/sections";
+import { sectionHash } from "@/i18n/sections";
 import { downloadHref } from "@/lib/site";
 
 export function AboutIntro() {
@@ -32,10 +32,8 @@ export function AboutIntro() {
           <ButtonLink href={downloadHref(sectionHash(locale, "download"))}>
             {actions("getAuraApp")}
           </ButtonLink>
-          {/* Points back at the landing page section, so it has to be
-              localized as a route rather than a bare anchor. */}
           <Link
-            href={{ pathname: "/", hash: sectionId(locale, "trending") }}
+            href="/feed"
             className={buttonClassName({ variant: "secondary" })}
           >
             {actions("seeTrending")}

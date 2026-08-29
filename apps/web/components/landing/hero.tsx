@@ -3,7 +3,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRightIcon } from "@/components/icons";
 import { AppPreview } from "@/components/landing/app-preview";
 import { Container } from "@/components/landing/section";
-import { AuraValue, ButtonLink } from "@/components/ui";
+import { AuraValue, ButtonLink, buttonClassName } from "@/components/ui";
+import { Link } from "@/i18n/navigation";
 import { sectionHash } from "@/i18n/sections";
 import type { FeedCard, LeaderboardEntry } from "@/lib/api/types";
 import { downloadHref } from "@/lib/site";
@@ -61,14 +62,13 @@ export async function Hero({
             >
               {actions("getAuraApp")}
             </ButtonLink>
-            <ButtonLink
-              href={sectionHash(locale, "trending")}
-              size="lg"
-              variant="secondary"
+            <Link
+              href="/feed"
+              className={buttonClassName({ size: "lg", variant: "secondary" })}
             >
               {actions("seeTrending")}
               <ArrowRightIcon className="size-4" />
-            </ButtonLink>
+            </Link>
           </div>
 
           {leader ? (
