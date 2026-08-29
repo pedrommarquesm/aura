@@ -41,7 +41,12 @@ export default async function proxy(request: NextRequest) {
   if (withoutAt) {
     const url = request.nextUrl.clone();
     url.pathname = withoutAt;
-    if (request.headers.get("rsc") === "1") {
+    // Next.js hides `?_rsc=` from `nextUrl`. Read the raw URL so a Flight
+    // request is rewritten (not 308'd with the hash stripped — that replay
+    // is the loop).
+    const rsc = rscQueryValue(request);
+    if (isRscRequest(request, rsc)) {
+      if (rsc !== null) url.searchParams.set("_rsc", rsc);
       return NextResponse.rewrite(url);
     }
     return NextResponse.redirect(url, 308);
@@ -59,6 +64,23 @@ export default async function proxy(request: NextRequest) {
   const response = intlMiddleware(request);
   await attachRefreshedSession(request, response);
   return response;
+}
+
+function rscQueryValue(request: NextRequest): string | null {
+  try {
+    return new URL(request.url).searchParams.get("_rsc");
+  } catch {
+    return request.nextUrl.searchParams.get("_rsc");
+  }
+}
+
+function isRscRequest(request: NextRequest, rscQuery: string | null): boolean {
+  return (
+    request.headers.get("rsc") === "1" ||
+    request.headers.get("next-router-prefetch") != null ||
+    request.headers.get("next-url") != null ||
+    rscQuery !== null
+  );
 }
 
 async function attachRefreshedSession(
