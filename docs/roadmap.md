@@ -144,7 +144,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
 | MOB-20 | Create flow: camera, picker, preview, caption | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | In review | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
+| MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | Done | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
+| MOB-53 | Choose photo must not kill the iOS process (no Photos permission prompt for PHPicker; no HEIC fast-path; no File() on ph://) | In review | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 
 ### Feed
 
@@ -234,6 +235,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | iOS Choose photo must not call `requestMediaLibraryPermissionsAsync` or use the HEIC `Current` fast path. PHPicker needs neither; both terminate the process when the Photos usage string is missing or the original is huge | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | 2026-08-29 | Web share URLs are `/a/:username/post/:id`. `/a/@username/…` 308s there. Next.js App Router cannot have `@` in a path segment (parallel-route slots); feed prefetch was an RSC loop | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | 2026-08-29 | Apex → `www` is a DNS redirect. The Next proxy does not 308 the host (that hop was looping Flight requests) | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | 2026-08-29 | Canonical web host is `www.aurarankd.com`. `NEXT_PUBLIC_SITE_URL` is `https://www.aurarankd.com` | [#30](https://github.com/pedrommarquesm/aura/pull/30) |

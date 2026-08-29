@@ -66,9 +66,12 @@ Shipped with MOB-52. One photo. No video. No camera.
 
 ```text
 Choose photo
-  → library, images only, quality 1, representation = current
+  → library, images only. iOS does not ask Photos permission (PHPicker).
+    Compatible JPEG, quality 0.85 — not Current + quality 1 (that reads
+    PHAsset and iOS kills the process if the usage string is missing, and
+    a 48MP HEIC can jetsam the app).
   → show preview immediately (picker URI)
-  → after interactions: decode / resize / JPEG  (this file)
+  → after interactions: decode / resize / JPEG only if still over 2160
   → swap preview to the optimized URI when it wins
   → user writes caption in parallel
   → Post waits for the optimize promise if it is still running
@@ -78,7 +81,7 @@ Choose photo
   → poll until published
 ```
 
-`asset.fileSize === 0` is not an error. iOS often omits it. We measure with `expo-file-system` and, if the URI is not File-addressable, `fetch` + `blob.size`. That was the bug that made Choose photo look missing.
+`asset.fileSize === 0` is not an error. iOS often omits it. We measure with `fetch` + `blob.size`, never `expo-file-system` `File` on a picker URI (`ph://` can abort the process).
 
 Take a picture stays on screen and stays disabled. Do not hide it — the product spec still has camera; this is a deliberate ship order, not a deleted feature.
 
