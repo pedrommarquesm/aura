@@ -6,6 +6,7 @@ import { PostCard } from "@/components/post-card";
 import { Card, Skeleton } from "@/components/ui";
 import { fetchTrendingInfinite } from "@/lib/query/browser";
 import { queryKeys } from "@/lib/query/keys";
+import { useRefetchFeedWhenSignedIn } from "@/lib/query/use-refetch-feed-when-signed-in";
 
 export function TrendingGrid({
   empty,
@@ -14,6 +15,7 @@ export function TrendingGrid({
   empty: string;
   unavailable: string;
 }) {
+  useRefetchFeedWhenSignedIn("trending");
   const query = useQuery({
     queryKey: queryKeys.feed.ranking("trending"),
     queryFn: () => fetchTrendingInfinite(6),
