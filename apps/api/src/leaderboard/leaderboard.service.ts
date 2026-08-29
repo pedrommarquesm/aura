@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { desc, sql } from 'drizzle-orm';
+import { and, desc, ne, sql } from 'drizzle-orm';
 import type { Redis } from 'ioredis';
 
 import { DB, type Database } from '../db/db.module';
@@ -123,12 +123,16 @@ export class LeaderboardService {
         title: users.title,
       })
       .from(users)
+      .where(ne(users.status, 'banned'))
       .orderBy(desc(users.aura), users.id)
       .limit(limit);
 
     const entries = rows.map((row, index) => ({ ...row, rank: index + 1 }));
 
-    const [countRow] = await this.db.select({ count: sql<number>`count(*)::int` }).from(users);
+    const [countRow] = await this.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(users)
+      .where(ne(users.status, 'banned'));
     const total = countRow?.count ?? entries.length;
 
     let viewer: LeaderboardEntry | null = entries.find((e) => e.userId === viewerId) ?? null;
@@ -144,9 +148,10 @@ export class LeaderboardService {
         rank: number;
       }>(sql`
         SELECT id, username, display_name, avatar_url, aura, title,
-               (SELECT count(*) + 1 FROM users higher WHERE higher.aura > u.aura)::int AS rank
+               (SELECT count(*) + 1 FROM users higher
+                 WHERE higher.aura > u.aura AND higher.status <> 'banned')::int AS rank
         FROM users u
-        WHERE u.id = ${viewerId}
+        WHERE u.id = ${viewerId} AND u.status <> 'banned'
       `);
 
       if (row) {
@@ -178,7 +183,12 @@ export class LeaderboardService {
         title: users.title,
       })
       .from(users)
-      .where(sql`${users.id} = ANY(${sql.raw(`ARRAY['${ids.join("','")}']`)})`);
+      .where(
+        and(
+          sql`${users.id} = ANY(${sql.raw(`ARRAY['${ids.join("','")}']`)})`,
+          ne(users.status, 'banned'),
+        ),
+      );
 
     return new Map(rows.map((row) => [row.userId, row]));
   }
@@ -198,9 +208,10 @@ export class LeaderboardService {
     }
 
     const [row] = await this.db.execute<{ rank: number }>(sql`
-      SELECT (SELECT count(*) + 1 FROM users higher WHERE higher.aura > u.aura)::int AS rank
+      SELECT (SELECT count(*) + 1 FROM users higher
+        WHERE higher.aura > u.aura AND higher.status <> 'banned')::int AS rank
       FROM users u
-      WHERE u.id = ${userId}
+      WHERE u.id = ${userId} AND u.status <> 'banned'
     `);
 
     return row?.rank ?? null;
@@ -208,7 +219,10 @@ export class LeaderboardService {
 
   /** Rebuilds the sorted set from Postgres. Redis is a projection, not truth. */
   async rebuild(): Promise<number> {
-    const rows = await this.db.select({ id: users.id, aura: users.aura }).from(users);
+    const rows = await this.db
+      .select({ id: users.id, aura: users.aura })
+      .from(users)
+      .where(ne(users.status, 'banned'));
     if (rows.length === 0) return 0;
 
     const pipeline = this.redis.pipeline();
@@ -229,6 +243,28 @@ export class LeaderboardService {
       // Ranking must never fail a like. The periodic rebuild repairs drift.
       this.logger.warn(
         `leaderboard delta dropped for ${userId}: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+    }
+  }
+
+  /** Drops a banned user from the live board without waiting for a rebuild. */
+  async remove(userId: string): Promise<void> {
+    try {
+      await this.redis.zrem(GLOBAL_KEY, userId);
+    } catch (error) {
+      this.logger.warn(
+        `leaderboard remove dropped for ${userId}: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+    }
+  }
+
+  /** Writes an absolute score. Used when a previously banned user is restored. */
+  async upsert(userId: string, aura: number): Promise<void> {
+    try {
+      await this.redis.zadd(GLOBAL_KEY, aura, userId);
+    } catch (error) {
+      this.logger.warn(
+        `leaderboard upsert dropped for ${userId}: ${error instanceof Error ? error.message : 'unknown'}`,
       );
     }
   }

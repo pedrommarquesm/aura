@@ -860,6 +860,16 @@ Cannot launch without a baseline, even if the admin dashboard is V1.
 - Store `sourceUserId` on every event for graph analysis later
 - Block / report tables can be thin in V0 (`Report(reporterId, targetType, targetId, reason)`) so the app has a button
 
+V0 enforcement, before the admin dashboard (TS-12):
+
+```text
+POST /v1/moderation/users/:id/status   { status: active | suspended | banned }
+POST /v1/moderation/posts/:id/remove
+DELETE /v1/posts/:id                   -- author only; same reversal path
+```
+
+`X-Moderation-Key` (`MODERATION_SECRET`) gates the moderation routes. Unset parks them (503) rather than leaving them open. A status change to `suspended` or `banned` revokes every `DeviceSession` for that user; the next access or refresh fails with `account_suspended` / `account_banned` instead of waiting for the JWT to expire. A ban also drops the user from the live leaderboard and hides their posts from public reads. Post removal flips `status` to `removed` first, then writes a `REVERSAL` for the remaining `posts.aura` (`idempotency_key = takedown:<postId>`).
+
 Like-rings and multi-accounting are V1 detection jobs reading the ledger. The ledger is what makes that possible. Skipping it in V0 would be the expensive mistake.
 
 ---

@@ -21,6 +21,8 @@ export const API_ERROR_CODES = [
   "invalid_token",
   "token_expired",
   "refresh_reuse_detected",
+  "account_suspended",
+  "account_banned",
   "upload_expired",
   "upload_too_large",
   "unsupported_media_type",

@@ -21,6 +21,8 @@ export const ErrorCode = {
   INVALID_TOKEN: 'invalid_token',
   TOKEN_EXPIRED: 'token_expired',
   REFRESH_REUSE_DETECTED: 'refresh_reuse_detected',
+  ACCOUNT_SUSPENDED: 'account_suspended',
+  ACCOUNT_BANNED: 'account_banned',
 
   // Posts and uploads
   UPLOAD_EXPIRED: 'upload_expired',

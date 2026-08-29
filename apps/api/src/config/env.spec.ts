@@ -70,6 +70,16 @@ describe('loadEnv', () => {
     expect(loadEnv(minimal).R2_BUCKET).toBe('aura-media');
   });
 
+  it('parks moderation routes when no secret is set, rather than failing open', () => {
+    expect(loadEnv(minimal).MODERATION_SECRET).toBeUndefined();
+  });
+
+  it('refuses a short moderation secret so a guessed value is not enough', () => {
+    expect(() => loadEnv({ ...minimal, MODERATION_SECRET: 'too-short' })).toThrow(
+      /MODERATION_SECRET/,
+    );
+  });
+
   it('does not refuse the dev secret merely because NODE_ENV is production', () => {
     // The guard must key on APP_ENV. A local production build is not a deploy.
     expect(() => loadEnv({ ...minimal, NODE_ENV: 'production', APP_ENV: 'local' })).not.toThrow();

@@ -269,6 +269,11 @@ Rules:
 Required in a deployed API: `DATABASE_URL`, `REDIS_URL`. Everything else has a
 sensible default documented in the example file.
 
+`MODERATION_SECRET` (api + worker, `preserve()`) gates `POST /v1/moderation/*`
+via the `X-Moderation-Key` header. Unset parks those routes with 503. Generate
+one with `openssl rand -base64 32` and set it in the dashboard when you need to
+suspend, ban, or take a post down on staging. Never commit it.
+
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.
 

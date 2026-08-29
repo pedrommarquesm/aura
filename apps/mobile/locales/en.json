@@ -184,6 +184,8 @@
     "invalid_token": "Your session is not valid. Sign in again.",
     "token_expired": "Your session expired. Sign in again.",
     "refresh_reuse_detected": "We signed you out to keep your account safe. Sign in again.",
+    "account_suspended": "This account is suspended.",
+    "account_banned": "This account has been banned.",
     "upload_expired": "That upload timed out. Pick your photo or video again.",
     "upload_too_large": "That file is too big.",
     "unsupported_media_type": "That file type is not supported.",

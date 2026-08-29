@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 
+import { assertAccountActive } from '../common/errors/account-status';
 import { AppError } from '../common/errors/app-error';
 import { ErrorCode } from '../common/errors/error-codes';
 import { newId } from '../common/ids';
@@ -107,9 +108,7 @@ export class AuthService {
       needsUsername = true;
     }
 
-    if (user.status !== 'active') {
-      throw AppError.forbidden('This account is not active');
-    }
+    assertAccountActive(user.status);
 
     const issued = await this.tokens.issue(user.id, options.device ?? {});
 

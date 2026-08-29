@@ -116,6 +116,13 @@ const envSchema = z.object({
   MEDIA_VIDEO_MAX_DURATION_MS: z.coerce.number().int().positive().default(60_000),
   MEDIA_DAILY_UPLOAD_QUOTA: z.coerce.number().int().positive().default(20),
   MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
+
+  /**
+   * Shared secret for `POST /v1/moderation/*` (`X-Moderation-Key`).
+   * Unset parks those routes (503) rather than leaving them open. The admin
+   * dashboard is TS-12; this is the V0 stand-in so a ban actually lands.
+   */
+  MODERATION_SECRET: z.string().min(16).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
