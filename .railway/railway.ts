@@ -2,8 +2,9 @@
  * Aura infrastructure as code.
  *
  * Declares the whole Railway project: databases, the API, the background
- * worker, and the public web app. Checked in so the environment can be
- * recreated from any machine rather than living only in the dashboard.
+ * worker, the public web app, and the staff admin backoffice. Checked in so
+ * the environment can be recreated from any machine rather than living only
+ * in the dashboard.
  *
  * **There is only a `staging` environment today.** Production infrastructure
  * is created when the product is ready for it, not before — an idle
@@ -82,8 +83,10 @@ export default defineRailway(() => {
     R2_BUCKET: 'aura-media',
     MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
     MEDIA_EDGE: 'none',
-    // V0 stand-in for the admin dashboard. Unset parks /v1/moderation/*.
+    // Break-glass for /v1/moderation/* via X-Moderation-Key. Staff JWTs work
+    // without it. Unset parks only the key path.
     MODERATION_SECRET: preserve(),
+    STAFF_OWNER_EMAIL: 'pedrommarquesm@gmail.com',
   };
 
   const api = service('api', {
@@ -149,7 +152,25 @@ export default defineRailway(() => {
     },
   });
 
+  const admin = service('admin', {
+    build: { buildEnvironment: 'V3', builder: 'DOCKERFILE', dockerfilePath: 'Dockerfile' },
+    healthcheck: '/api/health',
+    healthcheckTimeout: 120,
+    replicas: { [REGION]: 1 },
+    deploy: { restartPolicyMaxRetries: 5 },
+    env: {
+      NEXT_PUBLIC_API_BASE_URL: 'https://api.aurarankd.com',
+      API_BASE_URL: 'https://api.aurarankd.com',
+      PORT: preserve(),
+      AUTH_TRUST_HOST: 'true',
+      AUTH_SECRET: preserve(),
+      AUTH_GOOGLE_ID:
+        '37586478648-trc2amkrb29fv6h9undhkljfd7t69llh.apps.googleusercontent.com',
+      AUTH_GOOGLE_SECRET: preserve(),
+    },
+  });
+
   return project('aura', {
-    resources: [Postgres, Redis, postgresVolume, redisVolume, api, worker, web],
+    resources: [Postgres, Redis, postgresVolume, redisVolume, api, worker, web, admin],
   });
 });

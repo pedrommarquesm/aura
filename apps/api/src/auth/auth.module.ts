@@ -17,6 +17,6 @@ import { TokensService } from './tokens.service';
     AuthGuard,
     OptionalAuthGuard,
   ],
-  exports: [AuthService, TokensService, AuthGuard, OptionalAuthGuard],
+  exports: [AuthService, TokensService, AuthGuard, OptionalAuthGuard, GoogleProvider],
 })
 export class AuthModule {}

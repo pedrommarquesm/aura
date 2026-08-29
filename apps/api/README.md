@@ -109,6 +109,24 @@ Product endpoints live under `/v1`; health is deliberately outside it.
 | POST | `/v1/posts/:id/like` | required | Idempotent |
 | DELETE | `/v1/posts/:id/like` | required | Writes a `REVERSAL` event |
 | GET | `/v1/leaderboards/global` | optional | Top N plus the viewer's own rank |
+| POST | `/v1/staff/auth/google` | — | Staff Google sign-in. Invite-only; never creates a `users` row |
+| POST | `/v1/staff/auth/refresh` | — | Rotate a staff refresh token |
+| POST | `/v1/staff/auth/logout` | staff | Revoke the current staff session |
+| GET | `/v1/staff/auth/me` | staff | Current staff member |
+| GET | `/v1/staff` | staff (admin+) | List staff |
+| POST | `/v1/staff` | staff (admin+) | Invite by email |
+| PATCH | `/v1/staff/:id` | staff (admin+) | Role / deactivate. Owner is immutable |
+| GET | `/v1/admin/stats` | staff | Global counters for the dashboard |
+| GET | `/v1/admin/users` | staff | Users table (not staff) |
+| GET | `/v1/admin/users/:id` | staff | Consumer user detail |
+| GET | `/v1/admin/users/:id/posts` | staff | That user's posts, including removed |
+| GET | `/v1/admin/posts` | staff | Content queue |
+| GET | `/v1/moderation/reports` | staff or key | Report queue |
+| POST | `/v1/moderation/reports/:id/dismiss` | staff or key | Close without action |
+| POST | `/v1/moderation/reports/:id/action` | staff or key | Mark handled after a takedown |
+| GET | `/v1/moderation/actions` | staff or key | Audit log. Appeals hang off this later |
+| POST | `/v1/moderation/users/:id/status` | staff or key | Suspend / ban / reinstate |
+| POST | `/v1/moderation/posts/:id/remove` | staff or key | Soft-delete + Aura reversal |
 
 **Optional** auth means the endpoint works signed out. That is what makes guest
 browsing possible: a new install scrolls immediately and only meets an auth

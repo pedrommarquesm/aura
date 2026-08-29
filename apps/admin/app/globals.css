@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/*
+ * Aura design tokens. These values are shared with the React Native app and are
+ * the only place a raw colour, type scale or radius should appear.
+ */
+@theme {
+  /* Drop Tailwind's palette and type scale so only Aura tokens are reachable. */
+  --color-*: initial;
+  --text-*: initial;
+
+  --color-bg: #0a0a0f;
+  --color-surface: #14141c;
+  --color-surface-elevated: #1e1e29;
+  --color-border: #2a2a38;
+  --color-text: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-aura: #8b5cf6;
+  --color-aura-bright: #a78bfa;
+  --color-aura-deep: #6d28d9;
+  --color-like: #ff3b5c;
+  --color-super: #ff8a00;
+  --color-gold: #facc15;
+  --color-silver: #cbd5e1;
+  --color-bronze: #d97706;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: 2.5rem;
+  --text-display--line-height: 2.75rem;
+  --text-display--font-weight: 800;
+  --text-title: 1.75rem;
+  --text-title--line-height: 2.125rem;
+  --text-title--font-weight: 700;
+  --text-heading: 1.25rem;
+  --text-heading--line-height: 1.625rem;
+  --text-heading--font-weight: 700;
+  --text-body: 1rem;
+  --text-body--line-height: 1.375rem;
+  --text-body--font-weight: 400;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.125rem;
+  --text-label--font-weight: 600;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 500;
+
+  --tracking-aura: -0.02em;
+
+  --spacing: 0.25rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 999px;
+
+  --motion-instant: 100ms;
+  --motion-quick: 200ms;
+  --motion-smooth: 320ms;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Glow is the emphasis tool on this dark UI, in place of drop shadows. */
+  --shadow-aura-glow:
+    0 0 0 1px color-mix(in oklab, var(--color-aura) 35%, transparent),
+    0 18px 60px -20px color-mix(in oklab, var(--color-aura) 70%, transparent);
+  --shadow-aura-glow-sm: 0 10px 34px -18px
+    color-mix(in oklab, var(--color-aura) 65%, transparent);
+
+  --animate-rise: rise var(--motion-smooth) var(--ease-smooth) both;
+  --animate-aura-pulse: aura-pulse 6s var(--ease-smooth) infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aura-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+@utility bg-aura-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-aura) 0%,
+    var(--color-aura-deep) 100%
+  );
+}
+
+/* Stops short of aura-deep: text has to stay readable on the dark background. */
+@utility text-aura-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-aura-bright) 0%,
+    var(--color-aura) 100%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Aura is a number the user should read at a glance and compare row to row. */
+@utility aura-numerals {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: var(--tracking-aura);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-aura) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-aura-bright);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
