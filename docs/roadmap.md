@@ -248,7 +248,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-29 | Automatic photo moderation (TS-11) is on hold. When built: third-party classifier (Hive/Sightengine) on `ProcessMediaJob`, thumb only, fail closed, silent success, `content_rejected` vs generic fail. No on-box ML. Architecture §6.5 | |
+| 2026-08-29 | Automatic photo moderation (TS-11) is on hold. When built: third-party classifier (Hive/Sightengine) on `ProcessMediaJob`, thumb only, fail closed, silent success, `content_rejected` vs generic fail. No on-box ML. Architecture §6.5 | [#45](https://github.com/pedrommarquesm/aura/pull/45) |
 | 2026-08-29 | Double-tap (app) / double-click (web) on post media likes. It does not unlike. The heart button still toggles. Guests sign in and the like is replayed | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | 2026-08-29 | Web server state is TanStack Query. RSC still fetches the first page (SEO); the client hydrates that cache. Likes are mutations and write every ranking plus the permalink. Session is `useQuery(['me'])`. No NextAuth | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 | 2026-08-29 | Staff backoffice is live on Railway staging (`admin-staging-ea68.up.railway.app`). It reuses the public site's Google Web OAuth client (`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` = web's client id / `GOOGLE_CLIENT_SECRET`) | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
