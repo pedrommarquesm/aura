@@ -29,6 +29,13 @@
       "socialTitle": "Aura global leaderboard",
       "description": "The top 100 by lifetime Aura. One board, one number, visible to everyone."
     },
+    "post": {
+      "title": "@{username}",
+      "socialTitle": "@{username} on Aura",
+      "description": "{caption}",
+      "descriptionEmpty": "@{username} posted on Aura. Open the app to like it and farm Aura.",
+      "alt": "A post by @{username} on Aura"
+    },
     "keywords": "Aura, social game, leaderboard, photo sharing, short video",
     "og": {
       "title": "Turn likes into Aura.",
@@ -212,6 +219,15 @@
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "video": "Video"
+    }
+  },
+  "post": {
+    "page": {
+      "eyebrow": "Shared from the app",
+      "openInApp": "Open in the Aura app",
+      "installTitle": "Like it in the app",
+      "installBody": "Every like pays Aura to the creator. Posting and liking stay in the app.",
+      "unavailable": "This post is gone, or it was never published."
     }
   },
   "auth": {

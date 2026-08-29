@@ -22,9 +22,22 @@ import { rotateRefreshToken } from "./lib/auth/session";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
+  // Share URLs stay unprefixed (docs/i18n.md). next-intl would otherwise
+  // rewrite `/a/@alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
+  // still runs so `likedByMe` works when the viewer is signed in.
+  if (isSharePath(request.nextUrl.pathname)) {
+    const response = NextResponse.next();
+    await attachRefreshedSession(request, response);
+    return response;
+  }
+
   const response = intlMiddleware(request);
   await attachRefreshedSession(request, response);
   return response;
+}
+
+function isSharePath(pathname: string) {
+  return pathname === "/a" || pathname.startsWith("/a/");
 }
 
 async function attachRefreshedSession(

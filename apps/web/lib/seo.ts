@@ -29,6 +29,18 @@ type BuildMetadataInput = {
   noIndex?: boolean;
 };
 
+type ShareMetadataInput = {
+  locale: AppLocale;
+  /** Already-absolute or root-relative canonical, never locale-prefixed. */
+  canonicalPath: string;
+  title?: Metadata["title"];
+  socialTitle: string;
+  description: string;
+  image?: string;
+  type?: "website" | "article";
+  noIndex?: boolean;
+};
+
 /**
  * Every locale's URL for one route, plus the `x-default` search engines fall
  * back to. Shared with `app/sitemap.ts` so the head and the sitemap cannot
@@ -71,6 +83,52 @@ export function buildMetadata({
     ...(title ? { title } : {}),
     description,
     alternates: { canonical: url, languages: alternateUrls(pathname) },
+    openGraph: {
+      type,
+      url,
+      siteName: siteConfig.name,
+      title: socialTitle,
+      description,
+      locale: ogLocale[locale],
+      alternateLocale: routing.locales
+        .filter((candidate) => candidate !== locale)
+        .map((candidate) => ogLocale[candidate]),
+      ...images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: siteConfig.twitter,
+      creator: siteConfig.twitter,
+      title: socialTitle,
+      description,
+      ...images,
+    },
+    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
+  };
+}
+
+/**
+ * Metadata for `/a/@username/post/:postId`. Canonical is the unprefixed URL;
+ * there are no locale alternates, so a future routing change cannot split the
+ * link graph (docs/i18n.md).
+ */
+export function buildShareMetadata({
+  locale,
+  canonicalPath,
+  title,
+  socialTitle,
+  description,
+  image,
+  type = "article",
+  noIndex = false,
+}: ShareMetadataInput): Metadata {
+  const url = absoluteUrl(canonicalPath);
+  const images = image ? { images: [{ url: image, alt: socialTitle }] } : {};
+
+  return {
+    ...(title ? { title } : {}),
+    description,
+    alternates: { canonical: url },
     openGraph: {
       type,
       url,

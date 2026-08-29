@@ -69,6 +69,7 @@ export default async function LocaleLayout({
             common: messages.common,
             errors: messages.errors,
             feed: messages.feed,
+            post: messages.post,
           }}
         >
           {children}

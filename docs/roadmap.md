@@ -91,7 +91,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
-| WEB-08 | Replace mock vector posters with real content once the feed API exists | Not started | |
+| WEB-08 | Replace mock vector posters with real content once the feed API exists | In review | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
 | WEB-20 | i18n: next-intl, English + Portuguese, translated routes | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
@@ -158,7 +158,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
-| WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Not started | |
+| WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | In review | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 
 ### Aura
@@ -229,6 +229,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Public post URLs stay unprefixed (`/a/@username/post/:id`). The page server-renders `GET /v1/posts/:id`, offers store + `aura://` deep links, and never lets the web like or post. Live feed cards are the posters; mocks stay behind `NEXT_PUBLIC_USE_MOCK_API` | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | 2026-08-28 | Reports and blocks are thin tables. `POST /v1/reports`, `POST /v1/blocks`, `DELETE /v1/blocks/:userId`. The feed hides both directions of a block. Likes are capped per user (`LIKE_RATE_LIMIT_*`); daily upload quota was already `MEDIA_DAILY_UPLOAD_QUOTA` | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
 | 2026-08-28 | Profile is a competitive card: rank, title, Aura, and a real posts grid from `GET /v1/users/:username` and `GET /v1/users/:id/posts`. Aura totals tick instead of snapping when a like lands | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | 2026-08-28 | Public profile is `GET /v1/users/:username` (rank + Aura + post count). The posts grid is `GET /v1/users/:id/posts`, same cursor as the feed. Banned users 404 | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
