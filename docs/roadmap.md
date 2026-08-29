@@ -174,7 +174,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-19 | Signed-in feed / trending must show `likedByMe` — same hearts as the permalink. Guest static snapshot was freezing empty hearts | Done | [#40](https://github.com/pedrommarquesm/aura/pull/40) |
 | WEB-23 | Landing “see what's trending” goes to `/feed`. Mobile header exposes Feed — the section nav is desktop-only | Done | [#40](https://github.com/pedrommarquesm/aura/pull/40) |
 | WEB-24 | Like overlay and `+10 Aura` last longer (burst 1100ms, rise 1200ms) | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
-| WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | In progress | |
+| WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | In review | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
 
 ### Aura
 
