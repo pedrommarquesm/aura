@@ -13,6 +13,7 @@ import { PostsModule } from './posts/posts.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { TrendingModule } from './trending/trending.module';
+import { UsersModule } from './users/users.module';
 
 /**
  * Shared by the HTTP process and the worker process.
@@ -36,6 +37,7 @@ import { TrendingModule } from './trending/trending.module';
     LikesModule,
     PostsModule,
     LeaderboardModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

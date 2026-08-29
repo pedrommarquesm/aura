@@ -15,6 +15,8 @@ export interface FeedQuery {
   cursor?: string | undefined;
   limit: number;
   viewerId?: string | undefined;
+  /** When set, only this author's published posts. Profile grid. */
+  authorId?: string | undefined;
 }
 
 export interface FeedCard {
@@ -67,7 +69,7 @@ export class FeedService {
 
     // Fetch one extra row to learn whether another page exists, rather than
     // running a second count query on the hottest read in the product.
-    const rows = await this.selectPage(query.kind, cursor, limit + 1);
+    const rows = await this.selectPage(query.kind, cursor, limit + 1, query.authorId);
 
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
@@ -95,8 +97,15 @@ export class FeedService {
     return kind === 'trending' ? row.trendingScore : (row.publishedAt?.getTime() ?? 0);
   }
 
-  private async selectPage(kind: FeedKind, cursor: FeedCursorValue, limit: number) {
+  private async selectPage(
+    kind: FeedKind,
+    cursor: FeedCursorValue,
+    limit: number,
+    authorId?: string,
+  ) {
     const published = eq(posts.status, 'published');
+    const author = authorId ? eq(posts.authorId, authorId) : undefined;
+    const scope = author ? and(published, author) : published;
 
     // Keyset pagination on (sortValue, id). Offset pagination would drift as
     // new posts arrive, showing duplicates and skipping items mid-scroll.
@@ -146,7 +155,7 @@ export class FeedService {
         // Left join: a post whose asset row is missing should still render rather
         // than vanish from the feed.
         .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id))
-        .where(keyset ? and(published, keyset) : published)
+        .where(keyset ? and(scope, keyset) : scope)
         .orderBy(...order)
         .limit(limit)
     );
