@@ -97,14 +97,16 @@ export function useLikePost({
 
   /** Double-tap / double-click: like only. Already liked just replays the burst. */
   const likeOnly = () => {
-    if (requireAuth()) {
-      setBurst((count) => count + 1);
+    setBurst((count) => count + 1);
+    if (status !== "signedIn" || needsUsername) {
+      // Let the heart burst paint before we leave the page.
+      window.setTimeout(
+        () => goToAuth(status === "signedIn" ? "username" : "login"),
+        280,
+      );
       return;
     }
-    if (initiallyLiked) {
-      setBurst((count) => count + 1);
-      return;
-    }
+    if (initiallyLiked) return;
     mutation.mutate(true);
   };
 
