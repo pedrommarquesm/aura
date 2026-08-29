@@ -183,14 +183,14 @@ environment, so these point at staging until production exists.
 
 | Hostname | Service | Notes |
 |---|---|---|
-| `aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
-| `www.aurarankd.com` | web | Same app. 308 to the apex |
+| `www.aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
+| `aurarankd.com` | web | Same app. 308 to `www` |
 | `api.aurarankd.com` | api | Railway custom domain, port 3000 |
 | `cdn.aurarankd.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
 
 Railway already has the three HTTP hostnames. DNS for `aurarankd.com`,
 `www.aurarankd.com`, and `api.aurarankd.com` answers; certificates are issued.
-`www` 308s to the apex so there is one public origin.
+The apex 308s to `www` so there is one public origin.
 
 Generated `*.up.railway.app` URLs keep working. Web and mobile now point at
 `https://api.aurarankd.com`. `NEXT_PUBLIC_*` is inlined at image build time, so
@@ -317,7 +317,7 @@ Project `aura`, environment **`staging`**, region `europe-west4`.
 | Service | Generated URL | Custom domain (after DNS) |
 |---|---|---|
 | api | https://api-production-aa71.up.railway.app | https://api.aurarankd.com |
-| web | https://web-production-e1282.up.railway.app | https://aurarankd.com (`www` 308s here) |
+| web | https://web-production-e1282.up.railway.app | https://www.aurarankd.com (apex 308s here) |
 | media | — | https://cdn.aurarankd.com |
 
 The generated hostnames still read `-production-` because Railway created them

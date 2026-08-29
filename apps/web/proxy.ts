@@ -9,7 +9,7 @@ import {
   writeSessionOnResponse,
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
-import { isWwwHost } from "./lib/canonical-host";
+import { WWW_HOST, isApexHost } from "./lib/canonical-host";
 
 /**
  * Resolves the locale for every page request: an explicit prefix wins, then
@@ -24,10 +24,10 @@ const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (isWwwHost(host)) {
+  if (isApexHost(host)) {
     const url = request.nextUrl.clone();
     url.protocol = "https";
-    url.hostname = "aurarankd.com";
+    url.hostname = WWW_HOST;
     url.port = "";
     return NextResponse.redirect(url, 308);
   }
