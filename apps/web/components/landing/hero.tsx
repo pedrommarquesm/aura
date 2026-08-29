@@ -5,36 +5,21 @@ import { AppPreview } from "@/components/landing/app-preview";
 import { Container } from "@/components/landing/section";
 import { AuraValue, ButtonLink } from "@/components/ui";
 import { sectionHash } from "@/i18n/sections";
-import { api } from "@/lib/api";
+import type { FeedCard, LeaderboardEntry } from "@/lib/api/types";
 import { downloadHref } from "@/lib/site";
 
-export async function Hero() {
+export async function Hero({
+  topPost,
+  leader,
+  authorRank,
+}: {
+  topPost?: FeedCard;
+  leader?: LeaderboardEntry;
+  authorRank?: number | null;
+}) {
   const locale = await getLocale();
   const t = await getTranslations("landing.hero");
   const actions = await getTranslations("common.actions");
-
-  let trendingItems: Awaited<ReturnType<typeof api.getTrendingFeed>>["items"] = [];
-  let leaderboardEntries: Awaited<
-    ReturnType<typeof api.getGlobalLeaderboard>
-  >["entries"] = [];
-
-  try {
-    const [trending, leaderboard] = await Promise.all([
-      api.getTrendingFeed({ limit: 1 }),
-      api.getGlobalLeaderboard({ limit: 10 }),
-    ]);
-    trendingItems = trending.items;
-    leaderboardEntries = leaderboard.entries;
-  } catch {
-    // Marketing copy still renders; the live previews stay off.
-  }
-
-  const topPost = trendingItems[0];
-  const leader = leaderboardEntries[0];
-  const authorRank =
-    leaderboardEntries.find(
-      (entry) => entry.username === topPost?.author.username,
-    )?.rank ?? null;
 
   return (
     <section className="relative overflow-hidden">
@@ -100,7 +85,7 @@ export async function Hero() {
 
         {topPost ? (
           <div className="animate-rise [animation-delay:120ms]">
-            <AppPreview post={topPost} rank={authorRank} />
+            <AppPreview post={topPost} rank={authorRank ?? null} />
           </div>
         ) : null}
       </Container>

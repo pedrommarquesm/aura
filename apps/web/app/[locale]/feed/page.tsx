@@ -5,11 +5,12 @@ import { FeedList } from "@/components/feed/feed-list";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
-import { api } from "@/lib/api";
-import { apiGet, cursorQuery } from "@/lib/api/client";
-import { apiConfig } from "@/lib/api/config";
 import type { CursorPage, FeedCard } from "@/lib/api/types";
-import { getSession } from "@/lib/auth/session";
+import { loadFeedPage } from "@/lib/query/actions";
+import { makeQueryClient } from "@/lib/query/client";
+import { Hydrate } from "@/lib/query/hydrate";
+import { toInfinite } from "@/lib/query/infinite";
+import { queryKeys } from "@/lib/query/keys";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,20 +26,6 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-async function loadInitialFeed(): Promise<CursorPage<FeedCard>> {
-  const session = await getSession();
-  const params = { limit: 12 };
-
-  if (session && !apiConfig.useMock) {
-    return apiGet<CursorPage<FeedCard>>("/v1/feed", {
-      query: cursorQuery(params),
-      accessToken: session.accessToken,
-    });
-  }
-
-  return api.getFeed(params);
-}
-
 export default async function FeedPage() {
   const t = await getTranslations("feed.page");
 
@@ -46,13 +33,21 @@ export default async function FeedPage() {
   let failed = false;
 
   try {
-    page = await loadInitialFeed();
+    page = await loadFeedPage(null);
   } catch {
     failed = true;
   }
 
+  const queryClient = makeQueryClient();
+  if (page) {
+    queryClient.setQueryData(
+      queryKeys.feed.ranking("latest"),
+      toInfinite(page),
+    );
+  }
+
   return (
-    <>
+    <Hydrate client={queryClient}>
       <SiteHeader />
       <main>
         <section className="border-b border-border/70 py-16 sm:py-20">
@@ -71,15 +66,11 @@ export default async function FeedPage() {
           ) : !page || page.items.length === 0 ? (
             <p className="text-body text-text-secondary">{t("empty")}</p>
           ) : (
-            <FeedList
-              initialItems={page.items}
-              initialCursor={page.nextCursor}
-              initialHasMore={page.hasMore}
-            />
+            <FeedList />
           )}
         </Container>
       </main>
       <SiteFooter />
-    </>
+    </Hydrate>
   );
 }

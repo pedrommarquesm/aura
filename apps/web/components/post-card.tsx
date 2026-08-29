@@ -48,6 +48,8 @@ export function PostCard({
           postId={post.id}
           likeCount={post.likeCount}
           initiallyLiked={post.likedByMe}
+          aura={post.aura}
+          authorAura={post.author.aura}
         />
         <AuraValue value={post.aura} size="md" tone="aura" />
       </div>

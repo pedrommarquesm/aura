@@ -56,6 +56,15 @@ together.
 their `{ items, nextCursor, hasMore }` (feed) / `{ entries, viewer, total }`
 (leaderboard) envelopes.
 
+The first page of each of those is still a Server Component fetch (SEO, and
+the JWT stays in httpOnly cookies). That snapshot is dehydrated into TanStack
+Query (`lib/query`). The browser owns pagination (`useInfiniteQuery` on `/feed`)
+and mutations: a like writes every cached ranking plus the permalink so the
+heart, count, and Aura stay in sync without `router.refresh()`. Session is
+`useQuery(['me'])` against `/api/auth/me`. Query keys match mobile where the
+meaning matches — FND-03 can merge the catalogs later. Feed loaders are
+server actions so the access token never enters JS.
+
 The live staging API is the default. Set `NEXT_PUBLIC_USE_MOCK_API=true` to
 render local vector posters instead. When `packages/contracts` lands (FND-04),
 `lib/api/types.ts` becomes a re-export of the shared schemas.

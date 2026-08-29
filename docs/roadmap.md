@@ -168,6 +168,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | Done | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
+| WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | In review | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 
 ### Aura
 
@@ -239,6 +240,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | Web server state is TanStack Query. RSC still fetches the first page (SEO); the client hydrates that cache. Likes are mutations and write every ranking plus the permalink. Session is `useQuery(['me'])`. No NextAuth | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 | 2026-08-29 | Staff backoffice is a separate Next.js app (`apps/admin`). Staff identity is its own tables (`staff`, `staff_identities`, `staff_sessions`) and JWT audience (`aura-staff`). NextAuth wraps API tokens only — no NextAuth user store. Google is V0; `STAFF_ALLOWED_DOMAINS` is the seam for org-domain auto-join. Appeals are not built; `moderation_actions` is the audit seam they will hang off | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | 2026-08-29 | `expo-image-manipulator` is a native module, not a config plugin. Listing it in `app.json` `plugins` breaks `expo run:ios` (`Cannot find module './ImageManipulator'`). Autolink is enough | [#33](https://github.com/pedrommarquesm/aura/pull/33) |

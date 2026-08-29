@@ -5,7 +5,11 @@ import { LeaderboardBoard } from "@/components/leaderboard-board";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
-import { api } from "@/lib/api";
+import type { LeaderboardPage } from "@/lib/api/types";
+import { loadLeaderboardPage } from "@/lib/query/actions";
+import { makeQueryClient } from "@/lib/query/client";
+import { Hydrate } from "@/lib/query/hydrate";
+import { queryKeys } from "@/lib/query/keys";
 import { buildMetadata } from "@/lib/seo";
 
 /** Same window as the public feed cache (architecture §8.4). */
@@ -27,18 +31,22 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function LeaderboardPage() {
   const t = await getTranslations("leaderboard.page");
 
-  let entries: Awaited<ReturnType<typeof api.getGlobalLeaderboard>>["entries"] =
-    [];
+  let board: LeaderboardPage | null = null;
   let failed = false;
 
   try {
-    entries = (await api.getGlobalLeaderboard({ limit: 100 })).entries;
+    board = await loadLeaderboardPage(100);
   } catch {
     failed = true;
   }
 
+  const queryClient = makeQueryClient();
+  if (board) {
+    queryClient.setQueryData(queryKeys.leaderboard.global(100), board);
+  }
+
   return (
-    <>
+    <Hydrate client={queryClient}>
       <SiteHeader />
       <main>
         <section className="border-b border-border/70 py-16 sm:py-20">
@@ -53,7 +61,7 @@ export default async function LeaderboardPage() {
 
         <Container className="py-12 sm:py-16">
           <LeaderboardBoard
-            entries={entries}
+            entries={board?.entries ?? []}
             empty={t("empty")}
             unavailable={t("unavailable")}
             failed={failed}
@@ -61,6 +69,6 @@ export default async function LeaderboardPage() {
         </Container>
       </main>
       <SiteFooter />
-    </>
+    </Hydrate>
   );
 }

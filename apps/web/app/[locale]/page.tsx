@@ -9,6 +9,11 @@ import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { TrendingPreview } from "@/components/landing/trending-preview";
 import { WhatIsAura } from "@/components/landing/what-is-aura";
+import { loadLeaderboardPage, loadTrendingPage } from "@/lib/query/actions";
+import { makeQueryClient } from "@/lib/query/client";
+import { Hydrate } from "@/lib/query/hydrate";
+import { toInfinite } from "@/lib/query/infinite";
+import { queryKeys } from "@/lib/query/keys";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,19 +29,51 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const queryClient = makeQueryClient();
+  const [trendingResult, leaderboardResult] = await Promise.allSettled([
+    loadTrendingPage(6),
+    loadLeaderboardPage(10),
+  ]);
+
+  const trending =
+    trendingResult.status === "fulfilled" ? trendingResult.value : null;
+  const leaderboard =
+    leaderboardResult.status === "fulfilled" ? leaderboardResult.value : null;
+  const leaderboardFailed = leaderboardResult.status === "rejected";
+
+  if (trending) {
+    queryClient.setQueryData(
+      queryKeys.feed.ranking("trending"),
+      toInfinite(trending),
+    );
+  }
+  if (leaderboard) {
+    queryClient.setQueryData(queryKeys.leaderboard.global(10), leaderboard);
+  }
+
+  const topPost = trending?.items[0];
+  const leader = leaderboard?.entries[0];
+  const authorRank =
+    leaderboard?.entries.find(
+      (entry) => entry.username === topPost?.author.username,
+    )?.rank ?? null;
+
   return (
-    <>
+    <Hydrate client={queryClient}>
       <SiteHeader />
       <main>
-        <Hero />
+        <Hero topPost={topPost} leader={leader} authorRank={authorRank} />
         <WhatIsAura />
         <HowItWorks />
         <TrendingPreview />
-        <LeaderboardPreview />
+        <LeaderboardPreview
+          entries={leaderboard?.entries ?? []}
+          failed={leaderboardFailed}
+        />
         <DownloadCta />
       </main>
       <SiteFooter />
-    </>
+    </Hydrate>
   );
 }

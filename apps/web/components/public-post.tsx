@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 
-import { LikeButton } from "@/components/feed/like-button";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
 import { PostMedia } from "@/components/post-media";
+import { PublicPostLikeRow } from "@/components/public-post-like-row";
 import { AuraValue, Avatar, ButtonLink, buttonClassName } from "@/components/ui";
 import type { Post } from "@/lib/api";
 import { publicPostDeepLink } from "@/lib/share";
@@ -67,14 +67,7 @@ export async function PublicPost({ post }: { post: Post }) {
                 <p className="text-body text-text-secondary">{post.caption}</p>
               ) : null}
 
-              <div className="flex items-center justify-between border-t border-border/70 pt-4">
-                <LikeButton
-                  postId={post.id}
-                  likeCount={post.likeCount}
-                  initiallyLiked={post.likedByMe}
-                />
-                <AuraValue value={post.aura} size="lg" tone="aura" />
-              </div>
+              <PublicPostLikeRow postId={post.id} />
 
               <div className="rounded-xl border border-aura/40 bg-surface p-6 shadow-aura-glow-sm">
                 <h2 className="text-heading">{t("installTitle")}</h2>
