@@ -168,7 +168,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | Done | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
-| WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | In review | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
+| WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | Done | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 
 ### Aura
 
@@ -204,7 +204,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | OPS-10 | `www.aurarankd.com` is the canonical web host. `NEXT_PUBLIC_SITE_URL` matches | Done | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
-| OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | In review | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
+| OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | Done | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
