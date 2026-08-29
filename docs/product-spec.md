@@ -351,9 +351,11 @@ Aura number increments
 Small "+Aura" feedback
 ```
 
-Double-tap:
+Double-tap (app) / double-click (web) on the media:
 
-> Like + stronger visual animation
+> Like + stronger visual animation (a heart burst on the photo). Already
+> liked replays the burst and does not unlike. The heart button still toggles.
+> Guests are sent to sign-in with the pending like.
 
 Long press pode ficar reservado para futuras interações.
 

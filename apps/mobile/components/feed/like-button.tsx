@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useCallback, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import Animated, {
@@ -24,6 +24,11 @@ const AURA_PER_LIKE = 10;
 const PEAK_SCALE = 1.35;
 const RISE_DISTANCE = 34;
 
+export type LikeButtonHandle = {
+  /** Like only. Already liked replays the celebration and does not unlike. */
+  like: () => void;
+};
+
 export type LikeButtonProps = {
   likeCount: number;
   initiallyLiked?: boolean;
@@ -39,14 +44,17 @@ export type LikeButtonProps = {
  * `onChange` is the API write and must never gate the visual. A rejected promise
  * rolls the heart back. Guests hit `onRequireAuth` instead of toggling.
  */
-export function LikeButton({
-  likeCount,
-  initiallyLiked = false,
-  requireAuth = false,
-  onRequireAuth,
-  onChange,
-  size = 26,
-}: LikeButtonProps) {
+export const LikeButton = forwardRef<LikeButtonHandle, LikeButtonProps>(function LikeButton(
+  {
+    likeCount,
+    initiallyLiked = false,
+    requireAuth = false,
+    onRequireAuth,
+    onChange,
+    size = 26,
+  },
+  ref,
+) {
   const { t } = useTranslation();
   const format = useFormat();
   const [liked, setLiked] = useState(initiallyLiked);
@@ -70,6 +78,41 @@ export function LikeButton({
     };
   });
 
+  const celebrateLike = useCallback(() => {
+    // The rise to the peak is a fixed 100ms curve rather than a spring so the haptic can
+    // be scheduled for the exact moment the heart is largest. Firing on touch-down feels
+    // detached from the visual and firing on settle reads as lag. The spring is the
+    // bounce back down, which is where the bounce is actually wanted.
+    scale.set(
+      withSequence(
+        withTiming(PEAK_SCALE, instant, (finished) => {
+          if (finished) runOnJS(tapFeedback)();
+        }),
+        withSpring(1, celebrate),
+      ),
+    );
+
+    // Reset first so a rapid re-tap restarts the label instead of resuming it mid-flight.
+    rise.set(0);
+    rise.set(withTiming(1, celebrateTiming));
+  }, [rise, scale]);
+
+  const likeOnly = useCallback(() => {
+    if (requireAuth) {
+      onRequireAuth?.();
+      return;
+    }
+
+    if (liked) {
+      celebrateLike();
+      return;
+    }
+
+    setLiked(true);
+    void Promise.resolve(onChange?.(true)).catch(() => setLiked(false));
+    celebrateLike();
+  }, [celebrateLike, liked, onChange, onRequireAuth, requireAuth]);
+
   const toggle = useCallback(() => {
     if (requireAuth) {
       onRequireAuth?.();
@@ -87,23 +130,10 @@ export function LikeButton({
       return;
     }
 
-    // The rise to the peak is a fixed 100ms curve rather than a spring so the haptic can
-    // be scheduled for the exact moment the heart is largest. Firing on touch-down feels
-    // detached from the visual and firing on settle reads as lag. The spring is the
-    // bounce back down, which is where the bounce is actually wanted.
-    scale.set(
-      withSequence(
-        withTiming(PEAK_SCALE, instant, (finished) => {
-          if (finished) runOnJS(tapFeedback)();
-        }),
-        withSpring(1, celebrate),
-      ),
-    );
+    celebrateLike();
+  }, [celebrateLike, liked, onChange, onRequireAuth, requireAuth, rise, scale]);
 
-    // Reset first so a rapid re-tap restarts the label instead of resuming it mid-flight.
-    rise.set(0);
-    rise.set(withTiming(1, celebrateTiming));
-  }, [liked, onChange, onRequireAuth, requireAuth, rise, scale]);
+  useImperativeHandle(ref, () => ({ like: likeOnly }), [likeOnly]);
 
   const displayCount = likeCount + (liked === initiallyLiked ? 0 : liked ? 1 : -1);
 
@@ -148,4 +178,4 @@ export function LikeButton({
       </Text>
     </Pressable>
   );
-}
+});

@@ -1,17 +1,27 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { LikeButton } from './like-button';
+import { LikeButton, type LikeButtonHandle } from './like-button';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useIsAuthenticated } from '@/store/session';
+import { celebrate, instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
 /** Portrait 4:5 through landscape 1.91:1, matching what the media pipeline produces. */
@@ -28,6 +38,34 @@ function formatDuration(durationMs: number): string {
   return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
 }
 
+function DoubleTapHeart({ burst }: { burst: number }) {
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (burst === 0) return;
+    scale.set(0.4);
+    opacity.set(1);
+    scale.set(withSequence(withTiming(1.15, instant), withSpring(1, celebrate)));
+    opacity.set(withTiming(0, { duration: 620 }));
+  }, [burst, opacity, scale]);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: opacity.get(),
+    transform: [{ scale: scale.get() }],
+  }));
+
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={style}
+      className="absolute inset-0 items-center justify-center"
+    >
+      <Ionicons name="heart" size={88} color={colors.like} />
+    </Animated.View>
+  );
+}
+
 /**
  * Memoised because a like must repaint one card, never the list (§6.3). Everything the
  * card needs arrives as a single prop so the comparison stays a reference check.
@@ -38,8 +76,30 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
   const queryClient = useQueryClient();
   const isAuthenticated = useIsAuthenticated();
   const requestAuth = useAuthGateStore((state) => state.requestAuth);
+  const likeRef = useRef<LikeButtonHandle>(null);
+  const [burst, setBurst] = useState(0);
 
   const requireAuth = !isAuthenticated;
+
+  const onDoubleTap = useCallback(() => {
+    setBurst((count) => count + 1);
+  }, []);
+
+  useEffect(() => {
+    if (burst === 0) return;
+    likeRef.current?.like();
+  }, [burst]);
+
+  const doubleTap = useMemo(
+    () =>
+      Gesture.Tap()
+        .numberOfTaps(2)
+        .maxDuration(280)
+        .onEnd(() => {
+          runOnJS(onDoubleTap)();
+        }),
+    [onDoubleTap],
+  );
 
   return (
     <View className="pb-6">
@@ -67,30 +127,40 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
         </Pressable>
       </View>
 
-      <View
-        className="relative bg-surface"
-        style={{ aspectRatio: clampAspect(media.width, media.height) }}
-      >
-        <Image
-          source={media.feedUrl ? { uri: media.feedUrl } : undefined}
-          placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
-          contentFit="cover"
-          transition={160}
-          recyclingKey={post.id}
-          style={{ width: '100%', height: '100%' }}
+      <GestureDetector gesture={doubleTap}>
+        <View
+          className="relative bg-surface"
+          style={{ aspectRatio: clampAspect(media.width, media.height) }}
+          accessible
+          accessibilityRole="image"
           accessibilityLabel={post.caption ?? `@${author.username}`}
-        />
+          accessibilityHint={t('feed.post.a11y.doubleTap')}
+        >
+          <Image
+            source={media.feedUrl ? { uri: media.feedUrl } : undefined}
+            placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
+            contentFit="cover"
+            transition={160}
+            recyclingKey={post.id}
+            style={{ width: '100%', height: '100%' }}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
 
-        {media.type === 'video' && media.durationMs ? (
-          <View className="absolute bottom-3 right-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1">
-            <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
-            <Text variant="caption">{formatDuration(media.durationMs)}</Text>
-          </View>
-        ) : null}
-      </View>
+          {media.type === 'video' && media.durationMs ? (
+            <View className="absolute bottom-3 right-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1">
+              <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
+              <Text variant="caption">{formatDuration(media.durationMs)}</Text>
+            </View>
+          ) : null}
+
+          <DoubleTapHeart burst={burst} />
+        </View>
+      </GestureDetector>
 
       <View className="flex-row items-center gap-5 px-gutter pt-3">
         <LikeButton
+          ref={likeRef}
           key={`${post.id}:${post.likedByMe}`}
           likeCount={post.likeCount}
           initiallyLiked={post.likedByMe}

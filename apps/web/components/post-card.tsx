@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { LikeButton } from "@/components/feed/like-button";
+import { LikeableMedia } from "@/components/feed/likeable-media";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar, Card } from "@/components/ui";
 import type { FeedCard } from "@/lib/api";
@@ -17,7 +18,14 @@ export function PostCard({
 
   return (
     <Card interactive className="flex h-full flex-col overflow-hidden">
-      <Link href={href} className="flex min-h-0 flex-1 flex-col">
+      <LikeableMedia
+        postId={post.id}
+        liked={post.likedByMe}
+        likeCount={post.likeCount}
+        aura={post.aura}
+        authorAura={post.author.aura}
+        href={href}
+      >
         <PostMedia
           media={post.media}
           alt={post.caption ?? `@${post.author.username}`}
@@ -25,7 +33,9 @@ export function PostCard({
           sizes="(min-width: 1024px) 352px, (min-width: 640px) 45vw, 90vw"
           className="aspect-4/5"
         />
+      </LikeableMedia>
 
+      <Link href={href} className="flex min-h-0 flex-1 flex-col">
         <div className="flex flex-1 flex-col gap-4 p-4 pb-0">
           <div className="flex items-center gap-3">
             <Avatar username={post.author.username} src={post.author.avatarUrl} />

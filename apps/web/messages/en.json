@@ -221,7 +221,8 @@
       "auraGain": "+{amount, number} Aura",
       "a11y": {
         "like": "Like",
-        "unlike": "Remove like"
+        "unlike": "Remove like",
+        "doubleClick": "Double-click to like"
       },
       "video": "Video"
     }
