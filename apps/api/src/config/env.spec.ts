@@ -15,6 +15,9 @@ describe('loadEnv', () => {
     expect(env.PORT).toBe(3000);
     expect(env.HOST).toBe('0.0.0.0');
     expect(env.RATE_LIMIT_MAX).toBe(300);
+    expect(env.LIKE_RATE_LIMIT_MAX).toBe(60);
+    expect(env.LIKE_RATE_LIMIT_WINDOW_MS).toBe(60_000);
+    expect(env.MEDIA_DAILY_UPLOAD_QUOTA).toBe(20);
   });
 
   it('coerces numeric strings, since every value arrives as a string', () => {

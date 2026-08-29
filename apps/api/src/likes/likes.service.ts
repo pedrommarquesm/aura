@@ -1,13 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
+import type { Redis } from 'ioredis';
 
 import { AuraLedgerService } from '../aura/aura-ledger.service';
 import { auraForLike } from '../aura/vote-power';
 import { AppError } from '../common/errors/app-error';
 import { ErrorCode } from '../common/errors/error-codes';
+import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
 import { likes, posts } from '../db/schema';
 import type { User } from '../db/schema';
+import { REDIS } from '../redis/redis.module';
+import { consumeLikeSlot } from '../safety/like-rate-limit';
 
 export interface LikeResult {
   liked: boolean;
@@ -20,8 +24,12 @@ export interface LikeResult {
 
 @Injectable()
 export class LikesService {
+  private readonly logger = new Logger(LikesService.name);
+
   constructor(
     @Inject(DB) private readonly db: Database,
+    @Inject(ENV) private readonly env: Env,
+    @Inject(REDIS) private readonly redis: Redis,
     private readonly ledger: AuraLedgerService,
   ) {}
 
@@ -34,6 +42,8 @@ export class LikesService {
    * already showed the like optimistically and must not roll it back.
    */
   async like(actor: User, postId: string): Promise<LikeResult> {
+    await this.assertLikeBudget(actor.id);
+
     const post = await this.requirePublishedPost(postId);
 
     if (post.authorId === actor.id) {
@@ -132,6 +142,26 @@ export class LikesService {
       creatorAura: event.userAura,
       actorAuraDelta: 0,
     };
+  }
+
+  private async assertLikeBudget(userId: string): Promise<void> {
+    try {
+      const allowed = await consumeLikeSlot(
+        this.redis,
+        userId,
+        this.env.LIKE_RATE_LIMIT_MAX,
+        this.env.LIKE_RATE_LIMIT_WINDOW_MS,
+      );
+      if (!allowed) {
+        throw new AppError(ErrorCode.RATE_LIMITED, 'Too many likes. Try again shortly.', 429);
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      this.logger.warn(
+        `like rate limit unavailable: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+      throw new AppError(ErrorCode.RATE_LIMITED, 'Too many likes. Try again shortly.', 429);
+    }
   }
 
   private async originalAmount(auraEventId: string | null): Promise<number> {

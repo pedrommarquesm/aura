@@ -28,6 +28,10 @@ export const API_ERROR_CODES = [
   "already_liked",
   "not_liked",
   "cannot_like_own_post",
+  "already_reported",
+  "already_blocked",
+  "cannot_block_self",
+  "cannot_report_self",
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

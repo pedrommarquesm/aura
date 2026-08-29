@@ -47,6 +47,14 @@ const envSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
 
+  /**
+   * Per-user like budget. Separate from the IP-wide HTTP limiter so a feed
+   * prefetch burst cannot spend the like quota, and a like-ring cannot hide
+   * behind a shared NAT.
+   */
+  LIKE_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
+  LIKE_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
+
   // Trending recompute cadence. Lag here is invisible to users; see
   // docs/backend-architecture.md §8.2.
   TRENDING_INTERVAL_MS: z.coerce.number().int().positive().default(30_000),

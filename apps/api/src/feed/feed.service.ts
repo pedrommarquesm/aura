@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, inArray, lt, or, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, lt, notInArray, or, sql } from 'drizzle-orm';
 
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
 import { likes, mediaAssets, posts, users } from '../db/schema';
 import { MediaUrlResolver } from '../media/media-url.resolver';
+import { SafetyService } from '../safety/safety.service';
 
 import { decodeCursor, encodeCursor } from './cursor';
 
@@ -61,6 +62,7 @@ export class FeedService {
     @Inject(DB) private readonly db: Database,
     @Inject(ENV) private readonly env: Env,
     private readonly mediaUrls: MediaUrlResolver,
+    private readonly safety: SafetyService,
   ) {}
 
   async getFeed(query: FeedQuery): Promise<FeedPage> {
@@ -69,7 +71,14 @@ export class FeedService {
 
     // Fetch one extra row to learn whether another page exists, rather than
     // running a second count query on the hottest read in the product.
-    const rows = await this.selectPage(query.kind, cursor, limit + 1, query.authorId);
+    const hiddenAuthors = query.viewerId
+      ? await this.safety.hiddenAuthorIds(query.viewerId)
+      : new Set<string>();
+
+    const rows = await this.selectPage(query.kind, cursor, limit + 1, {
+      authorId: query.authorId,
+      hiddenAuthors,
+    });
 
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
@@ -101,11 +110,19 @@ export class FeedService {
     kind: FeedKind,
     cursor: FeedCursorValue,
     limit: number,
-    authorId?: string,
+    options: { authorId?: string | undefined; hiddenAuthors?: Set<string> } = {},
   ) {
-    const published = eq(posts.status, 'published');
-    const author = authorId ? eq(posts.authorId, authorId) : undefined;
-    const scope = author ? and(published, author) : published;
+    const filters = [eq(posts.status, 'published')];
+
+    if (options.authorId) {
+      filters.push(eq(posts.authorId, options.authorId));
+    }
+
+    if (options.hiddenAuthors && options.hiddenAuthors.size > 0) {
+      filters.push(notInArray(posts.authorId, [...options.hiddenAuthors]));
+    }
+
+    const scope = and(...filters);
 
     // Keyset pagination on (sortValue, id). Offset pagination would drift as
     // new posts arrive, showing duplicates and skipping items mid-scroll.

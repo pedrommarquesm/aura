@@ -180,10 +180,10 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| TS-01 | Report + block models and endpoints | Not started | |
+| TS-01 | Report + block models and endpoints | In review | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
 | TS-02 | User status enforcement (suspend/ban revokes sessions) | Not started | |
 | TS-03 | Post removal → `REVERSAL` of Aura earned | Not started | |
-| TS-04 | Upload quotas and like rate limits | Not started | |
+| TS-04 | Upload quotas and like rate limits | In review | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
 | OPS-01 | Staging environment on Railway (api, worker, Postgres, Redis, web) | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | OPS-02 | Deploy pipeline | Not started | |
 | OPS-03 | Dashboards + alerts for feed and like latency | Not started | |
@@ -229,6 +229,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-28 | Reports and blocks are thin tables. `POST /v1/reports`, `POST /v1/blocks`, `DELETE /v1/blocks/:userId`. The feed hides both directions of a block. Likes are capped per user (`LIKE_RATE_LIMIT_*`); daily upload quota was already `MEDIA_DAILY_UPLOAD_QUOTA` | [#26](https://github.com/pedrommarquesm/aura/pull/26) |
 | 2026-08-28 | Profile is a competitive card: rank, title, Aura, and a real posts grid from `GET /v1/users/:username` and `GET /v1/users/:id/posts`. Aura totals tick instead of snapping when a like lands | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | 2026-08-28 | Public profile is `GET /v1/users/:username` (rank + Aura + post count). The posts grid is `GET /v1/users/:id/posts`, same cursor as the feed. Banned users 404 | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | 2026-08-28 | Uploads go direct to Cloudflare R2 via presigned PUT. Images get feed/thumb JPEGs on the worker; video keeps the master as the playable file until Stream. Public reads use our CDN hostname, not R2's | [#19](https://github.com/pedrommarquesm/aura/pull/19) |

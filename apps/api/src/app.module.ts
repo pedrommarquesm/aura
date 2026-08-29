@@ -12,6 +12,7 @@ import { MediaModule } from './media/media.module';
 import { PostsModule } from './posts/posts.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
+import { SafetyModule } from './safety/safety.module';
 import { TrendingModule } from './trending/trending.module';
 import { UsersModule } from './users/users.module';
 
@@ -38,6 +39,7 @@ import { UsersModule } from './users/users.module';
     PostsModule,
     LeaderboardModule,
     UsersModule,
+    SafetyModule,
   ],
 })
 export class AppModule {}
