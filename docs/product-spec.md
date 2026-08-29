@@ -118,6 +118,8 @@ Características:
 - Shareable post URLs
 - Deep links para abrir a app
 - Sign in with Google (see the feed, claim a username, like posts)
+- TanStack Query for the client cache: RSC hydrates the first page; likes
+  mutate feed, trending, and the share permalink from the same keys
 
 **Não haverá upload na web.**
 

@@ -1,19 +1,23 @@
-import { useLocale, useTranslations } from "next-intl";
-import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
+import { getLocale, getTranslations } from "next-intl/server";
 
-import { LeaderboardBoard, LeaderboardSkeleton } from "@/components/leaderboard-board";
+import { LeaderboardBoard } from "@/components/leaderboard-board";
 import { Section } from "@/components/landing/section";
 import { ButtonLink } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { sectionHash, sectionId } from "@/i18n/sections";
-import { api } from "@/lib/api";
+import type { LeaderboardEntry } from "@/lib/api/types";
 import { downloadHref } from "@/lib/site";
 
-export function LeaderboardPreview() {
-  const locale = useLocale();
-  const t = useTranslations("landing.leaderboard");
-  const actions = useTranslations("common.actions");
+export async function LeaderboardPreview({
+  entries,
+  failed,
+}: {
+  entries: LeaderboardEntry[];
+  failed: boolean;
+}) {
+  const locale = await getLocale();
+  const t = await getTranslations("landing.leaderboard");
+  const actions = await getTranslations("common.actions");
 
   return (
     <Section
@@ -23,9 +27,12 @@ export function LeaderboardPreview() {
       description={t("description")}
     >
       <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:gap-12">
-        <Suspense fallback={<LeaderboardSkeleton />}>
-          <LeaderboardRows />
-        </Suspense>
+        <LeaderboardBoard
+          entries={entries}
+          empty={t("empty")}
+          unavailable={t("unavailable")}
+          failed={failed}
+        />
 
         <div className="flex flex-col gap-5 lg:pt-4">
           <h3 className="text-title text-balance">{t("aside.title")}</h3>
@@ -48,28 +55,5 @@ export function LeaderboardPreview() {
         </div>
       </div>
     </Section>
-  );
-}
-
-async function LeaderboardRows() {
-  const t = await getTranslations("landing.leaderboard");
-
-  let entries: Awaited<ReturnType<typeof api.getGlobalLeaderboard>>["entries"] =
-    [];
-  let failed = false;
-
-  try {
-    entries = (await api.getGlobalLeaderboard({ limit: 10 })).entries;
-  } catch {
-    failed = true;
-  }
-
-  return (
-    <LeaderboardBoard
-      entries={entries}
-      empty={t("empty")}
-      unavailable={t("unavailable")}
-      failed={failed}
-    />
   );
 }

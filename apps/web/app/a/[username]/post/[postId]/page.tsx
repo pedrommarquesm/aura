@@ -3,12 +3,11 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { PublicPost, PublicPostUnavailable } from "@/components/public-post";
-import { api } from "@/lib/api";
-import { apiGet } from "@/lib/api/client";
-import { apiConfig } from "@/lib/api/config";
-import { ApiError } from "@/lib/api/errors";
 import type { Post } from "@/lib/api/types";
-import { getSession } from "@/lib/auth/session";
+import { loadPostById } from "@/lib/query/actions";
+import { makeQueryClient } from "@/lib/query/client";
+import { Hydrate } from "@/lib/query/hydrate";
+import { queryKeys } from "@/lib/query/keys";
 import { buildShareMetadata } from "@/lib/seo";
 import { normalizeHandle, publicPostPath } from "@/lib/share";
 
@@ -16,21 +15,6 @@ import { normalizeHandle, publicPostPath } from "@/lib/share";
 export const revalidate = 10;
 
 type RouteParams = { username: string; postId: string };
-
-async function loadPost(postId: string): Promise<Post | null> {
-  try {
-    const session = await getSession();
-    if (session && !apiConfig.useMock) {
-      return await apiGet<Post>(`/v1/posts/${encodeURIComponent(postId)}`, {
-        accessToken: session.accessToken,
-      });
-    }
-    return await api.getPost(postId);
-  } catch (error) {
-    if (error instanceof ApiError && error.isNotFound) return null;
-    throw error;
-  }
-}
 
 export async function generateMetadata({
   params,
@@ -43,7 +27,7 @@ export async function generateMetadata({
 
   let post: Post | null = null;
   try {
-    post = await loadPost(postId);
+    post = await loadPostById(postId);
   } catch {
     post = null;
   }
@@ -78,7 +62,7 @@ export default async function PublicPostPage({
   let failed = false;
 
   try {
-    post = await loadPost(postId);
+    post = await loadPostById(postId);
   } catch {
     failed = true;
   }
@@ -97,5 +81,12 @@ export default async function PublicPostPage({
     permanentRedirect(canonical);
   }
 
-  return <PublicPost post={post} />;
+  const queryClient = makeQueryClient();
+  queryClient.setQueryData(queryKeys.post(post.id), post);
+
+  return (
+    <Hydrate client={queryClient}>
+      <PublicPost post={post} />
+    </Hydrate>
+  );
 }

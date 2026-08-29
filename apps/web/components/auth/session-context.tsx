@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 import type { PublicUser } from "@/lib/api/types";
-
-type MeResponse =
-  | { user: PublicUser; needsUsername: boolean }
-  | { error: { code: string } };
+import { queryKeys } from "@/lib/query/keys";
+import { fetchMe } from "@/lib/query/me";
 
 export type SessionStatus = "loading" | "signedOut" | "signedIn";
 
@@ -26,82 +17,40 @@ export type SessionValue = {
   clear: () => void;
 };
 
-const SessionContext = createContext<SessionValue | null>(null);
-
-async function loadMe(): Promise<
-  { user: PublicUser; needsUsername: boolean } | null
-> {
-  const response = await fetch("/api/auth/me");
-  if (!response.ok) return null;
-  const payload = (await response.json()) as MeResponse;
-  if (payload && "user" in payload) return payload;
-  return null;
-}
-
-export function SessionProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<PublicUser | null>(null);
-  const [needsUsername, setNeedsUsername] = useState(false);
-  const [status, setStatus] = useState<SessionStatus>("loading");
-
-  const apply = useCallback(
-    (payload: { user: PublicUser; needsUsername: boolean } | null) => {
-      if (payload) {
-        setUser(payload.user);
-        setNeedsUsername(payload.needsUsername);
-        setStatus("signedIn");
-      } else {
-        setUser(null);
-        setNeedsUsername(false);
-        setStatus("signedOut");
-      }
-    },
-    [],
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void loadMe()
-      .then((payload) => {
-        if (!cancelled) apply(payload);
-      })
-      .catch(() => {
-        if (!cancelled) apply(null);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [apply]);
+export function useSession(): SessionValue {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: queryKeys.me,
+    queryFn: fetchMe,
+    staleTime: 60_000,
+    retry: false,
+  });
 
   const refresh = useCallback(async () => {
-    try {
-      apply(await loadMe());
-    } catch {
-      apply(null);
-    }
-  }, [apply]);
+    await queryClient.invalidateQueries({ queryKey: queryKeys.me });
+  }, [queryClient]);
 
   const clear = useCallback(() => {
-    setUser(null);
-    setNeedsUsername(false);
-    setStatus("signedOut");
-  }, []);
+    queryClient.setQueryData(queryKeys.me, null);
+  }, [queryClient]);
 
-  const value = useMemo<SessionValue>(
-    () => ({ status, user, needsUsername, refresh, clear }),
-    [clear, needsUsername, refresh, status, user],
-  );
-
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  );
-}
-
-export function useSession(): SessionValue {
-  const value = useContext(SessionContext);
-  if (!value) {
-    throw new Error("useSession must be used inside SessionProvider");
+  if (query.isPending) {
+    return {
+      status: "loading",
+      user: null,
+      needsUsername: false,
+      refresh,
+      clear,
+    };
   }
-  return value;
+
+  const snapshot = query.data ?? null;
+
+  return {
+    status: snapshot ? "signedIn" : "signedOut",
+    user: snapshot?.user ?? null,
+    needsUsername: snapshot?.needsUsername ?? false,
+    refresh,
+    clear,
+  };
 }
