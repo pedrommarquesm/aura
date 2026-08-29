@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { LoginForm } from "./login-form";
@@ -12,9 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import {
+  authContinueHref,
+  defaultSignedInPath,
+  safeReturnPath,
+} from "@/lib/auth/return-to";
 import { getSession } from "@/lib/auth/session";
+import { isPostId } from "@/lib/likes/ids";
+import { applyPendingLike } from "@/lib/likes/server";
 import { buildMetadata } from "@/lib/seo";
-import { redirect } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -29,18 +36,29 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; like?: string }>;
+}) {
   const locale = await getLocale();
-  const t = await getTranslations("auth.page");
+  const { next, like } = await searchParams;
+  const returnTo = safeReturnPath(next) ?? defaultSignedInPath(locale);
+  const pendingLike = isPostId(like) ? like : null;
   const session = await getSession();
 
   if (session?.needsUsername) {
-    redirect({ href: "/username", locale });
+    redirect(authContinueHref(locale, "username", returnTo, pendingLike));
   }
 
   if (session) {
-    redirect({ href: "/feed", locale });
+    await applyPendingLike(session.accessToken, pendingLike);
+    redirect(returnTo);
   }
+
+  const t = pendingLike
+    ? await getTranslations("auth.reasons.like")
+    : await getTranslations("auth.page");
 
   return (
     <>
@@ -53,7 +71,7 @@ export default async function LoginPage() {
               <CardDescription>{t("body")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <LoginForm />
+              <LoginForm next={returnTo} like={pendingLike} />
             </CardContent>
           </Card>
         </Container>

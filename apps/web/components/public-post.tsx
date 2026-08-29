@@ -1,13 +1,12 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
-import { HeartIcon } from "@/components/icons";
+import { LikeButton } from "@/components/feed/like-button";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar, ButtonLink, buttonClassName } from "@/components/ui";
 import type { Post } from "@/lib/api";
-import { formatCount } from "@/lib/format";
 import { publicPostDeepLink } from "@/lib/share";
 import { siteConfig } from "@/lib/site";
 
@@ -27,9 +26,7 @@ export function PublicPostUnavailable({ message }: { message: string }) {
 
 export async function PublicPost({ post }: { post: Post }) {
   const t = await getTranslations("post.page");
-  const likes = await getTranslations("feed.post");
   const actions = await getTranslations("common.actions");
-  const format = await getFormatter();
   const deepLink = publicPostDeepLink(post.author.username, post.id);
 
   return (
@@ -71,17 +68,11 @@ export async function PublicPost({ post }: { post: Post }) {
               ) : null}
 
               <div className="flex items-center justify-between border-t border-border/70 pt-4">
-                <span className="inline-flex items-center gap-1.5 text-label text-text-secondary">
-                  <HeartIcon
-                    className={
-                      post.likedByMe ? "size-4 text-like" : "size-4 text-text-muted"
-                    }
-                  />
-                  <span aria-hidden>{formatCount(format, post.likeCount)}</span>
-                  <span className="sr-only">
-                    {likes("likes", { count: post.likeCount })}
-                  </span>
-                </span>
+                <LikeButton
+                  postId={post.id}
+                  likeCount={post.likeCount}
+                  initiallyLiked={post.likedByMe}
+                />
                 <AuraValue value={post.aura} size="lg" tone="aura" />
               </div>
 

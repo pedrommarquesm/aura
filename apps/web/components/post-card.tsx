@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { useFormatter, useTranslations } from "next-intl";
 
-import { HeartIcon } from "@/components/icons";
+import { LikeButton } from "@/components/feed/like-button";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar, Card } from "@/components/ui";
 import type { FeedCard } from "@/lib/api";
-import { formatCount } from "@/lib/format";
 import { publicPostPath } from "@/lib/share";
 
 export function PostCard({
@@ -15,13 +13,11 @@ export function PostCard({
   post: FeedCard;
   priority?: boolean;
 }) {
-  const format = useFormatter();
-  const t = useTranslations("feed.post");
   const href = publicPostPath(post.author.username, post.id);
 
   return (
-    <Link href={href} className="block h-full">
-      <Card interactive className="flex h-full flex-col overflow-hidden">
+    <Card interactive className="flex h-full flex-col overflow-hidden">
+      <Link href={href} className="flex min-h-0 flex-1 flex-col">
         <PostMedia
           media={post.media}
           alt={post.caption ?? `@${post.author.username}`}
@@ -30,7 +26,7 @@ export function PostCard({
           className="aspect-4/5"
         />
 
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4 pb-0">
           <div className="flex items-center gap-3">
             <Avatar username={post.author.username} src={post.author.avatarUrl} />
             <div className="min-w-0">
@@ -44,23 +40,17 @@ export function PostCard({
           {post.caption ? (
             <p className="text-body text-text-secondary">{post.caption}</p>
           ) : null}
-
-          <div className="mt-auto flex items-center justify-between border-t border-border/70 pt-3">
-            <span className="inline-flex items-center gap-1.5 text-label text-text-secondary">
-              <HeartIcon
-                className={
-                  post.likedByMe ? "size-4 text-like" : "size-4 text-text-muted"
-                }
-              />
-              <span aria-hidden>{formatCount(format, post.likeCount)}</span>
-              <span className="sr-only">
-                {t("likes", { count: post.likeCount })}
-              </span>
-            </span>
-            <AuraValue value={post.aura} size="md" tone="aura" />
-          </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/70 p-4 pt-3">
+        <LikeButton
+          postId={post.id}
+          likeCount={post.likeCount}
+          initiallyLiked={post.likedByMe}
+        />
+        <AuraValue value={post.aura} size="md" tone="aura" />
+      </div>
+    </Card>
   );
 }

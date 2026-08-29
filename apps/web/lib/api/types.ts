@@ -100,6 +100,15 @@ export type SignInResponse = AuthTokens & {
   user: PublicUser;
 };
 
+/** `POST|DELETE /v1/posts/:id/like` — same shape the mobile client already uses. */
+export type LikeResult = {
+  liked: boolean;
+  likeCount: number;
+  postAura: number;
+  creatorAura: number;
+  actorAuraDelta: number;
+};
+
 /** Reads the public web surface is allowed to make. Auth is a separate BFF. */
 export type AuraApi = {
   getFeed(params?: CursorParams): Promise<CursorPage<FeedCard>>;

@@ -733,7 +733,7 @@ This matters because Aura's Aura ledger, Vote Power, bans, and rate limits are a
 
 So on NextAuth for web: **fine, with one constraint.** Use it for the browser cookie session only, with no database adapter and no user table of its own. It calls our API, gets our tokens, and wraps them in a Next.js session. It must not become a parallel identity store.
 
-Worth noting: V0 web is still landing + a public read-only feed. There is now a logged-in surface — seeing `likedByMe` and claiming a username — so the session layer earns its keep. NextAuth remains unnecessary: httpOnly cookies wrapping API-issued tokens are the thinner client.
+Worth noting: V0 web is landing + a public feed + likes. The session layer is an httpOnly cookie wrapping API-issued tokens so `likedByMe` and `POST /v1/posts/:id/like` work without exposing the JWT. NextAuth remains unnecessary. Posting stays in the app.
 
 ### 12.2 Mobile: native providers, backend-issued tokens
 

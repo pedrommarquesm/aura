@@ -1,19 +1,32 @@
 "use client";
 
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { GoogleSignInButton } from "@/components/auth/google-sign-in";
-import { useRouter } from "@/i18n/navigation";
+import { destinationAfterAuth } from "@/lib/auth/continue-after-auth";
 
-export function LoginForm() {
+export function LoginForm({
+  next,
+  like,
+}: {
+  next: string | null;
+  like: string | null;
+}) {
+  const locale = useLocale();
   const router = useRouter();
 
   const onSignedIn = useCallback(
     ({ needsUsername }: { needsUsername: boolean }) => {
-      router.replace(needsUsername ? "/username" : "/feed");
-      router.refresh();
+      void destinationAfterAuth({ locale, needsUsername, next, like }).then(
+        (href) => {
+          router.replace(href);
+          router.refresh();
+        },
+      );
     },
-    [router],
+    [like, locale, next, router],
   );
 
   return <GoogleSignInButton onSignedIn={onSignedIn} />;

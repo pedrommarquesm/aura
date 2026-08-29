@@ -17,7 +17,7 @@
     "login": {
       "title": "Iniciar sessão",
       "socialTitle": "Entra na Aura",
-      "description": "Inicia sessão com o Google. Sem palavra-passe. Publicar e dar like continuam a ser coisas da app."
+      "description": "Inicia sessão com o Google. Sem palavra-passe. Publicar continua a ser coisa da app."
     },
     "username": {
       "title": "Escolhe o teu username",
@@ -33,7 +33,7 @@
       "title": "@{username}",
       "socialTitle": "@{username} na Aura",
       "description": "{caption}",
-      "descriptionEmpty": "@{username} publicou na Aura. Abre a app para dares like e farmar Aura.",
+      "descriptionEmpty": "@{username} publicou na Aura. Inicia sessão para dares like e farmar Aura.",
       "alt": "Um post de @{username} na Aura"
     },
     "keywords": "Aura, jogo social, classificação, partilha de fotos, vídeo curto",
@@ -149,7 +149,7 @@
       "eyebrow": "Ao vivo da app",
       "title": "Em destaque agora",
       "description": "Em destaque não é contagem de seguidores. É Aura ganha por minuto, ponderada pela idade do post — por isso um primeiro post pode passar à frente de um criador estabelecido no mesmo dia.",
-      "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Dar like e publicar continuam a ser coisas da app.",
+      "note": "Cada post tem um link público, por isso tudo o que é feito na app pode ser partilhado fora dela. Inicia sessão aqui para dares like. Publicar continua a ser coisa da app.",
       "seeAll": "Abrir o feed completo",
       "empty": "O feed está calmo neste momento. Volta quando alguém publicar.",
       "unavailable": "Não foi possível carregar o que está em destaque."
@@ -173,7 +173,7 @@
       "note": "Fotos e vídeos, likes, Aura e a classificação global. Publicar só acontece na app."
     },
     "footer": {
-      "note": "Publicar, dar like e tudo o que é competitivo acontece na app. A web está aqui para te mostrar o jogo e dar-te um link público para qualquer post.",
+      "note": "Publicar continua a ser coisa da app. A web está aqui para te mostrar o jogo, dar-te um link público e deixar-te dar Aura.",
       "copyright": "© {year} Aura"
     }
   },
@@ -203,7 +203,7 @@
       },
       "web": {
         "title": "Para que serve este site",
-        "body": "A web é descoberta e partilha: vês o que está em destaque, abres qualquer post a partir de um link e consultas a tabela global. Publicar, dar like e tudo o que é competitivo acontece na app."
+        "body": "A web é descoberta, partilha e voto: vês o que está em destaque, abres qualquer post a partir de um link, consultas a tabela global e dás Aura. Publicar continua a ser coisa da app."
       }
     }
   },
@@ -211,13 +211,18 @@
     "page": {
       "eyebrow": "Ao vivo da app",
       "title": "O feed",
-      "description": "Os posts mais recentes, pela ordem em que chegam. Inicia sessão com o Google para veres os que já gostaste. Dar like e publicar continuam a ser coisas da app.",
+      "description": "Os posts mais recentes, pela ordem em que chegam. Inicia sessão com o Google para dares like e Aura. Publicar continua a ser coisa da app.",
       "empty": "O feed está calmo neste momento. Volta quando alguém publicar.",
       "unavailable": "Não foi possível carregar o feed.",
       "end": "Já viste tudo."
     },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
+      "auraGain": "+{amount, number} Aura",
+      "a11y": {
+        "like": "Dar like",
+        "unlike": "Retirar o like"
+      },
       "video": "Vídeo"
     }
   },
@@ -225,8 +230,8 @@
     "page": {
       "eyebrow": "Partilhado a partir da app",
       "openInApp": "Abrir na app Aura",
-      "installTitle": "Dá like na app",
-      "installBody": "Cada like paga Aura ao criador. Publicar e dar like continuam a ser coisas da app.",
+      "installTitle": "Publica na app",
+      "installBody": "Cada like paga Aura ao criador. Podes dar like aqui. Publicar continua a ser coisa da app.",
       "unavailable": "Este post desapareceu, ou nunca chegou a ser publicado."
     }
   },
@@ -238,7 +243,13 @@
     },
     "page": {
       "title": "Entra na Aura",
-      "body": "Google — sem palavra-passe. Publicar e dar like continuam a ser coisas da app."
+      "body": "Google — sem palavra-passe. Publicar continua a ser coisa da app."
+    },
+    "reasons": {
+      "like": {
+        "title": "Inicia sessão para dar Aura",
+        "body": "Os likes são a pontuação. Google — sem palavra-passe — e este like conta."
+      }
     },
     "unavailable": {
       "google": "O Google Sign-In ainda não está configurado nesta build."

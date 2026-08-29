@@ -146,7 +146,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | Done | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
 | MOB-53 | Choose photo must not kill the iOS process (no Photos permission prompt for PHPicker; no HEIC fast-path; no File() on ph://) | Done | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
-| MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | In review | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
+| MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 
 ### Feed
 
@@ -163,8 +163,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
-| WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
+| WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
+| WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | In review | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 
 ### Aura
 
@@ -236,6 +237,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | 2026-08-29 | `expo-image-manipulator` is a native module, not a config plugin. Listing it in `app.json` `plugins` breaks `expo run:ios` (`Cannot find module './ImageManipulator'`). Autolink is enough | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | 2026-08-29 | iOS Choose photo must not call `requestMediaLibraryPermissionsAsync` or use the HEIC `Current` fast path. PHPicker needs neither; both terminate the process when the Photos usage string is missing or the original is huge | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | 2026-08-29 | Web share URLs are `/a/:username/post/:id`. `/a/@username/…` 308s there. Next.js App Router cannot have `@` in a path segment (parallel-route slots); feed prefetch was an RSC loop | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
