@@ -135,7 +135,7 @@ export default defineRailway(() => {
     replicas: { [REGION]: 1 },
     deploy: { restartPolicyMaxRetries: 5 },
     env: {
-      NEXT_PUBLIC_SITE_URL: 'https://aurarankd.com',
+      NEXT_PUBLIC_SITE_URL: 'https://www.aurarankd.com',
       PORT: preserve(),
       // NEXT_PUBLIC_* is inlined at image build time. api.aurarankd.com DNS
       // answers; a rebuild is what actually bakes this into the bundle.
