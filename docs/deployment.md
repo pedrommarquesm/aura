@@ -188,6 +188,7 @@ environment, so these point at staging until production exists.
 | `www.aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
 | `aurarankd.com` | web | Same app. Apex → www is a DNS redirect, not the Next proxy |
 | `api.aurarankd.com` | api | Railway custom domain, port 3000 |
+| `admin-staging-ea68.up.railway.app` | admin | Staff backoffice. Same Google Web OAuth client as web |
 | `cdn.aurarankd.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
 
 Railway already has the three HTTP hostnames. DNS for `aurarankd.com`,
@@ -244,7 +245,11 @@ After DNS answers (web + api are live):
 
 Google Cloud Console, Web application OAuth client: add Authorized JavaScript
 origins `https://aurarankd.com` and `https://www.aurarankd.com` (keep
-`http://localhost:3000` and the current Railway web URL).
+`http://localhost:3000` and the current Railway web URL). The admin app uses
+that same client — add origin
+`https://admin-staging-ea68.up.railway.app` and redirect
+`https://admin-staging-ea68.up.railway.app/api/auth/callback/google`
+(plus `http://localhost:3001/api/auth/callback/google` for local).
 
 Railway injects `PORT`, and a generated domain targets a fixed port. If those
 disagree the service returns **502 "Application failed to respond"** while
@@ -280,10 +285,13 @@ sensible default documented in the example file.
 Unset parks only the key path. Generate with `openssl rand -base64 32`.
 
 The admin app (`apps/admin`) uses NextAuth as a thin client of
-`POST /v1/staff/auth/google`. Set `AUTH_SECRET` and `AUTH_GOOGLE_SECRET` on the
-`admin` service (`preserve()`). Add the admin origin's
-`/api/auth/callback/google` to the Google Web OAuth client, and keep that
-client id in the API's `GOOGLE_CLIENT_IDS`. `STAFF_OWNER_EMAIL` defaults to
+`POST /v1/staff/auth/google`. Staging is
+`https://admin-staging-ea68.up.railway.app`. It reuses the public site's Web
+OAuth client: `AUTH_GOOGLE_ID` matches `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID`, and
+`AUTH_GOOGLE_SECRET` is the same value as web's `GOOGLE_CLIENT_SECRET`. Set
+`AUTH_SECRET` on `admin` (`preserve()`). Add the admin origin's
+`/api/auth/callback/google` to that Google Web client, and keep the client id
+in the API's `GOOGLE_CLIENT_IDS`. `STAFF_OWNER_EMAIL` defaults to
 `pedrommarquesm@gmail.com` — first Google sign-in with that address claims
 owner. `STAFF_ALLOWED_DOMAINS` is empty (invite-only) until you open an org
 domain.
@@ -328,6 +336,7 @@ Project `aura`, environment **`staging`**, region `europe-west4`.
 |---|---|---|
 | api | https://api-production-aa71.up.railway.app | https://api.aurarankd.com |
 | web | https://web-production-e1282.up.railway.app | https://www.aurarankd.com (apex → www at DNS) |
+| admin | https://admin-staging-ea68.up.railway.app | — |
 | media | — | https://cdn.aurarankd.com |
 
 The generated hostnames still read `-production-` because Railway created them

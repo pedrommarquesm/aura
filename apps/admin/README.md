@@ -30,6 +30,13 @@ URI on the same Google Web client the public site uses. The API's
 
 Sign in as `pedrommarquesm@gmail.com` — bootstrapped as owner on first login.
 
+## Staging
+
+https://admin-staging-ea68.up.railway.app — same Google Web OAuth client as
+`www.aurarankd.com`. Add that origin and
+`https://admin-staging-ea68.up.railway.app/api/auth/callback/google` on the
+client in Google Cloud Console.
+
 ## Layout
 
 ```text

@@ -203,6 +203,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | OPS-10 | `www.aurarankd.com` is the canonical web host. `NEXT_PUBLIC_SITE_URL` matches | Done | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
+| OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | In review | |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -239,6 +240,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | Staff backoffice is live on Railway staging (`admin-staging-ea68.up.railway.app`). It reuses the public site's Google Web OAuth client (`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` = web's client id / `GOOGLE_CLIENT_SECRET`) | |
 | 2026-08-29 | Staff backoffice is a separate Next.js app (`apps/admin`). Staff identity is its own tables (`staff`, `staff_identities`, `staff_sessions`) and JWT audience (`aura-staff`). NextAuth wraps API tokens only — no NextAuth user store. Google is V0; `STAFF_ALLOWED_DOMAINS` is the seam for org-domain auto-join. Appeals are not built; `moderation_actions` is the audit seam they will hang off | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | 2026-08-29 | `expo-image-manipulator` is a native module, not a config plugin. Listing it in `app.json` `plugins` breaks `expo run:ios` (`Cannot find module './ImageManipulator'`). Autolink is enough | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
