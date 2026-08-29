@@ -9,6 +9,8 @@ import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { TrendingPreview } from "@/components/landing/trending-preview";
 import { WhatIsAura } from "@/components/landing/what-is-aura";
+import { dehydrate } from "@tanstack/react-query";
+
 import { loadLeaderboardPage, loadTrendingPage } from "@/lib/query/actions";
 import { makeQueryClient } from "@/lib/query/client";
 import { Hydrate } from "@/lib/query/hydrate";
@@ -60,7 +62,7 @@ export default async function HomePage() {
     )?.rank ?? null;
 
   return (
-    <Hydrate client={queryClient}>
+    <Hydrate state={dehydrate(queryClient)}>
       <SiteHeader />
       <main>
         <Hero topPost={topPost} leader={leader} authorRank={authorRank} />

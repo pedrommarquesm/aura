@@ -4,6 +4,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { PublicPost, PublicPostUnavailable } from "@/components/public-post";
 import type { Post } from "@/lib/api/types";
+import { dehydrate } from "@tanstack/react-query";
+
 import { loadPostById } from "@/lib/query/actions";
 import { makeQueryClient } from "@/lib/query/client";
 import { Hydrate } from "@/lib/query/hydrate";
@@ -85,7 +87,7 @@ export default async function PublicPostPage({
   queryClient.setQueryData(queryKeys.post(post.id), post);
 
   return (
-    <Hydrate client={queryClient}>
+    <Hydrate state={dehydrate(queryClient)}>
       <PublicPost post={post} />
     </Hydrate>
   );

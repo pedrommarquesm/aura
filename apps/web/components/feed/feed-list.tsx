@@ -5,14 +5,14 @@ import { useTranslations } from "next-intl";
 
 import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui";
-import { loadFeedPage } from "@/lib/query/actions";
+import { fetchFeedPage } from "@/lib/query/browser";
 import { queryKeys } from "@/lib/query/keys";
 
 export function FeedList() {
   const t = useTranslations();
   const query = useInfiniteQuery({
     queryKey: queryKeys.feed.ranking("latest"),
-    queryFn: ({ pageParam }) => loadFeedPage(pageParam),
+    queryFn: ({ pageParam }) => fetchFeedPage(pageParam),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore && lastPage.nextCursor ? lastPage.nextCursor : undefined,

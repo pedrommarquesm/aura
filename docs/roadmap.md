@@ -170,6 +170,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | Done | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | Done | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 | WEB-17 | Double-click the photo to like on the feed, trending cards, and share page. Single click still opens the permalink. Already liked only replays the burst | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
+| WEB-18 | Liking on the web feed must not refresh the page or jump the scroll to the top | In review | |
 
 ### Aura
 
@@ -243,6 +244,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | Web likes and feed pagination go through Route Handlers that read the JWT from the Cookie header. Calling `cookies()` from `next/headers` (or a Server Action) from the browser makes Next refresh the page and the feed jumps to the top | |
 | 2026-08-29 | Double-tap (app) / double-click (web) on post media likes. It does not unlike. The heart button still toggles. Guests sign in and the like is replayed | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | 2026-08-29 | Web server state is TanStack Query. RSC still fetches the first page (SEO); the client hydrates that cache. Likes are mutations and write every ranking plus the permalink. Session is `useQuery(['me'])`. No NextAuth | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 | 2026-08-29 | Staff backoffice is live on Railway staging (`admin-staging-ea68.up.railway.app`). It reuses the public site's Google Web OAuth client (`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` = web's client id / `GOOGLE_CLIENT_SECRET`) | [#37](https://github.com/pedrommarquesm/aura/pull/37) |

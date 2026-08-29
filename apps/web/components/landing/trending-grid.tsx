@@ -4,8 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { PostCard } from "@/components/post-card";
 import { Card, Skeleton } from "@/components/ui";
-import { loadTrendingPage } from "@/lib/query/actions";
-import { toInfinite } from "@/lib/query/infinite";
+import { fetchTrendingInfinite } from "@/lib/query/browser";
 import { queryKeys } from "@/lib/query/keys";
 
 export function TrendingGrid({
@@ -17,7 +16,7 @@ export function TrendingGrid({
 }) {
   const query = useQuery({
     queryKey: queryKeys.feed.ranking("trending"),
-    queryFn: async () => toInfinite(await loadTrendingPage(6)),
+    queryFn: () => fetchTrendingInfinite(6),
   });
 
   if (query.isPending) {

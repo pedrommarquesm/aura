@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { dehydrate } from "@tanstack/react-query";
+
 import { FeedList } from "@/components/feed/feed-list";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
@@ -47,7 +49,7 @@ export default async function FeedPage() {
   }
 
   return (
-    <Hydrate client={queryClient}>
+    <Hydrate state={dehydrate(queryClient)}>
       <SiteHeader />
       <main>
         <section className="border-b border-border/70 py-16 sm:py-20">
