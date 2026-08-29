@@ -165,7 +165,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
-| WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | In review | |
+| WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | In review | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 
 ### Aura
 
@@ -237,7 +237,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | |
+| 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | 2026-08-29 | `expo-image-manipulator` is a native module, not a config plugin. Listing it in `app.json` `plugins` breaks `expo run:ios` (`Cannot find module './ImageManipulator'`). Autolink is enough | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | 2026-08-29 | iOS Choose photo must not call `requestMediaLibraryPermissionsAsync` or use the HEIC `Current` fast path. PHPicker needs neither; both terminate the process when the Photos usage string is missing or the original is huge | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | 2026-08-29 | Web share URLs are `/a/:username/post/:id`. `/a/@username/…` 308s there. Next.js App Router cannot have `@` in a path segment (parallel-route slots); feed prefetch was an RSC loop | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
