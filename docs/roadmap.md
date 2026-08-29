@@ -144,7 +144,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
 | MOB-20 | Create flow: camera, picker, preview, caption | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | In review | |
+| MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | In review | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
 
 ### Feed
 
