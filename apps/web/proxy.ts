@@ -9,7 +9,6 @@ import {
   writeSessionOnResponse,
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
-import { WWW_HOST, isApexHost } from "./lib/canonical-host";
 import { isSharePath, sharePathWithoutAtPrefix } from "./lib/share";
 
 /**
@@ -24,14 +23,8 @@ import { isSharePath, sharePathWithoutAtPrefix } from "./lib/share";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (isApexHost(host)) {
-    const url = request.nextUrl.clone();
-    url.protocol = "https";
-    url.hostname = WWW_HOST;
-    url.port = "";
-    return NextResponse.redirect(url, 308);
-  }
+  // Host redirects (apex → www) live at DNS, not here. A 308 in this
+  // proxy also 307s Flight requests and can loop with `?_rsc=`.
 
   // `@alice` in the path is a Next.js parallel-route slot. RSC requests to
   // `/a/@alice/post/…` 307 to the same URL with a new `?_rsc=` hash, and the
