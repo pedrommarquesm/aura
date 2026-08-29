@@ -21,6 +21,7 @@ const ROUTES: ReadonlyArray<{
   { pathname: "/leaderboard", priority: 0.8, changeFrequency: "hourly" },
   { pathname: "/about", priority: 0.6, changeFrequency: "monthly" },
   { pathname: "/login", priority: 0.4, changeFrequency: "monthly" },
+  { pathname: "/settings", priority: 0.3, changeFrequency: "monthly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

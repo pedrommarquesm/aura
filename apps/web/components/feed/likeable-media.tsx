@@ -6,39 +6,25 @@ import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "re
 
 import { HeartIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
-import { useLikePost } from "@/lib/likes/use-like-post";
 
 const DOUBLE_MS = 280;
 const HEART = 64;
 
 export function LikeableMedia({
-  postId,
-  liked,
-  likeCount,
-  aura,
-  authorAura,
   href,
+  burst,
+  onLike,
   className,
   children,
 }: {
-  postId: string;
-  liked: boolean;
-  likeCount: number;
-  aura: number;
-  authorAura: number;
   href?: string;
+  burst: number;
+  onLike: () => void;
   className?: string;
   children: ReactNode;
 }) {
   const t = useTranslations("feed.post");
   const router = useRouter();
-  const { likeOnly, burst } = useLikePost({
-    postId,
-    likeCount,
-    initiallyLiked: liked,
-    aura,
-    authorAura,
-  });
 
   const lastClick = useRef(0);
   const timer = useRef<number | null>(null);
@@ -81,7 +67,7 @@ export function LikeableMedia({
         timer.current = null;
       }
       setOrigin(pointInTarget(event));
-      likeOnly();
+      onLike();
       return;
     }
 

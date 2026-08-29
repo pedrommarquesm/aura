@@ -57,6 +57,7 @@ export default async function ShareLayout({ children }: { children: ReactNode })
             feed: messages.feed,
             post: messages.post,
             landing: messages.landing,
+            settings: messages.settings,
           }}
         >
           <QueryProvider>{children}</QueryProvider>

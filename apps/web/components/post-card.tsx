@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { LikeButton } from "@/components/feed/like-button";
@@ -5,6 +7,7 @@ import { LikeableMedia } from "@/components/feed/likeable-media";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar, Card } from "@/components/ui";
 import type { FeedCard } from "@/lib/api";
+import { useLikePost } from "@/lib/likes/use-like-post";
 import { publicPostPath } from "@/lib/share";
 
 export function PostCard({
@@ -15,17 +18,17 @@ export function PostCard({
   priority?: boolean;
 }) {
   const href = publicPostPath(post.author.username, post.id);
+  const like = useLikePost({
+    postId: post.id,
+    likeCount: post.likeCount,
+    initiallyLiked: post.likedByMe,
+    aura: post.aura,
+    authorAura: post.author.aura,
+  });
 
   return (
     <Card interactive className="flex h-full flex-col overflow-hidden">
-      <LikeableMedia
-        postId={post.id}
-        liked={post.likedByMe}
-        likeCount={post.likeCount}
-        aura={post.aura}
-        authorAura={post.author.aura}
-        href={href}
-      >
+      <LikeableMedia href={href} burst={like.burst} onLike={like.likeOnly}>
         <PostMedia
           media={post.media}
           alt={post.caption ?? `@${post.author.username}`}
@@ -41,7 +44,7 @@ export function PostCard({
             <Avatar username={post.author.username} src={post.author.avatarUrl} />
             <div className="min-w-0">
               <p className="truncate text-label">@{post.author.username}</p>
-              <AuraValue value={post.author.aura} size="sm" tone="secondary" />
+              <AuraValue value={like.authorAura} size="sm" tone="secondary" />
             </div>
           </div>
 
@@ -55,13 +58,13 @@ export function PostCard({
 
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/70 p-4 pt-3">
         <LikeButton
-          postId={post.id}
-          likeCount={post.likeCount}
-          initiallyLiked={post.likedByMe}
-          aura={post.aura}
-          authorAura={post.author.aura}
+          liked={like.liked}
+          likeCount={like.likeCount}
+          burst={like.burst}
+          error={like.error}
+          onToggle={like.toggle}
         />
-        <AuraValue value={post.aura} size="md" tone="aura" />
+        <AuraValue value={like.aura} size="md" tone="aura" />
       </div>
     </Card>
   );

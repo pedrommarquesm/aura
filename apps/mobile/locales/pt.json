@@ -159,6 +159,9 @@
     }
   },
   "settings": {
+    "title": "Definições",
+    "open": "Definições",
+    "back": "Voltar",
     "language": {
       "title": "Idioma",
       "subtitle": "Ganha à definição do dispositivo.",

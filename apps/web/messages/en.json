@@ -29,6 +29,11 @@
       "socialTitle": "Aura global leaderboard",
       "description": "The top 100 by lifetime Aura. One board, one number, visible to everyone."
     },
+    "settings": {
+      "title": "Settings",
+      "socialTitle": "Aura settings",
+      "description": "Language and other site settings."
+    },
     "post": {
       "title": "@{username}",
       "socialTitle": "@{username} on Aura",
@@ -70,7 +75,8 @@
       "trending": "Trending",
       "leaderboard": "Leaderboard",
       "download": "Download",
-      "about": "About"
+      "about": "About",
+      "settings": "Settings"
     },
     "footer": {
       "label": "Footer"
@@ -306,5 +312,14 @@
     "cannot_block_self": "You cannot block yourself.",
     "cannot_report_self": "You cannot report yourself.",
     "unknown": "Something went wrong. Try again."
+  },
+  "settings": {
+    "title": "Settings",
+    "open": "Settings",
+    "body": "Change the language for this site.",
+    "language": {
+      "title": "Language",
+      "subtitle": "Your choice stays on this browser."
+    }
   }
 }

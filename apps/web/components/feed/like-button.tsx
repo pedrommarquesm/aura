@@ -5,46 +5,38 @@ import { useFormatter, useTranslations } from "next-intl";
 import { HeartIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
 import { formatCount } from "@/lib/format";
-import { useLikePost } from "@/lib/likes/use-like-post";
 
 const AURA_PER_LIKE = 10;
 
 export function LikeButton({
-  postId,
+  liked,
   likeCount,
-  initiallyLiked,
-  aura = 0,
-  authorAura = 0,
+  burst,
+  error,
+  onToggle,
 }: {
-  postId: string;
+  liked: boolean;
   likeCount: number;
-  initiallyLiked: boolean;
-  aura?: number;
-  authorAura?: number;
+  burst: number;
+  error: string | null;
+  onToggle: () => void;
 }) {
   const format = useFormatter();
   const t = useTranslations("feed.post");
-  const { toggle, burst, error } = useLikePost({
-    postId,
-    likeCount,
-    initiallyLiked,
-    aura,
-    authorAura,
-  });
 
   return (
     <div className="flex flex-col items-start gap-1">
       <button
         type="button"
-        onClick={toggle}
-        aria-pressed={initiallyLiked}
+        onClick={onToggle}
+        aria-pressed={liked}
         aria-label={t("likes", { count: likeCount })}
-        title={initiallyLiked ? t("a11y.unlike") : t("a11y.like")}
+        title={liked ? t("a11y.unlike") : t("a11y.like")}
         className={cn(
           "relative inline-flex items-center gap-1.5 rounded-full text-label",
           "transition-colors duration-(--motion-quick) ease-out",
           "hover:text-like focus-visible:outline-none",
-          initiallyLiked ? "text-like" : "text-text-secondary",
+          liked ? "text-like" : "text-text-secondary",
         )}
       >
         {burst > 0 ? (
@@ -57,11 +49,8 @@ export function LikeButton({
         ) : null}
 
         <HeartIcon
-          filled={initiallyLiked}
-          className={cn(
-            "size-4",
-            initiallyLiked && burst > 0 && "animate-like-pop",
-          )}
+          filled={liked}
+          className={cn("size-4", liked && burst > 0 && "animate-like-pop")}
         />
         <span aria-hidden className="aura-numerals text-label">
           {formatCount(format, likeCount)}

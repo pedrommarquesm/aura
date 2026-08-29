@@ -29,6 +29,11 @@
       "socialTitle": "Classificação global da Aura",
       "description": "Os 100 com mais Aura. Uma tabela, um número, visível para toda a gente."
     },
+    "settings": {
+      "title": "Definições",
+      "socialTitle": "Definições da Aura",
+      "description": "Idioma e outras definições do site."
+    },
     "post": {
       "title": "@{username}",
       "socialTitle": "@{username} na Aura",
@@ -70,7 +75,8 @@
       "trending": "Em destaque",
       "leaderboard": "Classificação",
       "download": "Descarregar",
-      "about": "Sobre"
+      "about": "Sobre",
+      "settings": "Definições"
     },
     "footer": {
       "label": "Rodapé"
@@ -306,5 +312,14 @@
     "cannot_block_self": "Não podes bloquear-te a ti próprio.",
     "cannot_report_self": "Não podes reportar-te a ti próprio.",
     "unknown": "Algo falhou. Tenta outra vez."
+  },
+  "settings": {
+    "title": "Definições",
+    "open": "Definições",
+    "body": "Muda o idioma deste site.",
+    "language": {
+      "title": "Idioma",
+      "subtitle": "A escolha fica neste browser."
+    }
   }
 }

@@ -17,6 +17,13 @@ import {
 } from "@/lib/query/feed-cache";
 import { queryKeys } from "@/lib/query/keys";
 
+export type LikeSnapshot = {
+  likedByMe: boolean;
+  likeCount: number;
+  aura: number;
+  authorAura: number;
+};
+
 export function useLikePost({
   postId,
   likeCount,
@@ -38,6 +45,21 @@ export function useLikePost({
 
   const [burst, setBurst] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  // Local so a double-click fills this card's heart even if the list is slow
+  // to re-render from the shared feed cache. Reset during render when the
+  // parent props catch up — not in an effect.
+  const propsKey = `${initiallyLiked}:${likeCount}:${aura}:${authorAura}`;
+  const [seenProps, setSeenProps] = useState(propsKey);
+  const [optimistic, setOptimistic] = useState<LikeSnapshot | null>(null);
+  if (seenProps !== propsKey) {
+    setSeenProps(propsKey);
+    setOptimistic(null);
+  }
+
+  const liked = optimistic?.likedByMe ?? initiallyLiked;
+  const count = optimistic?.likeCount ?? likeCount;
+  const postAura = optimistic?.aura ?? aura;
+  const creatorAura = optimistic?.authorAura ?? authorAura;
 
   const goToAuth = (kind: "login" | "username") => {
     const next = `${window.location.pathname}${window.location.search}`;
@@ -63,19 +85,30 @@ export function useLikePost({
       const snapshot = {
         feeds: queryClient.getQueriesData({ queryKey: queryKeys.feed.all }),
         post: queryClient.getQueryData<Post>(queryKeys.post(postId)),
+        optimistic,
       };
-      applyOptimisticLike(queryClient, postId, nextLiked, {
-        likedByMe: initiallyLiked,
-        likeCount,
-        aura,
-        authorAura,
+      const fallback: LikeSnapshot = {
+        likedByMe: liked,
+        likeCount: count,
+        aura: postAura,
+        authorAura: creatorAura,
+      };
+      const nextCount = Math.max(0, count + (nextLiked === liked ? 0 : nextLiked ? 1 : -1));
+      const delta = nextCount - count;
+      setOptimistic({
+        likedByMe: nextLiked,
+        likeCount: nextCount,
+        aura: Math.max(0, postAura + delta * 10),
+        authorAura: Math.max(0, creatorAura + delta * 10),
       });
+      applyOptimisticLike(queryClient, postId, nextLiked, fallback);
       return snapshot;
     },
     onSuccess: (result) => {
       applyLikeResult(queryClient, postId, result);
     },
     onError: (cause, _nextLiked, snapshot) => {
+      setOptimistic(snapshot?.optimistic ?? null);
       if (snapshot) {
         for (const [key, data] of snapshot.feeds) {
           queryClient.setQueryData(key, data);
@@ -92,13 +125,13 @@ export function useLikePost({
 
   const toggle = () => {
     if (requireAuth()) return;
-    mutation.mutate(!initiallyLiked);
+    mutation.mutate(!liked);
   };
 
   /** Double-tap / double-click: like only. Already liked just replays the burst. */
   const likeOnly = () => {
-    setBurst((count) => count + 1);
     if (status !== "signedIn" || needsUsername) {
+      setBurst((n) => n + 1);
       // Let the brief overlay wave play before we leave (matches --motion-burst).
       window.setTimeout(
         () => goToAuth(status === "signedIn" ? "username" : "login"),
@@ -106,9 +139,21 @@ export function useLikePost({
       );
       return;
     }
-    if (initiallyLiked) return;
+    if (liked) {
+      setBurst((n) => n + 1);
+      return;
+    }
     mutation.mutate(true);
   };
 
-  return { toggle, likeOnly, burst, error };
+  return {
+    toggle,
+    likeOnly,
+    burst,
+    error,
+    liked,
+    likeCount: count,
+    aura: postAura,
+    authorAura: creatorAura,
+  };
 }

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 
 import { Screen } from '@/components/layout';
-import { LanguageSwitcher } from '@/components/settings';
+import { SettingsButton } from '@/components/settings';
 import { AuraGradient, AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui';
 import {
   fetchPublicProfile,
@@ -32,8 +32,11 @@ export default function ProfileScreen() {
 
   if (status !== 'authenticated' || !user) {
     return (
-      <Screen className="justify-center">
-        <View className="items-center">
+      <Screen>
+        <View className="flex-row justify-end pt-2">
+          <SettingsButton />
+        </View>
+        <View className="flex-1 items-center justify-center">
           <View className="h-20 w-20 items-center justify-center overflow-hidden rounded-xl">
             <AuraGradient />
             <Ionicons name="person" size={36} color={colors.text.DEFAULT} />
@@ -52,7 +55,6 @@ export default function ProfileScreen() {
             onPress={() => requestAuth({ reason: 'profile' })}
           />
         </View>
-        <LanguageSwitcher className="mt-10" />
       </Screen>
     );
   }
@@ -97,6 +99,9 @@ function SignedInProfile({
 
   return (
     <Screen>
+      <View className="flex-row justify-end pt-2">
+        <SettingsButton />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-8"
@@ -162,8 +167,6 @@ function SignedInProfile({
         <Text variant="caption" tone="muted" className="pt-8">
           {t('profile.comingSoon')}
         </Text>
-
-        <LanguageSwitcher className="mt-8" />
 
         <Button label={t('auth.signOut')} variant="ghost" className="mt-6" onPress={onSignOut} />
       </ScrollView>
