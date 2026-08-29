@@ -1,9 +1,19 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import Animated, {
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { Text, type TextTone } from './text';
 import { cn } from '@/lib/cn';
 import { useFormat } from '@/lib/i18n';
+import { celebrate, instant, smooth } from '@/theme/motion';
 
 /** The moai is Aura's mark. It reads as the unit, so it is part of the component. */
 const AURA_GLYPH = '🗿';
@@ -28,10 +38,8 @@ export type AuraValueProps = {
 
 /**
  * Aura numbers are the loudest thing on screen after the media. Tabular figures keep
- * the digits from shifting sideways while a counter animates up.
- *
- * The separator comes from the active locale — `12,421` in English, `12.421` in
- * Portuguese — so nothing here may build the number by hand.
+ * the digits from shifting sideways while the counter animates up. A like that pays
+ * +10 ticks the number instead of snapping it (MOB-41).
  */
 export function AuraValue({
   value,
@@ -42,10 +50,43 @@ export function AuraValue({
 }: AuraValueProps) {
   const { t } = useTranslation();
   const format = useFormat();
-  const amount = format.aura(value);
+  const target = Math.trunc(value);
+  const [shown, setShown] = useState(target);
+
+  const displayed = useSharedValue(target);
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    const previous = displayed.get();
+    if (previous === target) return;
+
+    displayed.set(withTiming(target, { duration: 320 }));
+
+    if (target > previous) {
+      scale.set(withSequence(withTiming(1.12, instant), withSpring(1, celebrate)));
+    } else {
+      scale.set(withSequence(withTiming(0.94, instant), withSpring(1, smooth)));
+    }
+  }, [displayed, scale, target]);
+
+  useAnimatedReaction(
+    () => Math.round(displayed.get()),
+    (current, previous) => {
+      if (current !== previous) runOnJS(setShown)(current);
+    },
+  );
+
+  const pulse = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.get() }],
+  }));
+
+  const amount = format.aura(shown);
 
   return (
-    <View className={cn('flex-row items-center gap-1', className)}>
+    <Animated.View
+      className={cn('flex-row items-center gap-1', className)}
+      style={pulse}
+    >
       <Text className={sizes[size]} tone={tone}>
         {AURA_GLYPH}
       </Text>
@@ -53,7 +94,7 @@ export function AuraValue({
         tone={tone}
         className={cn(sizes[size], 'font-extrabold tracking-aura')}
         style={{ fontVariant: ['tabular-nums'] }}
-        accessibilityLabel={t('common.auraAmount', { amount: Math.trunc(value) })}
+        accessibilityLabel={t('common.auraAmount', { amount: target })}
       >
         {amount}
       </Text>
@@ -62,6 +103,6 @@ export function AuraValue({
           {t('common.aura')}
         </Text>
       ) : null}
-    </View>
+    </Animated.View>
   );
 }

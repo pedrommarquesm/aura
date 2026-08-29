@@ -7,6 +7,7 @@ export { FEED_PAGE_SIZE, fetchFeedPage, type FeedRanking } from './feed';
 export { LEADERBOARD_PAGE_SIZE, fetchGlobalLeaderboard } from './leaderboard';
 export { likePost, unlikePost } from './likes';
 export { completeUpload, createUpload, fetchPost, refreshUpload } from './posts';
+export { USER_POSTS_PAGE_SIZE, fetchPublicProfile, fetchUserPosts } from './users';
 export type {
   AuthTokens,
   CompleteUploadResponse,
@@ -21,6 +22,7 @@ export type {
   LikeResult,
   MediaType,
   PostDetail,
+  PublicProfile,
   PublicUser,
   SignInResponse,
 } from './types';

@@ -107,7 +107,8 @@
       "edit": "Editar perfil"
     },
     "posts": {
-      "title": "Publicações"
+      "title": "Publicações",
+      "empty": "Ainda não publicaste nada. A grelha enche à medida que publicas."
     },
     "comingSoon": "Aura Sense e Vote Power juntam-se a este cartão na V1 (roadmap AURA-11, AURA-10)."
   },
