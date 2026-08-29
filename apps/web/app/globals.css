@@ -61,6 +61,9 @@
   --motion-instant: 100ms;
   --motion-quick: 200ms;
   --motion-smooth: 320ms;
+  --motion-celebrate: 900ms;
+  --motion-burst: 1100ms;
+  --motion-rise: 1200ms;
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Glow is the emphasis tool on this dark UI, in place of drop shadows. */
@@ -72,9 +75,11 @@
 
   --animate-rise: rise var(--motion-smooth) var(--ease-smooth) both;
   --animate-aura-pulse: aura-pulse 6s var(--ease-smooth) infinite;
-  --animate-like-pop: like-pop 600ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
-  --animate-like-rise: like-rise 800ms var(--ease-smooth) both;
-  --animate-like-burst: like-burst 700ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-like-pop: like-pop var(--motion-celebrate) cubic-bezier(0.34, 1.4, 0.64, 1)
+    both;
+  --animate-like-rise: like-rise var(--motion-rise) var(--ease-smooth) both;
+  --animate-like-burst: like-burst var(--motion-burst)
+    cubic-bezier(0.34, 1.4, 0.64, 1) both;
 }
 
 @keyframes rise {
@@ -105,9 +110,13 @@
     opacity: 0;
     transform: scale(0.4);
   }
-  22% {
+  14% {
     opacity: 1;
     transform: scale(1.15);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1);
   }
   100% {
     opacity: 0;
@@ -120,12 +129,16 @@
     opacity: 0;
     transform: translate(-50%, 0) scale(0.8);
   }
-  12% {
+  10% {
     opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -1.4rem) scale(1.05);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -2rem) scale(1.1);
+    transform: translate(-50%, -2.4rem) scale(1.1);
   }
 }
 

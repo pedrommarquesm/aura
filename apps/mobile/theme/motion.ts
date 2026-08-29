@@ -30,3 +30,15 @@ export const celebrateTiming: WithTimingConfig = {
   duration: motion.celebrate.duration,
   easing: Easing.out(Easing.cubic),
 };
+
+/** Overlay heart on the photo. */
+export const burstTiming: WithTimingConfig = {
+  duration: motion.burst.duration,
+  easing: Easing.out(Easing.cubic),
+};
+
+/** `+Aura` float. Longer than the heart so the label is still readable at the top. */
+export const riseTiming: WithTimingConfig = {
+  duration: motion.rise.duration,
+  easing: Easing.out(Easing.cubic),
+};
