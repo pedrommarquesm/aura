@@ -195,7 +195,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
 | OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
-| OPS-10 | `www.aurarankd.com` is the canonical web host; apex 308s there. `NEXT_PUBLIC_SITE_URL` matches | In review | |
+| OPS-10 | `www.aurarankd.com` is the canonical web host; apex 308s there. `NEXT_PUBLIC_SITE_URL` matches | In review | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -232,7 +232,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-29 | Canonical web host is `www.aurarankd.com`. The apex 308s there. `NEXT_PUBLIC_SITE_URL` is `https://www.aurarankd.com` | |
+| 2026-08-29 | Canonical web host is `www.aurarankd.com`. The apex 308s there. `NEXT_PUBLIC_SITE_URL` is `https://www.aurarankd.com` | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | 2026-08-29 | `aurarankd.com`, `www`, and `api.aurarankd.com` DNS answer. Web and mobile clients use `https://api.aurarankd.com`. `cdn.aurarankd.com` still needs attaching to the R2 bucket | [#28](https://github.com/pedrommarquesm/aura/pull/28) |
 | 2026-08-28 | Suspend/ban revokes every device session immediately and returns `account_suspended` / `account_banned`. Banned authors leave the feed and leaderboard. Removing a post (author or moderator) writes a ledger `REVERSAL` for the remaining Aura. `X-Moderation-Key` is the V0 stand-in for the admin dashboard | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
 | 2026-08-28 | Public post URLs stay unprefixed (`/a/@username/post/:id`). The page server-renders `GET /v1/posts/:id`, offers store + `aura://` deep links, and never lets the web like or post. Live feed cards are the posters; mocks stay behind `NEXT_PUBLIC_USE_MOCK_API` | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
