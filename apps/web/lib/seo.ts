@@ -61,7 +61,7 @@ export function alternateUrls(pathname: AppPathname) {
 
 /**
  * Single source of page metadata. A dynamic route such as
- * `/a/@username/post/[postId]` only has to call this from `generateMetadata`
+ * `/a/[username]/post/[postId]` only has to call this from `generateMetadata`
  * with the post's locale, title, description and OG image.
  */
 export function buildMetadata({
@@ -108,7 +108,7 @@ export function buildMetadata({
 }
 
 /**
- * Metadata for `/a/@username/post/:postId`. Canonical is the unprefixed URL;
+ * Metadata for `/a/:username/post/:postId`. Canonical is the unprefixed URL;
  * there are no locale alternates, so a future routing change cannot split the
  * link graph (docs/i18n.md).
  */

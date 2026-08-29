@@ -17,7 +17,7 @@ export default getRequestConfig(async ({ locale }) => {
     if (hasLocale(routing.locales, segment)) {
       locale = segment;
     } else if (segment === undefined) {
-      // Share URLs (`/a/@username/post/:postId`) stay unprefixed. The page
+      // Share URLs (`/a/:username/post/:postId`) stay unprefixed. The page
       // still renders in the viewer's locale: cookie, then Accept-Language,
       // then English (docs/i18n.md).
       locale = await viewerLocale();

@@ -125,7 +125,7 @@ Landing-page anchors are localized too (`#trending` / `#em-destaque`), from
 (`/pt#em-destaque`) so they work from `/sobre` and not just the landing page.
 
 **The public post URL stays out of this.** Per `docs/i18n.md`,
-`/a/@username/post/:postId` is the share URL and must be canonical and permanent
+`/a/:username/post/:postId` is the share URL and must be canonical and permanent
 with no prefix. Nothing above blocks that, but it needs two things when WEB-10
 builds it:
 
@@ -134,7 +134,7 @@ builds it:
   segment to read, so `next-intl` formatting works there anyway.
 - **Add `a` to the `proxy.ts` matcher's exclusion list.** Otherwise the proxy
   treats the share URL as an unprefixed page, applies the visitor's cookie and
-  redirects `/a/@bob/post/1` to `/pt/a/@bob/post/1` — which is not a route. A
+  redirects `/a/bob/post/1` to `/pt/a/bob/post/1` — which is not a route. A
   share link that 404s for anyone who once picked Portuguese is the exact
   failure this URL exists to avoid.
 
@@ -275,7 +275,7 @@ See [docs/deployment.md](../../docs/deployment.md) for the current workflow.
 
 Metadata comes from `lib/seo.ts` (`buildMetadata`) and share images from
 `lib/og-image.tsx` (`renderOgImage`). A future public post page at
-`/a/@username/post/:postId` only needs to call both with the post's data to get
+`/a/:username/post/:postId` only needs to call both with the post's data to get
 canonical URLs, Open Graph and Twitter cards.
 
 `buildMetadata` takes a locale and an internal pathname and derives the rest:

@@ -840,7 +840,7 @@ Cada post deve ter uma URL pública.
 Web:
 
 ```text
-/a/@username/post/postId
+/a/username/post/postId
 ```
 
 Quando alguém abre:

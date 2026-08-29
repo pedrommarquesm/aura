@@ -9,7 +9,7 @@ import {
   writeSessionOnResponse,
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
-import { WWW_HOST, isApexHost } from "./lib/canonical-host";
+import { isSharePath, sharePathWithoutAtPrefix } from "./lib/share";
 
 /**
  * Resolves the locale for every page request: an explicit prefix wins, then
@@ -23,17 +23,30 @@ import { WWW_HOST, isApexHost } from "./lib/canonical-host";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (isApexHost(host)) {
+  // Host redirects (apex → www) live at DNS, not here. A 308 in this
+  // proxy also 307s Flight requests and can loop with `?_rsc=`.
+
+  // `@alice` in the path is a Next.js parallel-route slot. RSC requests to
+  // `/a/@alice/post/…` 307 to the same URL with a new `?_rsc=` hash, and the
+  // client retries forever (feed cards prefetch those links). Rewrite RSC so
+  // we do not start that dance; 308 documents so old shares stay one hop.
+  const withoutAt = sharePathWithoutAtPrefix(request.nextUrl.pathname);
+  if (withoutAt) {
     const url = request.nextUrl.clone();
-    url.protocol = "https";
-    url.hostname = WWW_HOST;
-    url.port = "";
+    url.pathname = withoutAt;
+    // Next.js hides `?_rsc=` from `nextUrl`. Read the raw URL so a Flight
+    // request is rewritten (not 308'd with the hash stripped — that replay
+    // is the loop).
+    const rsc = rscQueryValue(request);
+    if (isRscRequest(request, rsc)) {
+      if (rsc !== null) url.searchParams.set("_rsc", rsc);
+      return NextResponse.rewrite(url);
+    }
     return NextResponse.redirect(url, 308);
   }
 
   // Share URLs stay unprefixed (docs/i18n.md). next-intl would otherwise
-  // rewrite `/a/@alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
+  // rewrite `/a/alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
   // still runs so `likedByMe` works when the viewer is signed in.
   if (isSharePath(request.nextUrl.pathname)) {
     const response = NextResponse.next();
@@ -46,8 +59,21 @@ export default async function proxy(request: NextRequest) {
   return response;
 }
 
-function isSharePath(pathname: string) {
-  return pathname === "/a" || pathname.startsWith("/a/");
+function rscQueryValue(request: NextRequest): string | null {
+  try {
+    return new URL(request.url).searchParams.get("_rsc");
+  } catch {
+    return request.nextUrl.searchParams.get("_rsc");
+  }
+}
+
+function isRscRequest(request: NextRequest, rscQuery: string | null): boolean {
+  return (
+    request.headers.get("rsc") === "1" ||
+    request.headers.get("next-router-prefetch") != null ||
+    request.headers.get("next-url") != null ||
+    rscQuery !== null
+  );
 }
 
 async function attachRefreshedSession(

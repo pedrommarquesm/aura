@@ -161,6 +161,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
+| WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 
 ### Aura
@@ -195,7 +196,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-07 | Production environment — create when the product is ready for real users | Not started | |
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
 | OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
-| OPS-10 | `www.aurarankd.com` is the canonical web host; apex 308s there. `NEXT_PUBLIC_SITE_URL` matches | In review | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
+| OPS-10 | `www.aurarankd.com` is the canonical web host. `NEXT_PUBLIC_SITE_URL` matches | Done | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
+| OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -232,7 +234,9 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-29 | Canonical web host is `www.aurarankd.com`. The apex 308s there. `NEXT_PUBLIC_SITE_URL` is `https://www.aurarankd.com` | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
+| 2026-08-29 | Web share URLs are `/a/:username/post/:id`. `/a/@username/…` 308s there. Next.js App Router cannot have `@` in a path segment (parallel-route slots); feed prefetch was an RSC loop | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
+| 2026-08-29 | Apex → `www` is a DNS redirect. The Next proxy does not 308 the host (that hop was looping Flight requests) | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
+| 2026-08-29 | Canonical web host is `www.aurarankd.com`. `NEXT_PUBLIC_SITE_URL` is `https://www.aurarankd.com` | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | 2026-08-29 | `aurarankd.com`, `www`, and `api.aurarankd.com` DNS answer. Web and mobile clients use `https://api.aurarankd.com`. `cdn.aurarankd.com` still needs attaching to the R2 bucket | [#28](https://github.com/pedrommarquesm/aura/pull/28) |
 | 2026-08-28 | Suspend/ban revokes every device session immediately and returns `account_suspended` / `account_banned`. Banned authors leave the feed and leaderboard. Removing a post (author or moderator) writes a ledger `REVERSAL` for the remaining Aura. `X-Moderation-Key` is the V0 stand-in for the admin dashboard | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
 | 2026-08-28 | Public post URLs stay unprefixed (`/a/@username/post/:id`). The page server-renders `GET /v1/posts/:id`, offers store + `aura://` deep links, and never lets the web like or post. Live feed cards are the posters; mocks stay behind `NEXT_PUBLIC_USE_MOCK_API` | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
