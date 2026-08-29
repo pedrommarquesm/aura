@@ -10,6 +10,7 @@ import {
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
 import { WWW_HOST, isApexHost } from "./lib/canonical-host";
+import { isSharePath, sharePathWithoutAtPrefix } from "./lib/share";
 
 /**
  * Resolves the locale for every page request: an explicit prefix wins, then
@@ -32,8 +33,22 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // `@alice` in the path is a Next.js parallel-route slot. RSC requests to
+  // `/a/@alice/post/…` 307 to the same URL with a new `?_rsc=` hash, and the
+  // client retries forever (feed cards prefetch those links). Rewrite RSC so
+  // we do not start that dance; 308 documents so old shares stay one hop.
+  const withoutAt = sharePathWithoutAtPrefix(request.nextUrl.pathname);
+  if (withoutAt) {
+    const url = request.nextUrl.clone();
+    url.pathname = withoutAt;
+    if (request.headers.get("rsc") === "1") {
+      return NextResponse.rewrite(url);
+    }
+    return NextResponse.redirect(url, 308);
+  }
+
   // Share URLs stay unprefixed (docs/i18n.md). next-intl would otherwise
-  // rewrite `/a/@alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
+  // rewrite `/a/alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
   // still runs so `likedByMe` works when the viewer is signed in.
   if (isSharePath(request.nextUrl.pathname)) {
     const response = NextResponse.next();
@@ -44,10 +59,6 @@ export default async function proxy(request: NextRequest) {
   const response = intlMiddleware(request);
   await attachRefreshedSession(request, response);
   return response;
-}
-
-function isSharePath(pathname: string) {
-  return pathname === "/a" || pathname.startsWith("/a/");
 }
 
 async function attachRefreshedSession(

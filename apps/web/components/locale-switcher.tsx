@@ -50,8 +50,8 @@ export function LocaleSwitcher() {
             : "text-text-muted hover:text-text",
         );
 
-        // Share URLs stay unprefixed. next-intl Link would turn `/a/@x/post/y`
-        // into `/pt/a/@x/post/y`, which is not a route and would fragment the
+        // Share URLs stay unprefixed. next-intl Link would turn `/a/x/post/y`
+        // into `/pt/a/x/post/y`, which is not a route and would fragment the
         // link graph (docs/i18n.md). Cookie + reload keeps the same URL.
         if (onShareUrl) {
           return (

@@ -713,7 +713,7 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | GET | `/v1/leaderboards/global` | top + `viewerRank` |
 | GET | `/v1/notifications` | stub empty in V0 or skip |
 
-Public web can call the same GET endpoints with optional auth. No upload routes on web (product rule). Deep link `/a/@username/post/:postId` is a web route that server-renders or hydrates `GET /v1/posts/:id`.
+Public web can call the same GET endpoints with optional auth. No upload routes on web (product rule). Deep link `/a/:username/post/:postId` is a web route that server-renders or hydrates `GET /v1/posts/:id`. A leftover `/a/@username/…` 308s onto that path.
 
 Errors: `{ error: { code, message } }` plus HTTP status. Stable `code` values for the app (`already_liked`, `cannot_like_own_post`, `upload_expired`, …).
 
