@@ -57,6 +57,7 @@ Nothing in the repository needs restructuring for that; it is configuration.
 | `api` | `apps/api/Dockerfile` | HTTP API, `node dist/main.js` |
 | `worker` | `apps/api/Dockerfile` (same image) | Background jobs, `node dist/worker.js` |
 | `web` | `apps/web/Dockerfile` | Public landing and read-only feed |
+| `admin` | `apps/admin/Dockerfile` | Staff backoffice |
 | `Postgres` | Railway managed | Source of truth |
 | `Redis` | Railway managed | Cache, rate limits, queues |
 
@@ -127,6 +128,7 @@ export RAILWAY_TOKEN=<project token>
 cd apps/api && railway up --service api      # API
 cd apps/api && railway up --service worker   # worker, same directory
 cd apps/web && railway up --service web      # web
+cd apps/admin && railway up --service admin  # backoffice
 ```
 
 A deploy is not finished when the command returns — that only means the build
@@ -273,10 +275,18 @@ Rules:
 Required in a deployed API: `DATABASE_URL`, `REDIS_URL`. Everything else has a
 sensible default documented in the example file.
 
-`MODERATION_SECRET` (api + worker, `preserve()`) gates `POST /v1/moderation/*`
-via the `X-Moderation-Key` header. Unset parks those routes with 503. Generate
-one with `openssl rand -base64 32` and set it in the dashboard when you need to
-suspend, ban, or take a post down on staging. Never commit it.
+`MODERATION_SECRET` (api + worker, `preserve()`) is the break-glass
+`X-Moderation-Key` for scripts. Staff JWTs from the admin app work without it.
+Unset parks only the key path. Generate with `openssl rand -base64 32`.
+
+The admin app (`apps/admin`) uses NextAuth as a thin client of
+`POST /v1/staff/auth/google`. Set `AUTH_SECRET` and `AUTH_GOOGLE_SECRET` on the
+`admin` service (`preserve()`). Add the admin origin's
+`/api/auth/callback/google` to the Google Web OAuth client, and keep that
+client id in the API's `GOOGLE_CLIENT_IDS`. `STAFF_OWNER_EMAIL` defaults to
+`pedrommarquesm@gmail.com` — first Google sign-in with that address claims
+owner. `STAFF_ALLOWED_DOMAINS` is empty (invite-only) until you open an org
+domain.
 
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.

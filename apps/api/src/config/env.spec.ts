@@ -74,6 +74,12 @@ describe('loadEnv', () => {
     expect(loadEnv(minimal).MODERATION_SECRET).toBeUndefined();
   });
 
+  it('seeds the GOD staff email by default and leaves org domains closed', () => {
+    const env = loadEnv(minimal);
+    expect(env.STAFF_OWNER_EMAIL).toBe('pedrommarquesm@gmail.com');
+    expect(env.STAFF_ALLOWED_DOMAINS).toBeUndefined();
+  });
+
   it('refuses a short moderation secret so a guessed value is not enough', () => {
     expect(() => loadEnv({ ...minimal, MODERATION_SECRET: 'too-short' })).toThrow(
       /MODERATION_SECRET/,

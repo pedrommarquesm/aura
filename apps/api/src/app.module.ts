@@ -14,6 +14,8 @@ import { PostsModule } from './posts/posts.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { SafetyModule } from './safety/safety.module';
+import { StaffModule } from './staff/staff.module';
+import { AdminModule } from './admin/admin.module';
 import { TrendingModule } from './trending/trending.module';
 import { UsersModule } from './users/users.module';
 
@@ -41,6 +43,8 @@ import { UsersModule } from './users/users.module';
     LeaderboardModule,
     UsersModule,
     SafetyModule,
+    StaffModule,
+    AdminModule,
     ModerationModule,
   ],
 })

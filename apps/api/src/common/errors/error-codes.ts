@@ -40,6 +40,13 @@ export const ErrorCode = {
   ALREADY_BLOCKED: 'already_blocked',
   CANNOT_BLOCK_SELF: 'cannot_block_self',
   CANNOT_REPORT_SELF: 'cannot_report_self',
+
+  // Staff / backoffice. Separate from consumer account_suspended / banned so
+  // the admin client never has to guess which table a 403 refers to.
+  NOT_STAFF: 'not_staff',
+  STAFF_DEACTIVATED: 'staff_deactivated',
+  STAFF_EMAIL_REQUIRED: 'staff_email_required',
+  CANNOT_MUTATE_OWNER: 'cannot_mutate_owner',
 } as const;
 
 export type ErrorCodeValue = (typeof ErrorCode)[keyof typeof ErrorCode];

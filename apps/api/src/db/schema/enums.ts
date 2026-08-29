@@ -4,6 +4,38 @@ export const userStatus = pgEnum('user_status', ['active', 'suspended', 'banned'
 
 export const authProvider = pgEnum('auth_provider', ['apple', 'google', 'phone']);
 
+/**
+ * Backoffice roles. Owner is the seeded GOD account and cannot be demoted.
+ * Admin can manage staff (except owner). Moderator can act on users/content.
+ */
+export const staffRole = pgEnum('staff_role', ['owner', 'admin', 'moderator']);
+
+export const staffStatus = pgEnum('staff_status', ['invited', 'active', 'deactivated']);
+
+/**
+ * Staff identity providers. Google is V0. `email` is reserved so org-domain
+ * accounts can sign in without Google later without another enum migration.
+ */
+export const staffAuthProvider = pgEnum('staff_auth_provider', ['google', 'email']);
+
+export const reportStatus = pgEnum('report_status', ['open', 'dismissed', 'actioned']);
+
+export const moderationTargetType = pgEnum('moderation_target_type', [
+  'user',
+  'post',
+  'report',
+  'staff',
+]);
+
+export const moderationActionType = pgEnum('moderation_action_type', [
+  'user_status',
+  'post_remove',
+  'report_dismiss',
+  'report_actioned',
+  'staff_invite',
+  'staff_update',
+]);
+
 export const mediaType = pgEnum('media_type', ['photo', 'video']);
 
 /**

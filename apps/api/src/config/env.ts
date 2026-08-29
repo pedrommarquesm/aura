@@ -119,10 +119,23 @@ const envSchema = z.object({
 
   /**
    * Shared secret for `POST /v1/moderation/*` (`X-Moderation-Key`).
-   * Unset parks those routes (503) rather than leaving them open. The admin
-   * dashboard is TS-12; this is the V0 stand-in so a ban actually lands.
+   * Unset parks the key path (staff JWTs still work). Generate with
+   * `openssl rand -base64 32`. Kept as a break-glass for scripts.
    */
   MODERATION_SECRET: z.string().min(16).optional(),
+
+  /**
+   * Seeded GOD account. First Google sign-in with this email claims owner.
+   * Never stored on `users` — staff lives in its own tables.
+   */
+  STAFF_OWNER_EMAIL: z.string().email().default('pedrommarquesm@gmail.com'),
+
+  /**
+   * Comma-separated email domains that may auto-join as `moderator` on first
+   * Google sign-in. Empty means invite-only (the V0 default). The owner email
+   * always gets in, domain list or not.
+   */
+  STAFF_ALLOWED_DOMAINS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
