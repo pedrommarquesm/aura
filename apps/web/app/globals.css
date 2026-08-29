@@ -62,7 +62,7 @@
   --motion-quick: 200ms;
   --motion-smooth: 320ms;
   --motion-celebrate: 900ms;
-  --motion-burst: 1100ms;
+  --motion-burst: 560ms;
   --motion-rise: 1200ms;
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -108,19 +108,23 @@
 @keyframes like-burst {
   0% {
     opacity: 0;
-    transform: scale(0.4);
+    transform: translate(0, 0) scale(0.35);
   }
   14% {
     opacity: 1;
-    transform: scale(1.15);
+    transform: translate(0.4rem, -0.3rem) scale(1.12);
   }
-  55% {
+  40% {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-0.65rem, -1.5rem) scale(1);
+  }
+  72% {
+    opacity: 0.45;
+    transform: translate(0.55rem, -2.5rem) scale(0.9);
   }
   100% {
     opacity: 0;
-    transform: scale(1);
+    transform: translate(-0.25rem, -3.25rem) scale(0.82);
   }
 }
 

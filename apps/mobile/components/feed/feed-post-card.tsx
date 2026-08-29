@@ -10,7 +10,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -21,7 +20,7 @@ import { likePost, unlikePost } from '@/lib/api/likes';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useIsAuthenticated } from '@/store/session';
-import { burstTiming, celebrate, instant } from '@/theme/motion';
+import { burstTiming, instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
 /** Portrait 4:5 through landscape 1.91:1, matching what the media pipeline produces. */
@@ -38,32 +37,68 @@ function formatDuration(durationMs: number): string {
   return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
 }
 
-function DoubleTapHeart({ burst }: { burst: number }) {
-  const scale = useSharedValue(0);
+const HEART = 64;
+const WAVE_MS = 560;
+
+function DoubleTapHeart({
+  burst,
+  origin,
+}: {
+  burst: number;
+  origin: { x: number; y: number };
+}) {
+  const scale = useSharedValue(0.35);
   const opacity = useSharedValue(0);
+  const x = useSharedValue(0);
+  const y = useSharedValue(0);
 
   useEffect(() => {
     if (burst === 0) return;
-    scale.set(0.4);
-    opacity.set(1);
-    scale.set(withSequence(withTiming(1.15, instant), withSpring(1, celebrate)));
-    opacity.set(
-      withSequence(withTiming(1, { duration: 550 }), withTiming(0, burstTiming)),
+    scale.set(0.35);
+    opacity.set(0);
+    x.set(0);
+    y.set(0);
+    scale.set(
+      withSequence(withTiming(1.12, instant), withTiming(0.85, { duration: WAVE_MS - 100 })),
     );
-  }, [burst, opacity, scale]);
+    opacity.set(
+      withSequence(withTiming(1, instant), withTiming(0, burstTiming)),
+    );
+    x.set(
+      withSequence(
+        withTiming(10, { duration: 140 }),
+        withTiming(-12, { duration: 160 }),
+        withTiming(9, { duration: 140 }),
+        withTiming(-6, { duration: 120 }),
+      ),
+    );
+    y.set(withTiming(-56, { duration: WAVE_MS }));
+  }, [burst, opacity, scale, x, y]);
 
   const style = useAnimatedStyle(() => ({
     opacity: opacity.get(),
-    transform: [{ scale: scale.get() }],
+    transform: [
+      { translateX: x.get() },
+      { translateY: y.get() },
+      { scale: scale.get() },
+    ],
   }));
 
   return (
     <Animated.View
       pointerEvents="none"
-      style={style}
-      className="absolute inset-0 items-center justify-center"
+      style={[
+        style,
+        {
+          position: 'absolute',
+          left: origin.x - HEART / 2,
+          top: origin.y - HEART / 2,
+          width: HEART,
+          height: HEART,
+        },
+      ]}
     >
-      <Ionicons name="heart" size={88} color={colors.like} />
+      <Ionicons name="heart" size={HEART} color={colors.like} />
     </Animated.View>
   );
 }
@@ -80,10 +115,12 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
   const requestAuth = useAuthGateStore((state) => state.requestAuth);
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
 
   const requireAuth = !isAuthenticated;
 
-  const onDoubleTap = useCallback(() => {
+  const onDoubleTap = useCallback((x: number, y: number) => {
+    setOrigin({ x, y });
     setBurst((count) => count + 1);
   }, []);
 
@@ -97,8 +134,8 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
       Gesture.Tap()
         .numberOfTaps(2)
         .maxDuration(280)
-        .onEnd(() => {
-          runOnJS(onDoubleTap)();
+        .onEnd((event) => {
+          runOnJS(onDoubleTap)(event.x, event.y);
         }),
     [onDoubleTap],
   );
@@ -131,7 +168,7 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
 
       <GestureDetector gesture={doubleTap}>
         <View
-          className="relative bg-surface"
+          className="relative overflow-hidden bg-surface"
           style={{ aspectRatio: clampAspect(media.width, media.height) }}
           accessible
           accessibilityRole="image"
@@ -156,7 +193,7 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
             </View>
           ) : null}
 
-          <DoubleTapHeart burst={burst} />
+          <DoubleTapHeart burst={burst} origin={origin} />
         </View>
       </GestureDetector>
 
