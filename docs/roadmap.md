@@ -169,7 +169,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-13 | Web Google sign-in as a thin API client (httpOnly cookies, username claim) | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | Done | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | Done | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
-| WEB-17 | Double-click the photo to like on the feed, trending cards, and share page. Single click still opens the permalink. Already liked only replays the burst | In review | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
+| WEB-17 | Double-click the photo to like on the feed, trending cards, and share page. Single click still opens the permalink. Already liked only replays the burst | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 
 ### Aura
 
@@ -181,7 +181,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | In review | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
+| MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
