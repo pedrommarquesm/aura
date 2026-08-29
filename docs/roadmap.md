@@ -158,8 +158,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-24 | `GET /v1/users/:username` — public competitive card (rank, title, Aura, post count) | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
-| API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | |
-| API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | |
+| API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
+| API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound | Not started | |
@@ -228,7 +228,7 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | API-34 | Notifications, aggregated (never one push per like) | Not started | |
 | TS-10 | Like-ring / multi-account detection over the ledger | Not started | |
 | TS-11 | NSFW + spam detection in the media worker | Not started | |
-| TS-12 | Admin/moderation dashboard | In review | |
+| TS-12 | Admin/moderation dashboard | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | MEDIA-10 | Evaluate Bunny (CDN and/or storage) against real traffic — likely R2 origin + Bunny edge | Not started | |
 
 ---
@@ -239,7 +239,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-29 | Staff backoffice is a separate Next.js app (`apps/admin`). Staff identity is its own tables (`staff`, `staff_identities`, `staff_sessions`) and JWT audience (`aura-staff`). NextAuth wraps API tokens only — no NextAuth user store. Google is V0; `STAFF_ALLOWED_DOMAINS` is the seam for org-domain auto-join. Appeals are not built; `moderation_actions` is the audit seam they will hang off | |
+| 2026-08-29 | Staff backoffice is a separate Next.js app (`apps/admin`). Staff identity is its own tables (`staff`, `staff_identities`, `staff_sessions`) and JWT audience (`aura-staff`). NextAuth wraps API tokens only — no NextAuth user store. Google is V0; `STAFF_ALLOWED_DOMAINS` is the seam for org-domain auto-join. Appeals are not built; `moderation_actions` is the audit seam they will hang off | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | 2026-08-29 | Web can like. Guests are sent to Google sign-in and the pending like is replayed. The BFF (`POST|DELETE /api/posts/:id/like`) wraps the API JWT. Posting stays in the app | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | 2026-08-29 | `expo-image-manipulator` is a native module, not a config plugin. Listing it in `app.json` `plugins` breaks `expo run:ios` (`Cannot find module './ImageManipulator'`). Autolink is enough | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | 2026-08-29 | iOS Choose photo must not call `requestMediaLibraryPermissionsAsync` or use the HEIC `Current` fast path. PHPicker needs neither; both terminate the process when the Photos usage string is missing or the original is huge | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
