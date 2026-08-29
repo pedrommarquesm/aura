@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { dehydrate } from "@tanstack/react-query";
@@ -36,6 +37,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FeedPage() {
+  // Wait for the incoming request so `getSession()` can read cookies.
+  // Without this, Next prerenders a guest page and freezes empty hearts.
+  await connection();
   const t = await getTranslations("feed.page");
 
   let page: CursorPage<FeedCard> | null = null;
