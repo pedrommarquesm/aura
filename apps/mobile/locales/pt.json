@@ -37,6 +37,7 @@
       "a11y": {
         "like": "Dar like",
         "unlike": "Retirar o like",
+        "doubleTap": "Toca duas vezes para dar like",
         "options": "Opções da publicação"
       }
     }

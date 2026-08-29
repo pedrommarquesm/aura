@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
+import { LikeableMedia } from "@/components/feed/likeable-media";
 import { PostMedia } from "@/components/post-media";
 import { PublicPostLikeRow } from "@/components/public-post-like-row";
 import { AuraValue, Avatar, ButtonLink, buttonClassName } from "@/components/ui";
@@ -36,13 +37,21 @@ export async function PublicPost({ post }: { post: Post }) {
         <section className="border-b border-border/70 py-10 sm:py-14">
           <Container className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start">
             <article className="overflow-hidden rounded-xl border border-border bg-surface">
-              <PostMedia
-                media={post.media}
-                alt={post.caption ?? `@${post.author.username}`}
-                priority
-                sizes="(min-width: 1024px) 560px, 90vw"
-                className="aspect-4/5"
-              />
+              <LikeableMedia
+                postId={post.id}
+                liked={post.likedByMe}
+                likeCount={post.likeCount}
+                aura={post.aura}
+                authorAura={post.author.aura}
+              >
+                <PostMedia
+                  media={post.media}
+                  alt={post.caption ?? `@${post.author.username}`}
+                  priority
+                  sizes="(min-width: 1024px) 560px, 90vw"
+                  className="aspect-4/5"
+                />
+              </LikeableMedia>
             </article>
 
             <div className="flex flex-col gap-6">

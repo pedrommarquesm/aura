@@ -37,6 +37,7 @@
       "a11y": {
         "like": "Like",
         "unlike": "Remove like",
+        "doubleTap": "Double-tap to like",
         "options": "Post options"
       }
     }
