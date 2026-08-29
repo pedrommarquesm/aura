@@ -81,7 +81,9 @@ const motion = {
   instant: { duration: 100 },
   quick: { duration: 200 },
   smooth: { duration: 320, damping: 18, stiffness: 220 },
-  celebrate: { duration: 600, damping: 12, stiffness: 180 },
+  celebrate: { duration: 900, damping: 11, stiffness: 140 },
+  burst: { duration: 1100 },
+  rise: { duration: 1200 },
 };
 
 module.exports = { colors, gradients, typography, radius, spacing, motion };

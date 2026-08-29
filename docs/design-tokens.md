@@ -69,9 +69,11 @@ Feel fast. Nothing important waits on the network.
 | `instant` | 100ms | ease-out — press feedback |
 | `quick` | 200ms | ease-out — most transitions |
 | `smooth` | 320ms | spring(damping 18, stiffness 220) — sheets, cards |
-| `celebrate` | 600ms | spring(damping 12, stiffness 180) — like burst, rank change |
+| `celebrate` | 900ms | spring(damping 11, stiffness 140) — like burst, rank change |
+| `burst` | 1100ms | overlay heart on the photo |
+| `rise` | 1200ms | `+Aura` float |
 
-Like animation: heart scales `1 → 1.35 → 1` on `celebrate`, haptic fires at peak, `+Aura` floats up and fades over 800ms.
+Like animation: heart scales `1 → 1.35 → 1` on `celebrate`, haptic fires at peak, `+Aura` floats up and fades over `rise` (1200ms). The photo overlay lasts `burst` (1100ms).
 
 ## Elevation
 

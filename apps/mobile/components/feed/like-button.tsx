@@ -15,7 +15,7 @@ import Animated, {
 import { Text } from '@/components/ui';
 import { useFormat } from '@/lib/i18n';
 import { tapFeedback } from '@/lib/haptics';
-import { celebrate, celebrateTiming, instant, smooth } from '@/theme/motion';
+import { celebrate, instant, riseTiming, smooth } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
 /** V0 awards a flat 10 Aura per like (roadmap `AURA-02`). */
@@ -94,7 +94,7 @@ export const LikeButton = forwardRef<LikeButtonHandle, LikeButtonProps>(function
 
     // Reset first so a rapid re-tap restarts the label instead of resuming it mid-flight.
     rise.set(0);
-    rise.set(withTiming(1, celebrateTiming));
+    rise.set(withTiming(1, riseTiming));
   }, [rise, scale]);
 
   const likeOnly = useCallback(() => {

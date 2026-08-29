@@ -99,10 +99,10 @@ export function useLikePost({
   const likeOnly = () => {
     setBurst((count) => count + 1);
     if (status !== "signedIn" || needsUsername) {
-      // Let the heart burst paint before we leave the page.
+      // Let most of the overlay burst play before we leave (matches --motion-burst).
       window.setTimeout(
         () => goToAuth(status === "signedIn" ? "username" : "login"),
-        280,
+        900,
       );
       return;
     }

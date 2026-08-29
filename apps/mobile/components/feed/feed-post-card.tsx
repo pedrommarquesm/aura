@@ -21,7 +21,7 @@ import { likePost, unlikePost } from '@/lib/api/likes';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useIsAuthenticated } from '@/store/session';
-import { celebrate, instant } from '@/theme/motion';
+import { burstTiming, celebrate, instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
 /** Portrait 4:5 through landscape 1.91:1, matching what the media pipeline produces. */
@@ -47,7 +47,7 @@ function DoubleTapHeart({ burst }: { burst: number }) {
     scale.set(0.4);
     opacity.set(1);
     scale.set(withSequence(withTiming(1.15, instant), withSpring(1, celebrate)));
-    opacity.set(withTiming(0, { duration: 620 }));
+    opacity.set(withTiming(0, burstTiming));
   }, [burst, opacity, scale]);
 
   const style = useAnimatedStyle(() => ({
