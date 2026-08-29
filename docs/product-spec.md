@@ -881,7 +881,7 @@ Obrigatório antes do lançamento.
 
 - Report
 - Remove
-- NSFW detection
+- NSFW detection (TS-11, **on hold** — third-party classifier on the media worker; see architecture §6.5)
 - Spam detection
 
 ### Aura abuse
