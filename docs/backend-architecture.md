@@ -385,7 +385,21 @@ The point of this section is that the answer can be "yes" later without it being
 - Max photo size and max video duration/bitrate, enforced **before** presign and re-checked after PUT
 - Per-user daily upload quota
 - Per-user concurrent processing cap
-- Virus/malware scanning is optional in V0; NSFW classification is a V1 worker on the same `ProcessMediaJob` hook
+- Virus/malware scanning is optional in V0
+- **Automatic photo moderation (TS-11) is on hold.** When it ships, it is a step on the same `ProcessMediaJob`, not a second publish path. See below.
+
+**TS-11 — decided, not built**
+
+A post stays `processing` (out of the feed) until a **third-party classifier** clears the photo. Do not run NudeNet / ONNX / a vision model on the API or the worker: classification is slow and the API must stay like-fast. The worker only HTTP-calls out.
+
+- **Provider:** Hive Moderation or Sightengine (UGC-native). AWS Rekognition / Google SafeSearch are acceptable to start. Hide the vendor behind a `ContentClassifier` port.
+- **What we send:** the 400px thumb we already generate, not the 2160 master.
+- **When:** after variants exist, still inside `ProcessMediaJob`. `POST /complete` only enqueues. Timeout ~8s; BullMQ retries 2–3× with backoff. Per-user concurrent processing cap stays.
+- **Fail closed:** if we cannot classify, do not publish. Provider outage exhausts retries then `failed`.
+- **User:** success is silent (same processing spinner as today — no “checking content”). Failure is either `content_rejected` (“This photo couldn’t be posted”) or `processing_failed` (generic upload error). Do not mention nudity, AI, or moderation in the consumer app. Clients map `error.code` via `errors.*` in both catalogs.
+- **Staff:** persist provider, scores, and decision on `moderation_actions` (the audit seam). Human takedown stays for misses.
+- **Video:** same hook on a poster frame when MEDIA-06 lands. Do not block TS-11 on video.
+- **Web:** posting stays in the app. On-device hints are never the source of truth.
 
 ---
 
