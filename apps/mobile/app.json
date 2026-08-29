@@ -57,7 +57,6 @@
           "microphonePermission": "Aura uses the microphone when you record a video."
         }
       ],
-      "expo-image-manipulator",
       "expo-file-system",
       [
         "@react-native-google-signin/google-signin",
