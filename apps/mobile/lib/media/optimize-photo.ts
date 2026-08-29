@@ -41,6 +41,20 @@ export async function optimizePickedPhoto(input: OptimizePhotoInput): Promise<Op
   const target = targetUploadSize(input.width ?? 0, input.height ?? 0);
   const resized = target.scale < 1;
 
+  // Compatible JPEG from the picker is already small enough — skip a second
+  // native decode. ImageManipulator on a 12–48MP buffer is how iOS jetsams
+  // the app (looks like a jump to the home screen).
+  if (!resized && !mustReencodePhoto(mime) && originalBytes > 0) {
+    return {
+      uri: input.uri,
+      mimeType: mime,
+      byteSize: originalBytes,
+      width: input.width,
+      height: input.height,
+      optimized: false,
+    };
+  }
+
   let context: ReturnType<typeof ImageManipulator.manipulate> | undefined;
 
   try {

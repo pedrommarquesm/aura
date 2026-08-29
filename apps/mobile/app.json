@@ -14,7 +14,11 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "app.aura.mobile",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Aura uses your photo library so you can post.",
+        "NSCameraUsageDescription": "Aura uses the camera so you can post."
+      }
     },
     "android": {
       "package": "app.aura.mobile",
@@ -53,6 +57,8 @@
           "microphonePermission": "Aura uses the microphone when you record a video."
         }
       ],
+      "expo-image-manipulator",
+      "expo-file-system",
       [
         "@react-native-google-signin/google-signin",
         {

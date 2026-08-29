@@ -1,22 +1,15 @@
-import { File } from 'expo-file-system';
-
 /**
  * Byte length of a local picker URI.
  *
- * `expo-image-picker` often leaves `asset.fileSize` at 0 on iOS (especially
- * when the fast-path copies a HEIC and the JS asset is filled in before the
- * header read). The create screen used to treat that as unreadable and drop
- * the pick — which is why "choose a photo" looked unimplemented.
+ * Do not use `expo-file-system`'s `File` constructor here. Picker URIs on iOS
+ * are often `ph://` / `assets-library://`; constructing a File for those can
+ * abort the process (try/catch does not catch that).
+ *
+ * `asset.fileSize` is still often 0. `fetch` + `blob.size` is enough for a
+ * JPEG the picker already copied into the app container.
  */
 export async function measureFileBytes(uri: string, reported?: number | null): Promise<number> {
   if (reported && reported > 0) return reported;
-
-  try {
-    const file = new File(uri);
-    if (file.exists && file.size > 0) return file.size;
-  } catch {
-    // ph:// and some content:// URIs are not File-addressable.
-  }
 
   const response = await fetch(uri);
   const blob = await response.blob();

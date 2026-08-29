@@ -1,6 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQueryClient } from '@tanstack/react-query';
-import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -13,6 +12,7 @@ import { messageForError } from '@/lib/api';
 import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
 import { measureFileBytes } from '@/lib/media/measure-file';
 import { optimizePickedPhoto } from '@/lib/media/optimize-photo';
+import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-photo';
 import { PHOTO_UPLOAD_MAX_BYTES, normalizePhotoMime } from '@/lib/media/photo-targets';
 import { queryKeys } from '@/lib/query/keys';
 import { putPresignedObject } from '@/lib/upload/put-presigned';
@@ -76,24 +76,24 @@ export default function CreateScreen() {
   async function choosePhoto() {
     setError(null);
 
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      setError(t('create.errors.libraryPermission'));
+    // Let the Reanimated press animation finish before presenting UIKit.
+    // Presenting PHPicker from an in-flight AnimatedPressable has killed the
+    // process on iOS (SpringBoard, no JS redbox).
+    await afterInteractions();
+
+    let asset;
+    try {
+      asset = await pickPhotoFromLibrary();
+    } catch (cause) {
+      setError(
+        cause instanceof LibraryPermissionError
+          ? t('create.errors.libraryPermission')
+          : t('create.errors.unreadable'),
+      );
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 1,
-      allowsEditing: false,
-      exif: false,
-      preferredAssetRepresentationMode:
-        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current,
-    });
-
-    if (result.canceled || !result.assets[0]) return;
-
-    const asset = result.assets[0];
+    if (!asset) return;
     const mimeType = normalizePhotoMime(asset.mimeType) || 'image/jpeg';
     let byteSize = 0;
     try {
