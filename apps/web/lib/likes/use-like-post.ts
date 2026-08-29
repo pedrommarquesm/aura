@@ -99,10 +99,10 @@ export function useLikePost({
   const likeOnly = () => {
     setBurst((count) => count + 1);
     if (status !== "signedIn" || needsUsername) {
-      // Let the overlay hold + fade play before we leave (matches --motion-burst).
+      // Let the brief overlay wave play before we leave (matches --motion-burst).
       window.setTimeout(
         () => goToAuth(status === "signedIn" ? "username" : "login"),
-        1100,
+        560,
       );
       return;
     }

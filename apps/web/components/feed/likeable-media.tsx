@@ -2,13 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { HeartIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
 import { useLikePost } from "@/lib/likes/use-like-post";
 
 const DOUBLE_MS = 280;
+const HEART = 64;
 
 export function LikeableMedia({
   postId,
@@ -41,6 +42,7 @@ export function LikeableMedia({
 
   const lastClick = useRef(0);
   const timer = useRef<number | null>(null);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
 
   useEffect(
     () => () => {
@@ -48,6 +50,14 @@ export function LikeableMedia({
     },
     [],
   );
+
+  const pointInTarget = (event: MouseEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+  };
 
   const onClick = (event: MouseEvent<HTMLElement>) => {
     if (
@@ -70,6 +80,7 @@ export function LikeableMedia({
         window.clearTimeout(timer.current);
         timer.current = null;
       }
+      setOrigin(pointInTarget(event));
       likeOnly();
       return;
     }
@@ -87,9 +98,18 @@ export function LikeableMedia({
     burst > 0 ? (
       <span
         key={burst}
-        className="pointer-events-none absolute inset-0 grid place-items-center"
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{
+          left: origin.x,
+          top: origin.y,
+          width: HEART,
+          height: HEART,
+          marginLeft: -HEART / 2,
+          marginTop: -HEART / 2,
+        }}
       >
-        <HeartIcon className="size-20 text-like animate-like-burst drop-shadow-[0_8px_24px_var(--color-like)]" />
+        <HeartIcon className="size-full text-like animate-like-burst drop-shadow-[0_8px_24px_var(--color-like)]" />
       </span>
     ) : null;
 
@@ -97,7 +117,7 @@ export function LikeableMedia({
     onClick,
     onDoubleClick: (event: MouseEvent) => event.preventDefault(),
     title: t("a11y.doubleClick"),
-    className: cn("relative block", className),
+    className: cn("relative block overflow-hidden", className),
   };
 
   if (href) {

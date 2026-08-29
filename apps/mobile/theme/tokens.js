@@ -82,7 +82,7 @@ const motion = {
   quick: { duration: 200 },
   smooth: { duration: 320, damping: 18, stiffness: 220 },
   celebrate: { duration: 900, damping: 11, stiffness: 140 },
-  burst: { duration: 1100 },
+  burst: { duration: 560 },
   rise: { duration: 1200 },
 };
 
