@@ -62,8 +62,9 @@
     "subtitle": "Cada like que recebes é Aura. Cada ponto de Aura sobe-te no ranking.",
     "actions": {
       "takePhoto": "Tirar uma foto",
-      "chooseFromLibrary": "Escolher da galeria",
-      "chooseDifferent": "Escolher outro ficheiro",
+      "takePhotoHint": "A câmara chega numa versão mais tarde.",
+      "choosePhoto": "Escolher foto",
+      "chooseDifferent": "Escolher outra foto",
       "post": "Publicar"
     },
     "caption": {
@@ -72,6 +73,7 @@
     },
     "videoPicked": "Vídeo pronto a publicar",
     "progress": {
+      "preparing": "A preparar a foto…",
       "uploading": "A enviar {percent, number}%",
       "processing": "A processar…"
     },
@@ -79,6 +81,8 @@
       "cameraPermission": "Permite o acesso à câmara para tirar uma foto.",
       "libraryPermission": "Permite o acesso às fotos para escolher da galeria.",
       "unreadable": "Não foi possível ler esse ficheiro. Tenta outro.",
+      "optimize": "Não foi possível preparar essa foto. Tenta outra.",
+      "tooLarge": "Essa foto é demasiado grande. Tenta outra.",
       "processing": "Essa publicação falhou o processamento. Tenta outra vez."
     }
   },

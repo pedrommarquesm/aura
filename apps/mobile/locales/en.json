@@ -61,9 +61,10 @@
     "title": "Post something with Aura",
     "subtitle": "Every like you get is Aura. Every point of Aura moves you up the board.",
     "actions": {
-      "takePhoto": "Take a photo",
-      "chooseFromLibrary": "Choose from library",
-      "chooseDifferent": "Choose a different file",
+      "takePhoto": "Take a picture",
+      "takePhotoHint": "Camera comes in a later build.",
+      "choosePhoto": "Choose photo",
+      "chooseDifferent": "Choose a different photo",
       "post": "Post"
     },
     "caption": {
@@ -72,6 +73,7 @@
     },
     "videoPicked": "Video ready to post",
     "progress": {
+      "preparing": "Preparing photo…",
       "uploading": "Uploading {percent, number}%",
       "processing": "Processing…"
     },
@@ -79,6 +81,8 @@
       "cameraPermission": "Allow camera access to take a photo.",
       "libraryPermission": "Allow photo access to pick from your library.",
       "unreadable": "Could not read that file. Try another.",
+      "optimize": "Could not prepare that photo. Try another.",
+      "tooLarge": "That photo is too large. Try another.",
       "processing": "That post failed to process. Try again."
     }
   },
