@@ -17,7 +17,7 @@
     "login": {
       "title": "Sign in",
       "socialTitle": "Sign in to Aura",
-      "description": "Sign in with Google. No password. Posting and liking stay in the app."
+      "description": "Sign in with Google. No password. Posting stays in the app."
     },
     "username": {
       "title": "Pick your username",
@@ -33,7 +33,7 @@
       "title": "@{username}",
       "socialTitle": "@{username} on Aura",
       "description": "{caption}",
-      "descriptionEmpty": "@{username} posted on Aura. Open the app to like it and farm Aura.",
+      "descriptionEmpty": "@{username} posted on Aura. Sign in to like it and farm Aura.",
       "alt": "A post by @{username} on Aura"
     },
     "keywords": "Aura, social game, leaderboard, photo sharing, short video",
@@ -149,7 +149,7 @@
       "eyebrow": "Live from the app",
       "title": "Trending right now",
       "description": "Trending is not a follower count. It is Aura earned per minute, weighted by how recent a post is — so a first post can outrank an established creator on the same day.",
-      "note": "Every post has a public link, so anything made in the app is shareable outside it. Liking and posting stay in the app.",
+      "note": "Every post has a public link, so anything made in the app is shareable outside it. Sign in here to like. Posting stays in the app.",
       "seeAll": "Open the full feed",
       "empty": "The feed is quiet right now. Check back once someone posts.",
       "unavailable": "Could not load what is trending."
@@ -173,7 +173,7 @@
       "note": "Photos and videos, likes, Aura and the global leaderboard. Posting only happens in the app."
     },
     "footer": {
-      "note": "Posting, liking and everything competitive happens in the app. The web is here to show you the game and hand you a public link to any post.",
+      "note": "Posting stays in the app. The web is here to show you the game, hand you a public link, and let you award Aura.",
       "copyright": "© {year} Aura"
     }
   },
@@ -203,7 +203,7 @@
       },
       "web": {
         "title": "What this site is for",
-        "body": "The web is discovery and sharing: see what is trending, open any post from a link, look at the global board. Posting, liking and everything competitive happens in the app."
+        "body": "The web is discovery, sharing and voting: see what is trending, open any post from a link, look at the global board, and award Aura. Posting stays in the app."
       }
     }
   },
@@ -211,13 +211,18 @@
     "page": {
       "eyebrow": "Live from the app",
       "title": "The feed",
-      "description": "Latest posts, as they land. Sign in with Google to see which ones you already liked. Liking and posting stay in the app.",
+      "description": "Latest posts, as they land. Sign in with Google to like a post and award Aura. Posting stays in the app.",
       "empty": "The feed is quiet right now. Check back once someone posts.",
       "unavailable": "Could not load the feed.",
       "end": "You are caught up."
     },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
+      "auraGain": "+{amount, number} Aura",
+      "a11y": {
+        "like": "Like",
+        "unlike": "Remove like"
+      },
       "video": "Video"
     }
   },
@@ -225,8 +230,8 @@
     "page": {
       "eyebrow": "Shared from the app",
       "openInApp": "Open in the Aura app",
-      "installTitle": "Like it in the app",
-      "installBody": "Every like pays Aura to the creator. Posting and liking stay in the app.",
+      "installTitle": "Post it in the app",
+      "installBody": "Every like pays Aura to the creator. You can like it here. Posting stays in the app.",
       "unavailable": "This post is gone, or it was never published."
     }
   },
@@ -238,7 +243,13 @@
     },
     "page": {
       "title": "Sign in to Aura",
-      "body": "Google — no password. Posting and liking stay in the app."
+      "body": "Google — no password. Posting stays in the app."
+    },
+    "reasons": {
+      "like": {
+        "title": "Sign in to award Aura",
+        "body": "Likes are the score. Google — no password — then this like lands."
+      }
     },
     "unavailable": {
       "google": "Google Sign-In is not configured in this build yet."

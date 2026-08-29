@@ -3,11 +3,10 @@
 Public marketing and discovery surface for Aura. Next.js App Router, TypeScript,
 Tailwind v4.
 
-Per the product spec (§3.1) this app is **acquisition, discovery and sharing**.
-There is no post creation, no upload, no battles. Guests can read the public
-feed. Sign in with Google (a thin client of the Aura API) is optional, so a
-signed-in viewer sees `likedByMe` and can claim a username. Liking and posting
-stay in the app.
+Per the product spec (§3.1) this app is **acquisition, discovery, sharing and
+voting**. There is no post creation, no upload, no battles. Guests can read the
+public feed. Sign in with Google (a thin client of the Aura API) likes a post
+and claims a username. Posting stays in the app.
 
 ## Getting started
 
@@ -63,9 +62,10 @@ render local vector posters instead. When `packages/contracts` lands (FND-04),
 
 Auth is a BFF in `app/api/auth/*`: Google Identity Services returns an ID token,
 the route handler posts it to `POST /v1/auth/google`, and the API's access and
-refresh tokens land in httpOnly cookies. The proxy rotates refresh tokens so a
-page of Server Components cannot fire two refreshes and trip reuse detection.
-There is no NextAuth user table.
+refresh tokens land in httpOnly cookies. Likes go through
+`POST|DELETE /api/posts/:id/like` so the JWT never reaches the browser. The
+proxy rotates refresh tokens so a page of Server Components cannot fire two
+refreshes and trip reuse detection. There is no NextAuth user table.
 
 `lib/api/error-message.ts` turns an API error code into a sentence from the
 `errors.*` catalog, falling back to `errors.unknown` for a code this build has

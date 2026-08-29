@@ -2,9 +2,28 @@ import type { SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-export function HeartIcon(props: IconProps) {
+export function HeartIcon({
+  filled = true,
+  ...props
+}: IconProps & { filled?: boolean }) {
+  if (filled) {
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+        <path d="M12 20.727 3.6 12.6a5.4 5.4 0 0 1 7.638-7.63L12 5.73l.762-.76a5.4 5.4 0 0 1 7.638 7.63Z" />
+      </svg>
+    );
+  }
+
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
       <path d="M12 20.727 3.6 12.6a5.4 5.4 0 0 1 7.638-7.63L12 5.73l.762-.76a5.4 5.4 0 0 1 7.638 7.63Z" />
     </svg>
   );

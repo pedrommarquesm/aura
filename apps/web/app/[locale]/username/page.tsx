@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { UsernameClaimForm } from "./username-claim-form";
@@ -12,9 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import {
+  authContinueHref,
+  defaultSignedInPath,
+  safeReturnPath,
+} from "@/lib/auth/return-to";
 import { getSession } from "@/lib/auth/session";
+import { isPostId } from "@/lib/likes/ids";
+import { applyPendingLike } from "@/lib/likes/server";
 import { buildMetadata } from "@/lib/seo";
-import { redirect } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -30,17 +37,25 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function UsernamePage() {
+export default async function UsernamePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; like?: string }>;
+}) {
   const locale = await getLocale();
   const t = await getTranslations("auth.username");
+  const { next, like } = await searchParams;
+  const returnTo = safeReturnPath(next) ?? defaultSignedInPath(locale);
+  const pendingLike = isPostId(like) ? like : null;
   const session = await getSession();
 
   if (!session) {
-    redirect({ href: "/login", locale });
+    redirect(authContinueHref(locale, "login", returnTo, pendingLike));
   }
 
   if (session && !session.needsUsername) {
-    redirect({ href: "/feed", locale });
+    await applyPendingLike(session.accessToken, pendingLike);
+    redirect(returnTo);
   }
 
   return (
@@ -54,7 +69,7 @@ export default async function UsernamePage() {
               <CardDescription>{t("body")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <UsernameClaimForm />
+              <UsernameClaimForm next={returnTo} like={pendingLike} />
             </CardContent>
           </Card>
         </Container>

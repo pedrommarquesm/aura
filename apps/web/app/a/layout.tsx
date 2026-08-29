@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { SessionProvider } from "@/components/auth/session-context";
 import { htmlLang } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site";
 
@@ -58,7 +59,7 @@ export default async function ShareLayout({ children }: { children: ReactNode })
             landing: messages.landing,
           }}
         >
-          {children}
+          <SessionProvider>{children}</SessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

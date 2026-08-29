@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { SessionProvider } from "@/components/auth/session-context";
 import { htmlLang, routing } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site";
 
@@ -72,7 +73,7 @@ export default async function LocaleLayout({
             post: messages.post,
           }}
         >
-          {children}
+          <SessionProvider>{children}</SessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

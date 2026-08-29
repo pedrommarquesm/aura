@@ -43,7 +43,7 @@ A web existe principalmente para:
 - Public sharing
 - Visualização básica do produto
 
-Tudo o que envolve criação, competição e engagement deve acontecer na app.
+Publicar continua a ser na app. Dar like — atribuir Aura — funciona na web e na app.
 
 ## 2.2 UX acima de features
 
@@ -117,7 +117,7 @@ Características:
 - User profiles públicos
 - Shareable post URLs
 - Deep links para abrir a app
-- Sign in with Google (read-only: see the feed, claim a username)
+- Sign in with Google (see the feed, claim a username, like posts)
 
 **Não haverá upload na web.**
 
