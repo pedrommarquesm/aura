@@ -174,7 +174,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-19 | Signed-in feed / trending must show `likedByMe` — same hearts as the permalink. Guest static snapshot was freezing empty hearts | Done | [#40](https://github.com/pedrommarquesm/aura/pull/40) |
 | WEB-23 | Landing “see what's trending” goes to `/feed`. Mobile header exposes Feed — the section nav is desktop-only | Done | [#40](https://github.com/pedrommarquesm/aura/pull/40) |
 | WEB-24 | Like overlay and `+10 Aura` last longer (burst 1100ms, rise 1200ms) | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
-| WEB-25 | Photo like heart starts at the click and waves away briefly | In review | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
+| WEB-25 | Photo like heart starts at the click and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
+| WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | Done | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
 
 ### Aura
 
@@ -188,7 +189,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
-| MOB-56 | Photo like heart starts at the tap and waves away briefly | In review | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
+| MOB-56 | Photo like heart starts at the tap and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |

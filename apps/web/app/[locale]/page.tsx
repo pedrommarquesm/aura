@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { DownloadCta } from "@/components/landing/download-cta";
@@ -12,18 +11,12 @@ import { TrendingPreview } from "@/components/landing/trending-preview";
 import { WhatIsAura } from "@/components/landing/what-is-aura";
 import { dehydrate } from "@tanstack/react-query";
 
-import { loadLeaderboardPage, loadTrendingPage } from "@/lib/query/actions";
 import { makeQueryClient } from "@/lib/query/client";
 import { Hydrate } from "@/lib/query/hydrate";
 import { toInfinite } from "@/lib/query/infinite";
 import { queryKeys } from "@/lib/query/keys";
+import { readLeaderboardPage, readTrendingPage } from "@/lib/query/load";
 import { buildMetadata } from "@/lib/seo";
-
-/**
- * Same reason as `/feed` (WEB-19): a prerendered guest snapshot freezes
- * `likedByMe: false` on the trending cards. The permalink already knows.
- */
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -39,11 +32,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  await connection();
+  // Guest snapshot only — `getSession()` / `cookies()` here would bind the
+  // whole marketing page to the JWT. A like fetch then refreshes the RSC
+  // tree and the scroll jumps to the top (WEB-18). Signed-in hearts come
+  // from `useRefetchFeedWhenSignedIn` on the trending grid.
   const queryClient = makeQueryClient();
   const [trendingResult, leaderboardResult] = await Promise.allSettled([
-    loadTrendingPage(6),
-    loadLeaderboardPage(10),
+    readTrendingPage(6, null),
+    readLeaderboardPage(10, null),
   ]);
 
   const trending =
