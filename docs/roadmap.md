@@ -170,7 +170,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-15 | Like / unlike on the web feed, trending cards, and share page. Guests sign in with Google and the pending like lands. Posting stays in the app | Done | [#34](https://github.com/pedrommarquesm/aura/pull/34) |
 | WEB-16 | TanStack Query on web: hydrate the RSC first page, infinite feed, session as `['me']`, like mutations share cache across feed / trending / permalink | Done | [#36](https://github.com/pedrommarquesm/aura/pull/36) |
 | WEB-17 | Double-click the photo to like on the feed, trending cards, and share page. Single click still opens the permalink. Already liked only replays the burst | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
-| WEB-18 | Liking on the web feed must not refresh the page or jump the scroll to the top | In review | [#39](https://github.com/pedrommarquesm/aura/pull/39) |
+| WEB-18 | Liking on the web feed must not refresh the page or jump the scroll to the top | Done | [#39](https://github.com/pedrommarquesm/aura/pull/39) |
 
 ### Aura
 
