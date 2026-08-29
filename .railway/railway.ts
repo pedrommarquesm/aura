@@ -137,11 +137,9 @@ export default defineRailway(() => {
     env: {
       NEXT_PUBLIC_SITE_URL: 'https://aurarankd.com',
       PORT: preserve(),
-      // NEXT_PUBLIC_* is inlined at image build time. Keep the generated
-      // Railway API host until `api.aurarankd.com` DNS is live — baking the
-      // custom hostname in before that would take the landing offline.
-      // After DNS: set this to https://api.aurarankd.com and rebuild web.
-      NEXT_PUBLIC_API_BASE_URL: 'https://api-production-aa71.up.railway.app',
+      // NEXT_PUBLIC_* is inlined at image build time. api.aurarankd.com DNS
+      // answers; a rebuild is what actually bakes this into the bundle.
+      NEXT_PUBLIC_API_BASE_URL: 'https://api.aurarankd.com',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
       // Public web OAuth client. The secret is GOOGLE_CLIENT_SECRET on the
       // service (preserve), never in this file.

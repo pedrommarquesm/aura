@@ -38,7 +38,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Point DNS at the Railway / R2 records in [deployment.md](./deployment.md) and attach `cdn.aurarankd.com` to the R2 bucket (or set `MEDIA_CDN_BASE_URL` to the `r2.dev` public URL). Then Cloudflare Stream for real video (`MEDIA-06`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — Rebuild web so it bakes `https://api.aurarankd.com`. Attach `cdn.aurarankd.com` to the R2 bucket (staging still emits `cdn.aura.app`). Then Cloudflare Stream for real video (`MEDIA-06`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — video autoplay once posts have real media on the CDN (`MEDIA-06`, then `MOB-32`).
 
@@ -229,6 +229,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-29 | `aurarankd.com`, `www`, and `api.aurarankd.com` DNS answer. `www` 308s to the apex. Web and mobile clients use `https://api.aurarankd.com`. `cdn.aurarankd.com` still needs attaching to the R2 bucket | [#28](https://github.com/pedrommarquesm/aura/pull/28) |
 | 2026-08-28 | Suspend/ban revokes every device session immediately and returns `account_suspended` / `account_banned`. Banned authors leave the feed and leaderboard. Removing a post (author or moderator) writes a ledger `REVERSAL` for the remaining Aura. `X-Moderation-Key` is the V0 stand-in for the admin dashboard | [#27](https://github.com/pedrommarquesm/aura/pull/27) |
 | 2026-08-28 | Public post URLs stay unprefixed (`/a/@username/post/:id`). The page server-renders `GET /v1/posts/:id`, offers store + `aura://` deep links, and never lets the web like or post. Live feed cards are the posters; mocks stay behind `NEXT_PUBLIC_USE_MOCK_API` | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | 2026-08-28 | Reports and blocks are thin tables. `POST /v1/reports`, `POST /v1/blocks`, `DELETE /v1/blocks/:userId`. The feed hides both directions of a block. Likes are capped per user (`LIKE_RATE_LIMIT_*`); daily upload quota was already `MEDIA_DAILY_UPLOAD_QUOTA` | [#26](https://github.com/pedrommarquesm/aura/pull/26) |

@@ -2,7 +2,7 @@
  * The API lives on staging until a local docker-compose stack is running.
  * Override with `EXPO_PUBLIC_API_URL` — include the `/v1` prefix.
  */
-const DEFAULT_BASE_URL = 'https://api-production-aa71.up.railway.app/v1';
+const DEFAULT_BASE_URL = 'https://api.aurarankd.com/v1';
 
 export const API_BASE_URL = (process.env.EXPO_PUBLIC_API_URL ?? DEFAULT_BASE_URL).replace(
   /\/+$/,
