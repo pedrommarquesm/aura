@@ -7,9 +7,11 @@ import { PostCard } from "@/components/post-card";
 import { Button } from "@/components/ui";
 import { fetchFeedPage } from "@/lib/query/browser";
 import { queryKeys } from "@/lib/query/keys";
+import { useRefetchFeedWhenSignedIn } from "@/lib/query/use-refetch-feed-when-signed-in";
 
 export function FeedList() {
   const t = useTranslations();
+  useRefetchFeedWhenSignedIn("latest");
   const query = useInfiniteQuery({
     queryKey: queryKeys.feed.ranking("latest"),
     queryFn: ({ pageParam }) => fetchFeedPage(pageParam),

@@ -29,7 +29,17 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-bg/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
-        <AuraMark />
+        <div className="flex min-w-0 items-center gap-4">
+          <AuraMark />
+          {/* Desktop keeps the full section nav. On a phone that row is
+              hidden, so Feed has to live next to the mark. */}
+          <Link
+            href="/feed"
+            className="text-label text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text lg:hidden"
+          >
+            {t("feed")}
+          </Link>
+        </div>
 
         <nav
           aria-label={t("label")}

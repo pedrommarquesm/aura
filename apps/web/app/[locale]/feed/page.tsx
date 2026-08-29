@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { dehydrate } from "@tanstack/react-query";
@@ -15,6 +16,13 @@ import { toInfinite } from "@/lib/query/infinite";
 import { queryKeys } from "@/lib/query/keys";
 import { buildMetadata } from "@/lib/seo";
 
+/**
+ * `[locale]` prerenders both locales at build time. A shared guest snapshot
+ * would freeze `likedByMe: false` for signed-in viewers (WEB-19). The
+ * permalink is outside this tree and already session-aware.
+ */
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = await getTranslations("meta.feed");
@@ -29,6 +37,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FeedPage() {
+  // Wait for the incoming request so `getSession()` can read cookies.
+  // Without this, Next prerenders a guest page and freezes empty hearts.
+  await connection();
   const t = await getTranslations("feed.page");
 
   let page: CursorPage<FeedCard> | null = null;
