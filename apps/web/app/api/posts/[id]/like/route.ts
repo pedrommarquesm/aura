@@ -1,10 +1,12 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { ApiError } from "@/lib/api/errors";
 import type { LikeResult } from "@/lib/api/types";
 import { upstream } from "@/lib/api/upstream";
-import { clearSessionCookies, readSessionCookies } from "@/lib/auth/cookies";
+import {
+  clearSessionOnResponse,
+  readSessionCookiesFromRequest,
+} from "@/lib/auth/cookies";
 import { isPostId } from "@/lib/likes/ids";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -13,13 +15,17 @@ function errorBody(code: string, message: string, status: number) {
   return NextResponse.json({ error: { code, message } }, { status });
 }
 
-async function handle(method: "POST" | "DELETE", context: RouteContext) {
+async function handle(
+  request: NextRequest,
+  method: "POST" | "DELETE",
+  context: RouteContext,
+) {
   const { id } = await context.params;
   if (!isPostId(id)) {
     return errorBody("not_found", "Post not found", 404);
   }
 
-  const { accessToken } = await readSessionCookies();
+  const { accessToken } = readSessionCookiesFromRequest(request);
   if (!accessToken) {
     return errorBody("unauthorized", "Not signed in", 401);
   }
@@ -32,9 +38,9 @@ async function handle(method: "POST" | "DELETE", context: RouteContext) {
     return NextResponse.json(result);
   } catch (error) {
     if (error instanceof ApiError && error.status === 401) {
-      const jar = await cookies();
-      clearSessionCookies(jar);
-      return errorBody("unauthorized", "Not signed in", 401);
+      const response = errorBody("unauthorized", "Not signed in", 401);
+      clearSessionOnResponse(response);
+      return response;
     }
 
     if (error instanceof ApiError) {
@@ -48,10 +54,10 @@ async function handle(method: "POST" | "DELETE", context: RouteContext) {
   }
 }
 
-export function POST(_request: Request, context: RouteContext) {
-  return handle("POST", context);
+export function POST(request: NextRequest, context: RouteContext) {
+  return handle(request, "POST", context);
 }
 
-export function DELETE(_request: Request, context: RouteContext) {
-  return handle("DELETE", context);
+export function DELETE(request: NextRequest, context: RouteContext) {
+  return handle(request, "DELETE", context);
 }

@@ -23,6 +23,7 @@ async function sendLike(
   const response = await fetch(`/api/posts/${encodeURIComponent(postId)}/like`, {
     method,
     headers: { accept: "application/json" },
+    cache: "no-store",
   });
 
   if (!response.ok) {

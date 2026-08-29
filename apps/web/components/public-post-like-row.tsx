@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 
 import { LikeButton } from "@/components/feed/like-button";
 import { AuraValue } from "@/components/ui";
-import { loadPostById } from "@/lib/query/actions";
+import { fetchPostById } from "@/lib/query/browser";
 import { queryKeys } from "@/lib/query/keys";
 
 export function PublicPostLikeRow({ postId }: { postId: string }) {
   const { data: post } = useQuery({
     queryKey: queryKeys.post(postId),
-    queryFn: () => loadPostById(postId),
+    queryFn: () => fetchPostById(postId),
   });
 
   if (!post) return null;

@@ -6,6 +6,8 @@ import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container, Eyebrow } from "@/components/landing/section";
 import type { LeaderboardPage } from "@/lib/api/types";
+import { dehydrate } from "@tanstack/react-query";
+
 import { loadLeaderboardPage } from "@/lib/query/actions";
 import { makeQueryClient } from "@/lib/query/client";
 import { Hydrate } from "@/lib/query/hydrate";
@@ -46,7 +48,7 @@ export default async function LeaderboardPage() {
   }
 
   return (
-    <Hydrate client={queryClient}>
+    <Hydrate state={dehydrate(queryClient)}>
       <SiteHeader />
       <main>
         <section className="border-b border-border/70 py-16 sm:py-20">
