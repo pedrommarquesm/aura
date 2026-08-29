@@ -2,7 +2,7 @@
 
 Status: **proposal** (not an implementation plan yet)
 Scope: V0 first, with explicit seams for V1
-Companion: [Product spec](./product-spec.md)
+Companion: [Product spec](./product-spec.md) · [Client media](./client-media.md)
 
 This is a starting architecture, not a final one. The goal is to ship the core loop — **Discover → Like → Gain Aura → Climb → Post** — without painting ourselves into a corner on media, traffic, or the Aura economy.
 
@@ -194,8 +194,10 @@ The client uploads **directly to object storage** with a short-lived presigned U
 ### 6.2 Publish flow
 
 ```text
-1. Client:  POST /posts/uploads
+1. Client:  shrink the photo on device first (docs/client-media.md), then
+            POST /posts/uploads
             { mediaType, contentType, byteSize, checksum, width, height, durationMs }
+            `byteSize` / `checksum` are the file that will be PUT, not the camera-roll original.
 
 2. API:     - auth + rate limit + size/type validation
             - insert Post(status=uploading) + MediaAsset(processingStatus=pending)
@@ -239,8 +241,9 @@ Posts in `uploading` / `processing` **do not appear in feeds**. The public URL c
 **Images (V0, keep in-house)**
 
 - Accept jpeg/heic/webp/png
+- The app downscales to a 2160 longest-edge JPEG before PUT when that wins on size (docs/client-media.md). HEIC always becomes JPEG on device.
 - Normalize to jpeg/webp feed rendition + jpeg thumb
-- Store original for later reprocess
+- Store that client master for later reprocess (not necessarily the camera-roll original)
 - CDN image resizing as a safety net, requested through the URL resolver (§6.6) rather than hand-built transform URLs, so the app can ask for the size it needs without a combinatorial explosion of stored variants
 
 **Video (V0, do not build a transcoder farm)**

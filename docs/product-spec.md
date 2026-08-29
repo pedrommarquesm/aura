@@ -467,6 +467,8 @@ Requirements:
 - Cancel upload
 - Publish confirmation
 
+V0 ships the photo library path first (`Choose photo`). The camera control stays on the create screen but is disabled until capture is wired. Video picker is MEDIA-06. The app shrinks the photo on device before the PUT — targets and the parallel pipeline are in [client-media.md](./client-media.md).
+
 O upload deve ser tratado como um fluxo assíncrono e resiliente.
 
 ---

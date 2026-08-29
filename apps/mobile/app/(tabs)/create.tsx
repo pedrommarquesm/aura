@@ -5,12 +5,15 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, View } from 'react-native';
+import { InteractionManager, Pressable, ScrollView, View } from 'react-native';
 
 import { Screen } from '@/components/layout';
 import { Button, Text, TextField } from '@/components/ui';
 import { messageForError } from '@/lib/api';
 import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
+import { measureFileBytes } from '@/lib/media/measure-file';
+import { optimizePickedPhoto } from '@/lib/media/optimize-photo';
+import { PHOTO_UPLOAD_MAX_BYTES, normalizePhotoMime } from '@/lib/media/photo-targets';
 import { queryKeys } from '@/lib/query/keys';
 import { putPresignedObject } from '@/lib/upload/put-presigned';
 import { colors } from '@/theme/tokens';
@@ -21,17 +24,14 @@ type Picked = {
   byteSize: number;
   width?: number;
   height?: number;
-  durationMs?: number;
-  kind: 'photo' | 'video';
 };
 
-type Phase = 'idle' | 'uploading' | 'processing' | 'done';
+type Phase = 'idle' | 'preparing' | 'uploading' | 'processing' | 'done';
 
-function durationMsFromPicker(value: number | null | undefined): number | undefined {
-  if (value == null) return undefined;
-  // iOS has historically reported seconds; Android milliseconds. Anything that
-  // could be a duration in seconds (our cap is 60) is treated as seconds.
-  return value <= 180 ? Math.round(value * 1000) : Math.round(value);
+function afterInteractions(): Promise<void> {
+  return new Promise((resolve) => {
+    InteractionManager.runAfterInteractions(() => resolve());
+  });
 }
 
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
@@ -58,12 +58,14 @@ export default function CreateScreen() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const optimizeRef = useRef<Promise<Picked> | null>(null);
 
-  const busy = phase === 'uploading' || phase === 'processing';
+  const busy = phase === 'preparing' || phase === 'uploading' || phase === 'processing';
 
   function reset() {
     abortRef.current?.abort();
     abortRef.current = null;
+    optimizeRef.current = null;
     setPicked(null);
     setCaption('');
     setPhase('idle');
@@ -71,60 +73,74 @@ export default function CreateScreen() {
     setError(null);
   }
 
-  async function pick(from: 'library' | 'camera') {
+  async function choosePhoto() {
     setError(null);
 
-    if (from === 'camera') {
-      const permission = await ImagePicker.requestCameraPermissionsAsync();
-      if (!permission.granted) {
-        setError(t('create.errors.cameraPermission'));
-        return;
-      }
-    } else {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) {
-        setError(t('create.errors.libraryPermission'));
-        return;
-      }
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      setError(t('create.errors.libraryPermission'));
+      return;
     }
 
-    const result =
-      from === 'camera'
-        ? await ImagePicker.launchCameraAsync({
-            mediaTypes: ['images', 'videos'],
-            quality: 0.9,
-            videoMaxDuration: 60,
-          })
-        : await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images', 'videos'],
-            quality: 0.9,
-            videoMaxDuration: 60,
-          });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 1,
+      allowsEditing: false,
+      exif: false,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current,
+    });
 
     if (result.canceled || !result.assets[0]) return;
 
     const asset = result.assets[0];
-    const kind = asset.type === 'video' ? 'video' : 'photo';
-    const mimeType =
-      asset.mimeType ?? (kind === 'video' ? 'video/mp4' : 'image/jpeg');
-    const byteSize = asset.fileSize ?? 0;
-
-    if (!byteSize) {
-      setError(t('create.errors.unreadable'));
-      return;
+    const mimeType = normalizePhotoMime(asset.mimeType) || 'image/jpeg';
+    let byteSize = 0;
+    try {
+      byteSize = await measureFileBytes(asset.uri, asset.fileSize);
+    } catch {
+      // Optimizer still has a chance to produce a sized JPEG.
     }
 
-    setPicked({
+    const draft: Picked = {
       uri: asset.uri,
       mimeType,
       byteSize,
       width: asset.width,
       height: asset.height,
-      durationMs: durationMsFromPicker(asset.duration),
-      kind,
-    });
+    };
+
+    setPicked(draft);
     setPhase('idle');
     setProgress(0);
+
+    const job = afterInteractions()
+      .then(() => optimizePickedPhoto(draft))
+      .then((optimized) => {
+        const next: Picked = {
+          uri: optimized.uri,
+          mimeType: optimized.mimeType,
+          byteSize: optimized.byteSize,
+          width: optimized.width,
+          height: optimized.height,
+        };
+        setPicked(next);
+        return next;
+      })
+      .catch((cause) => {
+        if (draft.byteSize > 0) return draft;
+        throw cause;
+      });
+
+    optimizeRef.current = job;
+    void job.catch((cause) => {
+      if (optimizeRef.current !== job) return;
+      setError(
+        (cause as { message?: string }).message === 'unreadable'
+          ? t('create.errors.unreadable')
+          : t('create.errors.optimize'),
+      );
+    });
   }
 
   async function publish() {
@@ -135,23 +151,34 @@ export default function CreateScreen() {
     abortRef.current = abort;
 
     setError(null);
-    setPhase('uploading');
+    setPhase('preparing');
     setProgress(0);
 
     try {
+      const ready = await (optimizeRef.current ?? Promise.resolve(picked));
+      if (abort.signal.aborted) return;
+
+      if (!ready.byteSize || ready.byteSize > PHOTO_UPLOAD_MAX_BYTES) {
+        setPhase('idle');
+        setError(t('create.errors.tooLarge'));
+        return;
+      }
+
+      setPicked(ready);
+      setPhase('uploading');
+
       const declared = await createUpload({
-        contentType: picked.mimeType,
-        byteSize: picked.byteSize,
-        width: picked.width,
-        height: picked.height,
-        durationMs: picked.durationMs,
+        contentType: ready.mimeType,
+        byteSize: ready.byteSize,
+        width: ready.width,
+        height: ready.height,
       });
 
       const put = async (uploadUrl: string, headers: Record<string, string>) => {
         await putPresignedObject(
           uploadUrl,
           headers,
-          { uri: picked.uri, mimeType: picked.mimeType },
+          { uri: ready.uri, mimeType: ready.mimeType },
           (fraction) => setProgress(fraction),
           abort.signal,
         );
@@ -196,7 +223,9 @@ export default function CreateScreen() {
       setError(
         (cause as { message?: string }).message === 'processing_failed'
           ? t('create.errors.processing')
-          : messageForError(cause),
+          : (cause as { message?: string }).message === 'unreadable'
+            ? t('create.errors.unreadable')
+            : messageForError(cause),
       );
     }
   }
@@ -218,16 +247,7 @@ export default function CreateScreen() {
         {picked ? (
           <View className="pt-6">
             <View className="overflow-hidden rounded-xl bg-surface" style={{ aspectRatio: 0.8 }}>
-              {picked.kind === 'photo' ? (
-                <Image source={{ uri: picked.uri }} contentFit="cover" style={{ flex: 1 }} />
-              ) : (
-                <View className="flex-1 items-center justify-center gap-2">
-                  <Ionicons name="play" size={36} color={colors.text.DEFAULT} />
-                  <Text variant="caption" tone="secondary">
-                    {t('create.videoPicked')}
-                  </Text>
-                </View>
-              )}
+              <Image source={{ uri: picked.uri }} contentFit="cover" style={{ flex: 1 }} />
             </View>
 
             <Pressable onPress={reset} disabled={busy} className="self-start pt-3">
@@ -250,6 +270,11 @@ export default function CreateScreen() {
               />
             </View>
 
+            {phase === 'preparing' ? (
+              <Text variant="caption" tone="muted" className="pt-3">
+                {t('create.progress.preparing')}
+              </Text>
+            ) : null}
             {phase === 'uploading' ? (
               <Text variant="caption" tone="muted" className="pt-3">
                 {t('create.progress.uploading', { percent: Math.round(progress * 100) })}
@@ -284,19 +309,23 @@ export default function CreateScreen() {
         ) : (
           <View className="gap-3 pt-8">
             <Button
-              label={t('create.actions.takePhoto')}
-              icon={<Ionicons name="camera-outline" size={18} color={colors.text.DEFAULT} />}
+              label={t('create.actions.choosePhoto')}
+              icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
               glow
               fullWidth
-              onPress={() => void pick('camera')}
+              onPress={() => void choosePhoto()}
             />
             <Button
-              label={t('create.actions.chooseFromLibrary')}
+              label={t('create.actions.takePhoto')}
               variant="secondary"
-              icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
+              icon={<Ionicons name="camera-outline" size={18} color={colors.text.muted} />}
               fullWidth
-              onPress={() => void pick('library')}
+              disabled
+              accessibilityHint={t('create.actions.takePhotoHint')}
             />
+            <Text variant="caption" tone="muted">
+              {t('create.actions.takePhotoHint')}
+            </Text>
           </View>
         )}
 
