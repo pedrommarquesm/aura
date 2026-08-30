@@ -65,7 +65,8 @@
       "takePhoto": "Tirar uma foto",
       "takePhotoHint": "A câmara chega numa versão mais tarde.",
       "choosePhoto": "Escolher foto",
-      "chooseDifferent": "Escolher outra foto",
+      "chooseVideo": "Escolher vídeo",
+      "chooseDifferent": "Escolher outro",
       "post": "Publicar"
     },
     "caption": {
@@ -73,8 +74,9 @@
       "placeholder": "Escreve qualquer coisa"
     },
     "videoPicked": "Vídeo pronto a publicar",
+    "videoDuration": "{seconds, plural, one {# segundo} other {# segundos}}",
     "progress": {
-      "preparing": "A preparar a foto…",
+      "preparing": "A preparar…",
       "uploading": "A enviar {percent, number}%",
       "processing": "A processar…"
     },
@@ -82,8 +84,9 @@
       "cameraPermission": "Permite o acesso à câmara para tirar uma foto.",
       "libraryPermission": "Permite o acesso às fotos para escolher da galeria.",
       "unreadable": "Não foi possível ler esse ficheiro. Tenta outro.",
-      "optimize": "Não foi possível preparar essa foto. Tenta outra.",
-      "tooLarge": "Essa foto é demasiado grande. Tenta outra.",
+      "optimize": "Não foi possível preparar esse ficheiro. Tenta outro.",
+      "tooLarge": "Esse ficheiro é demasiado grande. Tenta outro.",
+      "tooLong": "Os vídeos podem ter no máximo 60 segundos. Tenta outro.",
       "processing": "Essa publicação falhou o processamento. Tenta outra vez."
     }
   },
