@@ -11,7 +11,7 @@ import { VIDEO_MAX_DURATION_MS } from './video-targets';
  * Do not set `videoExportPreset` (H.264 1080p) or Compatible representation.
  * Both transcode before the picker promise resolves, so the create screen
  * cannot appear until iOS finishes. Passthrough + Current returns the
- * existing file; Mux transcodes the master after upload.
+ * existing file. Native 1080p H.264 shrink runs on the create page.
  *
  * `videoMaxDuration` is a camera-recording cap on most devices. We still
  * refuse after pick on the create screen.

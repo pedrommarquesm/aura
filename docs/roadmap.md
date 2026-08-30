@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build so [#51](https://github.com/pedrommarquesm/aura/pull/51) and [#52](https://github.com/pedrommarquesm/aura/pull/52) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so video shrink runs on the create page (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -151,6 +151,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-59 | Create caption is visible while typing; Post comes first and stays on screen with Cancel | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
 | MOB-60 | Create caption stays on screen with the keyboard open (compose layout, no NativeWind color on TextInput) | Done | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
 | MOB-61 | Choose video returns the existing file immediately. Duration / size checks run on the create page. No picker H.264 export | Done | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
+| MOB-63 | Native 1080p H.264 shrink on the create page after pick. Same 100 MB refuse, after shrink. Picker stays passthrough | In review | |
 
 ### Feed
 
