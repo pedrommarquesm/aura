@@ -110,14 +110,11 @@ export const FeedPostCard = memo(function FeedPostCard({
   post,
   isActiveVideo = false,
   onDeleted,
-  commentNavigates = true,
 }: {
   post: FeedCard;
   /** Home feed only: the viewport video plays; others show the poster. */
   isActiveVideo?: boolean;
   onDeleted?: () => void;
-  /** False on the post screen — the thread is already underneath. */
-  commentNavigates?: boolean;
 }) {
   const { t } = useTranslation();
   const format = useFormat();
@@ -139,7 +136,6 @@ export const FeedPostCard = memo(function FeedPostCard({
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [muted, setMuted] = useState(true);
-  const [showFullCaption, setShowFullCaption] = useState(false);
 
   const requireAuth = !isAuthenticated;
   const playbackUrl = videoPlaybackUrl(media);
@@ -156,10 +152,6 @@ export const FeedPostCard = memo(function FeedPostCard({
 
   const openDrawer = useCallback(() => {
     bottomSheetRef.current?.present();
-  }, []);
-
-  const closeDrawer = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
   }, []);
 
   const onDoubleTap = useCallback((x: number, y: number) => {

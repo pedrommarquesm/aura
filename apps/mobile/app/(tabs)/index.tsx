@@ -175,7 +175,6 @@ export default function HomeScreen() {
         extraData={playingVideoId}
         viewabilityConfig={VIDEO_VIEWABILITY}
         onViewableItemsChanged={onViewableItemsChanged}
-        estimatedItemSize={screenHeight}
         snapToInterval={snapToInterval}
         decelerationRate="fast"
         pagingEnabled
