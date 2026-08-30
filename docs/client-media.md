@@ -82,9 +82,12 @@ Choose photo
 
 Choose video
   → library, videos only. Same PHPicker rule: no Photos permission on iOS.
-    Native export: Compatible + H.264 1080p when the picker supports it.
+    Passthrough + Current — no H.264 export in the picker. That transcode
+    finishes before the picker promise resolves, so the create screen cannot
+    appear until iOS is done. Mux transcodes the master after upload.
     No JS transcode.
-  → refuse after export if over 60s or 100 MB
+  → show the compose view as soon as the picker returns
+  → refuse on that page if over 60s or 100 MB
   → preview plays the local file immediately (muted loop, tap for sound)
   → POST /posts/uploads { contentType, byteSize, durationMs, width, height }
   → PUT video/mp4 (or video/quicktime)
@@ -174,7 +177,7 @@ Cancel aborts every in-flight PUT and drops the unused optimize promises. Temp J
 
 ### Video (MEDIA-06)
 
-Do **not** run a JS encoder. Library **Choose video** only (no in-app camera). Native shrink (~1080p H.264) is fine; refuse after export if over **60s** / **100 MB**. Prefer PUT `video/mp4`.
+Do **not** run a JS encoder. Library **Choose video** only (no in-app camera). Do not H.264-export in the picker — that blocks the create screen. Refuse on the compose page if over **60s** / **100 MB**. Prefer PUT `video/mp4`. Mux makes the HLS.
 
 ```
 phone → PUT master.mp4 → R2 (ours, forever)
@@ -185,7 +188,7 @@ phone → PUT master.mp4 → R2 (ours, forever)
 
 R2 is not what the feed plays. Mux is not a CDN in front of R2. Do not Mux Direct Upload from the phone — that skips the master we must keep.
 
-The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. Create plays the picked `file://` URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
+The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. Create plays the picked URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
 
 A display-size proxy (720p) can be a later opt-in if cellular uploads dominate support tickets. The original still goes to our bucket (architecture §6.6).
 

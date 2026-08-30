@@ -3,8 +3,9 @@
  * (`MEDIA_VIDEO_MAX_BYTES`, `MEDIA_VIDEO_MAX_DURATION_MS`) so we refuse
  * before a presign instead of wasting a PUT.
  *
- * Mux transcodes the master. The phone only shrinks so the upload is a
- * 1080p-class H.264 file, not a 4K camera-roll original.
+ * Mux transcodes the master. The picker returns the existing file
+ * (passthrough) so the create screen can show immediately. We still refuse
+ * locally at 60s / 100 MB.
  */
 
 /** Matches `MEDIA_VIDEO_MAX_BYTES` on the API. */
@@ -13,7 +14,7 @@ export const VIDEO_UPLOAD_MAX_BYTES = 100 * 1024 * 1024;
 /** Matches `MEDIA_VIDEO_MAX_DURATION_MS` on the API. */
 export const VIDEO_MAX_DURATION_MS = 60_000;
 
-/** Longest edge we ask the native exporter for. Mux still makes the HLS. */
+/** Documented viewing bar. Mux makes the HLS; we no longer export 1080p in the picker. */
 export const VIDEO_EXPORT_MAX_LONGEST_EDGE = 1080;
 
 const ACCEPTED = new Set(['video/mp4', 'video/quicktime']);

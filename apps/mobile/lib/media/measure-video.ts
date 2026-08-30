@@ -5,8 +5,8 @@ import { File } from 'expo-file-system';
  *
  * Do not `fetch` a video into a Blob — a 60s clip can be tens of megabytes
  * and that path is how JS runs out of memory. Do not construct `File` for
- * `ph://` URIs either (MOB-53). After a Compatible / H.264 export the picker
- * gives us a `file://` copy in the app container.
+ * `ph://` URIs either (MOB-53). The picker uses Current / passthrough; Expo
+ * still copies a `file://` into the app container when it can.
  */
 export async function measureVideoBytes(uri: string, reported?: number | null): Promise<number> {
   if (reported && reported > 0) return reported;

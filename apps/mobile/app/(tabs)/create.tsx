@@ -2,15 +2,15 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   InteractionManager,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
-  useWindowDimensions,
   View,
 } from 'react-native';
 
@@ -74,17 +74,32 @@ export default function CreateScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { height: windowHeight } = useWindowDimensions();
   const [picked, setPicked] = useState<Picked | null>(null);
   const [caption, setCaption] = useState('');
   const [phase, setPhase] = useState<Phase>('idle');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [previewMuted, setPreviewMuted] = useState(true);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const optimizeRef = useRef<Promise<Picked> | null>(null);
 
   const busy = phase === 'preparing' || phase === 'uploading' || phase === 'processing';
+
+  useEffect(() => {
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKeyboardOpen(true),
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKeyboardOpen(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   function reset() {
     abortRef.current?.abort();
@@ -189,36 +204,15 @@ export default function CreateScreen() {
 
     if (!asset) return;
 
+    // Show the compose view on the same tick the picker returns. Duration
+    // and byte checks run on this page so the picker is not a loading screen.
     const durationMs = durationMsFromPicker(asset.duration);
-    if (isVideoTooLong(durationMs)) {
-      setError(t('create.errors.tooLong'));
-      return;
-    }
-
     const mimeType = normalizeVideoMime(asset.mimeType, asset.uri);
-    if (!isAcceptedVideoMime(mimeType)) {
-      setError(t('create.errors.unreadable'));
-      return;
-    }
-
-    let byteSize = 0;
-    try {
-      byteSize = await measureVideoBytes(asset.uri, asset.fileSize);
-    } catch {
-      setError(t('create.errors.unreadable'));
-      return;
-    }
-
-    if (isVideoTooLarge(byteSize)) {
-      setError(t('create.errors.tooLarge'));
-      return;
-    }
-
     const draft: Picked = {
       kind: 'video',
       uri: asset.uri,
-      mimeType,
-      byteSize,
+      mimeType: mimeType || 'video/mp4',
+      byteSize: asset.fileSize && asset.fileSize > 0 ? asset.fileSize : 0,
       width: asset.width,
       height: asset.height,
       durationMs: durationMs ?? undefined,
@@ -228,7 +222,43 @@ export default function CreateScreen() {
     setPhase('idle');
     setProgress(0);
     setPreviewMuted(true);
-    optimizeRef.current = Promise.resolve(draft);
+
+    if (!isAcceptedVideoMime(draft.mimeType)) {
+      setError(t('create.errors.unreadable'));
+      optimizeRef.current = null;
+      return;
+    }
+
+    if (isVideoTooLong(durationMs)) {
+      setError(t('create.errors.tooLong'));
+      optimizeRef.current = null;
+      return;
+    }
+
+    const job = afterInteractions()
+      .then(async () => {
+        const byteSize =
+          draft.byteSize > 0
+            ? draft.byteSize
+            : await measureVideoBytes(asset.uri, asset.fileSize);
+        if (isVideoTooLarge(byteSize)) {
+          throw new Error('too_large');
+        }
+        const next = { ...draft, byteSize };
+        setPicked(next);
+        return next;
+      });
+
+    optimizeRef.current = job;
+    void job.catch((cause) => {
+      if (optimizeRef.current !== job) return;
+      optimizeRef.current = null;
+      setError(
+        (cause as { message?: string }).message === 'too_large'
+          ? t('create.errors.tooLarge')
+          : t('create.errors.unreadable'),
+      );
+    });
   }
 
   async function publish() {
@@ -329,137 +359,92 @@ export default function CreateScreen() {
     }
   }
 
-  const previewHeight = Math.round(windowHeight * 0.36);
-
   return (
     <Screen>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          automaticallyAdjustKeyboardInsets
-          contentContainerClassName="pb-8"
+      {picked ? (
+        <KeyboardAvoidingView
           className="flex-1"
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <Text variant="title" className="pt-4">
-            {t('create.title')}
-          </Text>
-          <Text variant="body" tone="secondary" className="pt-2">
-            {t('create.subtitle')}
-          </Text>
-
-          {picked ? (
-            <View className="pt-6">
-              <Pressable
-                disabled={picked.kind !== 'video' || busy}
-                onPress={() => setPreviewMuted((current) => !current)}
-                accessibilityRole={picked.kind === 'video' ? 'button' : undefined}
-                accessibilityLabel={
-                  picked.kind === 'video'
-                    ? previewMuted
-                      ? t('create.a11y.unmute')
-                      : t('create.a11y.mute')
-                    : undefined
-                }
-                className="overflow-hidden rounded-xl bg-surface"
-                style={{ height: previewHeight }}
-              >
-                {picked.kind === 'photo' ? (
-                  <Image
-                    source={{ uri: picked.uri }}
-                    contentFit="cover"
-                    style={{ width: '100%', height: '100%' }}
-                  />
-                ) : (
-                  <>
-                    <PostVideo key={picked.uri} source={picked.uri} playing muted={previewMuted} />
-                    <VideoMuteBadge
-                      muted={previewMuted}
-                      label={
-                        previewMuted ? t('create.a11y.unmute') : t('create.a11y.mute')
-                      }
-                    />
-                  </>
-                )}
-              </Pressable>
-
-              <Pressable onPress={reset} disabled={busy} className="self-start pt-3">
-                <Text variant="caption" tone="aura">
-                  {t('create.actions.chooseDifferent')}
-                </Text>
-              </Pressable>
-
-              <View className="pt-4">
-                <TextField
-                  label={t('create.caption.label')}
-                  placeholder={t('create.caption.placeholder')}
-                  value={caption}
-                  onChangeText={setCaption}
-                  maxLength={2200}
-                  multiline
-                  numberOfLines={4}
-                  autoCapitalize="sentences"
-                  autoCorrect
-                  autoComplete="off"
-                  editable={!busy}
+          <View className="flex-1 pt-4">
+            <Pressable
+              disabled={picked.kind !== 'video' || busy}
+              onPress={() => setPreviewMuted((current) => !current)}
+              accessibilityRole={picked.kind === 'video' ? 'button' : undefined}
+              accessibilityLabel={
+                picked.kind === 'video'
+                  ? previewMuted
+                    ? t('create.a11y.unmute')
+                    : t('create.a11y.mute')
+                  : undefined
+              }
+              className="overflow-hidden rounded-xl bg-surface"
+              style={
+                keyboardOpen
+                  ? { height: 128 }
+                  : { flexGrow: 1, flexShrink: 1, minHeight: 160 }
+              }
+            >
+              {picked.kind === 'photo' ? (
+                <Image
+                  source={{ uri: picked.uri }}
+                  contentFit="cover"
+                  style={{ width: '100%', height: '100%' }}
                 />
-              </View>
+              ) : (
+                <>
+                  <PostVideo key={picked.uri} source={picked.uri} playing muted={previewMuted} />
+                  <VideoMuteBadge
+                    muted={previewMuted}
+                    label={previewMuted ? t('create.a11y.unmute') : t('create.a11y.mute')}
+                  />
+                </>
+              )}
+            </Pressable>
 
-              {phase === 'preparing' ? (
-                <Text variant="caption" tone="muted" className="pt-3">
-                  {t('create.progress.preparing')}
-                </Text>
-              ) : null}
-              {phase === 'uploading' ? (
-                <Text variant="caption" tone="muted" className="pt-3">
-                  {t('create.progress.uploading', { percent: Math.round(progress * 100) })}
-                </Text>
-              ) : null}
-              {phase === 'processing' ? (
-                <Text variant="caption" tone="muted" className="pt-3">
-                  {t('create.progress.processing')}
-                </Text>
-              ) : null}
-            </View>
-          ) : (
-            <View className="gap-3 pt-8">
-              <Button
-                label={t('create.actions.choosePhoto')}
-                icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
-                glow
-                fullWidth
-                onPress={() => void choosePhoto()}
-              />
-              <Button
-                label={t('create.actions.chooseVideo')}
-                icon={<Ionicons name="videocam-outline" size={18} color={colors.text.DEFAULT} />}
-                fullWidth
-                onPress={() => void chooseVideo()}
-              />
-              <Button
-                label={t('create.actions.takePhoto')}
-                variant="secondary"
-                icon={<Ionicons name="camera-outline" size={18} color={colors.text.muted} />}
-                fullWidth
-                disabled
-                accessibilityHint={t('create.actions.takePhotoHint')}
-              />
-              <Text variant="caption" tone="muted">
-                {t('create.actions.takePhotoHint')}
+            <Pressable onPress={reset} disabled={busy} className="self-start py-3">
+              <Text variant="caption" tone="aura">
+                {t('create.actions.chooseDifferent')}
               </Text>
-            </View>
-          )}
+            </Pressable>
 
-          {error ? (
-            <Text variant="caption" tone="danger" className="pt-4">
-              {error}
-            </Text>
-          ) : null}
-        </ScrollView>
+            <TextField
+              label={t('create.caption.label')}
+              placeholder={t('create.caption.placeholder')}
+              value={caption}
+              onChangeText={setCaption}
+              maxLength={2200}
+              multiline
+              numberOfLines={4}
+              autoCapitalize="sentences"
+              autoCorrect
+              autoComplete="off"
+              editable={!busy}
+            />
 
-        {picked ? (
+            {phase === 'preparing' ? (
+              <Text variant="caption" tone="muted" className="pt-3">
+                {t('create.progress.preparing')}
+              </Text>
+            ) : null}
+            {phase === 'uploading' ? (
+              <Text variant="caption" tone="muted" className="pt-3">
+                {t('create.progress.uploading', { percent: Math.round(progress * 100) })}
+              </Text>
+            ) : null}
+            {phase === 'processing' ? (
+              <Text variant="caption" tone="muted" className="pt-3">
+                {t('create.progress.processing')}
+              </Text>
+            ) : null}
+
+            {error ? (
+              <Text variant="caption" tone="danger" className="pt-3">
+                {error}
+              </Text>
+            ) : null}
+          </View>
+
           <View className="flex-row gap-3 pb-2 pt-3">
             <View className="flex-1">
               <Button
@@ -483,8 +468,54 @@ export default function CreateScreen() {
               />
             </View>
           </View>
-        ) : null}
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      ) : (
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerClassName="pb-8"
+          className="flex-1"
+        >
+          <Text variant="title" className="pt-4">
+            {t('create.title')}
+          </Text>
+          <Text variant="body" tone="secondary" className="pt-2">
+            {t('create.subtitle')}
+          </Text>
+
+          <View className="gap-3 pt-8">
+            <Button
+              label={t('create.actions.choosePhoto')}
+              icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
+              glow
+              fullWidth
+              onPress={() => void choosePhoto()}
+            />
+            <Button
+              label={t('create.actions.chooseVideo')}
+              icon={<Ionicons name="videocam-outline" size={18} color={colors.text.DEFAULT} />}
+              fullWidth
+              onPress={() => void chooseVideo()}
+            />
+            <Button
+              label={t('create.actions.takePhoto')}
+              variant="secondary"
+              icon={<Ionicons name="camera-outline" size={18} color={colors.text.muted} />}
+              fullWidth
+              disabled
+              accessibilityHint={t('create.actions.takePhotoHint')}
+            />
+            <Text variant="caption" tone="muted">
+              {t('create.actions.takePhotoHint')}
+            </Text>
+          </View>
+
+          {error ? (
+            <Text variant="caption" tone="danger" className="pt-4">
+              {error}
+            </Text>
+          ) : null}
+        </ScrollView>
+      )}
     </Screen>
   );
 }
