@@ -240,6 +240,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-10 | `www.aurarankd.com` is the canonical web host. `NEXT_PUBLIC_SITE_URL` matches | Done | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
 | OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | Done | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
+| OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | In review | |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
