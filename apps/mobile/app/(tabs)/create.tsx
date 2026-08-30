@@ -4,8 +4,17 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InteractionManager, Pressable, ScrollView, View } from 'react-native';
+import {
+  InteractionManager,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
+import { PostVideo, VideoMuteBadge } from '@/components/feed';
 import { Screen } from '@/components/layout';
 import { Button, Text, TextField } from '@/components/ui';
 import { messageForError } from '@/lib/api';
@@ -65,11 +74,13 @@ export default function CreateScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const { height: windowHeight } = useWindowDimensions();
   const [picked, setPicked] = useState<Picked | null>(null);
   const [caption, setCaption] = useState('');
   const [phase, setPhase] = useState<Phase>('idle');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [previewMuted, setPreviewMuted] = useState(true);
   const abortRef = useRef<AbortController | null>(null);
   const optimizeRef = useRef<Promise<Picked> | null>(null);
 
@@ -84,6 +95,7 @@ export default function CreateScreen() {
     setPhase('idle');
     setProgress(0);
     setError(null);
+    setPreviewMuted(true);
   }
 
   async function choosePhoto() {
@@ -127,6 +139,7 @@ export default function CreateScreen() {
     setPicked(draft);
     setPhase('idle');
     setProgress(0);
+    setPreviewMuted(true);
 
     const job = afterInteractions()
       .then(() => optimizePickedPhoto(draft))
@@ -214,6 +227,7 @@ export default function CreateScreen() {
     setPicked(draft);
     setPhase('idle');
     setProgress(0);
+    setPreviewMuted(true);
     optimizeRef.current = Promise.resolve(draft);
   }
 
@@ -315,77 +329,148 @@ export default function CreateScreen() {
     }
   }
 
+  const previewHeight = Math.round(windowHeight * 0.36);
+
   return (
     <Screen>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerClassName="pb-8"
+      <KeyboardAvoidingView
         className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <Text variant="title" className="pt-4">
-          {t('create.title')}
-        </Text>
-        <Text variant="body" tone="secondary" className="pt-2">
-          {t('create.subtitle')}
-        </Text>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets
+          contentContainerClassName="pb-8"
+          className="flex-1"
+        >
+          <Text variant="title" className="pt-4">
+            {t('create.title')}
+          </Text>
+          <Text variant="body" tone="secondary" className="pt-2">
+            {t('create.subtitle')}
+          </Text>
+
+          {picked ? (
+            <View className="pt-6">
+              <Pressable
+                disabled={picked.kind !== 'video' || busy}
+                onPress={() => setPreviewMuted((current) => !current)}
+                accessibilityRole={picked.kind === 'video' ? 'button' : undefined}
+                accessibilityLabel={
+                  picked.kind === 'video'
+                    ? previewMuted
+                      ? t('create.a11y.unmute')
+                      : t('create.a11y.mute')
+                    : undefined
+                }
+                className="overflow-hidden rounded-xl bg-surface"
+                style={{ height: previewHeight }}
+              >
+                {picked.kind === 'photo' ? (
+                  <Image
+                    source={{ uri: picked.uri }}
+                    contentFit="cover"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                ) : (
+                  <>
+                    <PostVideo key={picked.uri} source={picked.uri} playing muted={previewMuted} />
+                    <VideoMuteBadge
+                      muted={previewMuted}
+                      label={
+                        previewMuted ? t('create.a11y.unmute') : t('create.a11y.mute')
+                      }
+                    />
+                  </>
+                )}
+              </Pressable>
+
+              <Pressable onPress={reset} disabled={busy} className="self-start pt-3">
+                <Text variant="caption" tone="aura">
+                  {t('create.actions.chooseDifferent')}
+                </Text>
+              </Pressable>
+
+              <View className="pt-4">
+                <TextField
+                  label={t('create.caption.label')}
+                  placeholder={t('create.caption.placeholder')}
+                  value={caption}
+                  onChangeText={setCaption}
+                  maxLength={2200}
+                  multiline
+                  numberOfLines={4}
+                  autoCapitalize="sentences"
+                  autoCorrect
+                  autoComplete="off"
+                  editable={!busy}
+                />
+              </View>
+
+              {phase === 'preparing' ? (
+                <Text variant="caption" tone="muted" className="pt-3">
+                  {t('create.progress.preparing')}
+                </Text>
+              ) : null}
+              {phase === 'uploading' ? (
+                <Text variant="caption" tone="muted" className="pt-3">
+                  {t('create.progress.uploading', { percent: Math.round(progress * 100) })}
+                </Text>
+              ) : null}
+              {phase === 'processing' ? (
+                <Text variant="caption" tone="muted" className="pt-3">
+                  {t('create.progress.processing')}
+                </Text>
+              ) : null}
+            </View>
+          ) : (
+            <View className="gap-3 pt-8">
+              <Button
+                label={t('create.actions.choosePhoto')}
+                icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
+                glow
+                fullWidth
+                onPress={() => void choosePhoto()}
+              />
+              <Button
+                label={t('create.actions.chooseVideo')}
+                icon={<Ionicons name="videocam-outline" size={18} color={colors.text.DEFAULT} />}
+                fullWidth
+                onPress={() => void chooseVideo()}
+              />
+              <Button
+                label={t('create.actions.takePhoto')}
+                variant="secondary"
+                icon={<Ionicons name="camera-outline" size={18} color={colors.text.muted} />}
+                fullWidth
+                disabled
+                accessibilityHint={t('create.actions.takePhotoHint')}
+              />
+              <Text variant="caption" tone="muted">
+                {t('create.actions.takePhotoHint')}
+              </Text>
+            </View>
+          )}
+
+          {error ? (
+            <Text variant="caption" tone="danger" className="pt-4">
+              {error}
+            </Text>
+          ) : null}
+        </ScrollView>
 
         {picked ? (
-          <View className="pt-6">
-            <View className="overflow-hidden rounded-xl bg-surface" style={{ aspectRatio: 0.8 }}>
-              {picked.kind === 'photo' ? (
-                <Image source={{ uri: picked.uri }} contentFit="cover" style={{ flex: 1 }} />
-              ) : (
-                <View className="flex-1 items-center justify-center gap-2 px-6">
-                  <Ionicons name="play-circle-outline" size={48} color={colors.aura.bright} />
-                  <Text variant="body">{t('create.videoPicked')}</Text>
-                  {picked.durationMs ? (
-                    <Text variant="caption" tone="muted">
-                      {t('create.videoDuration', {
-                        seconds: Math.max(1, Math.round(picked.durationMs / 1000)),
-                      })}
-                    </Text>
-                  ) : null}
-                </View>
-              )}
-            </View>
-
-            <Pressable onPress={reset} disabled={busy} className="self-start pt-3">
-              <Text variant="caption" tone="aura">
-                {t('create.actions.chooseDifferent')}
-              </Text>
-            </Pressable>
-
-            <View className="pt-4">
-              <TextField
-                label={t('create.caption.label')}
-                placeholder={t('create.caption.placeholder')}
-                value={caption}
-                onChangeText={setCaption}
-                maxLength={2200}
-                autoCapitalize="sentences"
-                autoCorrect
-                autoComplete="off"
-                editable={!busy}
+          <View className="flex-row gap-3 pb-2 pt-3">
+            <View className="flex-1">
+              <Button
+                label={t('create.actions.post')}
+                glow
+                fullWidth
+                busy={busy}
+                onPress={() => void publish()}
               />
             </View>
-
-            {phase === 'preparing' ? (
-              <Text variant="caption" tone="muted" className="pt-3">
-                {t('create.progress.preparing')}
-              </Text>
-            ) : null}
-            {phase === 'uploading' ? (
-              <Text variant="caption" tone="muted" className="pt-3">
-                {t('create.progress.uploading', { percent: Math.round(progress * 100) })}
-              </Text>
-            ) : null}
-            {phase === 'processing' ? (
-              <Text variant="caption" tone="muted" className="pt-3">
-                {t('create.progress.processing')}
-              </Text>
-            ) : null}
-
-            <View className="flex-row gap-3 pt-5">
+            <View className="flex-1">
               <Button
                 label={t('common.actions.cancel')}
                 variant="secondary"
@@ -396,50 +481,10 @@ export default function CreateScreen() {
                   reset();
                 }}
               />
-              <Button
-                label={t('create.actions.post')}
-                glow
-                fullWidth
-                busy={busy}
-                onPress={() => void publish()}
-              />
             </View>
           </View>
-        ) : (
-          <View className="gap-3 pt-8">
-            <Button
-              label={t('create.actions.choosePhoto')}
-              icon={<Ionicons name="images-outline" size={18} color={colors.text.DEFAULT} />}
-              glow
-              fullWidth
-              onPress={() => void choosePhoto()}
-            />
-            <Button
-              label={t('create.actions.chooseVideo')}
-              icon={<Ionicons name="videocam-outline" size={18} color={colors.text.DEFAULT} />}
-              fullWidth
-              onPress={() => void chooseVideo()}
-            />
-            <Button
-              label={t('create.actions.takePhoto')}
-              variant="secondary"
-              icon={<Ionicons name="camera-outline" size={18} color={colors.text.muted} />}
-              fullWidth
-              disabled
-              accessibilityHint={t('create.actions.takePhotoHint')}
-            />
-            <Text variant="caption" tone="muted">
-              {t('create.actions.takePhotoHint')}
-            </Text>
-          </View>
-        )}
-
-        {error ? (
-          <Text variant="caption" tone="danger" className="pt-4">
-            {error}
-          </Text>
         ) : null}
-      </ScrollView>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }

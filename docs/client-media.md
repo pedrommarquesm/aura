@@ -85,7 +85,7 @@ Choose video
     Native export: Compatible + H.264 1080p when the picker supports it.
     No JS transcode.
   → refuse after export if over 60s or 100 MB
-  → preview is a placeholder (HLS player is MOB-32)
+  → preview plays the local file immediately (muted loop, tap for sound)
   → POST /posts/uploads { contentType, byteSize, durationMs, width, height }
   → PUT video/mp4 (or video/quicktime)
   → complete; poll longer because Mux ingest is async
@@ -184,6 +184,8 @@ phone → PUT master.mp4 → R2 (ours, forever)
 ```
 
 R2 is not what the feed plays. Mux is not a CDN in front of R2. Do not Mux Direct Upload from the phone — that skips the master we must keep.
+
+The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. Create plays the picked `file://` URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
 
 A display-size proxy (720p) can be a later opt-in if cellular uploads dominate support tickets. The original still goes to our bucket (architecture §6.6).
 

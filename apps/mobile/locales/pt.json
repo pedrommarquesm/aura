@@ -38,6 +38,9 @@
         "like": "Dar like",
         "unlike": "Retirar o like",
         "doubleTap": "Toca duas vezes para dar like",
+        "doubleTapSound": "Toca duas vezes para dar like. Toca uma vez para o som",
+        "mute": "Silenciar",
+        "unmute": "Ativar som",
         "options": "Opções da publicação"
       }
     }
@@ -72,6 +75,10 @@
     "caption": {
       "label": "Legenda",
       "placeholder": "Escreve qualquer coisa"
+    },
+    "a11y": {
+      "mute": "Silenciar",
+      "unmute": "Ativar som"
     },
     "videoPicked": "Vídeo pronto a publicar",
     "videoDuration": "{seconds, plural, one {# segundo} other {# segundos}}",

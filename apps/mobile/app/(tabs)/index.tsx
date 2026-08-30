@@ -1,13 +1,14 @@
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type ViewToken } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect } from 'react';
+import { useIsFocused } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { Button, Text } from '@/components/ui';
-import { fetchFeedPage, messageForError, type FeedRanking } from '@/lib/api';
+import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { queryKeys } from '@/lib/query/keys';
 import { usePreferencesStore } from '@/store/preferences';
@@ -20,6 +21,11 @@ const RANKINGS: {
   { value: 'latest', labelKey: 'feed.ranking.latest' },
   { value: 'trending', labelKey: 'feed.ranking.trending' },
 ];
+
+const VIDEO_VIEWABILITY = {
+  itemVisiblePercentThreshold: 65,
+  minimumViewTime: 250,
+};
 
 function FeedHeader() {
   const { t } = useTranslation();
@@ -63,6 +69,7 @@ function FeedHeader() {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const ranking = usePreferencesStore((state) => state.feedRanking);
 
   const feed = useInfiniteQuery({
@@ -86,6 +93,17 @@ export default function HomeScreen() {
 
   const posts = data?.pages.flatMap((page) => page.items) ?? [];
   const pageCount = data?.pages.length ?? 0;
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken<FeedCard>[] }) => {
+      const video = viewableItems.find(
+        (token) => token.isViewable && token.item.media.type === 'video',
+      );
+      setActiveVideoId(video?.item.id ?? null);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (pageCount === 1 && hasNextPage && !isFetchingNextPage) {
@@ -96,6 +114,8 @@ export default function HomeScreen() {
   const onRefresh = useCallback(() => {
     void refetch();
   }, [refetch]);
+
+  const playingVideoId = isFocused ? activeVideoId : null;
 
   if (isPending) {
     return (
@@ -127,7 +147,12 @@ export default function HomeScreen() {
       <FlashList
         data={posts}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <FeedPostCard post={item} />}
+        renderItem={({ item }) => (
+          <FeedPostCard post={item} isActiveVideo={item.id === playingVideoId} />
+        )}
+        extraData={playingVideoId}
+        viewabilityConfig={VIDEO_VIEWABILITY}
+        onViewableItemsChanged={onViewableItemsChanged}
         ListHeaderComponent={FeedHeader}
         ListEmptyComponent={
           <View className="px-gutter py-16">
