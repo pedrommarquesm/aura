@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build so create caption / fast video pick (`MOB-60`, `MOB-61`) and tap-for-sound on the feed (`MOB-62`) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so [#51](https://github.com/pedrommarquesm/aura/pull/51) and [#52](https://github.com/pedrommarquesm/aura/pull/52) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -149,8 +149,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | Done | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 | MOB-59 | Create caption is visible while typing; Post comes first and stays on screen with Cancel | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
-| MOB-60 | Create caption stays on screen with the keyboard open (compose layout, no NativeWind color on TextInput) | In review | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
-| MOB-61 | Choose video returns the existing file immediately. Duration / size checks run on the create page. No picker H.264 export | In review | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
+| MOB-60 | Create caption stays on screen with the keyboard open (compose layout, no NativeWind color on TextInput) | Done | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
+| MOB-61 | Choose video returns the existing file immediately. Duration / size checks run on the create page. No picker H.264 export | Done | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
 
 ### Feed
 
@@ -167,7 +167,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
-| MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | In review | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
+| MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | Done | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
