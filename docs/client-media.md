@@ -185,7 +185,7 @@ phone → PUT master.mp4 → R2 (ours, forever)
 
 R2 is not what the feed plays. Mux is not a CDN in front of R2. Do not Mux Direct Upload from the phone — that skips the master we must keep.
 
-The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. Create plays the picked `file://` URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
+The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. A transparent overlay sits above `VideoView` so the tap is not swallowed by the native surface. Create plays the picked `file://` URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
 
 A display-size proxy (720p) can be a later opt-in if cellular uploads dominate support tickets. The original still goes to our bucket (architecture §6.6).
 

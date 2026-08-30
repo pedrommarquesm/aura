@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -375,6 +376,7 @@ export default function CreateScreen() {
                 ) : (
                   <>
                     <PostVideo key={picked.uri} source={picked.uri} playing muted={previewMuted} />
+                    <View style={StyleSheet.absoluteFill} />
                     <VideoMuteBadge
                       muted={previewMuted}
                       label={
