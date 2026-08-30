@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
+**Now** — New app build for profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Deploy the API so avatar upload works on staging.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -80,7 +80,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 | MOB-50 | i18n: i18next + expo-localization, English + Portuguese | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 | MOB-51 | Locale-aware number and plural formatting for Aura values | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
-| MOB-64 | Integration tests for the main guest and signed-in journeys (mocked API) | In review | [#54](https://github.com/pedrommarquesm/aura/pull/54) |
+| MOB-64 | Integration tests for the main guest and signed-in journeys (mocked API) | Done | [#54](https://github.com/pedrommarquesm/aura/pull/54) |
 
 ### Web bootstrap
 
@@ -167,7 +167,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
-| API-29 | `POST /v1/me/avatar/uploads` + `POST /v1/me/avatar/complete`. Square JPEG only. Writes `users.avatarUrl` | In review | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
+| API-29 | `POST /v1/me/avatar/uploads` + `POST /v1/me/avatar/complete`. Square JPEG only. Writes `users.avatarUrl` | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
@@ -175,7 +175,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | Done | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
-| MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | In review | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
+| MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
