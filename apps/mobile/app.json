@@ -13,11 +13,12 @@
     "backgroundColor": "#0A0A0F",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.aura.mobile",
+      "bundleIdentifier": "app.aurarankd.mobile",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Aura uses your photo library so you can post.",
-        "NSCameraUsageDescription": "Aura uses the camera so you can post."
+        "NSCameraUsageDescription": "Aura uses the camera so you can post.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -27,7 +28,13 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -69,6 +76,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cc67b628-5e3a-4ded-a5a0-6740736a07e5"
+      }
     }
   }
 }

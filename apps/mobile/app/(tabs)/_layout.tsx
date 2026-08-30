@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GuardedCreateTab } from '@/components/navigation/create-tab-button';
 import { Text } from '@/components/ui';
+import { emitFeedTabPress } from '@/lib/navigation/feed-tab';
 import { colors } from '@/theme/tokens';
 
 const TAB_BAR_HEIGHT = 60;
@@ -81,6 +82,11 @@ export default function TabsLayout() {
             title: t('nav.home'),
             tabBarLabel: label(t('nav.home')),
             tabBarIcon: icon('home-outline', 'home'),
+          }}
+          listeners={{
+            tabPress: () => {
+              emitFeedTabPress();
+            },
           }}
         />
         <Tabs.Screen

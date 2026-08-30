@@ -12,6 +12,7 @@ import { Button, Text } from '@/components/ui';
 import { createComment, fetchComments, fetchPost, messageForError } from '@/lib/api';
 import { applyCreatedComment } from '@/lib/query/feed-cache';
 import { queryKeys } from '@/lib/query/keys';
+import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { colors } from '@/theme/tokens';
 
 export default function PostScreen() {
@@ -35,11 +36,15 @@ export default function PostScreen() {
     enabled: Boolean(id),
   });
 
-  const refresh = useCallback(() => {
-    if (!id) return;
-    void post.refetch();
-    void comments.refetch();
-  }, [id, post, comments]);
+  const refetchPost = post.refetch;
+  const refetchComments = comments.refetch;
+
+  const { refreshing, onRefresh } = usePullToRefresh(
+    useCallback(async () => {
+      if (!id) return;
+      await Promise.all([refetchPost(), refetchComments()]);
+    }, [id, refetchPost, refetchComments]),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -51,8 +56,6 @@ export default function PostScreen() {
 
   const items = comments.data?.pages.flatMap((page) => page.items) ?? [];
   const lastPage = comments.data?.pages.at(-1);
-  const refreshing =
-    (post.isRefetching && !post.isPending) || (comments.isRefetching && !comments.isPending);
 
   return (
     <Screen padded={false}>
@@ -90,7 +93,7 @@ export default function PostScreen() {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={refresh}
+                onRefresh={onRefresh}
                 accessibilityLabel={t('common.actions.refresh')}
                 tintColor={colors.aura.bright}
                 colors={[colors.aura.bright]}
@@ -105,6 +108,7 @@ export default function PostScreen() {
             />
             <CommentThread
               comments={items}
+              loading={comments.isPending && items.length === 0}
               empty={!comments.isPending && items.length === 0 && !comments.isError}
               error={comments.isError}
               hasMore={Boolean(lastPage?.hasMore)}

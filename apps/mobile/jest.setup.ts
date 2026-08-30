@@ -1,4 +1,5 @@
 import { resetApiMocks } from './__tests__/helpers/api';
+import { resetQueryClients } from './__tests__/helpers/query-client';
 import { resetSession, routerMocks } from './__tests__/helpers/session';
 
 // Mock @gorhom/bottom-sheet
@@ -26,6 +27,10 @@ jest.mock('@gorhom/bottom-sheet', () => {
       dismissAll: jest.fn(),
     }),
   };
+});
+
+afterEach(() => {
+  resetQueryClients();
 });
 
 beforeEach(() => {

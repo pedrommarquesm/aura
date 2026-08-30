@@ -18,6 +18,7 @@ import { useFormat } from '@/lib/i18n';
 import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-photo';
 import { setPendingAvatarSource } from '@/lib/media/pending-avatar';
 import { queryKeys } from '@/lib/query/keys';
+import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { colors } from '@/theme/tokens';
 
 const GRID_GAP = 4;
@@ -61,6 +62,14 @@ export function UserProfile({
   });
 
   const queryClient = useQueryClient();
+  const refetchProfile = profile.refetch;
+  const refetchPosts = posts.refetch;
+
+  const { refreshing, onRefresh } = usePullToRefresh(
+    useCallback(async () => {
+      await Promise.all([refetchProfile(), authorId ? refetchPosts() : Promise.resolve()]);
+    }, [authorId, refetchPosts, refetchProfile]),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -116,14 +125,8 @@ export function UserProfile({
       scrollEventThrottle={16}
       refreshControl={
         <RefreshControl
-          refreshing={
-            (profile.isRefetching && !profile.isPending) ||
-            (posts.isRefetching && !posts.isFetchingNextPage && !posts.isPending)
-          }
-          onRefresh={() => {
-            void profile.refetch();
-            if (authorId) void posts.refetch();
-          }}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           accessibilityLabel={t('common.actions.refresh')}
           tintColor={colors.aura.bright}
           colors={[colors.aura.bright]}

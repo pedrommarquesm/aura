@@ -11,6 +11,7 @@ import { makeQueryClient } from "@/lib/query/client";
 import { Hydrate } from "@/lib/query/hydrate";
 import { queryKeys } from "@/lib/query/keys";
 import { buildShareMetadata } from "@/lib/seo";
+import { mediaPosterUrl } from "@/lib/media/playback";
 import { normalizeHandle, publicPostPath } from "@/lib/share";
 
 /** Same window as the public feed cache (architecture §8.4). */
@@ -40,7 +41,7 @@ export async function generateMetadata({
 
   const handle = post.author.username;
   const caption = post.caption?.trim();
-  const image = post.media.feedUrl ?? post.media.thumbUrl ?? undefined;
+  const image = mediaPosterUrl(post.media) ?? undefined;
 
   return buildShareMetadata({
     locale,

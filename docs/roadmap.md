@@ -39,9 +39,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
+**Now** — New app build for comments, profile photo, pull-to-refresh, liked hearts on first load, and Feed-tab scroll. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
 
-**Next** — Web HLS player when video should play on the site.
+**Next** — Store links (`WEB-07`) before real traffic.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -179,6 +179,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | MOB-70 | Avatar confirm must not prefix-match `['post', id, 'comments']` when writing the new photo onto permalinks | Done | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
+| MOB-71 | RefreshControl spinner only on pull. Focus / reconnect refetch stays silent. First-load comments use a skeleton, not the globe | Done | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
+| MOB-72 | Do not fetch the feed while session is `restoring`. Key the feed by viewer so a guest snapshot cannot freeze empty hearts | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
+| MOB-73 | Tapping the Feed tab scrolls the list back to the first post | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -194,6 +197,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | Done | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
 | WEB-27 | Language switcher lives in Settings (`/settings`, `/pt/definicoes`) and a header settings menu — not EN/PT pills in the header | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | WEB-28 | Double-click like on a feed card must fill the heart under the photo — one `useLikePost` per card, not a separate hook on the media and the button | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
+| WEB-29 | Web plays Mux HLS (`hlsUrl`) with native `<video>` + hls.js. Poster is `posterUrl`, not `feedUrl`. One in-view video at a time, muted until tap. No Mux keys on the site | Done | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
 
 ### Aura
 
@@ -204,6 +208,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-06 | Do not `ZINCRBY` onto an empty `lb:global`. Rebuild from `users.aura`. Likes write the set. Pin the viewer row only when they are outside the list | Done | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
@@ -270,6 +275,10 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
+| 2026-08-30 | Feed fetch waits until session restore finishes. Query key includes the viewer so a guest `/feed` (no `likedByMe`) cannot stick after sign-in. Tapping the Feed tab scrolls to the top | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
+| 2026-08-30 | The top RefreshControl spinner is pull-to-refresh only. `isRefetching` from focus, reconnect, or invalidate must not drive it. First-load comments are a skeleton | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
+| 2026-08-30 | `ZINCRBY` on a cold `lb:global` creates a one-person board. Rebuild from `users.aura` when the set is empty; likes must write the set the same way deletes already do | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
 | 2026-08-30 | `applyAvatarUrl` must not prefix-match comment queries. `['post', id, 'comments']` is a thread page, not a permalink — reading `author` on it crashed confirm after a 200 complete | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
 | 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | 2026-08-30 | Like/unlike writes the post permalink and profile grid, not only the home feed. Profile and post detail pull-to-refresh and refetch on focus | [#57](https://github.com/pedrommarquesm/aura/pull/57) |

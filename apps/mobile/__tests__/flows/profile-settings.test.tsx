@@ -1,8 +1,10 @@
-import { screen, userEvent, waitFor } from '@testing-library/react-native';
+import { act, screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import ProfileScreen from '@/app/(tabs)/profile';
 import SettingsScreen from '@/app/settings';
+import { queryKeys } from '@/lib/query/keys';
 
+import { testUser } from '../helpers/api';
 import { renderApp } from '../helpers/render';
 import { asSignedIn } from '../helpers/session';
 
@@ -26,6 +28,18 @@ describe('Signed-in profile and settings', () => {
     expect(await screen.findByText('Start farming Aura')).toBeOnTheScreen();
     expect(screen.getByLabelText('Sign in')).toBeOnTheScreen();
     expect(screen.queryByText('@tester')).toBeNull();
+  });
+
+  it('keeps the profile on screen while it refetches', async () => {
+    const { queryClient } = await renderApp(<ProfileScreen />);
+    expect(await screen.findByText('@tester')).toBeOnTheScreen();
+
+    await act(async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user(testUser.username) });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.userPosts(testUser.id) });
+    });
+
+    expect(screen.getByText('@tester')).toBeOnTheScreen();
   });
 
   it('switches the app to Portuguese from Settings', async () => {

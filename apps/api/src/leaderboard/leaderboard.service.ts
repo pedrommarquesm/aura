@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { and, desc, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, ne, sql } from 'drizzle-orm';
 import type { Redis } from 'ioredis';
 
 import { DB, type Database } from '../db/db.module';
@@ -62,8 +62,15 @@ export class LeaderboardService {
     viewerId: string | undefined,
     limit: number,
   ): Promise<LeaderboardPage | null> {
-    const total = await this.redis.zcard(GLOBAL_KEY);
-    if (total === 0) return null;
+    let total = await this.redis.zcard(GLOBAL_KEY);
+    const expected = await this.projectedSize();
+    // Empty *or* short: a delete on a cold set used to ZINCRBY one member
+    // into existence (score −10, everyone else gone). Treat any set smaller
+    // than Postgres as cold and rebuild. Architecture §9.
+    if (expected > 0 && total < expected) {
+      total = await this.rebuild();
+      if (total === 0) return null;
+    }
 
     const raw = await this.redis.zrevrange(GLOBAL_KEY, 0, limit - 1, 'WITHSCORES');
     const ids: string[] = [];
@@ -217,6 +224,14 @@ export class LeaderboardService {
     return row?.rank ?? null;
   }
 
+  private async projectedSize(): Promise<number> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(users)
+      .where(ne(users.status, 'banned'));
+    return Number(row?.count ?? 0);
+  }
+
   /** Rebuilds the sorted set from Postgres. Redis is a projection, not truth. */
   async rebuild(): Promise<number> {
     const rows = await this.db
@@ -238,6 +253,25 @@ export class LeaderboardService {
 
   async applyDelta(userId: string, delta: number): Promise<void> {
     try {
+      const total = await this.redis.zcard(GLOBAL_KEY);
+      if (total === 0) {
+        // ZINCRBY on a missing key creates a one-member set. The next read
+        // then treats that singleton as the whole board. Rebuild instead —
+        // the ledger already wrote `users.aura`, so the projection is current.
+        await this.rebuild();
+        return;
+      }
+
+      const existing = await this.redis.zscore(GLOBAL_KEY, userId);
+      if (existing === null) {
+        const [row] = await this.db
+          .select({ aura: users.aura })
+          .from(users)
+          .where(eq(users.id, userId));
+        if (row) await this.redis.zadd(GLOBAL_KEY, row.aura, userId);
+        return;
+      }
+
       await this.redis.zincrby(GLOBAL_KEY, delta, userId);
     } catch (error) {
       // Ranking must never fail a like. The periodic rebuild repairs drift.
