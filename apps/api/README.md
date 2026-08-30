@@ -44,6 +44,7 @@ and `REDIS_URL` at them.
 | `npm run db:generate` | Generate a migration from schema changes |
 | `npm run db:migrate:dev` | Apply migrations locally |
 | `npm run db:migrate` | Apply migrations from the built output (used on deploy) |
+| `npm run db:rebuild-leaderboard` | Rebuild Redis `lb:global` from `users.aura`. Does not touch Postgres |
 | `npm run typecheck` / `lint` / `test` | Checks |
 
 ## Layout

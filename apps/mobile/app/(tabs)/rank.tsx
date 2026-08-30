@@ -122,7 +122,8 @@ export default function RankScreen() {
             contentContainerClassName="pb-4"
           />
 
-          {board.data.viewer ? (
+          {board.data.viewer &&
+          !board.data.entries.some((entry) => entry.userId === board.data.viewer?.userId) ? (
             <Card surface="elevated" padded={false} className="mb-4 border-aura-deep">
               <Row row={board.data.viewer} highlighted />
             </Card>

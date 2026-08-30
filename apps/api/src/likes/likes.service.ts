@@ -10,6 +10,7 @@ import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
 import { likes, posts } from '../db/schema';
 import type { User } from '../db/schema';
+import { LeaderboardService } from '../leaderboard/leaderboard.service';
 import { REDIS } from '../redis/redis.module';
 import { consumeLikeSlot } from '../safety/like-rate-limit';
 
@@ -31,6 +32,7 @@ export class LikesService {
     @Inject(ENV) private readonly env: Env,
     @Inject(REDIS) private readonly redis: Redis,
     private readonly ledger: AuraLedgerService,
+    private readonly leaderboard: LeaderboardService,
   ) {}
 
   /**
@@ -103,6 +105,8 @@ export class LikesService {
       .set({ auraEventId: event.eventId })
       .where(and(eq(likes.userId, actor.id), eq(likes.postId, postId)));
 
+    await this.leaderboard.applyDelta(post.authorId, amount);
+
     return {
       liked: true,
       likeCount: updated?.likeCount ?? post.likeCount + 1,
@@ -148,6 +152,8 @@ export class LikesService {
       .set({ likeCount: sql`GREATEST(${posts.likeCount} - 1, 0)` })
       .where(eq(posts.id, postId))
       .returning({ likeCount: posts.likeCount });
+
+    await this.leaderboard.applyDelta(post.authorId, -originalAmount);
 
     return {
       liked: false,

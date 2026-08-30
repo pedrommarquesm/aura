@@ -1,16 +1,15 @@
-import { QueryClient } from '@tanstack/react-query';
-
 import { applyAvatarUrl } from '@/lib/query/avatar-cache';
 import { queryKeys } from '@/lib/query/keys';
 import { mockFeed } from '@/mocks/feed';
 
 import { createdComment, feedPage, testUser } from '../helpers/api';
+import { createTestQueryClient } from '../helpers/query-client';
 
 describe('applyAvatarUrl', () => {
   it('updates the author on the permalink and leaves the comment thread alone', () => {
     const post = { ...mockFeed[0]!, author: { ...mockFeed[0]!.author, id: testUser.id } };
     const nextUrl = 'https://cdn.aurarankd.com/avatars/u-tester/new.jpg';
-    const client = new QueryClient();
+    const client = createTestQueryClient();
     const thread = {
       pages: [{ items: [createdComment('keep me', 1).comment], nextCursor: null, hasMore: false }],
       pageParams: [null],
