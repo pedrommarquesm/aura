@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,15 +9,17 @@ import { AvatarCropEditor, type AvatarCropHandle } from '@/components/profile/av
 import { Button, Text } from '@/components/ui';
 import { completeAvatarUpload, createAvatarUpload, messageForError } from '@/lib/api';
 import { cropAvatarPhoto } from '@/lib/media/crop-avatar';
-import {
-  clearPendingAvatarSource,
-  peekPendingAvatarSource,
-  type PendingAvatarSource,
-} from '@/lib/media/pending-avatar';
+import { clearPendingAvatarSource, peekPendingAvatarSource } from '@/lib/media/pending-avatar';
 import { applyAvatarUrl } from '@/lib/query/avatar-cache';
 import { putPresignedObject } from '@/lib/upload/put-presigned';
 import { useSessionStore } from '@/store/session';
 import { colors } from '@/theme/tokens';
+
+function readPendingSource() {
+  const pending = peekPendingAvatarSource();
+  if (!pending || pending.width <= 0 || pending.height <= 0) return null;
+  return pending;
+}
 
 export default function AvatarEditScreen() {
   const { t } = useTranslation();
@@ -26,19 +28,10 @@ export default function AvatarEditScreen() {
   const queryClient = useQueryClient();
   const setUser = useSessionStore((state) => state.setUser);
 
-  const [source, setSource] = useState<PendingAvatarSource | null>(null);
+  const [source] = useState(readPendingSource);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const cropRef = useRef<AvatarCropHandle | null>(null);
-
-  useEffect(() => {
-    const pending = peekPendingAvatarSource();
-    if (!pending || pending.width <= 0 || pending.height <= 0) {
-      router.back();
-      return;
-    }
-    setSource(pending);
-  }, [router]);
+  const cropRef = useRef<AvatarCropHandle>(null);
 
   async function confirm() {
     if (!source || busy) return;
@@ -83,8 +76,18 @@ export default function AvatarEditScreen() {
     }
   }
 
+  function cancel() {
+    clearPendingAvatarSource();
+    router.back();
+  }
+
   if (!source) {
-    return <View className="flex-1 bg-bg" />;
+    return (
+      <View className="flex-1 bg-bg items-start justify-center gap-3 px-gutter" style={{ paddingTop: insets.top }}>
+        <Text variant="title">{t('profile.avatar.title')}</Text>
+        <Button label={t('profile.avatar.cancel')} onPress={cancel} />
+      </View>
+    );
   }
 
   return (
@@ -95,10 +98,7 @@ export default function AvatarEditScreen() {
           accessibilityLabel={t('profile.avatar.cancel')}
           disabled={busy}
           hitSlop={12}
-          onPress={() => {
-            clearPendingAvatarSource();
-            router.back();
-          }}
+          onPress={cancel}
         >
           <Text variant="label" tone="secondary">
             {t('profile.avatar.cancel')}
@@ -109,10 +109,10 @@ export default function AvatarEditScreen() {
       </View>
 
       <AvatarCropEditor
+        ref={cropRef}
         uri={source.uri}
         imageWidth={source.width}
         imageHeight={source.height}
-        cropRef={cropRef}
       />
 
       <View className="gap-3 px-gutter pb-4" style={{ paddingBottom: Math.max(insets.bottom, 16) }}>

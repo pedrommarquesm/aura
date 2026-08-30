@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { useMemo } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -18,17 +18,14 @@ export type AvatarCropHandle = {
   crop(): { originX: number; originY: number; width: number; height: number };
 };
 
-export function AvatarCropEditor({
-  uri,
-  imageWidth,
-  imageHeight,
-  cropRef,
-}: {
-  uri: string;
-  imageWidth: number;
-  imageHeight: number;
-  cropRef: { current: AvatarCropHandle | null };
-}) {
+export const AvatarCropEditor = forwardRef<
+  AvatarCropHandle,
+  {
+    uri: string;
+    imageWidth: number;
+    imageHeight: number;
+  }
+>(function AvatarCropEditor({ uri, imageWidth, imageHeight }, ref) {
   const { width: viewportW, height: viewportH } = useWindowDimensions();
   const circleSize = Math.min(viewportW, viewportH) * 0.72;
   const base = coverScale(imageWidth, imageHeight, circleSize);
@@ -42,7 +39,7 @@ export function AvatarCropEditor({
   const savedX = useSharedValue(0);
   const savedY = useSharedValue(0);
 
-  cropRef.current = {
+  useImperativeHandle(ref, () => ({
     crop: () =>
       cropRectFromTransform({
         imageWidth,
@@ -52,57 +49,49 @@ export function AvatarCropEditor({
         translateX: translateX.value,
         translateY: translateY.value,
       }),
-  };
+  }));
 
-  const pinch = useMemo(
-    () =>
-      Gesture.Pinch()
-        .onUpdate((event) => {
-          const next = clampScale(savedScale.value * event.scale);
-          scale.value = next;
-          const clamped = clampTranslation(
-            translateX.value,
-            translateY.value,
-            imageWidth,
-            imageHeight,
-            circleSize,
-            next,
-          );
-          translateX.value = clamped.x;
-          translateY.value = clamped.y;
-        })
-        .onEnd(() => {
-          savedScale.value = scale.value;
-          savedX.value = translateX.value;
-          savedY.value = translateY.value;
-        }),
-    [circleSize, imageHeight, imageWidth, savedScale, savedX, savedY, scale, translateX, translateY],
-  );
+  const pinch = Gesture.Pinch()
+    .onUpdate((event) => {
+      const next = clampScale(savedScale.value * event.scale);
+      scale.value = next;
+      const clamped = clampTranslation(
+        translateX.value,
+        translateY.value,
+        imageWidth,
+        imageHeight,
+        circleSize,
+        next,
+      );
+      translateX.value = clamped.x;
+      translateY.value = clamped.y;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+      savedX.value = translateX.value;
+      savedY.value = translateY.value;
+    });
 
-  const pan = useMemo(
-    () =>
-      Gesture.Pan()
-        .minDistance(1)
-        .onUpdate((event) => {
-          const clamped = clampTranslation(
-            savedX.value + event.translationX,
-            savedY.value + event.translationY,
-            imageWidth,
-            imageHeight,
-            circleSize,
-            scale.value,
-          );
-          translateX.value = clamped.x;
-          translateY.value = clamped.y;
-        })
-        .onEnd(() => {
-          savedX.value = translateX.value;
-          savedY.value = translateY.value;
-        }),
-    [circleSize, imageHeight, imageWidth, savedX, savedY, scale, translateX, translateY],
-  );
+  const pan = Gesture.Pan()
+    .minDistance(1)
+    .onUpdate((event) => {
+      const clamped = clampTranslation(
+        savedX.value + event.translationX,
+        savedY.value + event.translationY,
+        imageWidth,
+        imageHeight,
+        circleSize,
+        scale.value,
+      );
+      translateX.value = clamped.x;
+      translateY.value = clamped.y;
+    })
+    .onEnd(() => {
+      savedX.value = translateX.value;
+      savedY.value = translateY.value;
+    });
 
-  const composed = useMemo(() => Gesture.Simultaneous(pinch, pan), [pan, pinch]);
+  const composed = Gesture.Simultaneous(pinch, pan);
 
   const imageStyle = useAnimatedStyle(() => ({
     transform: [
@@ -162,7 +151,7 @@ export function AvatarCropEditor({
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   stage: {
