@@ -4,6 +4,8 @@ import { Pressable, View, type PressableProps } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { AuraGradient, Text } from '@/components/ui';
+import { useAuthGateStore } from '@/store/auth-gate';
+import { useSessionStore } from '@/store/session';
 import { auraGlow } from '@/theme/glow';
 import { instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
@@ -46,5 +48,24 @@ export function CreateTabButton({ onPress }: CreateTabButtonProps) {
         {t('nav.create')}
       </Text>
     </View>
+  );
+}
+
+/** Guests never reach compose. The tab itself opens “Sign in to post”. */
+export function GuardedCreateTab({ onPress }: { onPress?: PressableProps['onPress'] }) {
+  const status = useSessionStore((state) => state.status);
+  const requestAuth = useAuthGateStore((state) => state.requestAuth);
+
+  return (
+    <CreateTabButton
+      onPress={(event) => {
+        if (status === 'restoring') return;
+        if (status !== 'authenticated') {
+          requestAuth({ reason: 'create', pending: { type: 'create' } });
+          return;
+        }
+        onPress?.(event);
+      }}
+    />
   );
 }

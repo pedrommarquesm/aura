@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build so video shrink on create (`MOB-63`) is on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so video shrink on create (`MOB-63`) is on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -80,6 +80,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 | MOB-50 | i18n: i18next + expo-localization, English + Portuguese | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 | MOB-51 | Locale-aware number and plural formatting for Aura values | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
+| MOB-64 | Integration tests for the main guest and signed-in journeys (mocked API) | In review | |
 
 ### Web bootstrap
 

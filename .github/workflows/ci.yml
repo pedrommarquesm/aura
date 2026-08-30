@@ -81,3 +81,4 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run locales:check
+      - run: npm test
