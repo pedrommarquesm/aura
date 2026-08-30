@@ -84,10 +84,12 @@ Choose video
   → library, videos only. Same PHPicker rule: no Photos permission on iOS.
     Passthrough + Current — no H.264 export in the picker. That transcode
     finishes before the picker promise resolves, so the create screen cannot
-    appear until iOS is done. Mux transcodes the master after upload.
-    No JS transcode.
+    appear until iOS is done.
+    No JS / ffmpeg transcode.
   → show the compose view as soon as the picker returns
-  → refuse on that page if over 60s or 100 MB
+  → native 1080p H.264 shrink on that page (`react-native-compressor`,
+    AVAssetExportSession / MediaCodec). Same target as the old picker preset.
+  → refuse on that page if still over 60s or 100 MB after shrink
   → preview plays the local file immediately (muted loop, tap for sound)
   → POST /posts/uploads { contentType, byteSize, durationMs, width, height }
   → PUT video/mp4 (or video/quicktime)
@@ -177,7 +179,7 @@ Cancel aborts every in-flight PUT and drops the unused optimize promises. Temp J
 
 ### Video (MEDIA-06)
 
-Do **not** run a JS encoder. Library **Choose video** only (no in-app camera). Do not H.264-export in the picker — that blocks the create screen. Refuse on the compose page if over **60s** / **100 MB**. Prefer PUT `video/mp4`. Mux makes the HLS.
+Do **not** run a JS encoder. Library **Choose video** only (no in-app camera). Do not H.264-export in the picker — that blocks the create screen. Shrink on the compose page with native `react-native-compressor` (1080p-class H.264, longest edge 1920). Refuse if still over **60s** / **100 MB**. Prefer PUT `video/mp4`. Mux makes the HLS.
 
 ```
 phone → PUT master.mp4 → R2 (ours, forever)
@@ -216,6 +218,6 @@ Never upload the original **and** the derivative. If a smaller (or HEIC-replaced
 - Not a client-side feed/thumb generator. Those stay on the worker so every client, including old builds, produces the same card.
 - Not web upload. Spec forbids it.
 - Not camera capture. The button stays visible and disabled until that work is scheduled.
-- Not a second image stack (`react-native-compressor`, ffmpeg) until V1 is measurably not enough. `expo-image-manipulator` is already in the Expo SDK we ship.
+- Not a second **image** stack (`react-native-compressor` Image, ffmpeg). Photos stay on `expo-image-manipulator`. Video shrink is native compressor after pick — the picker export blocked the create screen.
 
 When we add hashing or a second concurrent encode, add a roadmap row and change this file in the same PR. The numbers in §2 only change here and in `photo-targets.ts`, together.

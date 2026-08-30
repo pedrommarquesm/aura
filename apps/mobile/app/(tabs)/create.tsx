@@ -21,8 +21,8 @@ import { Button, Text, TextField } from '@/components/ui';
 import { messageForError } from '@/lib/api';
 import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
 import { measureFileBytes } from '@/lib/media/measure-file';
-import { measureVideoBytes } from '@/lib/media/measure-video';
 import { optimizePickedPhoto } from '@/lib/media/optimize-photo';
+import { optimizePickedVideo } from '@/lib/media/optimize-video';
 import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-photo';
 import { pickVideoFromLibrary } from '@/lib/media/pick-video';
 import { PHOTO_UPLOAD_MAX_BYTES, normalizePhotoMime } from '@/lib/media/photo-targets';
@@ -31,7 +31,6 @@ import {
   VIDEO_UPLOAD_MAX_BYTES,
   durationMsFromPicker,
   isAcceptedVideoMime,
-  isVideoTooLarge,
   isVideoTooLong,
   normalizeVideoMime,
 } from '@/lib/media/video-targets';
@@ -82,6 +81,7 @@ export default function CreateScreen() {
   const [error, setError] = useState<string | null>(null);
   const [previewMuted, setPreviewMuted] = useState(true);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [shrinking, setShrinking] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const optimizeRef = useRef<Promise<Picked> | null>(null);
 
@@ -112,6 +112,7 @@ export default function CreateScreen() {
     setProgress(0);
     setError(null);
     setPreviewMuted(true);
+    setShrinking(false);
   }
 
   async function choosePhoto() {
@@ -236,17 +237,21 @@ export default function CreateScreen() {
       return;
     }
 
+    setShrinking(true);
     const job = afterInteractions()
-      .then(async () => {
-        const byteSize =
-          draft.byteSize > 0
-            ? draft.byteSize
-            : await measureVideoBytes(asset.uri, asset.fileSize);
-        if (isVideoTooLarge(byteSize)) {
-          throw new Error('too_large');
-        }
-        const next = { ...draft, byteSize };
+      .then(() => optimizePickedVideo(draft))
+      .then((optimized) => {
+        const next: Picked = {
+          kind: 'video',
+          uri: optimized.uri,
+          mimeType: optimized.mimeType,
+          byteSize: optimized.byteSize,
+          width: optimized.width,
+          height: optimized.height,
+          durationMs: optimized.durationMs,
+        };
         setPicked(next);
+        setShrinking(false);
         return next;
       });
 
@@ -254,10 +259,13 @@ export default function CreateScreen() {
     void job.catch((cause) => {
       if (optimizeRef.current !== job) return;
       optimizeRef.current = null;
+      setShrinking(false);
       setError(
         (cause as { message?: string }).message === 'too_large'
           ? t('create.errors.tooLarge')
-          : t('create.errors.unreadable'),
+          : (cause as { message?: string }).message === 'optimize'
+            ? t('create.errors.optimize')
+            : t('create.errors.unreadable'),
       );
     });
   }
@@ -424,7 +432,7 @@ export default function CreateScreen() {
               editable={!busy}
             />
 
-            {phase === 'preparing' ? (
+            {shrinking || phase === 'preparing' ? (
               <Text variant="caption" tone="muted" className="pt-3">
                 {t('create.progress.preparing')}
               </Text>
