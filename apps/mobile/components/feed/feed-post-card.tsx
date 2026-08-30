@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { LikeButton, type LikeButtonHandle } from './like-button';
+import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
@@ -107,7 +108,14 @@ function DoubleTapHeart({
  * Memoised because a like must repaint one card, never the list (§6.3). Everything the
  * card needs arrives as a single prop so the comparison stays a reference check.
  */
-export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCard }) {
+export const FeedPostCard = memo(function FeedPostCard({
+  post,
+  isActiveVideo = false,
+}: {
+  post: FeedCard;
+  /** Home feed only: the viewport video plays; others show the poster. */
+  isActiveVideo?: boolean;
+}) {
   const { t } = useTranslation();
   const { author, media } = post;
   const queryClient = useQueryClient();
@@ -116,12 +124,21 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
+  const [muted, setMuted] = useState(true);
 
   const requireAuth = !isAuthenticated;
+  const playbackUrl = videoPlaybackUrl(media);
+  const isVideo = media.type === 'video';
+  const posterUri = media.posterUrl ?? media.thumbUrl ?? media.feedUrl;
+  const playing = isVideo && isActiveVideo && Boolean(playbackUrl);
 
   const onDoubleTap = useCallback((x: number, y: number) => {
     setOrigin({ x, y });
     setBurst((count) => count + 1);
+  }, []);
+
+  const toggleMuted = useCallback(() => {
+    setMuted((current) => !current);
   }, []);
 
   useEffect(() => {
@@ -138,6 +155,21 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
           runOnJS(onDoubleTap)(event.x, event.y);
         }),
     [onDoubleTap],
+  );
+
+  const singleTap = useMemo(
+    () =>
+      Gesture.Tap()
+        .maxDuration(220)
+        .onEnd(() => {
+          runOnJS(toggleMuted)();
+        }),
+    [toggleMuted],
+  );
+
+  const mediaGesture = useMemo(
+    () => (isVideo ? Gesture.Exclusive(doubleTap, singleTap) : doubleTap),
+    [doubleTap, isVideo, singleTap],
   );
 
   return (
@@ -166,17 +198,19 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
         </Pressable>
       </View>
 
-      <GestureDetector gesture={doubleTap}>
+      <GestureDetector gesture={mediaGesture}>
         <View
           className="relative overflow-hidden bg-surface"
           style={{ aspectRatio: clampAspect(media.width, media.height) }}
           accessible
           accessibilityRole="image"
           accessibilityLabel={post.caption ?? `@${author.username}`}
-          accessibilityHint={t('feed.post.a11y.doubleTap')}
+          accessibilityHint={
+            isVideo ? t('feed.post.a11y.doubleTapSound') : t('feed.post.a11y.doubleTap')
+          }
         >
           <Image
-            source={media.feedUrl ? { uri: media.feedUrl } : undefined}
+            source={posterUri ? { uri: posterUri } : undefined}
             placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
             contentFit="cover"
             transition={160}
@@ -186,7 +220,18 @@ export const FeedPostCard = memo(function FeedPostCard({ post }: { post: FeedCar
             importantForAccessibility="no"
           />
 
-          {media.type === 'video' && media.durationMs ? (
+          {playing && playbackUrl ? (
+            <PostVideo source={playbackUrl} playing muted={muted} />
+          ) : null}
+
+          {playing ? (
+            <VideoMuteBadge
+              muted={muted}
+              label={muted ? t('feed.post.a11y.unmute') : t('feed.post.a11y.mute')}
+            />
+          ) : null}
+
+          {isVideo && media.durationMs && !playing ? (
             <View className="absolute bottom-3 right-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1">
               <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
               <Text variant="caption">{formatDuration(media.durationMs)}</Text>

@@ -38,6 +38,9 @@
         "like": "Like",
         "unlike": "Remove like",
         "doubleTap": "Double-tap to like",
+        "doubleTapSound": "Double-tap to like. Tap once for sound",
+        "mute": "Mute",
+        "unmute": "Unmute",
         "options": "Post options"
       }
     }
@@ -72,6 +75,10 @@
     "caption": {
       "label": "Caption",
       "placeholder": "Say something"
+    },
+    "a11y": {
+      "mute": "Mute",
+      "unmute": "Unmute"
     },
     "videoPicked": "Video ready to post",
     "videoDuration": "{seconds, plural, one {# second} other {# seconds}}",

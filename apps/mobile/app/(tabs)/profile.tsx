@@ -209,7 +209,7 @@ function PostsGrid({ items }: { items: FeedCard[] }) {
             accessibilityRole="image"
             accessibilityLabel={post.caption ?? `@${post.author.username}`}
             style={{ width: tile, height: tile }}
-            className="overflow-hidden rounded-sm bg-surface"
+            className="relative overflow-hidden rounded-sm bg-surface"
           >
             {uri ? (
               <Image
@@ -221,6 +221,11 @@ function PostsGrid({ items }: { items: FeedCard[] }) {
             ) : (
               <View className="flex-1 bg-surface-elevated" />
             )}
+            {post.media.type === 'video' ? (
+              <View className="absolute bottom-1.5 right-1.5 rounded-full bg-bg/70 p-1">
+                <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
+              </View>
+            ) : null}
           </View>
         );
       })}
