@@ -39,9 +39,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, pull-to-refresh only spinning on a real pull (`MOB-71`), feed waiting for session so liked hearts are right on first load (`MOB-72`), and tapping Feed to scroll to the top (`MOB-73`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
+**Now** — New app build for comments, profile photo, pull-to-refresh, liked hearts on first load, and Feed-tab scroll. Web HLS player (`WEB-29`) in review. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
 
-**Next** — Web HLS player when video should play on the site.
+**Next** — Store links (`WEB-07`) before real traffic.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -197,6 +197,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | Done | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
 | WEB-27 | Language switcher lives in Settings (`/settings`, `/pt/definicoes`) and a header settings menu — not EN/PT pills in the header | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | WEB-28 | Double-click like on a feed card must fill the heart under the photo — one `useLikePost` per card, not a separate hook on the media and the button | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
+| WEB-29 | Web plays Mux HLS (`hlsUrl`) with native `<video>` + hls.js. Poster is `posterUrl`, not `feedUrl`. One in-view video at a time, muted until tap. No Mux keys on the site | In review | |
 
 ### Aura
 
@@ -274,6 +275,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | |
 | 2026-08-30 | Feed fetch waits until session restore finishes. Query key includes the viewer so a guest `/feed` (no `likedByMe`) cannot stick after sign-in. Tapping the Feed tab scrolls to the top | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | 2026-08-30 | The top RefreshControl spinner is pull-to-refresh only. `isRefetching` from focus, reconnect, or invalidate must not drive it. First-load comments are a skeleton | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
 | 2026-08-30 | `ZINCRBY` on a cold `lb:global` creates a one-person board. Rebuild from `users.aura` when the set is empty; likes must write the set the same way deletes already do | [#61](https://github.com/pedrommarquesm/aura/pull/61) |

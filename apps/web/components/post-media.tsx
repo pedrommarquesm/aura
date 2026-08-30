@@ -5,9 +5,11 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { PlayIcon } from "@/components/icons";
+import { PostVideo } from "@/components/post-video";
 import type { PostMedia as PostMediaShape } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { formatDuration } from "@/lib/format";
+import { mediaPlaybackUrl, mediaPosterUrl } from "@/lib/media/playback";
 
 type PostMediaProps = {
   media: PostMediaShape;
@@ -15,6 +17,8 @@ type PostMediaProps = {
   sizes: string;
   priority?: boolean;
   className?: string;
+  /** Landing mock — keep the poster, do not autoplay. */
+  playInView?: boolean;
 };
 
 export function PostMedia({
@@ -23,18 +27,22 @@ export function PostMedia({
   sizes,
   priority = false,
   className,
+  playInView = true,
 }: PostMediaProps) {
   const t = useTranslations("feed.post");
   const [failed, setFailed] = useState(false);
-  const src = media.feedUrl;
+  const poster = mediaPosterUrl(media);
+  const playback = mediaPlaybackUrl(media);
   // Mock posters are vectors; the optimizer refuses SVG by design.
-  const isVector = src?.endsWith(".svg") ?? false;
+  const isVector = poster?.endsWith(".svg") ?? false;
 
   return (
     <div className={cn("relative overflow-hidden bg-surface-elevated", className)}>
-      {src && !failed ? (
+      {playback && playInView ? (
+        <PostVideo src={playback} poster={poster} alt={alt} />
+      ) : poster && !failed ? (
         <Image
-          src={src}
+          src={poster}
           alt={alt}
           fill
           sizes={sizes}
@@ -45,7 +53,7 @@ export function PostMedia({
         />
       ) : null}
       {media.type === "video" ? (
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-bg/70 px-2.5 py-1 text-caption backdrop-blur-sm">
+        <span className="pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-bg/70 px-2.5 py-1 text-caption backdrop-blur-sm">
           <PlayIcon className="size-3" />
           {media.durationMs == null
             ? t("video")

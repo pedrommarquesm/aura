@@ -56,6 +56,10 @@ export function LikeableMedia({
       return;
     }
 
+    if ((event.target as HTMLElement).closest("[data-video-control]")) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 

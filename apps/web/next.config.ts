@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     // Feed payloads only ever contain CDN URLs (architecture §6.6).
     remotePatterns: [
       { protocol: "https", hostname: "cdn.aurarankd.com" },
+      { protocol: "https", hostname: "image.mux.com" },
       { protocol: "https", hostname: "*.r2.dev" },
     ],
   },
