@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build so the caption stays on screen while typing (`MOB-60`) and Choose video opens the compose view as soon as the picker returns (`MOB-61`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so create caption / fast video pick (`MOB-60`, `MOB-61`) and tap-for-sound on the feed (`MOB-62`) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -167,6 +167,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
+| MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | In review | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |

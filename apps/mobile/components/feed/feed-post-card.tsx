@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -151,6 +151,7 @@ export const FeedPostCard = memo(function FeedPostCard({
       Gesture.Tap()
         .numberOfTaps(2)
         .maxDuration(280)
+        .maxDelay(220)
         .onEnd((event) => {
           runOnJS(onDoubleTap)(event.x, event.y);
         }),
@@ -160,9 +161,14 @@ export const FeedPostCard = memo(function FeedPostCard({
   const singleTap = useMemo(
     () =>
       Gesture.Tap()
-        .maxDuration(220)
-        .onEnd(() => {
-          runOnJS(toggleMuted)();
+        // Do not cap maxDuration here. Exclusive waits for the double-tap
+        // window to fail (~220ms). A 220ms cap on the single tap dies first,
+        // so unmute never ran.
+        .maxDelay(220)
+        .onEnd((_event, success) => {
+          if (success) {
+            runOnJS(toggleMuted)();
+          }
         }),
     [toggleMuted],
   );
@@ -202,6 +208,7 @@ export const FeedPostCard = memo(function FeedPostCard({
         <View
           className="relative overflow-hidden bg-surface"
           style={{ aspectRatio: clampAspect(media.width, media.height) }}
+          collapsable={false}
           accessible
           accessibilityRole="image"
           accessibilityLabel={post.caption ?? `@${author.username}`}
@@ -223,6 +230,11 @@ export const FeedPostCard = memo(function FeedPostCard({
           {playing && playbackUrl ? (
             <PostVideo source={playbackUrl} playing muted={muted} />
           ) : null}
+
+          {/* Native VideoView surfaces ignore pointerEvents and swallow
+              taps. This sibling sits on top so Exclusive(double, single)
+              actually receives the press. */}
+          <View style={StyleSheet.absoluteFill} collapsable={false} />
 
           {playing ? (
             <VideoMuteBadge

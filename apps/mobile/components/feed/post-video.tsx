@@ -27,16 +27,21 @@ export function PostVideo({
   const player = useVideoPlayer(source, (instance) => {
     instance.loop = true;
     instance.muted = muted;
-    instance.audioMixingMode = 'mixWithOthers';
+    instance.volume = 1;
+    // `auto`: stay out of the way while muted; take the playback session
+    // when unmuted so iOS plays through the silent switch.
+    instance.audioMixingMode = 'auto';
     if (playing) {
       instance.play();
     }
   });
 
   useEffect(() => {
-    // Live setter on the native player, not React state.
+    // Live setters on the native player, not React state.
     // eslint-disable-next-line react-hooks/immutability -- expo-video
     player.muted = muted;
+    player.volume = 1;
+    player.audioMixingMode = 'auto';
   }, [muted, player]);
 
   useEffect(() => {
