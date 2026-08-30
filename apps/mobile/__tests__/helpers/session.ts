@@ -5,6 +5,15 @@ import { useSessionStore } from '@/store/session';
 
 import { testUser } from './api';
 
+export function asRestoring() {
+  useSessionStore.setState({
+    status: 'restoring',
+    accessToken: null,
+    user: null,
+    needsUsername: false,
+  });
+}
+
 export function asGuest() {
   useSessionStore.setState({
     status: 'guest',

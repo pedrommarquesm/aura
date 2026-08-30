@@ -1,7 +1,7 @@
-import { FlashList, type ViewToken } from '@shopify/flash-list';
+import { FlashList, type FlashListRef, type ViewToken } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useIsFocused } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,9 +10,11 @@ import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
 import { cn } from '@/lib/cn';
+import { useScrollToTopOnTabPress } from '@/lib/navigation/use-scroll-to-top-on-tab-press';
 import { queryKeys } from '@/lib/query/keys';
 import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { usePreferencesStore } from '@/store/preferences';
+import { useSessionStore } from '@/store/session';
 import { colors } from '@/theme/tokens';
 
 const RANKINGS: {
@@ -72,12 +74,20 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const ranking = usePreferencesStore((state) => state.feedRanking);
+  const sessionStatus = useSessionStore((state) => state.status);
+  const viewerId = useSessionStore((state) => state.user?.id);
+  const viewer = sessionStatus === 'authenticated' && viewerId ? viewerId : 'guest';
+  const listRef = useRef<FlashListRef<FeedCard>>(null);
 
   const feed = useInfiniteQuery({
-    queryKey: queryKeys.feed.ranking(ranking),
+    queryKey: queryKeys.feed.ranking(ranking, viewer),
     queryFn: ({ pageParam, signal }) => fetchFeedPage(ranking, pageParam, signal),
     initialPageParam: null as string | null,
     getNextPageParam: (last) => (last.hasMore ? last.nextCursor : undefined),
+    // Cold start is `restoring` with no access token. Fetching then caches a
+    // guest snapshot (`likedByMe: false`) and `refetchOnMount: false` keeps it
+    // until the user pulls to refresh.
+    enabled: sessionStatus !== 'restoring',
   });
 
   const {
@@ -115,6 +125,11 @@ export default function HomeScreen() {
     useCallback(() => refetch(), [refetch]),
   );
 
+  const scrollToTop = useCallback(() => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+  }, []);
+  useScrollToTopOnTabPress(scrollToTop);
+
   const playingVideoId = isFocused ? activeVideoId : null;
 
   if (isPending) {
@@ -145,6 +160,7 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-bg" style={{ paddingTop: insets.top }}>
       <FlashList
+        ref={listRef}
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
