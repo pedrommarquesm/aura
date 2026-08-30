@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Deploy the API so avatar upload and comments work on staging.
+**Now** — New app build for comments, profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
 
 **Next** — Web HLS player when video should play on the site.
 
