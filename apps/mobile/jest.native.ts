@@ -125,6 +125,13 @@ jest.mock('expo-router', () => {
       replace: mockReplace,
     }),
     useIsFocused: () => true,
+    useFocusEffect: (cb: () => void | (() => void)) => {
+      const { useEffect } = require('react') as typeof import('react');
+      useEffect(() => {
+        const cleanup = cb();
+        return typeof cleanup === 'function' ? cleanup : undefined;
+      }, [cb]);
+    },
     usePathname: () => '/',
     useLocalSearchParams: () =>
       (globalThis as { __routerMocks?: { params?: Record<string, unknown> } }).__routerMocks

@@ -4,7 +4,7 @@ import HomeScreen from '@/app/(tabs)/index';
 import ProfileScreen from '@/app/(tabs)/profile';
 import PostScreen from '@/app/post/[id]';
 
-import { api, feedPage, ownPost } from '../helpers/api';
+import { api, feedPage, likeResult, ownPost } from '../helpers/api';
 import { renderApp } from '../helpers/render';
 import { asGuest, asSignedIn, routerMocks } from '../helpers/session';
 
@@ -76,5 +76,65 @@ describe('Profile post view and post menu', () => {
       expect(api.deletePost).toHaveBeenCalledWith('post-own');
     });
     expect(routerMocks().back).toHaveBeenCalled();
+  });
+
+  it('unlikes a post opened from a profile and keeps it unliked', async () => {
+    asSignedIn();
+    const post = {
+      ...ownPost({
+        id: '01j0000000000000000000001',
+        likedByMe: true,
+        likeCount: 1_284,
+        author: {
+          id: 'u-alice',
+          username: 'alice',
+          avatarUrl: null,
+          aura: 82_421,
+          title: 'Aura Lord',
+        },
+      }),
+    };
+    routerMocks().params = { id: post.id };
+    api.fetchPost.mockResolvedValue(post);
+    api.unlikePost.mockResolvedValue(likeResult(false));
+    const user = userEvent.setup();
+    await renderApp(<PostScreen />);
+
+    await user.press(await screen.findByHintText('Remove like'));
+
+    await waitFor(() => {
+      expect(api.unlikePost).toHaveBeenCalledWith(post.id);
+    });
+    expect(await screen.findByHintText('Like')).toBeOnTheScreen();
+    expect(screen.queryByHintText('Remove like')).toBeNull();
+  });
+
+  it('pulls to refresh the post', async () => {
+    asSignedIn();
+    const post = ownPost();
+    routerMocks().params = { id: post.id };
+    api.fetchPost.mockResolvedValue(post);
+    await renderApp(<PostScreen />);
+    await screen.findByText('my golden hour');
+
+    api.fetchPost.mockClear();
+    fireEvent(screen.getByTestId('post-scroll').children[0] as never, 'refresh');
+    await waitFor(() => {
+      expect(api.fetchPost).toHaveBeenCalled();
+    });
+  });
+
+  it('pulls to refresh the profile', async () => {
+    asSignedIn();
+    await renderApp(<ProfileScreen />);
+    await screen.findByText('@tester');
+
+    api.fetchPublicProfile.mockClear();
+    api.fetchUserPosts.mockClear();
+    fireEvent(screen.getByTestId('profile-scroll').children[0] as never, 'refresh');
+    await waitFor(() => {
+      expect(api.fetchPublicProfile).toHaveBeenCalled();
+      expect(api.fetchUserPosts).toHaveBeenCalled();
+    });
   });
 });

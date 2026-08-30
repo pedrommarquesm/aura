@@ -5,7 +5,8 @@
     "actions": {
       "retry": "Try again",
       "cancel": "Cancel",
-      "share": "Share"
+      "share": "Share",
+      "refresh": "Refresh"
     },
     "avatarAlt": "{username}'s avatar"
   },
