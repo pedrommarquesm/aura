@@ -28,7 +28,10 @@ import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useIsAuthenticated, useSessionStore } from '@/store/session';
 import { burstTiming, instant } from '@/theme/motion';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
+
+/** Semi-transparent chrome on media. Slash-opacity class names crash Expo Router. */
+const onMedia = { backgroundColor: withAlpha(colors.bg, 0.7) };
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.round(durationMs / 1000);
@@ -247,7 +250,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           ) : null}
 
           {isVideo && media.durationMs && !playing ? (
-            <View className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1">
+            <View className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full px-2 py-1" style={onMedia}>
               <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
               <Text variant="caption">{formatDuration(media.durationMs)}</Text>
             </View>
@@ -257,7 +260,7 @@ export const FeedPostCard = memo(function FeedPostCard({
 
           {/* Top Right: Aura Count */}
           <View className="absolute top-4 right-4">
-            <View className="rounded-full bg-bg/70 px-3 py-1.5 backdrop-blur">
+            <View className="rounded-full px-3 py-1.5" style={onMedia}>
               <Text variant="label" tone="aura" className="font-extrabold tracking-aura">
                 {format.count(post.aura)} 🗿
               </Text>
@@ -270,8 +273,8 @@ export const FeedPostCard = memo(function FeedPostCard({
               accessibilityRole="button"
               accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
               onPress={shouldTruncateCaption ? openDrawer : openAuthor}
-              className="rounded-t-2xl bg-bg/70 px-4 py-3 backdrop-blur"
-              style={{ paddingRight: 72 }} // Space for action buttons
+              className="rounded-t-2xl px-4 py-3"
+              style={[onMedia, { paddingRight: 72 }]}
             >
               <View className="flex-row items-center gap-2 pb-2">
                 <Avatar
@@ -328,7 +331,8 @@ export const FeedPostCard = memo(function FeedPostCard({
                   }
                   likeRef.current?.toggle();
                 }}
-                className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
+                className="h-12 w-12 items-center justify-center rounded-full"
+                style={onMedia}
               >
                 <Text style={{ fontSize: 26, opacity: post.likedByMe ? 1 : 0.7 }}>🗿</Text>
               </Pressable>
@@ -369,7 +373,8 @@ export const FeedPostCard = memo(function FeedPostCard({
                 accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
                 accessibilityHint={t('feed.post.a11y.comment')}
                 onPress={openDrawer}
-                className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
+                className="h-12 w-12 items-center justify-center rounded-full"
+                style={onMedia}
               >
                 <Ionicons name="chatbubble-outline" size={24} color={colors.text.DEFAULT} />
               </Pressable>
@@ -388,7 +393,8 @@ export const FeedPostCard = memo(function FeedPostCard({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('common.actions.share')}
-                className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
+                className="h-12 w-12 items-center justify-center rounded-full"
+                style={onMedia}
               >
                 <Ionicons name="arrow-redo-outline" size={24} color={colors.text.DEFAULT} />
               </Pressable>

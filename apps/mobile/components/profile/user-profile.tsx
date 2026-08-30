@@ -19,7 +19,7 @@ import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-p
 import { setPendingAvatarSource } from '@/lib/media/pending-avatar';
 import { queryKeys } from '@/lib/query/keys';
 import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
 
 const GRID_GAP = 4;
 const GRID_COLUMNS = 3;
@@ -268,7 +268,10 @@ function PostsGrid({ items }: { items: FeedCard[] }) {
               <View className="flex-1 bg-surface-elevated" />
             )}
             {post.media.type === 'video' ? (
-              <View className="absolute bottom-1.5 right-1.5 rounded-full bg-bg/70 p-1">
+              <View
+                className="absolute bottom-1.5 right-1.5 rounded-full p-1"
+                style={{ backgroundColor: withAlpha(colors.bg, 0.7) }}
+              >
                 <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
               </View>
             ) : null}

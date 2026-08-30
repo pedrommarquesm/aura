@@ -82,10 +82,9 @@ export function Button({
         container,
         sizing.container,
         fullWidth && 'w-full',
-        isDisabled && 'opacity-40',
         className,
       )}
-      style={[animatedStyle, glow ? auraGlow() : null]}
+      style={[animatedStyle, glow ? auraGlow() : null, isDisabled ? { opacity: 0.4 } : null]}
       {...props}
     >
       {variant === 'primary' ? <AuraGradient /> : null}

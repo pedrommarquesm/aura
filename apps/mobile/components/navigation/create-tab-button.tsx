@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View, type PressableProps } from 'react-native';
+import { Pressable, StyleSheet, View, type PressableProps } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { AuraGradient, Text } from '@/components/ui';
@@ -30,21 +30,20 @@ export function CreateTabButton({ onPress }: CreateTabButtonProps) {
   }));
 
   return (
-    <View className="flex-1 items-center justify-start">
+    <View style={styles.slot}>
       <AnimatedPressable
         accessibilityRole="button"
         accessibilityLabel={t('nav.a11y.create')}
         onPress={onPress}
         onPressIn={() => press.set(withTiming(1, instant))}
         onPressOut={() => press.set(withTiming(0, instant))}
-        className="-mt-6 h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-bg"
-        style={[animatedStyle, auraGlow('strong')]}
+        style={[styles.button, animatedStyle, auraGlow('strong')]}
       >
         <AuraGradient />
         <Ionicons name="add" size={30} color={colors.text.DEFAULT} />
       </AnimatedPressable>
 
-      <Text variant="caption" tone="muted" className="-mt-1" numberOfLines={1}>
+      <Text variant="caption" tone="muted" style={styles.label} numberOfLines={1}>
         {t('nav.create')}
       </Text>
     </View>
@@ -69,3 +68,25 @@ export function GuardedCreateTab({ onPress }: { onPress?: PressableProps['onPres
     />
   );
 }
+
+const styles = StyleSheet.create({
+  slot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  button: {
+    marginTop: -24,
+    height: 56,
+    width: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: colors.bg,
+  },
+  label: {
+    marginTop: -4,
+  },
+});

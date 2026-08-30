@@ -3,6 +3,7 @@ import '../global.css';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -29,13 +30,15 @@ export default function RootLayout() {
         <I18nProvider>
           <QueryProvider>
             <StatusBar style="light" />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.bg },
-              }}
-            />
-            <AuthModals />
+            <View style={{ flex: 1, backgroundColor: colors.bg }}>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.bg },
+                }}
+              />
+              <AuthModals />
+            </View>
           </QueryProvider>
         </I18nProvider>
       </SafeAreaProvider>

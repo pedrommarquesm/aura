@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { Card, Text } from '@/components/ui';
-import { cn } from '@/lib/cn';
 import { SUPPORTED_LOCALES, type AppLocale } from '@/lib/i18n';
 import { usePreferencesStore } from '@/store/preferences';
+import { colors } from '@/theme/tokens';
 
 /** `null` is "follow the device", which is where every install starts. */
 type Choice = AppLocale | null;
@@ -55,7 +55,8 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
               accessibilityRole="radio"
               accessibilityState={{ selected }}
               onPress={() => setOverride(option.value)}
-              className={cn('flex-1 items-center rounded-md px-2 py-2', selected && 'bg-aura-deep')}
+              className="flex-1 items-center rounded-md px-2 py-2"
+              style={selected ? { backgroundColor: colors.aura.deep } : undefined}
             >
               <Text
                 variant="label"

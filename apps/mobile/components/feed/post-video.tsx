@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui';
 import type { FeedMedia } from '@/lib/api';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
 
 export function videoPlaybackUrl(media: FeedMedia): string | null {
   return media.hlsUrl ?? media.feedUrl ?? null;
@@ -74,7 +74,8 @@ export function VideoMuteBadge({ muted, label }: { muted: boolean; label: string
       pointerEvents="none"
       accessibilityElementsHidden
       importantForAccessibility="no"
-      className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1"
+      className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full px-2 py-1"
+      style={{ backgroundColor: withAlpha(colors.bg, 0.7) }}
     >
       <Ionicons
         name={muted ? 'volume-mute' : 'volume-high'}

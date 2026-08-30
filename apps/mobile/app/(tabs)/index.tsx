@@ -1,5 +1,6 @@
 import { FlashList, type FlashListRef, type ViewToken } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +10,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
-import { cn } from '@/lib/cn';
 import { useScrollToTopOnTabPress } from '@/lib/navigation/use-scroll-to-top-on-tab-press';
 import { queryKeys } from '@/lib/query/keys';
 import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { usePreferencesStore } from '@/store/preferences';
 import { useSessionStore } from '@/store/session';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
 
 const RANKINGS: {
   value: FeedRanking;
@@ -53,10 +53,8 @@ function FeedHeader() {
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               onPress={() => setRanking(option.value)}
-              className={cn(
-                'rounded-full px-3 py-1.5',
-                active ? 'bg-aura-deep' : 'bg-surface-elevated',
-              )}
+              className="rounded-full px-3 py-1.5"
+              style={{ backgroundColor: active ? colors.aura.deep : colors.surface.elevated }}
             >
               <Text variant="label" tone={active ? 'default' : 'muted'}>
                 {t(option.labelKey)}
@@ -174,12 +172,12 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-bg">
       {/* Floating Header Overlay */}
-      <View 
-        className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-bg/80 to-transparent"
-        style={{ paddingTop: insets.top }}
+      <LinearGradient
+        colors={[withAlpha(colors.bg, 0.8), 'transparent']}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top }}
       >
         <FeedHeader />
-      </View>
+      </LinearGradient>
 
       <FlashList
         ref={listRef}

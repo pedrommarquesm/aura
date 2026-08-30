@@ -8,6 +8,7 @@ import { AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui
 import { cn } from '@/lib/cn';
 import { fetchGlobalLeaderboard, messageForError, type LeaderboardEntry } from '@/lib/api';
 import { queryKeys } from '@/lib/query/keys';
+import { colors, withAlpha } from '@/theme/tokens';
 
 /** The top three read as medals; everyone else gets a plain tabular rank number. */
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -20,8 +21,9 @@ function Row({ row, highlighted = false }: { row: LeaderboardEntry; highlighted?
     <View
       className={cn(
         'flex-row items-center gap-3 rounded-md px-3 py-2.5',
-        highlighted && 'border border-aura-deep bg-aura-deep/25',
+        highlighted && 'border border-aura-deep',
       )}
+      style={highlighted ? { backgroundColor: withAlpha(colors.aura.deep, 0.25) } : undefined}
     >
       {/* A medal or a "#42" both read badly out loud, so both announce the ordinal. */}
       <View className="w-9 items-center">

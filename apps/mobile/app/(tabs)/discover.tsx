@@ -6,7 +6,7 @@ import { ScrollView, View } from 'react-native';
 import { Screen, ScreenHeader } from '@/components/layout';
 import { AuraValue, Card, Skeleton, Text } from '@/components/ui';
 import { mockChallenges, mockTrendingTiles } from '@/mocks/discover';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
 
 export default function DiscoverScreen() {
   const { t } = useTranslation();
@@ -68,7 +68,10 @@ export default function DiscoverScreen() {
                   transition={160}
                   style={{ width: '100%', height: '100%' }}
                 />
-                <View className="absolute bottom-1 left-1 rounded-full bg-bg/70 px-1.5 py-0.5">
+                <View
+                  className="absolute bottom-1 left-1 rounded-full px-1.5 py-0.5"
+                  style={{ backgroundColor: withAlpha(colors.bg, 0.7) }}
+                >
                   <AuraValue value={tile.aura} size="sm" tone="aura" />
                 </View>
               </View>

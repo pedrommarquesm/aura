@@ -9,6 +9,24 @@
  * These values are shared with the web app and must stay identical.
  */
 
+/**
+ * NativeWind colour/opacity utilities (`bg-bg/70`) compile to CSS variables.
+ * Injecting those after the first render makes NativeWind stringify props to
+ * warn about a remount — that walk hits React Navigation's throwing context
+ * getters and crashes the app with "Couldn't find a navigation context".
+ * Use this on `style` instead of slash-opacity class names.
+ *
+ * @param {string} hex
+ * @param {number} alpha
+ */
+function withAlpha(hex, alpha) {
+  const raw = hex.replace('#', '');
+  const r = parseInt(raw.slice(0, 2), 16);
+  const g = parseInt(raw.slice(2, 4), 16);
+  const b = parseInt(raw.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 const colors = {
   bg: '#0A0A0F',
   surface: {
@@ -86,4 +104,4 @@ const motion = {
   rise: { duration: 1200 },
 };
 
-module.exports = { colors, gradients, typography, radius, spacing, motion };
+module.exports = { colors, gradients, typography, radius, spacing, motion, withAlpha };

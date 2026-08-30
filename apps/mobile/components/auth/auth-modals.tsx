@@ -11,6 +11,7 @@ import { likePost, unlikePost } from '@/lib/api';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useSessionStore } from '@/store/session';
+import { colors, withAlpha } from '@/theme/tokens';
 
 /**
  * Overlay for guest conversion and first-login username claim.
@@ -76,7 +77,10 @@ export function AuthModals() {
       animationType="fade"
       onRequestClose={showSignIn ? dismiss : undefined}
     >
-      <View className="flex-1 justify-end bg-bg/80" style={{ paddingBottom: insets.bottom + 16 }}>
+      <View
+        className="flex-1 justify-end"
+        style={{ backgroundColor: withAlpha(colors.bg, 0.8), paddingBottom: insets.bottom + 16 }}
+      >
         {showSignIn ? (
           <Pressable
             className="flex-1"

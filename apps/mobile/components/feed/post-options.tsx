@@ -9,7 +9,7 @@ import { Button, Text, TextField } from '@/components/ui';
 import { deletePost, messageForError, updatePostCaption, type FeedCard } from '@/lib/api';
 import { applyCaptionUpdate, applyPostRemoved } from '@/lib/query/post-cache';
 import { useSessionStore } from '@/store/session';
-import { colors } from '@/theme/tokens';
+import { colors, withAlpha } from '@/theme/tokens';
 
 const CAPTION_MAX = 2_200;
 
@@ -89,7 +89,10 @@ export function PostOptions({
       </Pressable>
 
       <Modal visible={sheet !== 'closed'} transparent animationType="fade" onRequestClose={close}>
-        <View className="flex-1 justify-end bg-bg/80" style={{ paddingBottom: insets.bottom + 16 }}>
+        <View
+          className="flex-1 justify-end"
+          style={{ backgroundColor: withAlpha(colors.bg, 0.8), paddingBottom: insets.bottom + 16 }}
+        >
           <Pressable
             className="flex-1"
             onPress={close}
