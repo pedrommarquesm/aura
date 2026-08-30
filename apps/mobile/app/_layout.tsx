@@ -28,14 +28,16 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <I18nProvider>
           <QueryProvider>
-            <StatusBar style="light" />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.bg },
-              }}
-            />
-            <AuthModals />
+            <BottomSheetModalProvider>
+              <StatusBar style="light" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.bg },
+                }}
+              />
+              <AuthModals />
+            </BottomSheetModalProvider>
           </QueryProvider>
         </I18nProvider>
       </SafeAreaProvider>
