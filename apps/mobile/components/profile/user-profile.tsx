@@ -1,10 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { useMemo, type ReactNode } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, useWindowDimensions, View } from 'react-native';
 
 import { AuraValue, Avatar, Button, Card, Skeleton, Text } from '@/components/ui';
 import {
@@ -54,6 +54,17 @@ export function UserProfile({
     enabled: Boolean(authorId),
   });
 
+  const queryClient = useQueryClient();
+
+  useFocusEffect(
+    useCallback(() => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.user(username) });
+      if (authorId) {
+        void queryClient.invalidateQueries({ queryKey: queryKeys.userPosts(authorId) });
+      }
+    }, [authorId, queryClient, username]),
+  );
+
   const card = profile.data;
   const aura = card?.aura ?? fallback?.aura ?? 0;
   const title = card?.title ?? fallback?.title;
@@ -78,9 +89,26 @@ export function UserProfile({
 
   return (
     <ScrollView
+      testID="profile-scroll"
       showsVerticalScrollIndicator={false}
       contentContainerClassName="pb-8"
       scrollEventThrottle={16}
+      refreshControl={
+        <RefreshControl
+          refreshing={
+            (profile.isRefetching && !profile.isPending) ||
+            (posts.isRefetching && !posts.isFetchingNextPage && !posts.isPending)
+          }
+          onRefresh={() => {
+            void profile.refetch();
+            if (authorId) void posts.refetch();
+          }}
+          accessibilityLabel={t('common.actions.refresh')}
+          tintColor={colors.aura.bright}
+          colors={[colors.aura.bright]}
+          progressBackgroundColor={colors.surface.DEFAULT}
+        />
+      }
       onScroll={({ nativeEvent }) => {
         const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
         if (layoutMeasurement.height + contentOffset.y < contentSize.height - 160) return;

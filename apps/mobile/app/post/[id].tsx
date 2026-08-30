@@ -1,8 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { Screen } from '@/components/layout';
@@ -14,6 +15,7 @@ import { colors } from '@/theme/tokens';
 export default function PostScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const raw = useLocalSearchParams<{ id?: string | string[] }>().id;
   const id = Array.isArray(raw) ? raw[0] : raw;
 
@@ -22,6 +24,13 @@ export default function PostScreen() {
     queryFn: () => fetchPost(id!),
     enabled: Boolean(id),
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!id) return;
+      void queryClient.invalidateQueries({ queryKey: queryKeys.post(id) });
+    }, [id, queryClient]),
+  );
 
   return (
     <Screen padded={false}>
@@ -48,7 +57,20 @@ export default function PostScreen() {
       ) : post.isPending || !post.data ? (
         <FeedPostSkeleton />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          testID="post-scroll"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={post.isRefetching && !post.isPending}
+              onRefresh={() => void post.refetch()}
+              accessibilityLabel={t('common.actions.refresh')}
+              tintColor={colors.aura.bright}
+              colors={[colors.aura.bright]}
+              progressBackgroundColor={colors.surface.DEFAULT}
+            />
+          }
+        >
           <FeedPostCard post={post.data} isActiveVideo onDeleted={() => router.back()} />
         </ScrollView>
       )}
