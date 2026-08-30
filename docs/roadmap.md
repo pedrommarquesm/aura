@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Profile post view, Edit / Delete, and other people's profiles (`MOB-65`, `MOB-66`, `API-28`) in review. New app build so video shrink on create (`MOB-63`) is on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
+**Now** — Deploy the API so caption edit works on staging. New app build for profile posts, Edit / Delete, other people's profiles, and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -166,13 +166,13 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
-| API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | In review | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
+| API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
 | MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | Done | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
-| MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | In review | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
-| MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | In review | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
+| MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
+| MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
