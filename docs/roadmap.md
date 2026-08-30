@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Mux video ingest is wiring on staging (`MEDIA-06`): worker creates the asset from the public master URL, API verifies `POST /v1/webhooks/mux`, feed URLs come from the playback id. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — Choose video in the app (library only, native shrink, refuse over 60s / 100 MB). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — Choose video in the app, then HLS playback (`MOB-32`).
 
@@ -140,7 +140,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MEDIA-03 | `POST /posts/:id/complete` + object verification | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-06 | Video: Mux ingest from our R2 master + webhook publish. Master stays ours. Playback policy public, quality basic | In review | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
+| MEDIA-06 | Video: Mux ingest from our R2 master + webhook publish. Master stays ours. Playback policy public, quality basic | Done | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
 | MOB-20 | Create flow: camera, picker, preview, caption | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
