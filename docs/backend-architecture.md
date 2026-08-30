@@ -87,7 +87,7 @@ Chosen for speed of iteration, mobile-first clients, and a clean path to scale. 
 | Jobs | **Redis queue** (BullMQ) | Media processing, trending recompute, notification aggregation. |
 | Object storage | **Cloudflare R2**, behind an `ObjectStore` port | Decided. Zero egress fees matter a lot when the product is mostly video bytes. Provider is per-asset and swappable (§6.6). |
 | CDN | **Cloudflare**, served from our own `cdn.aurarankd.com` | Image resizing, cache, public post pages. Our domain, so the vendor is a DNS change (§6.6). Bunny is a post-V0 candidate. |
-| Video | **Managed transcoding first** (Cloudflare Stream / Mux) *or* ffmpeg workers | V0 should not invent a video platform. See §6. |
+| Video | **Mux** (ingest from our public master URL, HLS from Mux) | Decided. Master stays in R2 forever. See §6. |
 | Auth | **First-party. Apple + Google on mobile, API-issued JWT access + rotating refresh** | The API owns identity; providers only prove it. See §12. |
 | Observability | OpenTelemetry + structured logs + one APM | Feed and like latency must be visible from day one. |
 | Hosting (V0) | One region: API + worker + Postgres + Redis | Boring. Multi-region is a later problem. |
@@ -215,7 +215,7 @@ The client uploads **directly to object storage** with a short-lived presigned U
             - return { postId, status: "processing" }
 
 6. Worker:  - image: generate feed (1080) + thumb (400) + blurhash
-            - video: transcode to HLS (or hand off to Stream/Mux), extract poster
+            - video: tell Mux to ingest the public master URL; wait for video.asset.ready
             - write variants onto MediaAsset
             - set Post.status=published, publishedAt=now()
             - enqueue UpdateTrendingJob (new content starts with recency)
@@ -248,12 +248,14 @@ Posts in `uploading` / `processing` **do not appear in feeds**. The public URL c
 
 **Video (V0, do not build a transcoder farm)**
 
-Recommendation: **managed video** (Cloudflare Stream or Mux).
+**Mux.** The phone PUTs `master.mp4` to R2. The worker tells Mux to ingest the public CDN URL (`https://cdn.aurarankd.com/media/{assetId}/v1/master.mp4`). Mux copies, transcodes, and serves HLS from `stream.mux.com`. R2 is not what the feed plays. Mux is not a CDN in front of R2. Photos stay R2 + Sharp.
 
-- Client still uses the same `POST /posts/uploads` contract
-- Worker creates the Stream/Mux asset from the original object (or direct upload to the vendor)
-- Playback URL + poster come back on `MediaAsset.variants`
-- We pay per minute encoded / stored, and we skip ffmpeg ops, HLS packaging, and mobile codec hell
+- Same `POST /posts/uploads` → PUT R2 → `POST /complete` as photos
+- Worker creates a Mux asset (`playback_policies: public`, `video_quality: basic`) and stores `externalProvider=mux` + `externalAssetId`
+- The post stays `processing` until `POST /v1/webhooks/mux` receives `video.asset.ready`
+- `variants.hls` holds the playback id (a coordinate). The resolver builds HLS + poster URLs
+- Do not Mux Direct Upload from the phone — that skips the master in R2
+- Do not put Mux keys in clients or `NEXT_PUBLIC_*`
 
 Revisit self-hosted ffmpeg workers only when video spend is a real line item and we have the ops to match.
 
@@ -269,7 +271,7 @@ Feed payloads never contain storage keys. They contain **CDN URLs** already size
     "type": "video",
     "thumbUrl": "https://cdn.aurarankd.com/...",
     "feedUrl": "https://cdn.aurarankd.com/...",
-    "hlsUrl": "https://cdn.aurarankd.com/.../manifest.m3u8",
+    "hlsUrl": "https://stream.mux.com/{PLAYBACK_ID}.m3u8",
     "width": 1080,
     "height": 1350,
     "durationMs": 7400
@@ -954,13 +956,14 @@ Settled:
 | 6 | Mobile auth | **Sign in with Apple + Google**, native providers, API-issued tokens. No passwords in V0 |
 | 7 | Web auth | **Google Sign-In as a thin API client** (httpOnly cookies, no NextAuth user store). Posting/liking stay in the app. |
 | 8 | Media portability | **Provider stored per asset**, keys not URLs, served from our own domain (§6.6) |
+| 9 | Video | **Mux**. Master stays in R2. Worker ingests the public CDN URL. Publish waits for `video.asset.ready`. Playback policy `public`, quality `basic`. |
 
 Still open, but not blocking the bootstrap work:
 
-1. **Managed video (Stream/Mux) vs ffmpeg workers** — proposal: managed for V0, while always retaining our own master file (§6.6). Decide before video upload lands.
-2. **Bunny for CDN and/or storage** — evaluate after V0 works, most likely as R2 origin + Bunny edge (§6.6).
-3. **Phone verification as a trust tier** — proposal: after V0, gating Aura earning rather than signup (§12.3).
-4. **Username vs display name** — spec shows `@username`. Proposal: one public handle, rename rate-limited.
+1. **Bunny for CDN and/or storage** — evaluate after V0 works, most likely as R2 origin + Bunny edge (§6.6).
+2. **Phone verification as a trust tier** — proposal: after V0, gating Aura earning rather than signup (§12.3).
+3. **Username vs display name** — spec shows `@username`. Proposal: one public handle, rename rate-limited.
+4. **Optional `stream.aurarankd.com` CNAME** in front of Mux playback — later, not V0.
 
 ---
 

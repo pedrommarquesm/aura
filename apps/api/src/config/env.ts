@@ -118,6 +118,15 @@ const envSchema = z.object({
   MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
 
   /**
+   * Mux Video. Optional so a fresh clone still boots. Video ingest fails
+   * closed until the token pair is set. The webhook secret is not the API
+   * token — it is the HMAC for `POST /v1/webhooks/mux`.
+   */
+  MUX_TOKEN_ID: z.string().optional(),
+  MUX_TOKEN_SECRET: z.string().optional(),
+  MUX_WEBHOOK_SECRET: z.string().optional(),
+
+  /**
    * Shared secret for `POST /v1/moderation/*` (`X-Moderation-Key`).
    * Unset parks the key path (staff JWTs still work). Generate with
    * `openssl rand -base64 32`. Kept as a break-glass for scripts.

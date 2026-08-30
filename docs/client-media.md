@@ -136,7 +136,7 @@ V1 is already overlapping **encode** with **caption**. The rest of the work is m
 - **D before B.** The signed `Content-Length` and `Content-Type` are the file we PUT. Optimize first.
 - **Hash of the original in parallel with encode, then send that hash.** The object will not match.
 - **A second encode while the first is still writing.** One job per pick. A new pick cancels the previous promise.
-- **Video transcode on JS.** MEDIA-06. The phone may later do a display-size proxy; the master still uploads as recorded, within `MEDIA_VIDEO_MAX_BYTES`.
+- **Video transcode on JS.** Mux transcodes from the master. The phone may later do a display-size proxy; the master still uploads as recorded, within `MEDIA_VIDEO_MAX_BYTES`.
 
 ### Threading
 
@@ -162,13 +162,18 @@ When a post can carry more than one photo:
 
 Cancel aborts every in-flight PUT and drops the unused optimize promises. Temp JPEGs in the cache directory are leftover-safe; the OS may delete them.
 
-### Video sketch (MEDIA-06)
+### Video (MEDIA-06)
 
-Do **not** run a client encoder in V0. Parallelism for video is:
+Do **not** run a JS encoder. Library **Choose video** only (no in-app camera). Native shrink (~1080p H.264) is fine; refuse after export if over **60s** / **100 MB**. Prefer PUT `video/mp4`.
 
-- Probe duration + size immediately (reject > 60s / over the video cap).
-- Optionally generate a poster frame (one `ImageManipulator` grab) ∥ the PUT of the master, so the processing screen has something to show.
-- PUT the recorded file. Worker / Stream makes the playable renditions.
+```
+phone → PUT master.mp4 → R2 (ours, forever)
+                       → worker tells Mux to ingest the public CDN URL
+                       → Mux copies + transcodes + delivers HLS
+                       → player ← stream.mux.com/{playbackId}.m3u8
+```
+
+R2 is not what the feed plays. Mux is not a CDN in front of R2. Do not Mux Direct Upload from the phone — that skips the master we must keep.
 
 A display-size proxy (720p) can be a later opt-in if cellular uploads dominate support tickets. The original still goes to our bucket (architecture §6.6).
 

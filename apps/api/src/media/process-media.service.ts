@@ -2,16 +2,18 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import sharp from 'sharp';
 
 import { DB, type Database } from '../db/db.module';
-import { mediaAssets, posts, type MediaVariants } from '../db/schema';
+import { mediaAssets, posts, type MediaAsset, type MediaVariants } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 import { variantKey } from './media-keys';
+import { MediaUrlResolver } from './media-url.resolver';
 import { VARIANT_CACHE_CONTROL, isPhotoContentType } from './media-types';
+import { MUX_PROVIDER, MuxVideoService } from './mux.service';
 import { OBJECT_STORE, type ObjectStore } from './object-store';
 
 export interface ProcessMediaResult {
   postId: string;
-  status: 'published' | 'failed';
+  status: 'published' | 'processing' | 'failed';
 }
 
 const FEED_MAX_WIDTH = 1080;
@@ -19,11 +21,11 @@ const THUMB_MAX_WIDTH = 400;
 const JPEG_QUALITY = 85;
 
 /**
- * Turns a just-uploaded master into feed renditions and publishes the post.
+ * Turns a just-uploaded master into feed renditions.
  *
- * Images are processed in-process with sharp. Video keeps the master as the
- * playable `feed` object until Cloudflare Stream lands (MEDIA-06) — V0 does
- * not run a transcoder farm.
+ * Images are processed in-process with sharp and published immediately.
+ * Video keeps the master in our bucket and asks Mux to ingest the public
+ * CDN URL. The post stays `processing` until `video.asset.ready`.
  */
 @Injectable()
 export class ProcessMediaService {
@@ -32,6 +34,8 @@ export class ProcessMediaService {
   constructor(
     @Inject(DB) private readonly db: Database,
     @Inject(OBJECT_STORE) private readonly store: ObjectStore,
+    private readonly mux: MuxVideoService,
+    private readonly mediaUrls: MediaUrlResolver,
   ) {}
 
   async process(input: { postId: string; mediaAssetId: string }): Promise<ProcessMediaResult> {
@@ -43,35 +47,33 @@ export class ProcessMediaService {
       throw new Error(`media asset ${input.mediaAssetId} not found for post ${input.postId}`);
     }
 
+    if (asset.processingStatus === 'ready') {
+      return { postId: input.postId, status: 'published' };
+    }
+
+    // A retry after Mux already accepted the master must not create a second
+    // asset. Publish still waits for the webhook.
+    if (!isPhotoContentType(asset.contentType) && asset.externalAssetId) {
+      return { postId: input.postId, status: 'processing' };
+    }
+
     await this.db
       .update(mediaAssets)
       .set({ processingStatus: 'processing', processingError: null, updatedAt: new Date() })
       .where(eq(mediaAssets.id, asset.id));
 
     try {
-      const result = isPhotoContentType(asset.contentType)
-        ? await this.processPhoto(asset.id, asset.storageKey)
-        : await this.processVideo(asset.storageKey);
+      if (isPhotoContentType(asset.contentType)) {
+        const result = await this.processPhoto(asset.id, asset.storageKey);
+        await this.markReady(asset.id, result);
+        await this.publishPost(input.postId);
+        this.logger.log(`published post ${input.postId}`);
+        return { postId: input.postId, status: 'published' };
+      }
 
-      await this.db
-        .update(mediaAssets)
-        .set({
-          processingStatus: 'ready',
-          variants: result.variants,
-          width: result.width,
-          height: result.height,
-          byteSize: result.byteSize,
-          updatedAt: new Date(),
-        })
-        .where(eq(mediaAssets.id, asset.id));
-
-      await this.db
-        .update(posts)
-        .set({ status: 'published', publishedAt: new Date() })
-        .where(eq(posts.id, input.postId));
-
-      this.logger.log(`published post ${input.postId}`);
-      return { postId: input.postId, status: 'published' };
+      await this.ingestVideo(asset);
+      this.logger.log(`handed post ${input.postId} to Mux as ${asset.id}`);
+      return { postId: input.postId, status: 'processing' };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'processing failed';
       this.logger.error(`processing post ${input.postId} failed: ${message}`);
@@ -85,6 +87,35 @@ export class ProcessMediaService {
 
       return { postId: input.postId, status: 'failed' };
     }
+  }
+
+  private async markReady(
+    assetId: string,
+    result: {
+      variants: MediaVariants;
+      width: number | null;
+      height: number | null;
+      byteSize: number;
+    },
+  ): Promise<void> {
+    await this.db
+      .update(mediaAssets)
+      .set({
+        processingStatus: 'ready',
+        variants: result.variants,
+        width: result.width,
+        height: result.height,
+        byteSize: result.byteSize,
+        updatedAt: new Date(),
+      })
+      .where(eq(mediaAssets.id, assetId));
+  }
+
+  private async publishPost(postId: string): Promise<void> {
+    await this.db
+      .update(posts)
+      .set({ status: 'published', publishedAt: new Date() })
+      .where(eq(posts.id, postId));
   }
 
   private async processPhoto(assetId: string, masterKey: string) {
@@ -120,16 +151,35 @@ export class ProcessMediaService {
     };
   }
 
-  private async processVideo(masterKeyPath: string) {
-    // No Stream yet: the original file is the playable rendition. The feed
-    // card already has a play overlay; HLS and posters arrive with MEDIA-06.
-    const meta = await this.store.head(masterKeyPath);
+  private async ingestVideo(asset: MediaAsset): Promise<void> {
+    if (!this.mux.ingestConfigured) {
+      throw new Error('Mux is not configured');
+    }
 
-    return {
-      variants: { feed: masterKeyPath } satisfies MediaVariants,
-      width: null as number | null,
-      height: null as number | null,
-      byteSize: meta?.contentLength ?? 0,
-    };
+    const meta = await this.store.head(asset.storageKey);
+    const sourceUrl = this.mediaUrls.url(
+      { provider: asset.storageProvider, bucket: asset.storageBucket },
+      asset.storageKey,
+    );
+
+    if (!sourceUrl) {
+      throw new Error('Could not build a public URL for the video master');
+    }
+
+    const created = await this.mux.createAsset({
+      sourceUrl,
+      passthrough: asset.id,
+    });
+
+    await this.db
+      .update(mediaAssets)
+      .set({
+        externalProvider: MUX_PROVIDER,
+        externalAssetId: created.id,
+        variants: created.playbackId ? { ...asset.variants, hls: created.playbackId } : asset.variants,
+        byteSize: meta?.contentLength ?? asset.byteSize,
+        updatedAt: new Date(),
+      })
+      .where(eq(mediaAssets.id, asset.id));
   }
 }

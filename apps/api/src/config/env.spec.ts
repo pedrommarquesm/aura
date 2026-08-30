@@ -74,6 +74,13 @@ describe('loadEnv', () => {
     expect(loadEnv(minimal).MODERATION_SECRET).toBeUndefined();
   });
 
+  it('boots without Mux credentials so a fresh clone does not need a video vendor', () => {
+    const env = loadEnv(minimal);
+    expect(env.MUX_TOKEN_ID).toBeUndefined();
+    expect(env.MUX_TOKEN_SECRET).toBeUndefined();
+    expect(env.MUX_WEBHOOK_SECRET).toBeUndefined();
+  });
+
   it('seeds the GOD staff email by default and leaves org domains closed', () => {
     const env = loadEnv(minimal);
     expect(env.STAFF_OWNER_EMAIL).toBe('pedrommarquesm@gmail.com');

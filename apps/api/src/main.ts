@@ -29,6 +29,25 @@ async function bootstrap(): Promise<void> {
     bodyLimit: 1_048_576,
   });
 
+  // HMAC for Mux is over the raw bytes. Keep them on the request before
+  // Fastify parses JSON, or `video.asset.ready` would fail closed.
+  adapter.getInstance().addContentTypeParser(
+    'application/json',
+    { parseAs: 'buffer' },
+    (request, body, done) => {
+      (request as FastifyRequest & { rawBody?: Buffer | string }).rawBody = body;
+      if (!body.length) {
+        done(null, undefined);
+        return;
+      }
+      try {
+        done(null, JSON.parse(body.toString('utf8')) as unknown);
+      } catch (error) {
+        done(error as Error, undefined);
+      }
+    },
+  );
+
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
     bufferLogs: true,
   });
@@ -51,7 +70,8 @@ async function bootstrap(): Promise<void> {
     keyGenerator: (request: FastifyRequest) => request.ip,
     // Health checks must never be throttled, or a rate-limited spike would
     // look like an outage and trigger a restart loop.
-    allowList: (request: FastifyRequest) => request.url.startsWith('/health'),
+    allowList: (request: FastifyRequest) =>
+      request.url.startsWith('/health') || request.url.startsWith('/v1/webhooks'),
     // The plugin *throws* whatever this returns, so it must be an
     // HttpException. Returning a plain body object would surface as an
     // unrecognised throw and get reported as a 500.
