@@ -33,7 +33,7 @@
       "title": "Não foi possível carregar o feed"
     },
     "post": {
-      "likes": "{count, plural, one {# like} other {# likes}}",
+      "likes": "{count, plural, one {# aura} other {# auras}}",
       "comments": "{count, plural, one {# comentário} other {# comentários}}",
       "auraGain": "+{amount, number} Aura",
       "actions": {
@@ -50,11 +50,11 @@
         "confirm": "Eliminar"
       },
       "a11y": {
-        "like": "Dar like",
-        "unlike": "Retirar o like",
+        "like": "Dar aura",
+        "unlike": "Retirar aura",
         "comment": "Comentar",
-        "doubleTap": "Toca duas vezes para dar like",
-        "doubleTapSound": "Toca duas vezes para dar like. Toca uma vez para o som",
+        "doubleTap": "Toca duas vezes para dar aura",
+        "doubleTapSound": "Toca duas vezes para dar aura. Toca uma vez para o som",
         "mute": "Silenciar",
         "unmute": "Ativar som",
         "options": "Opções da publicação",
@@ -80,7 +80,7 @@
   },
   "create": {
     "title": "Publica algo com Aura",
-    "subtitle": "Cada like que recebes é Aura. Cada ponto de Aura sobe-te no ranking.",
+    "subtitle": "Cada aura que recebes sobe-te no ranking. Cada ponto de Aura conta.",
     "actions": {
       "takePhoto": "Tirar uma foto",
       "takePhotoHint": "A câmara chega numa versão mais tarde.",
@@ -122,7 +122,7 @@
     "you": "Tu",
     "empty": {
       "title": "Ainda ninguém no ranking",
-      "body": "Publica algo que valha um like e o ranking começa a mexer."
+      "body": "Publica algo com Aura e o ranking começa a mexer."
     },
     "error": {
       "title": "Não foi possível carregar o ranking"
@@ -181,7 +181,7 @@
     "reasons": {
       "like": {
         "title": "Inicia sessão para dar Aura",
-        "body": "Os likes são a pontuação. Apple ou Google — sem palavra-passe — e este like conta."
+        "body": "As auras são a pontuação. Apple ou Google — sem palavra-passe — e esta aura conta."
       },
       "create": {
         "title": "Inicia sessão para publicar",

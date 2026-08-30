@@ -104,7 +104,6 @@ export default function PostScreen() {
             <FeedPostCard
               post={post.data}
               isActiveVideo
-              commentNavigates={false}
               onDeleted={() => router.back()}
             />
             <CommentThread

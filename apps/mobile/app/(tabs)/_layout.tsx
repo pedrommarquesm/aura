@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import type { ColorValue } from 'react-native';
@@ -55,69 +56,71 @@ export default function TabsLayout() {
   const { t } = useTranslation();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: colors.aura.bright,
-        tabBarInactiveTintColor: colors.text.muted,
-        tabBarStyle: {
-          backgroundColor: colors.surface.DEFAULT,
-          borderTopColor: colors.border,
-          borderTopWidth: 1,
-          height: TAB_BAR_HEIGHT + insets.bottom,
-          paddingTop: 8,
-          paddingBottom: insets.bottom,
-        },
-        // No horizontal padding: the label needs every point of the item it can get.
-        tabBarItemStyle: { paddingTop: 2, paddingHorizontal: 0 },
-        sceneStyle: { backgroundColor: colors.bg },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t('nav.home'),
-          tabBarLabel: label(t('nav.home')),
-          tabBarIcon: icon('home-outline', 'home'),
-        }}
-        listeners={{
-          tabPress: () => {
-            emitFeedTabPress();
+    <BottomSheetModalProvider>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          tabBarActiveTintColor: colors.aura.bright,
+          tabBarInactiveTintColor: colors.text.muted,
+          tabBarStyle: {
+            backgroundColor: colors.surface.DEFAULT,
+            borderTopColor: colors.border,
+            borderTopWidth: 1,
+            height: TAB_BAR_HEIGHT + insets.bottom,
+            paddingTop: 8,
+            paddingBottom: insets.bottom,
           },
+          // No horizontal padding: the label needs every point of the item it can get.
+          tabBarItemStyle: { paddingTop: 2, paddingHorizontal: 0 },
+          sceneStyle: { backgroundColor: colors.bg },
         }}
-      />
-      <Tabs.Screen
-        name="discover"
-        options={{
-          title: t('nav.discover'),
-          tabBarLabel: label(t('nav.discover')),
-          tabBarIcon: icon('search-outline', 'search'),
-        }}
-      />
-      <Tabs.Screen
-        name="create"
-        options={{
-          title: t('nav.create'),
-          tabBarButton: ({ onPress }) => <GuardedCreateTab onPress={onPress} />,
-        }}
-      />
-      <Tabs.Screen
-        name="rank"
-        options={{
-          title: t('nav.rank'),
-          tabBarLabel: label(t('nav.rank')),
-          tabBarIcon: icon('trophy-outline', 'trophy'),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: t('nav.profile'),
-          tabBarLabel: label(t('nav.profile')),
-          tabBarIcon: icon('person-outline', 'person'),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: t('nav.home'),
+            tabBarLabel: label(t('nav.home')),
+            tabBarIcon: icon('home-outline', 'home'),
+          }}
+          listeners={{
+            tabPress: () => {
+              emitFeedTabPress();
+            },
+          }}
+        />
+        <Tabs.Screen
+          name="discover"
+          options={{
+            title: t('nav.discover'),
+            tabBarLabel: label(t('nav.discover')),
+            tabBarIcon: icon('search-outline', 'search'),
+          }}
+        />
+        <Tabs.Screen
+          name="create"
+          options={{
+            title: t('nav.create'),
+            tabBarButton: ({ onPress }) => <GuardedCreateTab onPress={onPress} />,
+          }}
+        />
+        <Tabs.Screen
+          name="rank"
+          options={{
+            title: t('nav.rank'),
+            tabBarLabel: label(t('nav.rank')),
+            tabBarIcon: icon('trophy-outline', 'trophy'),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: t('nav.profile'),
+            tabBarLabel: label(t('nav.profile')),
+            tabBarIcon: icon('person-outline', 'person'),
+          }}
+        />
+      </Tabs>
+    </BottomSheetModalProvider>
   );
 }
