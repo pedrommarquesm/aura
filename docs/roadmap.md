@@ -39,9 +39,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Choose video in the app (`MOB-58`): library only, native 1080p H.264 export, refuse over 60s / 100 MB. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so Choose video (`MOB-58`) is on a phone. Upload a real clip through Mux. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
-**Next** — Upload a real video on a device build, then HLS autoplay (`MOB-32`).
+**Next** — HLS autoplay once a video post is live (`MOB-32`).
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -147,7 +147,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | Done | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
 | MOB-53 | Choose photo must not kill the iOS process (no Photos permission prompt for PHPicker; no HEIC fast-path; no File() on ph://) | Done | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
-| MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | In review | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
+| MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | Done | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 
 ### Feed
 
