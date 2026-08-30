@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { Button, TextField } from '@/components/ui';
+import { Button, TextField, type TextFieldProps } from '@/components/ui';
 import { messageForError } from '@/lib/api';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useIsAuthenticated } from '@/store/session';
@@ -12,9 +12,11 @@ const COMMENT_MAX = 500;
 export function CommentComposer({
   postId,
   onSubmit,
+  InputComponent,
 }: {
   postId: string;
   onSubmit: (body: string) => Promise<void>;
+  InputComponent?: TextFieldProps['InputComponent'];
 }) {
   const { t } = useTranslation();
   const isAuthenticated = useIsAuthenticated();
@@ -67,6 +69,7 @@ export function CommentComposer({
             onSubmitEditing={() => void submit()}
             editable={!busy}
             error={error}
+            InputComponent={InputComponent}
           />
         </View>
         <Button

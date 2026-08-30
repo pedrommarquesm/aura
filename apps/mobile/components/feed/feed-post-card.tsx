@@ -1,33 +1,38 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { type BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, Text as RNText, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FeedCommentsSheet } from './feed-comments-sheet';
 import { LikeButton, type LikeButtonHandle } from './like-button';
 import { PostOptions } from './post-options';
 import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
+import { celebrateFeedback } from '@/lib/haptics';
 import { useFormat } from '@/lib/i18n';
 import { userProfileHref } from '@/lib/navigation/user-profile';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
+import { usePreferencesStore } from '@/store/preferences';
 import { useIsAuthenticated, useSessionStore } from '@/store/session';
-import { burstTiming, instant } from '@/theme/motion';
+import { burstTiming, celebrate, instant } from '@/theme/motion';
 import { colors, withAlpha } from '@/theme/tokens';
 
 /** Semi-transparent chrome on media. Slash-opacity class names crash Expo Router. */
@@ -38,69 +43,120 @@ function formatDuration(durationMs: number): string {
   return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
 }
 
-const HEART = 64;
-const WAVE_MS = 560;
+const ACTION = 52;
+const MOAI = 80;
+const LIFT = 28;
+const zoomIn = { duration: 90, easing: Easing.out(Easing.cubic) };
+const zoomOut = { duration: 80, easing: Easing.in(Easing.quad) };
 
-function DoubleTapHeart({
+function DoubleTapMoai({
   burst,
   origin,
 }: {
   burst: number;
   origin: { x: number; y: number };
 }) {
-  const scale = useSharedValue(0.35);
   const opacity = useSharedValue(0);
-  const x = useSharedValue(0);
   const y = useSharedValue(0);
+  const scale = useSharedValue(0.35);
+  const glow = useSharedValue(0);
 
   useEffect(() => {
     if (burst === 0) return;
+
+    opacity.set(1);
+    y.set(-18);
     scale.set(0.35);
-    opacity.set(0);
-    x.set(0);
-    y.set(0);
-    scale.set(
-      withSequence(withTiming(1.12, instant), withTiming(0.85, { duration: WAVE_MS - 100 })),
-    );
-    opacity.set(
-      withSequence(withTiming(1, instant), withTiming(0, burstTiming)),
-    );
-    x.set(
+    glow.set(0.2);
+
+    // Uniform zoom-in / zoom-out bounce — not a squash. Hits above the tap, then pounds.
+    y.set(
       withSequence(
-        withTiming(10, { duration: 140 }),
-        withTiming(-12, { duration: 160 }),
-        withTiming(9, { duration: 140 }),
-        withTiming(-6, { duration: 120 }),
+        withTiming(6, zoomIn),
+        withSpring(-16, celebrate),
+        withTiming(2, zoomIn),
+        withSpring(-10, celebrate),
       ),
     );
-    y.set(withTiming(-56, { duration: WAVE_MS }));
-  }, [burst, opacity, scale, x, y]);
+    scale.set(
+      withSequence(
+        withTiming(1.42, zoomIn, (finished) => {
+          if (finished) runOnJS(celebrateFeedback)();
+        }),
+        withSpring(0.9, celebrate),
+        withTiming(1.22, zoomIn),
+        withSpring(1, celebrate),
+      ),
+    );
+    glow.set(
+      withSequence(
+        withTiming(1, zoomIn),
+        withTiming(0.45, zoomOut),
+        withTiming(0.85, zoomIn),
+        withTiming(0, burstTiming),
+      ),
+    );
+    opacity.set(
+      withSequence(
+        withTiming(1, instant),
+        withTiming(1, { duration: 420 }),
+        withTiming(0, burstTiming),
+      ),
+    );
+  }, [burst, glow, opacity, scale, y]);
 
-  const style = useAnimatedStyle(() => ({
+  const moaiStyle = useAnimatedStyle(() => ({
     opacity: opacity.get(),
-    transform: [
-      { translateX: x.get() },
-      { translateY: y.get() },
-      { scale: scale.get() },
-    ],
+    transform: [{ translateY: y.get() }, { scale: scale.get() }],
+    shadowOpacity: 0.3 + glow.get() * 0.55,
+    shadowRadius: 10 + glow.get() * 18,
+  }));
+
+  const haloStyle = useAnimatedStyle(() => ({
+    opacity: glow.get() * 0.5,
+    transform: [{ scale: 0.65 + glow.get() * 0.55 }],
   }));
 
   return (
-    <Animated.View
+    <View
       pointerEvents="none"
-      style={[
-        style,
-        {
-          position: 'absolute',
-          left: origin.x - HEART / 2,
-          top: origin.y - HEART / 2,
-          width: HEART,
-          height: HEART,
-        },
-      ]}
+      style={{
+        position: 'absolute',
+        left: origin.x - MOAI / 2,
+        top: origin.y - MOAI / 2 - LIFT,
+        width: MOAI,
+        height: MOAI,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
-      <Ionicons name="heart" size={HEART} color={colors.like} />
-    </Animated.View>
+      <Animated.View
+        style={[
+          haloStyle,
+          {
+            position: 'absolute',
+            width: MOAI + 28,
+            height: MOAI + 28,
+            borderRadius: 999,
+            backgroundColor: withAlpha(colors.aura.DEFAULT, 0.5),
+          },
+        ]}
+      />
+      <Animated.View
+        style={[
+          moaiStyle,
+          {
+            shadowColor: colors.aura.DEFAULT,
+            shadowOffset: { width: 0, height: 0 },
+            elevation: 14,
+          },
+        ]}
+      >
+        <RNText allowFontScaling={false} style={styles.smashMoai}>
+          🗿
+        </RNText>
+      </Animated.View>
+    </View>
   );
 }
 
@@ -113,16 +169,22 @@ export const FeedPostCard = memo(function FeedPostCard({
   post,
   isActiveVideo = false,
   onDeleted,
+  height: heightProp,
+  overlayInsetTop = 0,
 }: {
   post: FeedCard;
   /** Home feed only: the viewport video plays; others show the poster. */
   isActiveVideo?: boolean;
   onDeleted?: () => void;
+  /** Exact page height. Home feed passes the list viewport so posts snap 1:1. */
+  height?: number;
+  /** Keep top chrome (aura pill) below a floating header. */
+  overlayInsetTop?: number;
 }) {
   const { t } = useTranslation();
   const format = useFormat();
   const router = useRouter();
-  const { height } = useWindowDimensions();
+  const { height: windowHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { author, media } = post;
   const queryClient = useQueryClient();
@@ -138,7 +200,8 @@ export const FeedPostCard = memo(function FeedPostCard({
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
-  const [muted, setMuted] = useState(true);
+  const muted = usePreferencesStore((state) => state.feedMuted);
+  const toggleFeedMuted = usePreferencesStore((state) => state.toggleFeedMuted);
 
   const requireAuth = !isAuthenticated;
   const playbackUrl = videoPlaybackUrl(media);
@@ -146,8 +209,8 @@ export const FeedPostCard = memo(function FeedPostCard({
   const posterUri = media.posterUrl ?? media.thumbUrl ?? media.feedUrl;
   const playing = isVideo && isActiveVideo && Boolean(playbackUrl);
 
-  // Full screen height minus tab bar (approximately 80px)
-  const screenHeight = height - insets.top - 80;
+  const cardHeight = heightProp ?? windowHeight - insets.top;
+  const auraTop = overlayInsetTop > 0 ? overlayInsetTop + 8 : 16;
 
   // Caption truncation - show 2 lines
   const captionLines = 2;
@@ -163,8 +226,8 @@ export const FeedPostCard = memo(function FeedPostCard({
   }, []);
 
   const toggleMuted = useCallback(() => {
-    setMuted((current) => !current);
-  }, []);
+    toggleFeedMuted();
+  }, [toggleFeedMuted]);
 
   useEffect(() => {
     if (burst === 0) return;
@@ -200,23 +263,11 @@ export const FeedPostCard = memo(function FeedPostCard({
     [doubleTap, isVideo, singleTap],
   );
 
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-      />
-    ),
-    [],
-  );
-
   return (
-    <View style={{ height: screenHeight }}>
+    <View style={[styles.card, { height: cardHeight }]}>
       <GestureDetector gesture={mediaGesture}>
         <View
-          className="relative flex-1 bg-bg"
+          style={styles.stage}
           collapsable={false}
           accessible
           accessibilityRole="image"
@@ -225,20 +276,22 @@ export const FeedPostCard = memo(function FeedPostCard({
             isVideo ? t('feed.post.a11y.doubleTapSound') : t('feed.post.a11y.doubleTap')
           }
         >
-          <Image
-            source={posterUri ? { uri: posterUri } : undefined}
-            placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
-            contentFit="cover"
-            transition={160}
-            recyclingKey={post.id}
-            style={{ width: '100%', height: '100%' }}
-            accessibilityElementsHidden
-            importantForAccessibility="no"
-          />
+          <View style={styles.media}>
+            <Image
+              source={posterUri ? { uri: posterUri } : undefined}
+              placeholder={media.thumbUrl ? { uri: media.thumbUrl } : undefined}
+              contentFit="contain"
+              transition={160}
+              recyclingKey={post.id}
+              style={StyleSheet.absoluteFill}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
 
-          {playing && playbackUrl ? (
-            <PostVideo source={playbackUrl} playing muted={muted} />
-          ) : null}
+            {playing && playbackUrl ? (
+              <PostVideo source={playbackUrl} playing muted={muted} contentFit="contain" />
+            ) : null}
+          </View>
 
           <View style={StyleSheet.absoluteFill} collapsable={false} />
 
@@ -256,25 +309,21 @@ export const FeedPostCard = memo(function FeedPostCard({
             </View>
           ) : null}
 
-          <DoubleTapHeart burst={burst} origin={origin} />
+          <DoubleTapMoai burst={burst} origin={origin} />
 
-          {/* Top Right: Aura Count */}
-          <View className="absolute top-4 right-4">
-            <View className="rounded-full px-3 py-1.5" style={onMedia}>
-              <Text variant="label" tone="aura" className="font-extrabold tracking-aura">
-                {format.count(post.aura)} 🗿
-              </Text>
-            </View>
+          <View style={[styles.auraPill, { top: auraTop }, onMedia]}>
+            <Text variant="label" tone="aura" className="font-extrabold tracking-aura">
+              {format.count(post.aura)} 🗿
+            </Text>
           </View>
 
-          {/* Bottom: Full-Width Overlay with Author + Caption */}
           <View className="absolute bottom-0 left-0 right-0">
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
               onPress={shouldTruncateCaption ? openDrawer : openAuthor}
               className="rounded-t-2xl px-4 py-3"
-              style={[onMedia, { paddingRight: 72 }]}
+              style={[onMedia, { paddingRight: ACTION + 28 }]}
             >
               <View className="flex-row items-center gap-2 pb-2">
                 <Avatar
@@ -296,9 +345,9 @@ export const FeedPostCard = memo(function FeedPostCard({
               </View>
               {post.caption ? (
                 <View>
-                  <Text 
-                    variant="body" 
-                    tone="secondary" 
+                  <Text
+                    variant="label"
+                    tone="secondary"
                     numberOfLines={captionLines}
                   >
                     {post.caption}
@@ -313,9 +362,7 @@ export const FeedPostCard = memo(function FeedPostCard({
             </Pressable>
           </View>
 
-          {/* Bottom Right: Action Buttons (Vertical Stack) - Positioned above bottom overlay */}
-          <View className="absolute right-4 gap-3" style={{ bottom: 110 }}>
-            {/* Aura Button */}
+          <View style={styles.actions}>
             <View className="items-center">
               <Pressable
                 accessibilityRole="button"
@@ -331,12 +378,15 @@ export const FeedPostCard = memo(function FeedPostCard({
                   }
                   likeRef.current?.toggle();
                 }}
-                className="h-12 w-12 items-center justify-center rounded-full"
-                style={onMedia}
+                style={[styles.actionBtn, onMedia]}
               >
-                <Text style={{ fontSize: 26, opacity: post.likedByMe ? 1 : 0.7 }}>🗿</Text>
+                <RNText
+                  allowFontScaling={false}
+                  style={[styles.moai, { opacity: post.likedByMe ? 1 : 0.7 }]}
+                >
+                  🗿
+                </RNText>
               </Pressable>
-              {/* Hidden LikeButton for state management and animation */}
               <View style={{ height: 0, overflow: 'hidden' }}>
                 <LikeButton
                   ref={likeRef}
@@ -366,15 +416,13 @@ export const FeedPostCard = memo(function FeedPostCard({
               </Text>
             </View>
 
-            {/* Comment Button */}
             <View className="items-center">
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
                 accessibilityHint={t('feed.post.a11y.comment')}
                 onPress={openDrawer}
-                className="h-12 w-12 items-center justify-center rounded-full"
-                style={onMedia}
+                style={[styles.actionBtn, onMedia]}
               >
                 <Ionicons name="chatbubble-outline" size={24} color={colors.text.DEFAULT} />
               </Pressable>
@@ -388,19 +436,16 @@ export const FeedPostCard = memo(function FeedPostCard({
               </Text>
             </View>
 
-            {/* Share Button */}
             <View className="items-center">
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t('common.actions.share')}
-                className="h-12 w-12 items-center justify-center rounded-full"
-                style={onMedia}
+                style={[styles.actionBtn, onMedia]}
               >
                 <Ionicons name="arrow-redo-outline" size={24} color={colors.text.DEFAULT} />
               </Pressable>
             </View>
 
-            {/* Post Options */}
             <View className="items-center pt-1">
               <PostOptions post={post} onDeleted={onDeleted} />
             </View>
@@ -408,52 +453,61 @@ export const FeedPostCard = memo(function FeedPostCard({
         </View>
       </GestureDetector>
 
-      {/* Bottom Sheet for Caption + Comments */}
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={['50%', '90%']}
-        backdropComponent={renderBackdrop}
-        backgroundStyle={{ backgroundColor: colors.surface.DEFAULT }}
-        handleIndicatorStyle={{ backgroundColor: colors.border }}
-      >
-        <BottomSheetView className="flex-1 px-4">
-          {/* Author */}
-          <Pressable
-            onPress={openAuthor}
-            className="flex-row items-center gap-3 py-3 border-b border-border"
-          >
-            <Avatar uri={author.avatarUrl} username={author.username} size="sm" />
-            <View>
-              <Text variant="label">@{author.username}</Text>
-              {author.title ? (
-                <Text variant="caption" tone="aura">
-                  {author.title}
-                </Text>
-              ) : null}
-            </View>
-          </Pressable>
-
-          {/* Full Caption */}
-          {post.caption ? (
-            <View className="py-4 border-b border-border">
-              <Text variant="body" tone="secondary">
-                {post.caption}
-              </Text>
-            </View>
-          ) : null}
-
-          {/* Comments Section */}
-          <View className="flex-1 pt-4">
-            <Text variant="heading" className="pb-3">
-              {t('post.comments.title')}
-            </Text>
-            <Text variant="body" tone="secondary">
-              {t('post.comments.empty')}
-            </Text>
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+      <FeedCommentsSheet post={post} sheetRef={bottomSheetRef} onOpenAuthor={openAuthor} />
     </View>
   );
+});
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: colors.bg,
+    overflow: 'hidden',
+  },
+  stage: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+  media: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+  },
+  auraPill: {
+    position: 'absolute',
+    right: 16,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  actions: {
+    position: 'absolute',
+    right: 12,
+    bottom: 16,
+    alignItems: 'center',
+    gap: 12,
+  },
+  actionBtn: {
+    height: ACTION,
+    width: ACTION,
+    borderRadius: ACTION / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moai: {
+    fontSize: 28,
+    lineHeight: 34,
+    textAlign: 'center',
+    includeFontPadding: false,
+  },
+  smashMoai: {
+    fontSize: 56,
+    lineHeight: 64,
+    textAlign: 'center',
+    includeFontPadding: false,
+  },
 });

@@ -6,11 +6,10 @@ import type { ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GuardedCreateTab } from '@/components/navigation/create-tab-button';
+import { TAB_BAR_CONTENT_HEIGHT } from '@/components/navigation/tab-bar';
 import { Text } from '@/components/ui';
 import { emitFeedTabPress } from '@/lib/navigation/feed-tab';
 import { colors } from '@/theme/tokens';
-
-const TAB_BAR_HEIGHT = 60;
 
 /**
  * Five tabs share the width, so a label has roughly 70pt to live in. Portuguese runs
@@ -67,7 +66,7 @@ export default function TabsLayout() {
             backgroundColor: colors.surface.DEFAULT,
             borderTopColor: colors.border,
             borderTopWidth: 1,
-            height: TAB_BAR_HEIGHT + insets.bottom,
+            height: TAB_BAR_CONTENT_HEIGHT + insets.bottom,
             paddingTop: 8,
             paddingBottom: insets.bottom,
           },

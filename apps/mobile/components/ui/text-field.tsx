@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { TextInput, View, type TextInputProps } from 'react-native';
 
 import { Text } from './text';
@@ -6,6 +7,8 @@ import { colors, radius, typography } from '@/theme/tokens';
 export type TextFieldProps = TextInputProps & {
   label?: string;
   error?: string | null;
+  /** Bottom sheets need gorhom's input so the keyboard does not cover the field. */
+  InputComponent?: ComponentType<TextInputProps>;
 };
 
 /**
@@ -18,6 +21,7 @@ export function TextField({
   error,
   style,
   multiline,
+  InputComponent = TextInput,
   ...props
 }: TextFieldProps) {
   return (
@@ -27,7 +31,7 @@ export function TextField({
           {label}
         </Text>
       ) : null}
-      <TextInput
+      <InputComponent
         {...props}
         accessibilityLabel={label ?? props.placeholder}
         placeholderTextColor={colors.text.muted}

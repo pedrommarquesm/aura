@@ -43,6 +43,7 @@ export function resetSession() {
   usePreferencesStore.setState({
     feedRanking: 'latest',
     autoplayVideo: true,
+    feedMuted: true,
     hapticsEnabled: true,
     languageOverride: null,
   });

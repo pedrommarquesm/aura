@@ -4,10 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, View, useWindowDimensions } from 'react-native';
+import { Pressable, RefreshControl, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
+import { TAB_BAR_CONTENT_HEIGHT } from '@/components/navigation/tab-bar';
 import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
 import { useScrollToTopOnTabPress } from '@/lib/navigation/use-scroll-to-top-on-tab-press';
@@ -70,7 +71,7 @@ function FeedHeader() {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { height: windowHeight } = useWindowDimensions();
   const isFocused = useIsFocused();
   const ranking = usePreferencesStore((state) => state.feedRanking);
   const sessionStatus = useSessionStore((state) => state.status);
@@ -131,9 +132,23 @@ export default function HomeScreen() {
 
   const playingVideoId = isFocused ? activeVideoId : null;
 
-  // Calculate snap interval for TikTok-style pagination
-  const screenHeight = height - insets.top - 80; // minus tab bar
-  const snapToInterval = screenHeight;
+  // The tab scene is already above the tab bar. Cards must match this viewport
+  // exactly — a guessed height (window minus status bar minus ~80) was short,
+  // so the next post peeked under the current one.
+  const [viewportHeight, setViewportHeight] = useState(
+    () => Math.round(windowHeight - TAB_BAR_CONTENT_HEIGHT - insets.bottom),
+  );
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const onViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const next = Math.round(event.nativeEvent.layout.height);
+    if (next > 0) setViewportHeight(next);
+  }, []);
+
+  const onHeaderLayout = useCallback((event: LayoutChangeEvent) => {
+    const next = Math.round(event.nativeEvent.layout.height);
+    if (next > 0) setHeaderHeight(next);
+  }, []);
 
   if (isPending) {
     return (
@@ -170,10 +185,11 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1 bg-bg" onLayout={onViewportLayout}>
       {/* Floating Header Overlay */}
       <LinearGradient
         colors={[withAlpha(colors.bg, 0.8), 'transparent']}
+        onLayout={onHeaderLayout}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top }}
       >
         <FeedHeader />
@@ -182,29 +198,32 @@ export default function HomeScreen() {
       <FlashList
         ref={listRef}
         data={posts}
+        style={{ flex: 1 }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <FeedPostCard post={item} isActiveVideo={item.id === playingVideoId} />
+          <FeedPostCard
+            post={item}
+            isActiveVideo={item.id === playingVideoId}
+            height={viewportHeight}
+            overlayInsetTop={headerHeight}
+          />
         )}
-        extraData={playingVideoId}
+        extraData={`${playingVideoId}:${viewportHeight}:${headerHeight}`}
         viewabilityConfig={VIDEO_VIEWABILITY}
         onViewableItemsChanged={onViewableItemsChanged}
-        snapToInterval={snapToInterval}
-        decelerationRate="fast"
         pagingEnabled
+        snapToInterval={viewportHeight}
+        snapToAlignment="start"
+        disableIntervalMomentum
+        decelerationRate="fast"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View className="px-gutter py-16" style={{ height: screenHeight, justifyContent: 'center' }}>
+          <View className="px-gutter py-16" style={{ height: viewportHeight, justifyContent: 'center' }}>
             <Text variant="title">{t('feed.empty.title')}</Text>
             <Text variant="body" tone="secondary" className="pt-2">
               {t('feed.empty.body')}
             </Text>
           </View>
-        }
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <FeedPostSkeleton />
-          ) : null
         }
         onEndReached={() => {
           if (hasNextPage && !isFetchingNextPage) {

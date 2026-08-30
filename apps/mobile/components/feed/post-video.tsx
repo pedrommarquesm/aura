@@ -19,10 +19,13 @@ export function PostVideo({
   source,
   playing,
   muted,
+  contentFit = 'contain',
 }: {
   source: string;
   playing: boolean;
   muted: boolean;
+  /** Letterbox when the asset is shorter than the stage. */
+  contentFit?: 'contain' | 'cover';
 }) {
   const player = useVideoPlayer(source, (instance) => {
     instance.loop = true;
@@ -57,7 +60,7 @@ export function PostVideo({
       <VideoView
         player={player}
         style={StyleSheet.absoluteFill}
-        contentFit="cover"
+        contentFit={contentFit}
         nativeControls={false}
         allowsPictureInPicture={false}
         allowsVideoFrameAnalysis={false}

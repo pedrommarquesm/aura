@@ -20,7 +20,26 @@ describe('Comments on a post', () => {
 
     expect(routerMocks().push).not.toHaveBeenCalled();
     expect(await screen.findByText('Comments')).toBeOnTheScreen();
-    expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
+    expect(await screen.findByText('No comments yet. Say something.')).toBeOnTheScreen();
+    expect(screen.getByTestId('comment-body')).toBeOnTheScreen();
+  });
+
+  it('lets them write a comment from the feed drawer', async () => {
+    asSignedIn();
+    api.createComment.mockResolvedValue(createdComment('from the drawer', 1));
+    const user = userEvent.setup();
+    await renderApp(<HomeScreen />);
+    await screen.findByText('golden hour hits different when you are winning');
+
+    await user.press(screen.getAllByHintText('Comment')[0]!);
+    await screen.findByTestId('comment-body');
+    await user.type(screen.getByTestId('comment-body'), 'from the drawer');
+    await user.press(screen.getByTestId('comment-submit'));
+
+    await waitFor(() => {
+      expect(api.createComment).toHaveBeenCalledWith(mockFeed[0]!.id, 'from the drawer');
+    });
+    expect(await screen.findByText('from the drawer')).toBeOnTheScreen();
   });
 
   it('lets a signed-in person comment on someone else\'s post', async () => {
