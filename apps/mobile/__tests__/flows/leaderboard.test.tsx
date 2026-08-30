@@ -11,7 +11,7 @@ describe('Anyone opens the leaderboard', () => {
   });
 
   it('shows who is climbing', async () => {
-    renderApp(<RankScreen />);
+    await renderApp(<RankScreen />);
 
     expect(await screen.findByLabelText('1st place')).toBeOnTheScreen();
     expect(screen.getByText('@alice')).toBeOnTheScreen();

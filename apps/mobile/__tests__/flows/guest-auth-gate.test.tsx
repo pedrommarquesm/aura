@@ -14,7 +14,7 @@ describe('Guest hits a signed-in-only action', () => {
 
   it('asks them to sign in when they tap Create — compose never starts', async () => {
     const user = userEvent.setup();
-    renderApp(<GuardedCreateTab />);
+    await renderApp(<GuardedCreateTab />);
 
     await user.press(await screen.findByLabelText('Create a post'));
 
@@ -24,7 +24,7 @@ describe('Guest hits a signed-in-only action', () => {
   });
 
   it('shows Sign in on Profile instead of their Aura', async () => {
-    renderApp(<ProfileScreen />);
+    await renderApp(<ProfileScreen />);
 
     expect(await screen.findByText('Start farming Aura')).toBeOnTheScreen();
     expect(screen.getByLabelText('Sign in')).toBeOnTheScreen();
@@ -33,7 +33,7 @@ describe('Guest hits a signed-in-only action', () => {
 
   it('lets them dismiss the auth sheet', async () => {
     const user = userEvent.setup();
-    renderApp(<GuardedCreateTab />);
+    await renderApp(<GuardedCreateTab />);
     await user.press(await screen.findByLabelText('Create a post'));
     await screen.findByText('Sign in to post');
 

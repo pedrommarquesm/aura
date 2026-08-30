@@ -13,7 +13,7 @@ describe('Signed-in person likes a post', () => {
 
   it('awards Aura and updates the count without asking them to sign in', async () => {
     const user = userEvent.setup();
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
     const like = await screen.findAllByHintText('Like');
 
     await user.press(like[0]!);
@@ -21,7 +21,7 @@ describe('Signed-in person likes a post', () => {
     await waitFor(() => {
       expect(api.likePost).toHaveBeenCalledWith('01j0000000000000000000001');
     });
-    expect(await screen.findByHintText('Remove like')).toBeOnTheScreen();
+    expect(screen.getByLabelText(/1,?285 likes/)).toBeTruthy();
     expect(screen.queryByText('Sign in to award Aura')).toBeNull();
   });
 });

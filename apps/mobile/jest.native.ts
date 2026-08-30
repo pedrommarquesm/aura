@@ -1,11 +1,44 @@
 import 'react-native-gesture-handler/jestSetup';
 
+jest.mock('react-native-gesture-handler', () => require('./jest.gesture-mock'));
+
+// Node already has Intl. The FormatJS polyfills are ESM and only needed on Hermes.
+jest.mock('@/lib/i18n/intl', () => ({}));
+
+jest.mock('react-native/Libraries/Interaction/InteractionManager', () => {
+  const run = (task: (() => void) | { gen?: () => void }) => {
+    if (typeof task === 'function') task();
+    else task.gen?.();
+    return {
+      then: (onfulfilled?: () => void) => Promise.resolve().then(onfulfilled),
+      done: () => undefined,
+      cancel: () => undefined,
+    };
+  };
+  return { __esModule: true, default: { runAfterInteractions: run }, runAfterInteractions: run };
+});
+
+jest.mock('expo-font', () => ({
+  loadAsync: jest.fn(async () => undefined),
+  isLoaded: jest.fn(() => true),
+}));
+
+jest.mock('@expo/vector-icons', () => require('./jest.ionicons-mock'));
+jest.mock('@expo/vector-icons/Ionicons', () => require('./jest.ionicons-mock'));
+jest.mock('react-native-worklets', () => ({ createSerializable: jest.fn() }));
+jest.mock('react-native-reanimated', () => require('./jest.reanimated-mock'));
+
 jest.mock('expo-secure-store', () => ({
   getItemAsync: jest.fn(async () => null),
   setItemAsync: jest.fn(async () => undefined),
   deleteItemAsync: jest.fn(async () => undefined),
   AFTER_FIRST_UNLOCK: 'AFTER_FIRST_UNLOCK',
 }));
+
+jest.mock('expo-linear-gradient', () => {
+  const { View } = require('react-native');
+  return { LinearGradient: View };
+});
 
 jest.mock('expo-image', () => {
   const { View } = require('react-native');
@@ -83,7 +116,7 @@ const mockBack = jest.fn();
 const mockReplace = jest.fn();
 
 jest.mock('expo-router', () => {
-  const React = require('react');
+  const passthrough = ({ children }: { children?: unknown }) => children ?? null;
   return {
     useRouter: () => ({
       navigate: mockNavigate,
@@ -93,12 +126,8 @@ jest.mock('expo-router', () => {
     }),
     useIsFocused: () => true,
     usePathname: () => '/',
-    Stack: Object.assign(({ children }: { children?: React.ReactNode }) => children ?? null, {
-      Screen: () => null,
-    }),
-    Tabs: Object.assign(({ children }: { children?: React.ReactNode }) => children ?? null, {
-      Screen: () => null,
-    }),
+    Stack: Object.assign(passthrough, { Screen: () => null }),
+    Tabs: Object.assign(passthrough, { Screen: () => null }),
   };
 });
 

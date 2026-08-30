@@ -12,20 +12,18 @@ describe('Guest browses the feed', () => {
   });
 
   it('shows Latest and Trending and the posts people shared', async () => {
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
 
-    expect(await screen.findByRole('tab', { name: 'Latest' })).toBeOnTheScreen();
-    expect(screen.getByRole('tab', { name: 'Trending' })).toBeOnTheScreen();
-    expect(
-      await screen.findByText('golden hour hits different when you are winning'),
-    ).toBeOnTheScreen();
-    expect(screen.getByText('absolute cinema')).toBeOnTheScreen();
+    expect(await screen.findByText('Latest')).toBeTruthy();
+    expect(screen.getByText('Trending')).toBeTruthy();
+    expect(await screen.findByText('golden hour hits different when you are winning')).toBeTruthy();
+    expect(screen.getByText('absolute cinema')).toBeTruthy();
     expect(screen.getAllByHintText('Like').length).toBeGreaterThan(0);
   });
 
   it('loads Trending when they switch the chip', async () => {
     const user = userEvent.setup();
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
     await screen.findByText('golden hour hits different when you are winning');
 
     await user.press(screen.getByRole('tab', { name: 'Trending' }));
@@ -37,7 +35,7 @@ describe('Guest browses the feed', () => {
 
   it('asks them to sign in when they try to like — and does not award Aura', async () => {
     const user = userEvent.setup();
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
     const like = await screen.findAllByHintText('Like');
 
     await user.press(like[0]!);

@@ -12,7 +12,7 @@ describe('New account claims a username', () => {
 
   it('lets them pick a name and continue into the app', async () => {
     const user = userEvent.setup();
-    renderApp(<View />);
+    await renderApp(<View />);
 
     expect(await screen.findByText('Pick your username')).toBeOnTheScreen();
     await user.type(screen.getByLabelText('username'), 'nova');

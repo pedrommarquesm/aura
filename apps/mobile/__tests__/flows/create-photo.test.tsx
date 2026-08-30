@@ -13,7 +13,7 @@ describe('Signed-in person posts a photo', () => {
 
   it('lets them pick, caption, and Post — then waits until the post is live', async () => {
     const user = userEvent.setup();
-    renderApp(<CreateScreen />);
+    await renderApp(<CreateScreen />);
 
     await user.press(await screen.findByLabelText('Choose photo'));
 

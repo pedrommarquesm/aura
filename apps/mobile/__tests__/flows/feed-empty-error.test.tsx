@@ -13,7 +13,7 @@ describe('Feed when there is nothing — or the load fails', () => {
 
   it('tells them the feed is empty', async () => {
     api.fetchFeedPage.mockResolvedValue({ items: [], nextCursor: null, hasMore: false });
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
 
     expect(await screen.findByText('Nothing here yet')).toBeOnTheScreen();
   });
@@ -21,7 +21,7 @@ describe('Feed when there is nothing — or the load fails', () => {
   it('shows an error and Try again brings the posts back', async () => {
     api.fetchFeedPage.mockRejectedValueOnce(new Error('offline'));
     const user = userEvent.setup();
-    renderApp(<HomeScreen />);
+    await renderApp(<HomeScreen />);
 
     expect(await screen.findByText('Could not load the feed')).toBeOnTheScreen();
     api.fetchFeedPage.mockResolvedValue(feedPage());

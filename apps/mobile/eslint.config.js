@@ -7,7 +7,7 @@ module.exports = defineConfig([
     ignores: ['dist/*', '.expo/*'],
   },
   {
-    files: ['**/__tests__/**', 'jest.*.ts'],
+    files: ['**/__tests__/**', 'jest.*.ts', 'jest.*.js'],
     languageOptions: {
       globals: {
         jest: 'readonly',
@@ -17,6 +17,9 @@ module.exports = defineConfig([
         beforeEach: 'readonly',
         afterEach: 'readonly',
       },
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]);

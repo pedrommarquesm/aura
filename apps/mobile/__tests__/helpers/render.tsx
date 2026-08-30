@@ -34,6 +34,6 @@ function Providers({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function renderApp(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
+export async function renderApp(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
   return render(ui, { wrapper: Providers, ...options });
 }

@@ -31,7 +31,7 @@ describe('Signed-in person posts a video', () => {
     );
 
     const user = userEvent.setup();
-    renderApp(<CreateScreen />);
+    await renderApp(<CreateScreen />);
     await user.press(await screen.findByLabelText('Choose video'));
 
     expect(await screen.findByLabelText('Caption')).toBeOnTheScreen();
@@ -65,7 +65,7 @@ describe('Signed-in person posts a video', () => {
     });
 
     const user = userEvent.setup();
-    renderApp(<CreateScreen />);
+    await renderApp(<CreateScreen />);
     await user.press(await screen.findByLabelText('Choose video'));
 
     expect(
@@ -88,7 +88,7 @@ describe('Signed-in person posts a video', () => {
     api.optimizePickedVideo.mockRejectedValue(new Error('too_large'));
 
     const user = userEvent.setup();
-    renderApp(<CreateScreen />);
+    await renderApp(<CreateScreen />);
     await user.press(await screen.findByLabelText('Choose video'));
 
     expect(await screen.findByText('That file is too large. Try another.')).toBeOnTheScreen();

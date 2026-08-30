@@ -80,7 +80,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | MOB-07 | Reanimated + Gesture Handler + Haptics wired and verified | Done | [#4](https://github.com/pedrommarquesm/aura/pull/4) |
 | MOB-50 | i18n: i18next + expo-localization, English + Portuguese | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
 | MOB-51 | Locale-aware number and plural formatting for Aura values | Done | [#12](https://github.com/pedrommarquesm/aura/pull/12) |
-| MOB-64 | Integration tests for the main guest and signed-in journeys (mocked API) | In review | |
+| MOB-64 | Integration tests for the main guest and signed-in journeys (mocked API) | In review | [#54](https://github.com/pedrommarquesm/aura/pull/54) |
 
 ### Web bootstrap
 

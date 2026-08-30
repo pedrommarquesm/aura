@@ -13,7 +13,7 @@ describe('Signed-in profile and settings', () => {
 
   it('shows their Aura, posts, and lets them sign out', async () => {
     const user = userEvent.setup();
-    renderApp(<ProfileScreen />);
+    await renderApp(<ProfileScreen />);
 
     expect(await screen.findByText('@tester')).toBeOnTheScreen();
     expect(screen.getByText('Aura Farmer')).toBeOnTheScreen();
@@ -30,7 +30,7 @@ describe('Signed-in profile and settings', () => {
 
   it('switches the app to Portuguese from Settings', async () => {
     const user = userEvent.setup();
-    renderApp(<SettingsScreen />);
+    await renderApp(<SettingsScreen />);
 
     expect(await screen.findByText('Language')).toBeOnTheScreen();
     await user.press(screen.getByText('Português'));
