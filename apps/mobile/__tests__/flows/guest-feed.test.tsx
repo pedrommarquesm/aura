@@ -19,7 +19,7 @@ describe('Guest browses the feed', () => {
     expect(screen.getByText('Trending')).toBeTruthy();
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeTruthy();
     expect(screen.getByText('absolute cinema')).toBeTruthy();
-    expect(screen.getAllByHintText('Like').length).toBeGreaterThan(0);
+    expect(screen.getAllByHintText('Give aura').length).toBeGreaterThan(0);
   });
 
   it('loads Trending when they switch the chip', async () => {
@@ -48,7 +48,7 @@ describe('Guest browses the feed', () => {
   it('asks them to sign in when they try to like — and does not award Aura', async () => {
     const user = userEvent.setup();
     await renderApp(<HomeScreen />);
-    const like = await screen.findAllByHintText('Like');
+    const like = await screen.findAllByHintText('Give aura');
 
     await user.press(like[0]!);
 

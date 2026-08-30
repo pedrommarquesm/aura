@@ -15,14 +15,14 @@ describe('Signed-in person likes a post', () => {
   it('awards Aura and updates the count without asking them to sign in', async () => {
     const user = userEvent.setup();
     await renderApp(<HomeScreen />);
-    const like = await screen.findAllByHintText('Like');
+    const like = await screen.findAllByHintText('Give aura');
 
     await user.press(like[0]!);
 
     await waitFor(() => {
       expect(api.likePost).toHaveBeenCalledWith('01j0000000000000000000001');
     });
-    expect(screen.getByLabelText(/1,?285 likes/)).toBeTruthy();
+    expect(screen.getAllByLabelText(/1,?285 auras/).length).toBeGreaterThan(0);
     expect(screen.queryByText('Sign in to award Aura')).toBeNull();
   });
 
@@ -36,7 +36,7 @@ describe('Signed-in person likes a post', () => {
       asSignedIn();
     });
 
-    expect(await screen.findByHintText('Remove like')).toBeOnTheScreen();
+    expect((await screen.findAllByHintText('Remove aura')).length).toBeGreaterThan(0);
     expect(api.fetchFeedPage).toHaveBeenCalled();
   });
 
@@ -50,13 +50,13 @@ describe('Signed-in person likes a post', () => {
 
     await renderApp(<HomeScreen />);
     await screen.findByText('absolute cinema');
-    expect(screen.queryByHintText('Remove like')).toBeNull();
+    expect(screen.queryAllByHintText('Remove aura')).toHaveLength(0);
 
     api.fetchFeedPage.mockResolvedValue(signedInPage);
     await act(async () => {
       asSignedIn();
     });
 
-    expect(await screen.findByHintText('Remove like')).toBeOnTheScreen();
+    expect((await screen.findAllByHintText('Remove aura')).length).toBeGreaterThan(0);
   });
 });

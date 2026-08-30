@@ -10,7 +10,7 @@ import { renderApp } from '../helpers/render';
 import { asGuest, asSignedIn, routerMocks } from '../helpers/session';
 
 describe('Comments on a post', () => {
-  it('opens the post when they tap the comment icon on the feed', async () => {
+  it('opens the comments drawer when they tap the comment icon on the feed', async () => {
     asSignedIn();
     const user = userEvent.setup();
     await renderApp(<HomeScreen />);
@@ -18,7 +18,9 @@ describe('Comments on a post', () => {
 
     await user.press(screen.getAllByHintText('Comment')[0]!);
 
-    expect(routerMocks().push).toHaveBeenCalledWith('/post/01j0000000000000000000001');
+    expect(routerMocks().push).not.toHaveBeenCalled();
+    expect(await screen.findByText('Comments')).toBeOnTheScreen();
+    expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
   });
 
   it('lets a signed-in person comment on someone else\'s post', async () => {

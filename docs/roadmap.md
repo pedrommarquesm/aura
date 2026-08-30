@@ -182,6 +182,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-71 | RefreshControl spinner only on pull. Focus / reconnect refetch stays silent. First-load comments use a skeleton, not the globe | Done | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
 | MOB-72 | Do not fetch the feed while session is `restoring`. Key the feed by viewer so a guest snapshot cannot freeze empty hearts | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | MOB-73 | Tapping the Feed tab scrolls the list back to the first post | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
+| MOB-74 | Flow tests match the TikTok feed: Give/Remove aura, comment opens the drawer, one profile control on the card overlay. Moai tap toggles unlike | In review | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |

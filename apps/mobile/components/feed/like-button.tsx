@@ -27,6 +27,8 @@ const RISE_DISTANCE = 34;
 export type LikeButtonHandle = {
   /** Like only. Already liked replays the celebration and does not unlike. */
   like: () => void;
+  /** Toggle. The dedicated aura control unlikes; double-tap does not. */
+  toggle: () => void;
 };
 
 export type LikeButtonProps = {
@@ -133,7 +135,7 @@ export const LikeButton = forwardRef<LikeButtonHandle, LikeButtonProps>(function
     celebrateLike();
   }, [celebrateLike, liked, onChange, onRequireAuth, requireAuth, rise, scale]);
 
-  useImperativeHandle(ref, () => ({ like: likeOnly }), [likeOnly]);
+  useImperativeHandle(ref, () => ({ like: likeOnly, toggle }), [likeOnly, toggle]);
 
   const displayCount = likeCount + (liked === initiallyLiked ? 0 : liked ? 1 : -1);
 

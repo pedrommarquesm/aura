@@ -326,7 +326,7 @@ export const FeedPostCard = memo(function FeedPostCard({
                     });
                     return;
                   }
-                  likeRef.current?.like();
+                  likeRef.current?.toggle();
                 }}
                 className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
               >
