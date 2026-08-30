@@ -628,7 +628,7 @@ Reads:
 
 Writes: on every `AuraLedger` commit, `ZINCRBY` the relevant sets. Periodic full rebuild from `users.aura` (hourly) so Redis and Postgres cannot drift forever.
 
-Postgres remains source of truth. Redis is the read model. If Redis is empty, rebuild from Postgres; do not fail the profile page — fall back to a SQL rank estimate.
+Postgres remains source of truth. Redis is the read model. If Redis is empty, rebuild from Postgres; do not fail the profile page — fall back to a SQL rank estimate. Never `ZINCRBY` a missing key: Redis would create a one-member set and the next read would treat that singleton as the whole board.
 
 ---
 

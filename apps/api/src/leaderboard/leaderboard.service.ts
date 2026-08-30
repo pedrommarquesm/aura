@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { and, desc, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, ne, sql } from 'drizzle-orm';
 import type { Redis } from 'ioredis';
 
 import { DB, type Database } from '../db/db.module';
@@ -62,8 +62,14 @@ export class LeaderboardService {
     viewerId: string | undefined,
     limit: number,
   ): Promise<LeaderboardPage | null> {
-    const total = await this.redis.zcard(GLOBAL_KEY);
-    if (total === 0) return null;
+    let total = await this.redis.zcard(GLOBAL_KEY);
+    if (total === 0) {
+      // Architecture §9: an empty set is cold, not a one-person board.
+      // Rebuild from Postgres instead of serving SQL once and then letting
+      // the next ZINCRBY create a singleton that hides everyone else.
+      total = await this.rebuild();
+      if (total === 0) return null;
+    }
 
     const raw = await this.redis.zrevrange(GLOBAL_KEY, 0, limit - 1, 'WITHSCORES');
     const ids: string[] = [];
@@ -238,6 +244,25 @@ export class LeaderboardService {
 
   async applyDelta(userId: string, delta: number): Promise<void> {
     try {
+      const total = await this.redis.zcard(GLOBAL_KEY);
+      if (total === 0) {
+        // ZINCRBY on a missing key creates a one-member set. The next read
+        // then treats that singleton as the whole board. Rebuild instead —
+        // the ledger already wrote `users.aura`, so the projection is current.
+        await this.rebuild();
+        return;
+      }
+
+      const existing = await this.redis.zscore(GLOBAL_KEY, userId);
+      if (existing === null) {
+        const [row] = await this.db
+          .select({ aura: users.aura })
+          .from(users)
+          .where(eq(users.id, userId));
+        if (row) await this.redis.zadd(GLOBAL_KEY, row.aura, userId);
+        return;
+      }
+
       await this.redis.zincrby(GLOBAL_KEY, delta, userId);
     } catch (error) {
       // Ranking must never fail a like. The periodic rebuild repairs drift.

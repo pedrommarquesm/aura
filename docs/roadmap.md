@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
+**Now** — Leaderboard Redis repair (`AURA-06`). New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -204,6 +204,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-06 | Do not `ZINCRBY` onto an empty `lb:global`. Rebuild from `users.aura`. Likes write the set. Pin the viewer row only when they are outside the list | In progress | |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
@@ -270,6 +271,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | `ZINCRBY` on a cold `lb:global` creates a one-person board. Rebuild from `users.aura` when the set is empty; likes must write the set the same way deletes already do | |
 | 2026-08-30 | `applyAvatarUrl` must not prefix-match comment queries. `['post', id, 'comments']` is a thread page, not a permalink — reading `author` on it crashed confirm after a 200 complete | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
 | 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | 2026-08-30 | Like/unlike writes the post permalink and profile grid, not only the home feed. Profile and post detail pull-to-refresh and refetch on focus | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
