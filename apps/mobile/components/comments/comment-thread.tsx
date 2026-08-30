@@ -2,13 +2,27 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { CommentRow } from './comment-row';
-import { Button, Text } from '@/components/ui';
+import { Button, Skeleton, Text } from '@/components/ui';
 import type { CommentCard } from '@/lib/api';
+
+function CommentRowSkeleton() {
+  return (
+    <View className="flex-row items-start gap-3 px-gutter py-3" accessibilityElementsHidden>
+      <Skeleton className="h-8 w-8 rounded-full" />
+      <View className="flex-1 gap-1.5 pt-0.5">
+        <Skeleton className="h-3.5 w-24" />
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-2/3" />
+      </View>
+    </View>
+  );
+}
 
 export function CommentThread({
   comments,
   empty,
   error,
+  loading = false,
   hasMore = false,
   loadingMore = false,
   onRetry,
@@ -17,6 +31,8 @@ export function CommentThread({
   comments: CommentCard[];
   empty: boolean;
   error?: boolean;
+  /** First load of the thread — in-place rows, not the pull-to-refresh spinner. */
+  loading?: boolean;
   hasMore?: boolean;
   loadingMore?: boolean;
   onRetry?: () => void;
@@ -36,6 +52,11 @@ export function CommentThread({
             {t('post.comments.error')}
           </Text>
           {onRetry ? <Button label={t('common.actions.retry')} size="sm" onPress={onRetry} /> : null}
+        </View>
+      ) : loading ? (
+        <View testID="comment-thread-skeleton">
+          <CommentRowSkeleton />
+          <CommentRowSkeleton />
         </View>
       ) : empty ? (
         <Text variant="body" tone="secondary" className="px-gutter py-3">

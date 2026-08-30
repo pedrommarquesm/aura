@@ -11,6 +11,7 @@ import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { queryKeys } from '@/lib/query/keys';
+import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { usePreferencesStore } from '@/store/preferences';
 import { colors } from '@/theme/tokens';
 
@@ -87,7 +88,6 @@ export default function HomeScreen() {
     isError,
     isFetchingNextPage,
     isPending,
-    isRefetching,
     refetch,
   } = feed;
 
@@ -111,9 +111,9 @@ export default function HomeScreen() {
     }
   }, [pageCount, hasNextPage, isFetchingNextPage, fetchNextPage, ranking]);
 
-  const onRefresh = useCallback(() => {
-    void refetch();
-  }, [refetch]);
+  const { refreshing, onRefresh } = usePullToRefresh(
+    useCallback(() => refetch(), [refetch]),
+  );
 
   const playingVideoId = isFocused ? activeVideoId : null;
 
@@ -177,7 +177,7 @@ export default function HomeScreen() {
         onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl
-            refreshing={isRefetching && !isFetchingNextPage}
+            refreshing={refreshing}
             onRefresh={onRefresh}
             tintColor={colors.aura.bright}
             colors={[colors.aura.bright]}

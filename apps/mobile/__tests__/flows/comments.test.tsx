@@ -1,4 +1,5 @@
 import { act, screen, userEvent, waitFor } from '@testing-library/react-native';
+import { RefreshControl } from 'react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
 import PostScreen from '@/app/post/[id]';
@@ -102,6 +103,85 @@ describe('Comments on a post', () => {
 
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
     expect(api.createComment).not.toHaveBeenCalled();
+  });
+
+  it('skeletons comments on first load and does not spin the refresh control', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+    api.fetchComments.mockImplementation(() => new Promise(() => {}));
+
+    const { UNSAFE_getByType } = await renderApp(<PostScreen />);
+
+    expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+    expect(screen.getByTestId('comment-thread-skeleton')).toBeOnTheScreen();
+    expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
+    expect(UNSAFE_getByType(RefreshControl).props.refreshing).toBe(false);
+  });
+
+  it('does not show the refresh spinner when focus invalidates the thread', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+
+    let commentsCalls = 0;
+    api.fetchComments.mockImplementation(() => {
+      commentsCalls += 1;
+      if (commentsCalls === 1) {
+        return Promise.resolve(
+          commentsPage([sampleComment({ id: 'c-stay', body: 'deserved' })]),
+        );
+      }
+      return new Promise(() => {});
+    });
+
+    const { UNSAFE_getByType } = await renderApp(<PostScreen />);
+
+    expect(await screen.findByText('deserved')).toBeOnTheScreen();
+    await waitFor(() => {
+      expect(api.fetchComments.mock.calls.length).toBeGreaterThan(1);
+    });
+    expect(screen.getByText('deserved')).toBeOnTheScreen();
+    expect(screen.queryByTestId('comment-thread-skeleton')).toBeNull();
+    expect(UNSAFE_getByType(RefreshControl).props.refreshing).toBe(false);
+  });
+
+  it('spins the refresh control only when they pull', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+    api.fetchComments.mockResolvedValue(commentsPage());
+
+    const { UNSAFE_getByType } = await renderApp(<PostScreen />);
+    expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+
+    let finishPost!: (value: unknown) => void;
+    let finishComments!: (value: unknown) => void;
+    api.fetchPost.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishPost = resolve;
+        }),
+    );
+    api.fetchComments.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishComments = resolve;
+        }),
+    );
+
+    await act(async () => {
+      void UNSAFE_getByType(RefreshControl).props.onRefresh();
+    });
+    expect(UNSAFE_getByType(RefreshControl).props.refreshing).toBe(true);
+
+    await act(async () => {
+      finishPost({ ...mockFeed[0]!, status: 'published' });
+      finishComments(commentsPage());
+    });
+    await waitFor(() => {
+      expect(UNSAFE_getByType(RefreshControl).props.refreshing).toBe(false);
+    });
   });
 
   it('opens the post after they sign in — it does not submit a draft', async () => {
