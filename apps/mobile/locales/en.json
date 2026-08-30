@@ -65,7 +65,8 @@
       "takePhoto": "Take a picture",
       "takePhotoHint": "Camera comes in a later build.",
       "choosePhoto": "Choose photo",
-      "chooseDifferent": "Choose a different photo",
+      "chooseVideo": "Choose video",
+      "chooseDifferent": "Choose a different one",
       "post": "Post"
     },
     "caption": {
@@ -73,8 +74,9 @@
       "placeholder": "Say something"
     },
     "videoPicked": "Video ready to post",
+    "videoDuration": "{seconds, plural, one {# second} other {# seconds}}",
     "progress": {
-      "preparing": "Preparing photo…",
+      "preparing": "Preparing…",
       "uploading": "Uploading {percent, number}%",
       "processing": "Processing…"
     },
@@ -82,8 +84,9 @@
       "cameraPermission": "Allow camera access to take a photo.",
       "libraryPermission": "Allow photo access to pick from your library.",
       "unreadable": "Could not read that file. Try another.",
-      "optimize": "Could not prepare that photo. Try another.",
-      "tooLarge": "That photo is too large. Try another.",
+      "optimize": "Could not prepare that file. Try another.",
+      "tooLarge": "That file is too large. Try another.",
+      "tooLong": "Videos can be 60 seconds at most. Try another.",
       "processing": "That post failed to process. Try again."
     }
   },

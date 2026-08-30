@@ -4,7 +4,7 @@ Companion to [backend-architecture.md](./backend-architecture.md) §6 (presign �
 
 The API never sees the file. The app PUTs bytes at a short-lived URL. That only stays cheap and reliable if the **thing we PUT is already small enough to view well on a phone**. This document is the contract for that work: what V1 does on device today, and how the rest of the pipeline runs in parallel without blocking the create screen.
 
-Web never uploads. Video is MEDIA-06. Camera capture is on the create screen but disabled until we ship it.
+Web never uploads. Video pick is MOB-58; Mux ingest is MEDIA-06. Camera capture is on the create screen but disabled until we ship it.
 
 ---
 
@@ -62,7 +62,7 @@ Checksum (later): hash **after** mutate, never the camera-roll bytes. `POST /pos
 
 ## 4. V1 (what the app does now)
 
-Shipped with MOB-52. One photo. No video. No camera.
+Shipped with MOB-52 (photo) and MOB-58 (video). No camera.
 
 ```text
 Choose photo
@@ -79,13 +79,23 @@ Choose photo
   → PUT presigned URL
   → POST /posts/:id/complete
   → poll until published
+
+Choose video
+  → library, videos only. Same PHPicker rule: no Photos permission on iOS.
+    Native export: Compatible + H.264 1080p when the picker supports it.
+    No JS transcode.
+  → refuse after export if over 60s or 100 MB
+  → preview is a placeholder (HLS player is MOB-32)
+  → POST /posts/uploads { contentType, byteSize, durationMs, width, height }
+  → PUT video/mp4 (or video/quicktime)
+  → complete; poll longer because Mux ingest is async
 ```
 
-`asset.fileSize === 0` is not an error. iOS often omits it. We measure with `fetch` + `blob.size`, never `expo-file-system` `File` on a picker URI (`ph://` can abort the process).
+`asset.fileSize === 0` is not an error. iOS often omits it. Photos measure with `fetch` + `blob.size`. Videos never do that — a clip can be tens of megabytes; we only read `fileSize` or `File` on a `file://` copy. Never `expo-file-system` `File` on a `ph://` URI (`ph://` can abort the process).
 
 Take a picture stays on screen and stays disabled. Do not hide it — the product spec still has camera; this is a deliberate ship order, not a deleted feature.
 
-Constants live in `apps/mobile/lib/media/photo-targets.ts` so this document and the code cannot drift.
+Constants live in `apps/mobile/lib/media/photo-targets.ts` and `video-targets.ts` so this document and the code cannot drift.
 
 ---
 

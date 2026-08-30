@@ -11,19 +11,32 @@ import { Button, Text, TextField } from '@/components/ui';
 import { messageForError } from '@/lib/api';
 import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
 import { measureFileBytes } from '@/lib/media/measure-file';
+import { measureVideoBytes } from '@/lib/media/measure-video';
 import { optimizePickedPhoto } from '@/lib/media/optimize-photo';
 import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-photo';
+import { pickVideoFromLibrary } from '@/lib/media/pick-video';
 import { PHOTO_UPLOAD_MAX_BYTES, normalizePhotoMime } from '@/lib/media/photo-targets';
+import {
+  VIDEO_MAX_DURATION_MS,
+  VIDEO_UPLOAD_MAX_BYTES,
+  durationMsFromPicker,
+  isAcceptedVideoMime,
+  isVideoTooLarge,
+  isVideoTooLong,
+  normalizeVideoMime,
+} from '@/lib/media/video-targets';
 import { queryKeys } from '@/lib/query/keys';
 import { putPresignedObject } from '@/lib/upload/put-presigned';
 import { colors } from '@/theme/tokens';
 
 type Picked = {
+  kind: 'photo' | 'video';
   uri: string;
   mimeType: string;
   byteSize: number;
   width?: number;
   height?: number;
+  durationMs?: number;
 };
 
 type Phase = 'idle' | 'preparing' | 'uploading' | 'processing' | 'done';
@@ -103,6 +116,7 @@ export default function CreateScreen() {
     }
 
     const draft: Picked = {
+      kind: 'photo',
       uri: asset.uri,
       mimeType,
       byteSize,
@@ -118,6 +132,7 @@ export default function CreateScreen() {
       .then(() => optimizePickedPhoto(draft))
       .then((optimized) => {
         const next: Picked = {
+          kind: 'photo',
           uri: optimized.uri,
           mimeType: optimized.mimeType,
           byteSize: optimized.byteSize,
@@ -143,6 +158,65 @@ export default function CreateScreen() {
     });
   }
 
+  async function chooseVideo() {
+    setError(null);
+    await afterInteractions();
+
+    let asset;
+    try {
+      asset = await pickVideoFromLibrary();
+    } catch (cause) {
+      setError(
+        cause instanceof LibraryPermissionError
+          ? t('create.errors.libraryPermission')
+          : t('create.errors.unreadable'),
+      );
+      return;
+    }
+
+    if (!asset) return;
+
+    const durationMs = durationMsFromPicker(asset.duration);
+    if (isVideoTooLong(durationMs)) {
+      setError(t('create.errors.tooLong'));
+      return;
+    }
+
+    const mimeType = normalizeVideoMime(asset.mimeType, asset.uri);
+    if (!isAcceptedVideoMime(mimeType)) {
+      setError(t('create.errors.unreadable'));
+      return;
+    }
+
+    let byteSize = 0;
+    try {
+      byteSize = await measureVideoBytes(asset.uri, asset.fileSize);
+    } catch {
+      setError(t('create.errors.unreadable'));
+      return;
+    }
+
+    if (isVideoTooLarge(byteSize)) {
+      setError(t('create.errors.tooLarge'));
+      return;
+    }
+
+    const draft: Picked = {
+      kind: 'video',
+      uri: asset.uri,
+      mimeType,
+      byteSize,
+      width: asset.width,
+      height: asset.height,
+      durationMs: durationMs ?? undefined,
+    };
+
+    setPicked(draft);
+    setPhase('idle');
+    setProgress(0);
+    optimizeRef.current = Promise.resolve(draft);
+  }
+
   async function publish() {
     if (!picked || busy) return;
 
@@ -158,9 +232,19 @@ export default function CreateScreen() {
       const ready = await (optimizeRef.current ?? Promise.resolve(picked));
       if (abort.signal.aborted) return;
 
-      if (!ready.byteSize || ready.byteSize > PHOTO_UPLOAD_MAX_BYTES) {
+      const maxBytes = ready.kind === 'video' ? VIDEO_UPLOAD_MAX_BYTES : PHOTO_UPLOAD_MAX_BYTES;
+      if (!ready.byteSize || ready.byteSize > maxBytes) {
         setPhase('idle');
         setError(t('create.errors.tooLarge'));
+        return;
+      }
+
+      if (
+        ready.kind === 'video' &&
+        (ready.durationMs == null || ready.durationMs > VIDEO_MAX_DURATION_MS)
+      ) {
+        setPhase('idle');
+        setError(t('create.errors.tooLong'));
         return;
       }
 
@@ -172,6 +256,7 @@ export default function CreateScreen() {
         byteSize: ready.byteSize,
         width: ready.width,
         height: ready.height,
+        durationMs: ready.kind === 'video' ? ready.durationMs : undefined,
       });
 
       const put = async (uploadUrl: string, headers: Record<string, string>) => {
@@ -195,7 +280,7 @@ export default function CreateScreen() {
       setPhase('processing');
       await completeUpload(declared.postId, caption.trim() || undefined);
 
-      const deadline = Date.now() + 90_000;
+      const deadline = Date.now() + (ready.kind === 'video' ? 180_000 : 90_000);
       while (Date.now() < deadline) {
         const post = await fetchPost(declared.postId);
         if (post.status === 'published') {
@@ -247,7 +332,21 @@ export default function CreateScreen() {
         {picked ? (
           <View className="pt-6">
             <View className="overflow-hidden rounded-xl bg-surface" style={{ aspectRatio: 0.8 }}>
-              <Image source={{ uri: picked.uri }} contentFit="cover" style={{ flex: 1 }} />
+              {picked.kind === 'photo' ? (
+                <Image source={{ uri: picked.uri }} contentFit="cover" style={{ flex: 1 }} />
+              ) : (
+                <View className="flex-1 items-center justify-center gap-2 px-6">
+                  <Ionicons name="play-circle-outline" size={48} color={colors.aura.bright} />
+                  <Text variant="body">{t('create.videoPicked')}</Text>
+                  {picked.durationMs ? (
+                    <Text variant="caption" tone="muted">
+                      {t('create.videoDuration', {
+                        seconds: Math.max(1, Math.round(picked.durationMs / 1000)),
+                      })}
+                    </Text>
+                  ) : null}
+                </View>
+              )}
             </View>
 
             <Pressable onPress={reset} disabled={busy} className="self-start pt-3">
@@ -314,6 +413,12 @@ export default function CreateScreen() {
               glow
               fullWidth
               onPress={() => void choosePhoto()}
+            />
+            <Button
+              label={t('create.actions.chooseVideo')}
+              icon={<Ionicons name="videocam-outline" size={18} color={colors.text.DEFAULT} />}
+              fullWidth
+              onPress={() => void chooseVideo()}
             />
             <Button
               label={t('create.actions.takePhoto')}
