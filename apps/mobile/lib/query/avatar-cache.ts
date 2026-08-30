@@ -6,7 +6,9 @@ import { queryKeys } from '@/lib/query/keys';
 type InfiniteCards = InfiniteData<CursorPage<FeedCard>, string | null>;
 
 function withAvatar(card: FeedCard, userId: string, avatarUrl: string): FeedCard {
-  if (card.author.id !== userId || card.author.avatarUrl === avatarUrl) return card;
+  if (!card.author || card.author.id !== userId || card.author.avatarUrl === avatarUrl) {
+    return card;
+  }
   return { ...card, author: { ...card.author, avatarUrl } };
 }
 
@@ -41,7 +43,12 @@ export function applyAvatarUrl(
     { predicate: (query) => query.queryKey[0] === 'user' && query.queryKey[2] === 'posts' },
     (current) => mapInfinite(current, input.userId, input.avatarUrl),
   );
-  queryClient.setQueriesData<PostDetail>({ queryKey: ['post'] }, (current) =>
-    current ? { ...withAvatar(current, input.userId, input.avatarUrl), status: current.status } : current,
+  // `postComments` is `['post', id, 'comments']`. A prefix match on `['post']`
+  // would walk those thread pages, read `author` on `{ pages, pageParams }`,
+  // and throw — the crop screen then shows `errors.unknown` after a 200 complete.
+  queryClient.setQueriesData<PostDetail>(
+    { predicate: (query) => query.queryKey[0] === 'post' && query.queryKey.length === 2 },
+    (current) =>
+      current ? { ...withAvatar(current, input.userId, input.avatarUrl), status: current.status } : current,
   );
 }

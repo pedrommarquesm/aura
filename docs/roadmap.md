@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
+**Now** — Avatar confirm crashes if a comment thread is in cache (`MOB-70`). New app build for comments, profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -178,6 +178,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | Done | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
+| MOB-70 | Avatar confirm must not prefix-match `['post', id, 'comments']` when writing the new photo onto permalinks | In progress | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -269,6 +270,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | `applyAvatarUrl` must not prefix-match comment queries. `['post', id, 'comments']` is a thread page, not a permalink — reading `author` on it crashed confirm after a 200 complete | |
 | 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | 2026-08-30 | Like/unlike writes the post permalink and profile grid, not only the home feed. Profile and post detail pull-to-refresh and refetch on focus | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | 2026-08-30 | Authors can edit a post caption (`PATCH /v1/posts/:id`) and delete their own post. Edit does not replace media. Profile tiles open the post. Other people's profiles open from the post avatar, name, or caption handle | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
