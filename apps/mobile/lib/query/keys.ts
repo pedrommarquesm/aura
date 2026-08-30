@@ -7,7 +7,8 @@ import type { FeedRanking } from '@/lib/api';
 export const queryKeys = {
   feed: {
     all: ['feed'] as const,
-    ranking: (ranking: FeedRanking) => ['feed', ranking] as const,
+    ranking: (ranking: FeedRanking, viewer: string = 'guest') =>
+      ['feed', ranking, viewer] as const,
   },
   me: ['me'] as const,
   user: (username: string) => ['user', username] as const,
