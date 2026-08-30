@@ -41,4 +41,15 @@ describe('Anyone opens the leaderboard', () => {
     expect(await screen.findByText(`@${testUser.username}`)).toBeOnTheScreen();
     expect(screen.getAllByText(`@${testUser.username}`)).toHaveLength(1);
   });
+
+  it('pins you at the bottom when you are outside the top list', async () => {
+    asSignedIn();
+    api.fetchGlobalLeaderboard.mockResolvedValue(leaderboardPage);
+
+    await renderApp(<RankScreen />);
+
+    expect(await screen.findByText('@alice')).toBeOnTheScreen();
+    expect(screen.getByText(`@${testUser.username}`)).toBeOnTheScreen();
+    expect(screen.getByText('You')).toBeOnTheScreen();
+  });
 });

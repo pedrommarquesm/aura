@@ -63,10 +63,11 @@ export class LeaderboardService {
     limit: number,
   ): Promise<LeaderboardPage | null> {
     let total = await this.redis.zcard(GLOBAL_KEY);
-    if (total === 0) {
-      // Architecture §9: an empty set is cold, not a one-person board.
-      // Rebuild from Postgres instead of serving SQL once and then letting
-      // the next ZINCRBY create a singleton that hides everyone else.
+    const expected = await this.projectedSize();
+    // Empty *or* short: a delete on a cold set used to ZINCRBY one member
+    // into existence (score −10, everyone else gone). Treat any set smaller
+    // than Postgres as cold and rebuild. Architecture §9.
+    if (expected > 0 && total < expected) {
       total = await this.rebuild();
       if (total === 0) return null;
     }
@@ -221,6 +222,14 @@ export class LeaderboardService {
     `);
 
     return row?.rank ?? null;
+  }
+
+  private async projectedSize(): Promise<number> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(users)
+      .where(ne(users.status, 'banned'));
+    return Number(row?.count ?? 0);
   }
 
   /** Rebuilds the sorted set from Postgres. Redis is a projection, not truth. */
