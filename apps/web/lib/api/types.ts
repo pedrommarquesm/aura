@@ -51,6 +51,7 @@ export type FeedCard = {
   media: PostMedia;
   caption: string | null;
   likeCount: number;
+  commentCount: number;
   /** Aura this post has earned, not the author's total. */
   aura: number;
   likedByMe: boolean;

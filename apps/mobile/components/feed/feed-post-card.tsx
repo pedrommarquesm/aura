@@ -20,6 +20,7 @@ import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
+import { useFormat } from '@/lib/i18n';
 import { userProfileHref } from '@/lib/navigation/user-profile';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
@@ -115,13 +116,17 @@ export const FeedPostCard = memo(function FeedPostCard({
   post,
   isActiveVideo = false,
   onDeleted,
+  commentNavigates = true,
 }: {
   post: FeedCard;
   /** Home feed only: the viewport video plays; others show the poster. */
   isActiveVideo?: boolean;
   onDeleted?: () => void;
+  /** False on the post screen — the thread is already underneath. */
+  commentNavigates?: boolean;
 }) {
   const { t } = useTranslation();
+  const format = useFormat();
   const router = useRouter();
   const { author, media } = post;
   const queryClient = useQueryClient();
@@ -285,7 +290,23 @@ export const FeedPostCard = memo(function FeedPostCard({
           }}
         />
 
-        {/* Comments are V1 (roadmap `API-31`), so the V0 card carries like + share only. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
+          accessibilityHint={t('feed.post.a11y.comment')}
+          hitSlop={12}
+          onPress={() => {
+            if (!commentNavigates) return;
+            router.push(`/post/${post.id}`);
+          }}
+          className="flex-row items-center gap-2"
+        >
+          <Ionicons name="chatbubble-outline" size={22} color={colors.text.secondary} />
+          <Text variant="label" tone="secondary" style={{ fontVariant: ['tabular-nums'] }}>
+            {format.count(post.commentCount ?? 0)}
+          </Text>
+        </Pressable>
+
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('common.actions.share')}

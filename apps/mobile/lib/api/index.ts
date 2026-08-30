@@ -5,6 +5,7 @@ export { ApiError, NetworkError, SessionExpiredError, isRetryable } from './erro
 export { claimUsername, fetchMe, logout, signInWithProvider, type AuthProvider } from './auth';
 export { FEED_PAGE_SIZE, fetchFeedPage, type FeedRanking } from './feed';
 export { LEADERBOARD_PAGE_SIZE, fetchGlobalLeaderboard } from './leaderboard';
+export { COMMENTS_PAGE_SIZE, createComment, fetchComments } from './comments';
 export { likePost, unlikePost } from './likes';
 export {
   completeUpload,
@@ -23,10 +24,13 @@ export {
 } from './users';
 export type {
   AuthTokens,
+  CommentAuthor,
+  CommentCard,
   CompleteAvatarResponse,
   CompleteUploadResponse,
   CreateAvatarUploadRequest,
   CreateAvatarUploadResponse,
+  CreateCommentResult,
   CreateUploadRequest,
   CreateUploadResponse,
   CursorPage,

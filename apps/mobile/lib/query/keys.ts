@@ -13,6 +13,7 @@ export const queryKeys = {
   user: (username: string) => ['user', username] as const,
   userPosts: (userId: string) => ['user', userId, 'posts'] as const,
   post: (id: string) => ['post', id] as const,
+  postComments: (id: string) => ['post', id, 'comments'] as const,
   leaderboard: {
     global: ['leaderboard', 'global'] as const,
   },

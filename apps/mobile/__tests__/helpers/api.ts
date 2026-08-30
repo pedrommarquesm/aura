@@ -3,8 +3,10 @@ import type { ImagePickerAsset } from 'expo-image-picker';
 import { mockFeed } from '@/mocks/feed';
 import type {
   CompleteAvatarResponse,
+  CommentCard,
   CompleteUploadResponse,
   CreateAvatarUploadResponse,
+  CreateCommentResult,
   CreateUploadResponse,
   CursorPage,
   FeedCard,
@@ -17,6 +19,7 @@ import type {
 import type { OptimizedVideo } from '@/lib/media/optimize-video';
 
 import { fetchFeedPage } from '@/lib/api/feed';
+import { createComment, fetchComments } from '@/lib/api/comments';
 import { likePost, unlikePost } from '@/lib/api/likes';
 import {
   completeUpload,
@@ -40,6 +43,8 @@ export const api = {
   fetchFeedPage: fetchFeedPage as jest.MockedFunction<typeof fetchFeedPage>,
   likePost: likePost as jest.MockedFunction<typeof likePost>,
   unlikePost: unlikePost as jest.MockedFunction<typeof unlikePost>,
+  fetchComments: fetchComments as jest.MockedFunction<typeof fetchComments>,
+  createComment: createComment as jest.MockedFunction<typeof createComment>,
   createUpload: createUpload as jest.MockedFunction<typeof createUpload>,
   refreshUpload: refreshUpload as jest.MockedFunction<typeof refreshUpload>,
   completeUpload: completeUpload as jest.MockedFunction<typeof completeUpload>,
@@ -96,6 +101,34 @@ export const sampleVideoAsset = {
 
 export function feedPage(items: FeedCard[] = mockFeed): CursorPage<FeedCard> {
   return { items, nextCursor: null, hasMore: false };
+}
+
+export function commentsPage(items: CommentCard[] = []): CursorPage<CommentCard> {
+  return { items, nextCursor: null, hasMore: false };
+}
+
+export function sampleComment(overrides: Partial<CommentCard> = {}): CommentCard {
+  return {
+    id: 'comment-1',
+    body: 'this is fire',
+    createdAt: '2026-08-30T12:00:00.000Z',
+    author: {
+      id: testUser.id,
+      username: testUser.username,
+      displayName: testUser.displayName,
+      avatarUrl: testUser.avatarUrl,
+      aura: testUser.aura,
+      title: testUser.title,
+    },
+    ...overrides,
+  };
+}
+
+export function createdComment(
+  body = 'this is fire',
+  commentCount = 1,
+): CreateCommentResult {
+  return { comment: sampleComment({ body }), commentCount };
 }
 
 export const likeResult = (liked = true): LikeResult => ({
@@ -219,6 +252,8 @@ export function resetApiMocks() {
   api.fetchFeedPage.mockResolvedValue(feedPage());
   api.likePost.mockResolvedValue(likeResult(true));
   api.unlikePost.mockResolvedValue(likeResult(false));
+  api.fetchComments.mockResolvedValue(commentsPage());
+  api.createComment.mockResolvedValue(createdComment());
   api.createUpload.mockResolvedValue(uploadResponse);
   api.refreshUpload.mockResolvedValue(uploadResponse);
   api.completeUpload.mockResolvedValue(completeResponse);
