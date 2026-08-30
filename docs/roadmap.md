@@ -173,7 +173,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | Done | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
 | MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
-| MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | In review | |
+| MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | In review | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -265,6 +265,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | Like/unlike writes the post permalink and profile grid, not only the home feed. Profile and post detail pull-to-refresh and refetch on focus | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | 2026-08-30 | Authors can edit a post caption (`PATCH /v1/posts/:id`) and delete their own post. Edit does not replace media. Profile tiles open the post. Other people's profiles open from the post avatar, name, or caption handle | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | 2026-08-30 | Choose video is library-only. Native picker export at 1080p H.264. Refuse over 60s / 100 MB. No in-app camera, no JS transcode, no Mux keys on the phone | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 | 2026-08-30 | Video is Mux, not Stream and not ffmpeg. Phone PUTs the master to R2; worker ingests the public CDN URL; publish waits for `video.asset.ready`. Store asset/playback ids, not Mux URLs. Webhook is `POST /v1/webhooks/mux` | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
