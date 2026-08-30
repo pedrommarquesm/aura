@@ -1,5 +1,6 @@
 import '../global.css';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -28,14 +29,16 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <I18nProvider>
           <QueryProvider>
-            <StatusBar style="light" />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.bg },
-              }}
-            />
-            <AuthModals />
+            <BottomSheetModalProvider>
+              <StatusBar style="light" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.bg },
+                }}
+              />
+              <AuthModals />
+            </BottomSheetModalProvider>
           </QueryProvider>
         </I18nProvider>
       </SafeAreaProvider>

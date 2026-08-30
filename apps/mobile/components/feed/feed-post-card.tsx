@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -129,13 +130,16 @@ export const FeedPostCard = memo(function FeedPostCard({
   const viewerUsername = useSessionStore((state) => state.user?.username);
   const requestAuth = useAuthGateStore((state) => state.requestAuth);
 
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
   const openAuthor = useCallback(() => {
     router.push(userProfileHref(author.username, viewerUsername));
   }, [author.username, router, viewerUsername]);
+  
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [muted, setMuted] = useState(true);
+  const [showFullCaption, setShowFullCaption] = useState(false);
 
   const requireAuth = !isAuthenticated;
   const playbackUrl = videoPlaybackUrl(media);
@@ -145,6 +149,18 @@ export const FeedPostCard = memo(function FeedPostCard({
 
   // Full screen height minus tab bar (approximately 80px)
   const screenHeight = height - insets.top - 80;
+
+  // Caption truncation - show 2 lines
+  const captionLines = 2;
+  const shouldTruncateCaption = post.caption && post.caption.length > 80;
+
+  const openDrawer = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+  }, []);
 
   const onDoubleTap = useCallback((x: number, y: number) => {
     setOrigin({ x, y });
@@ -175,9 +191,6 @@ export const FeedPostCard = memo(function FeedPostCard({
   const singleTap = useMemo(
     () =>
       Gesture.Tap()
-        // Do not cap maxDuration here. Exclusive waits for the double-tap
-        // window to fail (~220ms). A 220ms cap on the single tap dies first,
-        // so unmute never ran.
         .maxDelay(220)
         .onEnd((_event, success) => {
           if (success) {
@@ -190,6 +203,18 @@ export const FeedPostCard = memo(function FeedPostCard({
   const mediaGesture = useMemo(
     () => (isVideo ? Gesture.Exclusive(doubleTap, singleTap) : doubleTap),
     [doubleTap, isVideo, singleTap],
+  );
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    [],
   );
 
   return (
@@ -220,9 +245,6 @@ export const FeedPostCard = memo(function FeedPostCard({
             <PostVideo source={playbackUrl} playing muted={muted} />
           ) : null}
 
-          {/* Native VideoView surfaces ignore pointerEvents and swallow
-              taps. This sibling sits on top so Exclusive(double, single)
-              actually receives the press. */}
           <View style={StyleSheet.absoluteFill} collapsable={false} />
 
           {playing ? (
@@ -250,44 +272,55 @@ export const FeedPostCard = memo(function FeedPostCard({
             </View>
           </View>
 
-          {/* Bottom Left: Author Info + Caption */}
-          <View className="absolute bottom-4 left-4 max-w-[70%]">
+          {/* Bottom: Full-Width Overlay with Author + Caption */}
+          <View className="absolute bottom-0 left-0 right-0">
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
-              onPress={openAuthor}
+              onPress={shouldTruncateCaption ? openDrawer : openAuthor}
+              className="rounded-t-2xl bg-bg/70 px-4 py-3 backdrop-blur"
+              style={{ paddingRight: 72 }} // Space for action buttons
             >
-              <View className="rounded-2xl bg-bg/70 px-3 py-3 backdrop-blur">
-                <View className="flex-row items-center gap-2 pb-1">
-                  <Avatar
-                    uri={author.avatarUrl}
-                    username={author.username}
-                    accessible={false}
-                    size="sm"
-                  />
-                  <View className="flex-1">
-                    <Text variant="label" className="font-semibold">
-                      @{author.username}
+              <View className="flex-row items-center gap-2 pb-2">
+                <Avatar
+                  uri={author.avatarUrl}
+                  username={author.username}
+                  accessible={false}
+                  size="sm"
+                />
+                <View className="flex-1">
+                  <Text variant="label" className="font-semibold">
+                    @{author.username}
+                  </Text>
+                  {author.title ? (
+                    <Text variant="caption" tone="aura">
+                      {author.title}
                     </Text>
-                    {author.title ? (
-                      <Text variant="caption" tone="aura">
-                        {author.title}
-                      </Text>
-                    ) : null}
-                  </View>
+                  ) : null}
                 </View>
-                {post.caption ? (
-                  <Text variant="body" tone="secondary" numberOfLines={3} className="pt-1">
+              </View>
+              {post.caption ? (
+                <View>
+                  <Text 
+                    variant="body" 
+                    tone="secondary" 
+                    numberOfLines={captionLines}
+                  >
                     {post.caption}
                   </Text>
-                ) : null}
-              </View>
+                  {shouldTruncateCaption ? (
+                    <Text variant="caption" tone="aura" className="pt-1">
+                      See more
+                    </Text>
+                  ) : null}
+                </View>
+              ) : null}
             </Pressable>
           </View>
 
-          {/* Bottom Right: Action Buttons (Vertical Stack) */}
-          <View className="absolute bottom-4 right-4 gap-4">
-            {/* Aura Button (replacing like) */}
+          {/* Bottom Right: Action Buttons (Vertical Stack) - Positioned above bottom overlay */}
+          <View className="absolute right-4 gap-3" style={{ bottom: 110 }}>
+            {/* Aura Button */}
             <View className="items-center">
               <Pressable
                 accessibilityRole="button"
@@ -305,33 +338,35 @@ export const FeedPostCard = memo(function FeedPostCard({
                 }}
                 className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
               >
-                <Text style={{ fontSize: 24 }}>{post.likedByMe ? '🗿' : '🗿'}</Text>
+                <Text style={{ fontSize: 26, opacity: post.likedByMe ? 1 : 0.7 }}>🗿</Text>
               </Pressable>
-              <LikeButton
-                ref={likeRef}
-                key={`${post.id}:${post.likedByMe}`}
-                likeCount={post.likeCount}
-                initiallyLiked={post.likedByMe}
-                requireAuth={requireAuth}
-                onRequireAuth={() =>
-                  requestAuth({
-                    reason: 'like',
-                    pending: { type: post.likedByMe ? 'unlike' : 'like', postId: post.id },
-                  })
-                }
-                onChange={async (liked) => {
-                  const result = liked ? await likePost(post.id) : await unlikePost(post.id);
-                  applyLikeResult(queryClient, post.id, result);
-                }}
-                size={0}
-              />
+              {/* Hidden LikeButton for state management and animation */}
+              <View style={{ height: 0, overflow: 'hidden' }}>
+                <LikeButton
+                  ref={likeRef}
+                  key={`${post.id}:${post.likedByMe}`}
+                  likeCount={post.likeCount}
+                  initiallyLiked={post.likedByMe}
+                  requireAuth={requireAuth}
+                  onRequireAuth={() =>
+                    requestAuth({
+                      reason: 'like',
+                      pending: { type: post.likedByMe ? 'unlike' : 'like', postId: post.id },
+                    })
+                  }
+                  onChange={async (liked) => {
+                    const result = liked ? await likePost(post.id) : await unlikePost(post.id);
+                    applyLikeResult(queryClient, post.id, result);
+                  }}
+                />
+              </View>
               <Text
                 variant="caption"
                 tone={post.likedByMe ? 'aura' : 'secondary'}
                 className="pt-1 font-semibold"
                 style={{ fontVariant: ['tabular-nums'] }}
               >
-                {format.count(post.likeCount + (post.likedByMe ? 0 : 0))}
+                {format.count(post.likeCount)}
               </Text>
             </View>
 
@@ -341,10 +376,7 @@ export const FeedPostCard = memo(function FeedPostCard({
                 accessibilityRole="button"
                 accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
                 accessibilityHint={t('feed.post.a11y.comment')}
-                onPress={() => {
-                  if (!commentNavigates) return;
-                  router.push(`/post/${post.id}`);
-                }}
+                onPress={openDrawer}
                 className="h-12 w-12 items-center justify-center rounded-full bg-bg/70 backdrop-blur"
               >
                 <Ionicons name="chatbubble-outline" size={24} color={colors.text.DEFAULT} />
@@ -370,13 +402,60 @@ export const FeedPostCard = memo(function FeedPostCard({
               </Pressable>
             </View>
 
-            {/* Post Options (3 dots menu) */}
-            <View className="items-center pt-2">
+            {/* Post Options */}
+            <View className="items-center pt-1">
               <PostOptions post={post} onDeleted={onDeleted} />
             </View>
           </View>
         </View>
       </GestureDetector>
+
+      {/* Bottom Sheet for Caption + Comments */}
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={['50%', '90%']}
+        backdropComponent={renderBackdrop}
+        backgroundStyle={{ backgroundColor: colors.surface.DEFAULT }}
+        handleIndicatorStyle={{ backgroundColor: colors.border }}
+      >
+        <BottomSheetView className="flex-1 px-4">
+          {/* Author */}
+          <Pressable
+            onPress={openAuthor}
+            className="flex-row items-center gap-3 py-3 border-b border-border"
+          >
+            <Avatar uri={author.avatarUrl} username={author.username} size="sm" />
+            <View>
+              <Text variant="label">@{author.username}</Text>
+              {author.title ? (
+                <Text variant="caption" tone="aura">
+                  {author.title}
+                </Text>
+              ) : null}
+            </View>
+          </Pressable>
+
+          {/* Full Caption */}
+          {post.caption ? (
+            <View className="py-4 border-b border-border">
+              <Text variant="body" tone="secondary">
+                {post.caption}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Comments Section */}
+          <View className="flex-1 pt-4">
+            <Text variant="heading" className="pb-3">
+              {t('post.comments.title')}
+            </Text>
+            <Text variant="body" tone="secondary">
+              {t('post.comments.empty')}
+            </Text>
+          </View>
+        </BottomSheetView>
+      </BottomSheetModal>
     </View>
   );
 });

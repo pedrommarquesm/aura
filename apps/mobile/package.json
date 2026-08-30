@@ -9,6 +9,7 @@
     "@formatjs/intl-locale": "^5.3.10",
     "@formatjs/intl-numberformat": "^9.4.0",
     "@formatjs/intl-pluralrules": "^6.3.13",
+    "@gorhom/bottom-sheet": "^5.2.14",
     "@react-native-google-signin/google-signin": "^16.1.4",
     "@shopify/flash-list": "2.0.2",
     "@tanstack/react-query": "^5.102.8",
