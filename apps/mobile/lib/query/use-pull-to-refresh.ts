@@ -12,6 +12,8 @@ export function usePullToRefresh(refetch: () => Promise<unknown>) {
     setPullRefreshing(true);
     try {
       await refetch();
+    } catch {
+      // Query error state already lives on the page.
     } finally {
       setPullRefreshing(false);
     }

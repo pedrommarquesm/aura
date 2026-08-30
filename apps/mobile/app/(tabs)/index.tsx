@@ -177,6 +177,7 @@ export default function HomeScreen() {
         onEndReachedThreshold={0.6}
         refreshControl={
           <RefreshControl
+            testID="pull-to-refresh"
             refreshing={refreshing}
             onRefresh={onRefresh}
             tintColor={colors.aura.bright}

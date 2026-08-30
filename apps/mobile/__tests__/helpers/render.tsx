@@ -31,5 +31,6 @@ export async function renderApp(ui: ReactElement, options?: Omit<RenderOptions, 
     );
   }
 
-  return { ...render(ui, { wrapper: Providers, ...options }), queryClient };
+  await render(ui, { wrapper: Providers, ...options });
+  return { queryClient };
 }

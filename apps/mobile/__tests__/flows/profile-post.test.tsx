@@ -1,4 +1,4 @@
-import { fireEvent, screen, userEvent, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
 import ProfileScreen from '@/app/(tabs)/profile';
@@ -118,7 +118,9 @@ describe('Profile post view and post menu', () => {
     await screen.findByText('my golden hour');
 
     api.fetchPost.mockClear();
-    fireEvent(screen.getByTestId('post-scroll').children[0] as never, 'refresh');
+    await act(async () => {
+      fireEvent(screen.getByTestId('post-scroll').children[0] as never, 'refresh');
+    });
     await waitFor(() => {
       expect(api.fetchPost).toHaveBeenCalled();
     });
@@ -131,7 +133,9 @@ describe('Profile post view and post menu', () => {
 
     api.fetchPublicProfile.mockClear();
     api.fetchUserPosts.mockClear();
-    fireEvent(screen.getByTestId('profile-scroll').children[0] as never, 'refresh');
+    await act(async () => {
+      fireEvent(screen.getByTestId('profile-scroll').children[0] as never, 'refresh');
+    });
     await waitFor(() => {
       expect(api.fetchPublicProfile).toHaveBeenCalled();
       expect(api.fetchUserPosts).toHaveBeenCalled();
