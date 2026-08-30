@@ -13,23 +13,24 @@ const insets = {
   insets: { top: 47, left: 0, right: 0, bottom: 34 },
 };
 
-function Providers({ children }: { children: React.ReactNode }) {
-  const client = createTestQueryClient();
-
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider initialMetrics={insets}>
-        <I18nProvider>
-          <QueryClientProvider client={client}>
-            {children}
-            <AuthModals />
-          </QueryClientProvider>
-        </I18nProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
-  );
-}
-
 export async function renderApp(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
-  return render(ui, { wrapper: Providers, ...options });
+  const queryClient = createTestQueryClient();
+
+  function Providers({ children }: { children: React.ReactNode }) {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider initialMetrics={insets}>
+          <I18nProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+              <AuthModals />
+            </QueryClientProvider>
+          </I18nProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    );
+  }
+
+  await render(ui, { wrapper: Providers, ...options });
+  return { queryClient };
 }

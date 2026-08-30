@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments, avatar upload, and the leaderboard repair.
+**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), pull-to-refresh only spinning on a real pull (`MOB-71`), profile posts, Edit / Delete, other people's profiles, and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments, avatar upload, and the leaderboard repair.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -179,6 +179,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | MOB-70 | Avatar confirm must not prefix-match `['post', id, 'comments']` when writing the new photo onto permalinks | Done | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
+| MOB-71 | RefreshControl spinner only on pull. Focus / reconnect refetch stays silent. First-load comments use a skeleton, not the globe | In review | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -271,6 +272,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | The top RefreshControl spinner is pull-to-refresh only. `isRefetching` from focus, reconnect, or invalidate must not drive it. First-load comments are a skeleton | [#62](https://github.com/pedrommarquesm/aura/pull/62) |
 | 2026-08-30 | `ZINCRBY` on a cold `lb:global` creates a one-person board. Rebuild from `users.aura` when the set is empty; likes must write the set the same way deletes already do | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
 | 2026-08-30 | `applyAvatarUrl` must not prefix-match comment queries. `['post', id, 'comments']` is a thread page, not a permalink — reading `author` on it crashed confirm after a 200 complete | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
 | 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | [#59](https://github.com/pedrommarquesm/aura/pull/59) |

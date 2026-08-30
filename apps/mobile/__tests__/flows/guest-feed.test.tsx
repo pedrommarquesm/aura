@@ -1,6 +1,7 @@
-import { screen, userEvent, waitFor } from '@testing-library/react-native';
+import { act, screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
+import { queryKeys } from '@/lib/query/keys';
 
 import { api } from '../helpers/api';
 import { renderApp } from '../helpers/render';
@@ -31,6 +32,17 @@ describe('Guest browses the feed', () => {
     await waitFor(() => {
       expect(api.fetchFeedPage).toHaveBeenCalledWith('trending', null, expect.anything());
     });
+  });
+
+  it('keeps the posts on screen while the feed refetches', async () => {
+    const { queryClient } = await renderApp(<HomeScreen />);
+    expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+
+    await act(async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.feed.ranking('latest') });
+    });
+
+    expect(screen.getByText('golden hour hits different when you are winning')).toBeOnTheScreen();
   });
 
   it('asks them to sign in when they try to like — and does not award Aura', async () => {

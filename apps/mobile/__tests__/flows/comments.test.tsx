@@ -2,6 +2,7 @@ import { act, screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
 import PostScreen from '@/app/post/[id]';
+import { queryKeys } from '@/lib/query/keys';
 import { mockFeed } from '@/mocks/feed';
 
 import { api, commentsPage, createdComment, ownPost, sampleComment } from '../helpers/api';
@@ -102,6 +103,53 @@ describe('Comments on a post', () => {
 
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
     expect(api.createComment).not.toHaveBeenCalled();
+  });
+
+  it('skeletons comments on first load instead of showing empty', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+    let finishComments!: (value: ReturnType<typeof commentsPage>) => void;
+    api.fetchComments.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishComments = resolve;
+        }),
+    );
+
+    await renderApp(<PostScreen />);
+
+    expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+    expect(screen.getByTestId('comment-thread-skeleton')).toBeOnTheScreen();
+    expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
+
+    await act(async () => {
+      finishComments(commentsPage());
+    });
+    expect(await screen.findByText('No comments yet. Say something.')).toBeOnTheScreen();
+    expect(screen.queryByTestId('comment-thread-skeleton')).toBeNull();
+  });
+
+  it('keeps existing comments while the thread refetches', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+    api.fetchComments.mockResolvedValue(
+      commentsPage([sampleComment({ id: 'c-stay', body: 'deserved' })]),
+    );
+
+    const { queryClient } = await renderApp(<PostScreen />);
+    expect(await screen.findByText('deserved')).toBeOnTheScreen();
+
+    api.fetchComments.mockResolvedValue(
+      commentsPage([sampleComment({ id: 'c-stay', body: 'deserved' })]),
+    );
+    await act(async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.postComments(mockFeed[0]!.id) });
+    });
+
+    expect(screen.getByText('deserved')).toBeOnTheScreen();
+    expect(screen.queryByTestId('comment-thread-skeleton')).toBeNull();
   });
 
   it('opens the post after they sign in — it does not submit a draft', async () => {
