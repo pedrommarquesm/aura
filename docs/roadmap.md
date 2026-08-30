@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Pull-to-refresh on profile and post detail (`MOB-67`) in review. New app build for profile posts, Edit / Delete, other people's profiles, and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
+**Now** — New app build for profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Mobile flow tests (`MOB-64`) are in review.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -173,7 +173,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | Done | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
 | MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
-| MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | In review | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
+| MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | Done | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
