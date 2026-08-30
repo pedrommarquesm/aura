@@ -1,4 +1,4 @@
-import { screen, userEvent, waitFor } from '@testing-library/react-native';
+import { act, screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
 import PostScreen from '@/app/post/[id]';
@@ -31,6 +31,7 @@ describe('Comments on a post', () => {
 
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
     expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
+    expect(screen.getByLabelText('0 comments')).toBeOnTheScreen();
 
     await user.type(screen.getByTestId('comment-body'), 'absolute cinema');
     await user.press(screen.getByTestId('comment-submit'));
@@ -40,6 +41,7 @@ describe('Comments on a post', () => {
     });
     expect(await screen.findByText('absolute cinema')).toBeOnTheScreen();
     expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
+    expect(await screen.findByLabelText('1 comment')).toBeOnTheScreen();
   });
 
   it('lets the author comment on their own post', async () => {
@@ -69,14 +71,14 @@ describe('Comments on a post', () => {
     api.fetchComments.mockResolvedValue(
       commentsPage([
         sampleComment({
-          id: 'c-alice',
+          id: 'c-joao',
           body: 'deserved',
           author: {
-            id: 'u-alice',
-            username: 'alice',
+            id: 'u-joao',
+            username: 'joao',
             displayName: null,
             avatarUrl: null,
-            aura: 82_421,
+            aura: 79_301,
             title: 'Aura Lord',
           },
         }),
@@ -85,7 +87,7 @@ describe('Comments on a post', () => {
     await renderApp(<PostScreen />);
 
     expect(await screen.findByText('deserved')).toBeOnTheScreen();
-    expect(screen.getAllByText('@alice').length).toBeGreaterThan(0);
+    expect(screen.getByText('@joao')).toBeOnTheScreen();
   });
 
   it('asks a guest to sign in when they try to write a comment', async () => {
@@ -99,6 +101,27 @@ describe('Comments on a post', () => {
     await user.press(screen.getByTestId('comment-submit'));
 
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
+    expect(api.createComment).not.toHaveBeenCalled();
+  });
+
+  it('opens the post after they sign in — it does not submit a draft', async () => {
+    asGuest();
+    routerMocks().params = { id: mockFeed[0]!.id };
+    api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
+    const user = userEvent.setup();
+    await renderApp(<PostScreen />);
+    await screen.findByText('golden hour hits different when you are winning');
+
+    await user.press(screen.getByTestId('comment-submit'));
+    expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
+
+    await act(async () => {
+      asSignedIn();
+    });
+
+    await waitFor(() => {
+      expect(routerMocks().navigate).toHaveBeenCalledWith(`/post/${mockFeed[0]!.id}`);
+    });
     expect(api.createComment).not.toHaveBeenCalled();
   });
 });

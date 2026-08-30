@@ -29,5 +29,9 @@ npm test
 | 12  | Signed in   | Profile                          | Stats, own posts, Sign out → guest CTA              |
 | 13  | Signed in   | Settings → Português             | UI language switches                                |
 | 14  | New account | First open                       | Username claim before the rest of the app           |
+| 15  | Signed in   | Taps the comment icon            | Opens the post                                      |
+| 16  | Signed in   | Comments on a post (own or other)| Comment is posted, thread and count update          |
+| 17  | Guest       | Reads comments / taps Post       | Can read. Writing opens “Sign in to comment”        |
+| 18  | Guest       | Signs in from the comment gate   | Lands on the post. Draft is not submitted           |
 
 API mocks live in `helpers/api.ts`. Session helpers in `helpers/session.ts`. Domain `jest.mock` calls are in `jest.api.ts` so they install before any screen is imported.
