@@ -228,7 +228,9 @@
       "a11y": {
         "like": "Dar like",
         "unlike": "Retirar o like",
-        "doubleClick": "Clica duas vezes para dar like"
+        "doubleClick": "Clica duas vezes para dar like",
+        "unmute": "Ativar som",
+        "mute": "Silenciar"
       },
       "video": "Vídeo"
     }

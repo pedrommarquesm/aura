@@ -51,6 +51,7 @@ export function AppPreview({
               priority
               sizes="336px"
               className="aspect-4/5"
+              playInView={false}
             />
             <span className="absolute bottom-3 left-3 rounded-full bg-aura-gradient px-3 py-1 text-caption font-semibold">
               {t("auraGain", { aura: 10 })}

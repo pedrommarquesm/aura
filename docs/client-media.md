@@ -192,6 +192,8 @@ R2 is not what the feed plays. Mux is not a CDN in front of R2. Do not Mux Direc
 
 The mobile feed plays `hlsUrl` (Mux HLS) with `expo-video`. One viewport video at a time, muted until tap. A transparent overlay sits above `VideoView` so the tap is not swallowed by the native surface. Create plays the picked URI the same way, before publish. The profile grid keeps the Mux thumb plus a play badge — it does not mount a player.
 
+The public site plays the same `hlsUrl`: Safari uses native HLS, other browsers use hls.js. The card poster is `posterUrl ?? thumbUrl ?? feedUrl` because Mux sets `feedUrl` to null. One in-view video at a time, muted until the control is tapped. Mux keys stay off the site.
+
 A display-size proxy (720p) can be a later opt-in if cellular uploads dominate support tickets. The original still goes to our bucket (architecture §6.6).
 
 ---
