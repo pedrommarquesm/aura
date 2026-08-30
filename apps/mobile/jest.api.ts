@@ -24,6 +24,8 @@ jest.mock('@/lib/api/posts', () => ({
 jest.mock('@/lib/api/users', () => ({
   fetchPublicProfile: jest.fn(),
   fetchUserPosts: jest.fn(),
+  createAvatarUpload: jest.fn(),
+  completeAvatarUpload: jest.fn(),
   USER_POSTS_PAGE_SIZE: 12,
 }));
 
@@ -55,6 +57,10 @@ jest.mock('@/lib/media/pick-video', () => ({
 
 jest.mock('@/lib/media/optimize-photo', () => ({
   optimizePickedPhoto: jest.fn(),
+}));
+
+jest.mock('@/lib/media/crop-avatar', () => ({
+  cropAvatarPhoto: jest.fn(),
 }));
 
 jest.mock('@/lib/media/optimize-video', () => ({

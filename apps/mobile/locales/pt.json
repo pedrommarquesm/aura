@@ -135,6 +135,13 @@
     "actions": {
       "edit": "Editar perfil"
     },
+    "avatar": {
+      "edit": "Editar foto",
+      "title": "Foto de perfil",
+      "hint": "Usa dois dedos para ampliar. Arrasta para mover.",
+      "use": "Usar foto",
+      "cancel": "Cancelar"
+    },
     "posts": {
       "title": "Publicações",
       "empty": "Ainda não publicaste nada. A grelha enche à medida que publicas.",

@@ -15,6 +15,8 @@ import {
   type PublicUser,
 } from '@/lib/api';
 import { useFormat } from '@/lib/i18n';
+import { LibraryPermissionError, pickPhotoFromLibrary } from '@/lib/media/pick-photo';
+import { setPendingAvatarSource } from '@/lib/media/pending-avatar';
 import { queryKeys } from '@/lib/query/keys';
 import { colors } from '@/theme/tokens';
 
@@ -27,6 +29,7 @@ export function UserProfile({
   emptyPosts,
   fallback,
   showComingSoon = false,
+  canEditAvatar = false,
   footer,
 }: {
   username: string;
@@ -35,10 +38,13 @@ export function UserProfile({
   emptyPosts: string;
   fallback?: Pick<PublicUser, 'aura' | 'title' | 'username' | 'avatarUrl'> | null;
   showComingSoon?: boolean;
+  /** Own profile only. Opens the library picker, then the circular crop. */
+  canEditAvatar?: boolean;
   footer?: ReactNode;
 }) {
   const { t } = useTranslation();
   const format = useFormat();
+  const router = useRouter();
 
   const profile = useQuery({
     queryKey: queryKeys.user(username),
@@ -53,6 +59,21 @@ export function UserProfile({
     getNextPageParam: (last) => (last.hasMore ? last.nextCursor : undefined),
     enabled: Boolean(authorId),
   });
+
+  async function editAvatar() {
+    try {
+      const asset = await pickPhotoFromLibrary();
+      if (!asset || !asset.width || !asset.height) return;
+      setPendingAvatarSource({
+        uri: asset.uri,
+        width: asset.width,
+        height: asset.height,
+      });
+      router.push('/avatar-edit');
+    } catch (cause) {
+      if (cause instanceof LibraryPermissionError) return;
+    }
+  }
 
   const card = profile.data;
   const aura = card?.aura ?? fallback?.aura ?? 0;
@@ -90,7 +111,20 @@ export function UserProfile({
       }}
     >
       <View className="items-center pt-4">
-        <Avatar uri={avatarUrl} username={handle} size="xl" ring />
+        <View className="relative">
+          <Avatar uri={avatarUrl} username={handle} size="xl" ring />
+          {canEditAvatar ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('profile.avatar.edit')}
+              hitSlop={8}
+              onPress={() => void editAvatar()}
+              className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border-2 border-bg bg-aura"
+            >
+              <Ionicons name="pencil" size={14} color={colors.text.DEFAULT} />
+            </Pressable>
+          ) : null}
+        </View>
 
         <Text variant="heading" className="pt-3">
           @{handle}

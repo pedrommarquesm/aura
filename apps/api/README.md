@@ -100,6 +100,8 @@ Product endpoints live under `/v1`; health is deliberately outside it.
 | POST | `/v1/auth/logout` | required | Revoke the current device session |
 | POST | `/v1/auth/username` | required | Claim a handle during onboarding |
 | GET | `/v1/auth/me` | required | Current user |
+| POST | `/v1/me/avatar/uploads` | required | Presign a square profile JPEG. Does not create a post |
+| POST | `/v1/me/avatar/complete` | required | Verify the object and write `users.avatarUrl` |
 | GET | `/v1/feed` | optional | Latest, cursor paginated |
 | GET | `/v1/feed/trending` | optional | Precomputed `trending_score` order |
 | POST | `/v1/posts/uploads` | required | Presign a direct PUT to object storage |

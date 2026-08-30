@@ -112,6 +112,8 @@ const envSchema = z.object({
 
   MEDIA_UPLOAD_TTL_SECONDS: z.coerce.number().int().positive().default(900),
   MEDIA_PHOTO_MAX_BYTES: z.coerce.number().int().positive().default(20 * 1024 * 1024),
+  /** Cropped square JPEG from the app. Much smaller than a post master. */
+  MEDIA_AVATAR_MAX_BYTES: z.coerce.number().int().positive().default(2 * 1024 * 1024),
   MEDIA_VIDEO_MAX_BYTES: z.coerce.number().int().positive().default(100 * 1024 * 1024),
   MEDIA_VIDEO_MAX_DURATION_MS: z.coerce.number().int().positive().default(60_000),
   MEDIA_DAILY_UPLOAD_QUOTA: z.coerce.number().int().positive().default(20),

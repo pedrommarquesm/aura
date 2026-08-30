@@ -57,6 +57,7 @@ export default function ProfileScreen() {
         emptyPosts={t('profile.posts.empty')}
         fallback={user}
         showComingSoon
+        canEditAvatar
         footer={
           <Button label={t('auth.signOut')} variant="ghost" className="mt-6" onPress={() => void signOut()} />
         }
