@@ -126,6 +126,9 @@ jest.mock('expo-router', () => {
     }),
     useIsFocused: () => true,
     usePathname: () => '/',
+    useLocalSearchParams: () =>
+      (globalThis as { __routerMocks?: { params?: Record<string, unknown> } }).__routerMocks
+        ?.params ?? {},
     Stack: Object.assign(passthrough, { Screen: () => null }),
     Tabs: Object.assign(passthrough, { Screen: () => null }),
   };
@@ -138,6 +141,7 @@ jest.mock('expo-router', () => {
       push: jest.Mock;
       back: jest.Mock;
       replace: jest.Mock;
+      params: Record<string, string | string[] | undefined>;
     };
   }
 ).__routerMocks = {
@@ -145,4 +149,5 @@ jest.mock('expo-router', () => {
   push: mockPush,
   back: mockBack,
   replace: mockReplace,
+  params: {},
 };

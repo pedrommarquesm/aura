@@ -106,6 +106,8 @@ Product endpoints live under `/v1`; health is deliberately outside it.
 | POST | `/v1/posts/:id/uploads` | required | Refresh an expired presign |
 | POST | `/v1/posts/:id/complete` | required | Verify the object and enqueue processing |
 | GET | `/v1/posts/:id` | optional | Public when published; author can see processing |
+| PATCH | `/v1/posts/:id` | required | Author-only caption edit. `{ caption }` (string or `null`). Media is not replaced |
+| DELETE | `/v1/posts/:id` | required | Author-only soft delete. Same Aura reversal as a staff takedown |
 | POST | `/v1/posts/:id/like` | required | Idempotent |
 | DELETE | `/v1/posts/:id/like` | required | Writes a `REVERSAL` event |
 | GET | `/v1/leaderboards/global` | optional | Top N plus the viewer's own rank |

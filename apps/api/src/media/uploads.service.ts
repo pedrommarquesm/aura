@@ -8,6 +8,7 @@ import { ErrorCode } from '../common/errors/error-codes';
 import { newId } from '../common/ids';
 import { DB, type Database } from '../db/db.module';
 import { mediaAssets, posts, type User } from '../db/schema';
+import { normalizeCaption } from '../posts/caption';
 import { MediaJob, type MediaProcessPayload } from '../queue/queue.constants';
 import { MEDIA_QUEUE } from '../queue/queue.module';
 
@@ -180,7 +181,7 @@ export class UploadsService {
       throw new AppError(ErrorCode.UPLOAD_TOO_LARGE, 'Uploaded file is larger than declared', 413);
     }
 
-    const caption = input.caption?.trim() ? input.caption.trim().slice(0, 2_200) : null;
+    const caption = normalizeCaption(input.caption);
 
     await this.db.update(posts).set({ status: 'processing', caption }).where(eq(posts.id, postId));
     await this.db

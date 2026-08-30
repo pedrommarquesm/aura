@@ -721,6 +721,7 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | POST | `/v1/posts/:id/uploads` | refresh an expired presign for the same post |
 | POST | `/v1/posts/:id/complete` | caption + enqueue processing |
 | GET | `/v1/posts/:id` | public if published |
+| PATCH | `/v1/posts/:id` | author only; caption only. Body `{ caption }`. Blank becomes `null`. Media is not replaced |
 | DELETE | `/v1/posts/:id` | author only; soft delete |
 | POST | `/v1/posts/:id/like` | idempotent |
 | DELETE | `/v1/posts/:id/like` | |

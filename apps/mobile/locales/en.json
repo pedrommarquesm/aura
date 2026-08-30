@@ -34,6 +34,19 @@
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
       "auraGain": "+{amount, number} Aura",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save"
+      },
+      "edit": {
+        "title": "Edit caption"
+      },
+      "delete": {
+        "title": "Delete this post?",
+        "body": "This cannot be undone. The Aura it earned is reversed.",
+        "confirm": "Delete"
+      },
       "a11y": {
         "like": "Like",
         "unlike": "Remove like",
@@ -41,7 +54,8 @@
         "doubleTapSound": "Double-tap to like. Tap once for sound",
         "mute": "Mute",
         "unmute": "Unmute",
-        "options": "Post options"
+        "options": "Post options",
+        "profile": "View @{username}"
       }
     }
   },
@@ -123,9 +137,20 @@
     },
     "posts": {
       "title": "Posts",
-      "empty": "Nothing posted yet. The grid fills as you publish."
+      "empty": "Nothing posted yet. The grid fills as you publish.",
+      "emptyOther": "@{username} has not posted yet.",
+      "open": "Open post"
+    },
+    "error": {
+      "title": "Could not load this profile"
     },
     "comingSoon": "Aura Sense and Vote Power join this card in V1 (roadmap AURA-11, AURA-10)."
+  },
+  "post": {
+    "title": "Post",
+    "error": {
+      "title": "Could not load this post"
+    }
   },
   "auth": {
     "signIn": "Sign in",

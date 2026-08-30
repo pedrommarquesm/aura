@@ -12,6 +12,7 @@ export const queryKeys = {
   me: ['me'] as const,
   user: (username: string) => ['user', username] as const,
   userPosts: (userId: string) => ['user', userId, 'posts'] as const,
+  post: (id: string) => ['post', id] as const,
   leaderboard: {
     global: ['leaderboard', 'global'] as const,
   },

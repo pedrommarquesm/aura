@@ -21,10 +21,19 @@ export type AvatarProps = {
   size?: AvatarSize;
   /** Gradient ring. Earned status only — top ranks, live challenge entrants. */
   ring?: boolean;
+  /** Hide from the a11y tree when the avatar sits inside another button. */
+  accessible?: boolean;
   className?: string;
 };
 
-export function Avatar({ uri, username, size = 'md', ring = false, className }: AvatarProps) {
+export function Avatar({
+  uri,
+  username,
+  size = 'md',
+  ring = false,
+  accessible = true,
+  className,
+}: AvatarProps) {
   const { t } = useTranslation();
   const sizing = sizes[size];
 
@@ -42,7 +51,9 @@ export function Avatar({ uri, username, size = 'md', ring = false, className }: 
           contentFit="cover"
           transition={120}
           style={{ width: '100%', height: '100%' }}
-          accessibilityLabel={t('common.avatarAlt', { username })}
+          accessibilityLabel={accessible ? t('common.avatarAlt', { username }) : undefined}
+          accessibilityElementsHidden={!accessible}
+          importantForAccessibility={accessible ? 'auto' : 'no'}
         />
       ) : (
         <Text variant={sizing.initial} tone="secondary">

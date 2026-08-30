@@ -48,6 +48,7 @@ export function routerMocks() {
         push: jest.Mock;
         back: jest.Mock;
         replace: jest.Mock;
+        params: Record<string, string | string[] | undefined>;
       };
     }
   ).__routerMocks;
