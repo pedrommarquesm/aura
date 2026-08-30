@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, View } from 'react-native';
+import { Pressable, RefreshControl, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
@@ -69,6 +69,7 @@ function FeedHeader() {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const isFocused = useIsFocused();
   const ranking = usePreferencesStore((state) => state.feedRanking);
 
@@ -117,11 +118,19 @@ export default function HomeScreen() {
 
   const playingVideoId = isFocused ? activeVideoId : null;
 
+  // Calculate snap interval for TikTok-style pagination
+  const screenHeight = height - insets.top - 80; // minus tab bar
+  const snapToInterval = screenHeight;
+
   if (isPending) {
     return (
-      <View className="flex-1 bg-bg" style={{ paddingTop: insets.top }}>
-        <FeedHeader />
-        <FeedPostSkeleton />
+      <View className="flex-1 bg-bg">
+        <View 
+          className="absolute top-0 left-0 right-0 z-10"
+          style={{ paddingTop: insets.top }}
+        >
+          <FeedHeader />
+        </View>
         <FeedPostSkeleton />
       </View>
     );
@@ -129,9 +138,14 @@ export default function HomeScreen() {
 
   if (isError) {
     return (
-      <View className="flex-1 bg-bg px-gutter" style={{ paddingTop: insets.top }}>
-        <FeedHeader />
-        <View className="flex-1 items-start justify-center gap-3 pb-24">
+      <View className="flex-1 bg-bg">
+        <View 
+          className="absolute top-0 left-0 right-0 z-10 bg-bg"
+          style={{ paddingTop: insets.top }}
+        >
+          <FeedHeader />
+        </View>
+        <View className="flex-1 items-start justify-center gap-3 px-gutter pb-24">
           <Text variant="title">{t('feed.error.title')}</Text>
           <Text variant="body" tone="secondary">
             {messageForError(error)}
@@ -143,7 +157,15 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1 bg-bg" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-bg">
+      {/* Floating Header Overlay */}
+      <View 
+        className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-bg/80 to-transparent"
+        style={{ paddingTop: insets.top }}
+      >
+        <FeedHeader />
+      </View>
+
       <FlashList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -153,9 +175,13 @@ export default function HomeScreen() {
         extraData={playingVideoId}
         viewabilityConfig={VIDEO_VIEWABILITY}
         onViewableItemsChanged={onViewableItemsChanged}
-        ListHeaderComponent={FeedHeader}
+        estimatedItemSize={screenHeight}
+        snapToInterval={snapToInterval}
+        decelerationRate="fast"
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View className="px-gutter py-16">
+          <View className="px-gutter py-16" style={{ height: screenHeight, justifyContent: 'center' }}>
             <Text variant="title">{t('feed.empty.title')}</Text>
             <Text variant="body" tone="secondary" className="pt-2">
               {t('feed.empty.body')}
@@ -165,8 +191,6 @@ export default function HomeScreen() {
         ListFooterComponent={
           isFetchingNextPage ? (
             <FeedPostSkeleton />
-          ) : posts.length > 0 ? (
-            <View className="h-8" />
           ) : null
         }
         onEndReached={() => {
@@ -184,7 +208,6 @@ export default function HomeScreen() {
             progressBackgroundColor={colors.surface.DEFAULT}
           />
         }
-        showsVerticalScrollIndicator={false}
       />
     </View>
   );
