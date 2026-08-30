@@ -147,7 +147,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-52 | Choose photo (library, images only). Take a picture stays visible and disabled. Client shrinks to 2160 JPEG before PUT; parallel pipeline is in docs/client-media.md | Done | [#29](https://github.com/pedrommarquesm/aura/pull/29) |
 | MOB-53 | Choose photo must not kill the iOS process (no Photos permission prompt for PHPicker; no HEIC fast-path; no File() on ph://) | Done | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
-| MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | In review | |
+| MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | In review | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 
 ### Feed
 
@@ -255,7 +255,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-30 | Choose video is library-only. Native picker export at 1080p H.264. Refuse over 60s / 100 MB. No in-app camera, no JS transcode, no Mux keys on the phone | |
+| 2026-08-30 | Choose video is library-only. Native picker export at 1080p H.264. Refuse over 60s / 100 MB. No in-app camera, no JS transcode, no Mux keys on the phone | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 | 2026-08-30 | Video is Mux, not Stream and not ffmpeg. Phone PUTs the master to R2; worker ingests the public CDN URL; publish waits for `video.asset.ready`. Store asset/playback ids, not Mux URLs. Webhook is `POST /v1/webhooks/mux` | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
 | 2026-08-29 | Language change is in Settings, not the web header or the mobile profile. Web: `/settings` (`/pt/definicoes`) plus a header gear menu. Mobile: Settings screen opened from the profile gear | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | 2026-08-29 | Automatic photo moderation (TS-11) is on hold. When built: third-party classifier (Hive/Sightengine) on `ProcessMediaJob`, thumb only, fail closed, silent success, `content_rejected` vs generic fail. No on-box ML. Architecture §6.5 | [#45](https://github.com/pedrommarquesm/aura/pull/45) |
