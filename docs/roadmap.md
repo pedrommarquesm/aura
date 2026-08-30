@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, pull-to-refresh, liked hearts on first load, and Feed-tab scroll. Web HLS player (`WEB-29`) in review. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
+**Now** — New app build for comments, profile photo, pull-to-refresh, liked hearts on first load, and Feed-tab scroll. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
 
 **Next** — Store links (`WEB-07`) before real traffic.
 
@@ -197,7 +197,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | WEB-26 | Liking a trending card on the landing page must not refresh or jump the scroll — homepage RSC is guest-only again | Done | [#44](https://github.com/pedrommarquesm/aura/pull/44) |
 | WEB-27 | Language switcher lives in Settings (`/settings`, `/pt/definicoes`) and a header settings menu — not EN/PT pills in the header | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | WEB-28 | Double-click like on a feed card must fill the heart under the photo — one `useLikePost` per card, not a separate hook on the media and the button | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
-| WEB-29 | Web plays Mux HLS (`hlsUrl`) with native `<video>` + hls.js. Poster is `posterUrl`, not `feedUrl`. One in-view video at a time, muted until tap. No Mux keys on the site | In review | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
+| WEB-29 | Web plays Mux HLS (`hlsUrl`) with native `<video>` + hls.js. Poster is `posterUrl`, not `feedUrl`. One in-view video at a time, muted until tap. No Mux keys on the site | Done | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
 
 ### Aura
 
