@@ -33,7 +33,7 @@
       "title": "Could not load the feed"
     },
     "post": {
-      "likes": "{count, plural, one {# like} other {# likes}}",
+      "likes": "{count, plural, one {# aura} other {# auras}}",
       "comments": "{count, plural, one {# comment} other {# comments}}",
       "auraGain": "+{amount, number} Aura",
       "actions": {
@@ -50,11 +50,11 @@
         "confirm": "Delete"
       },
       "a11y": {
-        "like": "Like",
-        "unlike": "Remove like",
+        "like": "Give aura",
+        "unlike": "Remove aura",
         "comment": "Comment",
-        "doubleTap": "Double-tap to like",
-        "doubleTapSound": "Double-tap to like. Tap once for sound",
+        "doubleTap": "Double-tap to give aura",
+        "doubleTapSound": "Double-tap to give aura. Tap once for sound",
         "mute": "Mute",
         "unmute": "Unmute",
         "options": "Post options",
@@ -122,7 +122,7 @@
     "you": "You",
     "empty": {
       "title": "Nobody on the board yet",
-      "body": "Post something worth liking and the ranking starts moving."
+      "body": "Post something with Aura and the ranking starts moving."
     },
     "error": {
       "title": "Could not load the ranking"
@@ -181,7 +181,7 @@
     "reasons": {
       "like": {
         "title": "Sign in to award Aura",
-        "body": "Likes are the score. Apple or Google — no password — then this like lands."
+        "body": "Auras are the score. Apple or Google — no password — then this aura lands."
       },
       "create": {
         "title": "Sign in to post",
