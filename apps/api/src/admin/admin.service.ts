@@ -326,6 +326,7 @@ export class AdminService {
         assetProvider: mediaAssets.storageProvider,
         assetBucket: mediaAssets.storageBucket,
         assetVariants: mediaAssets.variants,
+        assetExternalProvider: mediaAssets.externalProvider,
       })
       .from(posts)
       .innerJoin(users, eq(users.id, posts.authorId))
@@ -352,7 +353,11 @@ export class AdminService {
           aura: row.aura,
           createdAt: row.createdAt.toISOString(),
           publishedAt: row.publishedAt ? row.publishedAt.toISOString() : null,
-          thumbUrl: this.mediaUrls.url(location, variants.thumb),
+          thumbUrl: this.mediaUrls.card({
+            location,
+            variants,
+            externalProvider: row.assetExternalProvider,
+          }).thumbUrl,
           author: {
             id: row.authorId,
             username: row.username,

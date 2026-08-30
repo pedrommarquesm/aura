@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ENV, type Env } from '../config/env';
+import type { MediaVariants } from '../db/schema';
+
+import { MUX_PROVIDER } from './mux.service';
 
 export type StorageProviderName = 'r2' | 's3' | 'bunny' | 'local';
 
@@ -12,6 +15,19 @@ export interface MediaLocation {
 export interface MediaTransform {
   width?: number;
   quality?: number;
+}
+
+export interface MediaCardCoords {
+  location?: MediaLocation;
+  variants: MediaVariants;
+  externalProvider?: string | null;
+}
+
+export interface MediaCardUrls {
+  thumbUrl: string | null;
+  feedUrl: string | null;
+  posterUrl: string | null;
+  hlsUrl: string | null;
 }
 
 /**
@@ -50,6 +66,31 @@ export class MediaUrlResolver {
       // Never fail a feed render over a malformed override.
       return {};
     }
+  }
+
+  /**
+   * Feed/admin card URLs. Mux playback ids are coordinates (`variants.hls`),
+   * not storage keys — those become `stream.mux.com` / `image.mux.com`.
+   */
+  card(coords: MediaCardCoords): MediaCardUrls {
+    const playbackId = muxPlaybackId(coords.externalProvider, coords.variants.hls);
+    if (playbackId) {
+      return {
+        hlsUrl: `https://stream.mux.com/${playbackId}.m3u8`,
+        thumbUrl: `https://image.mux.com/${playbackId}/thumbnail.jpg?width=400`,
+        posterUrl: `https://image.mux.com/${playbackId}/thumbnail.jpg?width=1080`,
+        // HLS is the playable rendition. Do not point `feedUrl` at the R2
+        // master — that file is the archive, not what the feed plays.
+        feedUrl: null,
+      };
+    }
+
+    return {
+      thumbUrl: this.url(coords.location, coords.variants.thumb),
+      feedUrl: this.url(coords.location, coords.variants.feed),
+      posterUrl: this.url(coords.location, coords.variants.poster),
+      hlsUrl: this.url(coords.location, coords.variants.hls),
+    };
   }
 
   url(
@@ -97,4 +138,13 @@ export class MediaUrlResolver {
         return `${base}/${path}`;
     }
   }
+}
+
+/** Mux playback ids are alphanumeric. A slash means this is still a storage key. */
+export function muxPlaybackId(
+  provider: string | null | undefined,
+  value: string | undefined,
+): string | null {
+  if (provider !== MUX_PROVIDER || !value) return null;
+  return /^[A-Za-z0-9]+$/.test(value) ? value : null;
 }

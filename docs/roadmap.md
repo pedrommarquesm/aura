@@ -39,9 +39,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Rebuild web so it bakes `https://api.aurarankd.com`. Attach `cdn.aurarankd.com` to the R2 bucket (staging still emits `cdn.aura.app`). Then Cloudflare Stream for real video (`MEDIA-06`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — Mux video ingest is wiring on staging (`MEDIA-06`): worker creates the asset from the public master URL, API verifies `POST /v1/webhooks/mux`, feed URLs come from the playback id. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
-**Next** — video autoplay once posts have real media on the CDN (`MEDIA-06`, then `MOB-32`).
+**Next** — Choose video in the app, then HLS playback (`MOB-32`).
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -140,7 +140,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MEDIA-03 | `POST /posts/:id/complete` + object verification | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-04 | Image processing worker: feed/thumb JPEG variants (blurhash later) | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MEDIA-05 | Post lifecycle states and orphan-upload cleanup job | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
-| MEDIA-06 | Video: managed provider integration, always retaining our own master (decision open, architecture §18) | Not started | |
+| MEDIA-06 | Video: Mux ingest from our R2 master + webhook publish. Master stays ours. Playback policy public, quality basic | In review | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
 | MEDIA-07 | Storage migration worker: copy, verify checksum, repoint asset, resumable | Not started | |
 | MOB-20 | Create flow: camera, picker, preview, caption | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
 | MOB-21 | Resilient upload: progress, cancel, retry. Background-safe is still later | Done | [#19](https://github.com/pedrommarquesm/aura/pull/19) |
@@ -254,6 +254,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | Video is Mux, not Stream and not ffmpeg. Phone PUTs the master to R2; worker ingests the public CDN URL; publish waits for `video.asset.ready`. Store asset/playback ids, not Mux URLs. Webhook is `POST /v1/webhooks/mux` | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
 | 2026-08-29 | Language change is in Settings, not the web header or the mobile profile. Web: `/settings` (`/pt/definicoes`) plus a header gear menu. Mobile: Settings screen opened from the profile gear | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
 | 2026-08-29 | Automatic photo moderation (TS-11) is on hold. When built: third-party classifier (Hive/Sightengine) on `ProcessMediaJob`, thumb only, fail closed, silent success, `content_rejected` vs generic fail. No on-box ML. Architecture §6.5 | [#45](https://github.com/pedrommarquesm/aura/pull/45) |
 | 2026-08-29 | Double-tap (app) / double-click (web) on post media likes. It does not unlike. The heart button still toggles. Guests sign in and the like is replayed | [#38](https://github.com/pedrommarquesm/aura/pull/38) |

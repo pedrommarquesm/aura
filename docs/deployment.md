@@ -328,6 +328,20 @@ Do not `railway config apply` this file just to add R2 variables; set them on
 the two services (skip deploys, then `railway up` the image that reads them).
 The known `restartPolicy` false drift is still there.
 
+Video uses Mux. Set these in the dashboard (`preserve()` in IaC — do not
+`config apply` just to add them):
+
+| Variable | Service | What it is |
+|---|---|---|
+| `MUX_TOKEN_ID` | api + worker | Mux access token id (Video write) |
+| `MUX_TOKEN_SECRET` | api + worker | Mux access token secret. **Not** the webhook secret |
+| `MUX_WEBHOOK_SECRET` | **api only** | HMAC for `POST /v1/webhooks/mux` |
+
+Create the webhook in the Mux dashboard against
+`https://api.aurarankd.com/v1/webhooks/mux` for `video.asset.ready` and
+`video.asset.errored`. Playback policy is `public`; video quality is `basic`.
+Mux keys never go in clients or `NEXT_PUBLIC_*`.
+
 ## Current environment
 
 Project `aura`, environment **`staging`**, region `europe-west4`.

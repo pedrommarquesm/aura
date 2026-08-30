@@ -62,6 +62,30 @@ describe('MediaUrlResolver', () => {
     expect(broken.url(bunny, KEY)).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
   });
 
+  it('builds Mux playback URLs from a playback id, not a storage key', () => {
+    const urls = resolver().card({
+      location: r2,
+      externalProvider: 'mux',
+      variants: { hls: 'abcPlaybackId' },
+    });
+
+    expect(urls.hlsUrl).toBe('https://stream.mux.com/abcPlaybackId.m3u8');
+    expect(urls.thumbUrl).toBe('https://image.mux.com/abcPlaybackId/thumbnail.jpg?width=400');
+    expect(urls.posterUrl).toBe('https://image.mux.com/abcPlaybackId/thumbnail.jpg?width=1080');
+    expect(urls.feedUrl).toBeNull();
+  });
+
+  it('does not treat an object key as a Mux playback id', () => {
+    const urls = resolver().card({
+      location: r2,
+      externalProvider: 'mux',
+      variants: { hls: 'media/abc/v1/index.m3u8', feed: KEY },
+    });
+
+    expect(urls.hlsUrl).toBe('https://cdn.aurarankd.com/media/abc/v1/index.m3u8');
+    expect(urls.feedUrl).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
+  });
+
   it('does not double up slashes', () => {
     const trailing = resolver({ MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com/' });
 

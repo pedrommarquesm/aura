@@ -31,6 +31,10 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
     bufferLogs: true,
+    // Mux HMAC is over the raw bytes. Nest's Fastify parser keeps them on
+    // `request.rawBody` when this is set — do not register a second JSON
+    // parser or Fastify refuses to boot.
+    rawBody: true,
   });
 
   app.enableShutdownHooks();
@@ -51,7 +55,8 @@ async function bootstrap(): Promise<void> {
     keyGenerator: (request: FastifyRequest) => request.ip,
     // Health checks must never be throttled, or a rate-limited spike would
     // look like an outage and trigger a restart loop.
-    allowList: (request: FastifyRequest) => request.url.startsWith('/health'),
+    allowList: (request: FastifyRequest) =>
+      request.url.startsWith('/health') || request.url.startsWith('/v1/webhooks'),
     // The plugin *throws* whatever this returns, so it must be an
     // HttpException. Returning a plain body object would surface as an
     // unrecognised throw and get reported as a 500.

@@ -86,6 +86,10 @@ export default defineRailway(() => {
     // Break-glass for /v1/moderation/* via X-Moderation-Key. Staff JWTs work
     // without it. Unset parks only the key path.
     MODERATION_SECRET: preserve(),
+    // Mux Video. Token pair on api + worker. Webhook HMAC is api-only
+    // (added on that service below). Never commit the values.
+    MUX_TOKEN_ID: preserve(),
+    MUX_TOKEN_SECRET: preserve(),
     STAFF_OWNER_EMAIL: 'pedrommarquesm@gmail.com',
   };
 
@@ -115,6 +119,7 @@ export default defineRailway(() => {
       GOOGLE_CLIENT_IDS:
         '37586478648-lje8e40652sgi8pl7hmogjd7ns6qmj5f.apps.googleusercontent.com,37586478648-trc2amkrb29fv6h9undhkljfd7t69llh.apps.googleusercontent.com',
       APPLE_CLIENT_ID: preserve(),
+      MUX_WEBHOOK_SECRET: preserve(),
     },
   });
 

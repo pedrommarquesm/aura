@@ -13,6 +13,11 @@ import { posts } from './posts';
  * shared. URLs are built at read time by the resolver.
  * See docs/backend-architecture.md §6.6.
  */
+/**
+ * Variant name to coordinate. Photos store object keys. Mux videos store the
+ * playback id in `hls` — never a `stream.mux.com` URL. The resolver builds
+ * those at read time.
+ */
 export type MediaVariants = Partial<Record<'feed' | 'thumb' | 'poster' | 'hls', string>>;
 
 export const mediaAssets = pgTable(
@@ -46,11 +51,12 @@ export const mediaAssets = pgTable(
     variants: jsonb('variants').$type<MediaVariants>().notNull().default({}),
 
     /**
-     * Set when a managed video vendor holds the playable renditions. The
-     * master above always stays in our own bucket regardless, because
+     * Set when a managed video vendor holds the playable renditions (`mux`).
+     * The master above always stays in our own bucket regardless, because
      * transcoded renditions usually cannot be extracted from these vendors.
      */
     externalProvider: varchar('external_provider', { length: 40 }),
+    /** Mux asset id. Playback id lives in `variants.hls`. */
     externalAssetId: varchar('external_asset_id', { length: 120 }),
 
     processingStatus: processingStatus('processing_status').notNull().default('pending'),
