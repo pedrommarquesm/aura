@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { LikeButton, type LikeButtonHandle } from './like-button';
+import { PostOptions } from './post-options';
 import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
@@ -111,10 +112,12 @@ function DoubleTapHeart({
 export const FeedPostCard = memo(function FeedPostCard({
   post,
   isActiveVideo = false,
+  onDeleted,
 }: {
   post: FeedCard;
   /** Home feed only: the viewport video plays; others show the poster. */
   isActiveVideo?: boolean;
+  onDeleted?: () => void;
 }) {
   const { t } = useTranslation();
   const { author, media } = post;
@@ -195,13 +198,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           <AuraValue value={author.aura} size="sm" tone="secondary" />
         </View>
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('feed.post.a11y.options')}
-          hitSlop={8}
-        >
-          <Ionicons name="ellipsis-horizontal" size={20} color={colors.text.muted} />
-        </Pressable>
+        <PostOptions post={post} onDeleted={onDeleted} />
       </View>
 
       <GestureDetector gesture={mediaGesture}>

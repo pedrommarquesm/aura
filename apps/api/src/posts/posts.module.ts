@@ -5,9 +5,11 @@ import { FeedModule } from '../feed/feed.module';
 import { ModerationModule } from '../moderation/moderation.module';
 
 import { PostsController } from './posts.controller';
+import { PostsService } from './posts.service';
 
 @Module({
   imports: [AuthModule, FeedModule, ModerationModule],
   controllers: [PostsController],
+  providers: [PostsService],
 })
 export class PostsModule {}

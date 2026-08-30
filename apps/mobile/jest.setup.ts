@@ -9,4 +9,5 @@ beforeEach(() => {
   router.push.mockClear();
   router.back.mockClear();
   router.replace.mockClear();
+  router.params = {};
 });

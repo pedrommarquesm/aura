@@ -1,9 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
 
 import { Screen } from '@/components/layout';
 import { SettingsButton } from '@/components/settings';
@@ -196,6 +197,9 @@ function Stat({
 }
 
 function PostsGrid({ items }: { items: FeedCard[] }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { width } = useWindowDimensions();
   const tile = Math.floor((width - 32 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS);
 
@@ -204,10 +208,15 @@ function PostsGrid({ items }: { items: FeedCard[] }) {
       {items.map((post) => {
         const uri = post.media.thumbUrl ?? post.media.feedUrl;
         return (
-          <View
+          <Pressable
             key={post.id}
-            accessibilityRole="image"
+            accessibilityRole="button"
             accessibilityLabel={post.caption ?? `@${post.author.username}`}
+            accessibilityHint={t('profile.posts.open')}
+            onPress={() => {
+              queryClient.setQueryData(queryKeys.post(post.id), { ...post, status: 'published' });
+              router.push(`/post/${post.id}`);
+            }}
             style={{ width: tile, height: tile }}
             className="relative overflow-hidden rounded-sm bg-surface"
           >
@@ -226,7 +235,7 @@ function PostsGrid({ items }: { items: FeedCard[] }) {
                 <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
               </View>
             ) : null}
-          </View>
+          </Pressable>
         );
       })}
     </View>

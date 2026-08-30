@@ -17,6 +17,8 @@ jest.mock('@/lib/api/posts', () => ({
   refreshUpload: jest.fn(),
   completeUpload: jest.fn(),
   fetchPost: jest.fn(),
+  updatePostCaption: jest.fn(),
+  deletePost: jest.fn(),
 }));
 
 jest.mock('@/lib/api/users', () => ({

@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -17,6 +18,8 @@ import { AppError } from '../common/errors/app-error';
 import { FeedService, type FeedCard } from '../feed/feed.service';
 import { UploadsService } from '../media/uploads.service';
 import { ModerationService } from '../moderation/moderation.service';
+import { CAPTION_MAX_LENGTH } from './caption';
+import { PostsService } from './posts.service';
 
 const createUploadSchema = z.object({
   contentType: z.string().min(1).max(100),
@@ -28,7 +31,11 @@ const createUploadSchema = z.object({
 });
 
 const completeUploadSchema = z.object({
-  caption: z.string().max(2_200).optional().nullable(),
+  caption: z.string().max(CAPTION_MAX_LENGTH).optional().nullable(),
+});
+
+const updateCaptionSchema = z.object({
+  caption: z.string().max(CAPTION_MAX_LENGTH).nullable(),
 });
 
 export type PostResponse = FeedCard & {
@@ -41,6 +48,7 @@ export class PostsController {
     private readonly uploads: UploadsService,
     private readonly feed: FeedService,
     private readonly moderation: ModerationService,
+    private readonly posts: PostsService,
   ) {}
 
   @Post('uploads')
@@ -70,6 +78,19 @@ export class PostsController {
     if (!request.user) throw AppError.unauthorized();
     const input = completeUploadSchema.parse(body ?? {});
     return this.uploads.complete(request.user, postId, input);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateCaption(
+    @Param('id') postId: string,
+    @Body() body: unknown,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    if (!request.user) throw AppError.unauthorized();
+    const input = updateCaptionSchema.parse(body ?? {});
+    return this.posts.updateCaption(request.user.id, postId, input.caption);
   }
 
   @Delete(':id')

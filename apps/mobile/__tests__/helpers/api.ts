@@ -16,7 +16,14 @@ import type { OptimizedVideo } from '@/lib/media/optimize-video';
 
 import { fetchFeedPage } from '@/lib/api/feed';
 import { likePost, unlikePost } from '@/lib/api/likes';
-import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
+import {
+  completeUpload,
+  createUpload,
+  deletePost,
+  fetchPost,
+  refreshUpload,
+  updatePostCaption,
+} from '@/lib/api/posts';
 import { fetchGlobalLeaderboard } from '@/lib/api/leaderboard';
 import { claimUsername, fetchMe, logout, signInWithProvider } from '@/lib/api/auth';
 import { fetchPublicProfile, fetchUserPosts } from '@/lib/api/users';
@@ -34,6 +41,8 @@ export const api = {
   refreshUpload: refreshUpload as jest.MockedFunction<typeof refreshUpload>,
   completeUpload: completeUpload as jest.MockedFunction<typeof completeUpload>,
   fetchPost: fetchPost as jest.MockedFunction<typeof fetchPost>,
+  updatePostCaption: updatePostCaption as jest.MockedFunction<typeof updatePostCaption>,
+  deletePost: deletePost as jest.MockedFunction<typeof deletePost>,
   fetchPublicProfile: fetchPublicProfile as jest.MockedFunction<typeof fetchPublicProfile>,
   fetchUserPosts: fetchUserPosts as jest.MockedFunction<typeof fetchUserPosts>,
   fetchGlobalLeaderboard: fetchGlobalLeaderboard as jest.MockedFunction<
@@ -116,6 +125,27 @@ export function publishedPost(overrides: Partial<PostDetail> = {}): PostDetail {
   };
 }
 
+/** Own profile / menu tests: author must be the signed-in tester. */
+export function ownPost(overrides: Partial<PostDetail> = {}): PostDetail {
+  const base = mockFeed[0]!;
+  return {
+    ...base,
+    id: 'post-own',
+    status: 'published',
+    caption: 'my golden hour',
+    author: {
+      ...base.author,
+      id: testUser.id,
+      username: testUser.username,
+      displayName: testUser.displayName,
+      avatarUrl: testUser.avatarUrl,
+      aura: testUser.aura,
+      title: testUser.title,
+    },
+    ...overrides,
+  };
+}
+
 export function profileFor(user: PublicUser): PublicProfile {
   return {
     id: user.id,
@@ -174,6 +204,8 @@ export function resetApiMocks() {
   api.refreshUpload.mockResolvedValue(uploadResponse);
   api.completeUpload.mockResolvedValue(completeResponse);
   api.fetchPost.mockResolvedValue(publishedPost());
+  api.updatePostCaption.mockImplementation(async (id, caption) => publishedPost({ id, caption }));
+  api.deletePost.mockResolvedValue({ postId: 'post-new', status: 'removed' });
   api.fetchPublicProfile.mockResolvedValue(profileFor(testUser));
   api.fetchUserPosts.mockResolvedValue(feedPage(mockFeed.slice(0, 2)));
   api.fetchGlobalLeaderboard.mockResolvedValue(leaderboardPage);
