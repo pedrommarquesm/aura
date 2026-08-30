@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Avatar confirm crashes if a comment thread is in cache (`MOB-70`). New app build for comments, profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), profile photo (`MOB-68`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
+**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -178,7 +178,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | Done | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
-| MOB-70 | Avatar confirm must not prefix-match `['post', id, 'comments']` when writing the new photo onto permalinks | In review | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
+| MOB-70 | Avatar confirm must not prefix-match `['post', id, 'comments']` when writing the new photo onto permalinks | Done | [#60](https://github.com/pedrommarquesm/aura/pull/60) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
