@@ -7,7 +7,7 @@ jest.mock('@gorhom/bottom-sheet', () => {
   const React = require('react');
   return {
     __esModule: true,
-    BottomSheetModal: React.forwardRef((props: any, ref: any) => {
+    BottomSheetModal: React.forwardRef((_props: any, ref: any) => {
       React.useImperativeHandle(ref, () => ({
         present: jest.fn(),
         dismiss: jest.fn(),
