@@ -100,13 +100,13 @@ describe('Profile post view and post menu', () => {
     const user = userEvent.setup();
     await renderApp(<PostScreen />);
 
-    await user.press(await screen.findByHintText('Remove like'));
+    await user.press((await screen.findAllByHintText('Remove aura'))[0]!);
 
     await waitFor(() => {
       expect(api.unlikePost).toHaveBeenCalledWith(post.id);
     });
-    expect(await screen.findByHintText('Like')).toBeOnTheScreen();
-    expect(screen.queryByHintText('Remove like')).toBeNull();
+    expect((await screen.findAllByHintText('Give aura')).length).toBeGreaterThan(0);
+    expect(screen.queryAllByHintText('Remove aura')).toHaveLength(0);
   });
 
   it('pulls to refresh the post', async () => {

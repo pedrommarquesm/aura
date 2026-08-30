@@ -23,15 +23,15 @@ describe('Other people\'s profiles', () => {
     expect(routerMocks().push).toHaveBeenCalledWith('/user/alice');
   });
 
-  it('opens their profile from the name beside the caption', async () => {
+  it('opens their profile from the author overlay on the card', async () => {
     asGuest();
     const user = userEvent.setup();
     await renderApp(<HomeScreen />);
     await screen.findByText('golden hour hits different when you are winning');
 
     const handles = screen.getAllByLabelText('View @alice');
-    expect(handles.length).toBeGreaterThan(1);
-    await user.press(handles[1]!);
+    expect(handles.length).toBe(1);
+    await user.press(handles[0]!);
 
     expect(routerMocks().push).toHaveBeenCalledWith('/user/alice');
   });

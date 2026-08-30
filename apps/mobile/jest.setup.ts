@@ -3,19 +3,23 @@ import { resetQueryClients } from './__tests__/helpers/query-client';
 import { resetSession, routerMocks } from './__tests__/helpers/session';
 
 // Mock @gorhom/bottom-sheet
-jest.mock('@gorhom/bottom-sheet', () => {
+jest.mock(
+  '@gorhom/bottom-sheet',
+  () => {
   const React = require('react');
-  const MockBottomSheetModal = React.forwardRef((_props: any, ref: any) => {
+  const MockBottomSheetModal = React.forwardRef((props: any, ref: any) => {
+    const [open, setOpen] = React.useState(false);
     React.useImperativeHandle(ref, () => ({
-      present: jest.fn(),
-      dismiss: jest.fn(),
-      close: jest.fn(),
+      present: () => setOpen(true),
+      dismiss: () => setOpen(false),
+      close: () => setOpen(false),
       snapToIndex: jest.fn(),
       snapToPosition: jest.fn(),
-      expand: jest.fn(),
-      collapse: jest.fn(),
+      expand: () => setOpen(true),
+      collapse: () => setOpen(false),
     }));
-    return null;
+    if (!open) return null;
+    return props.children ?? null;
   });
   MockBottomSheetModal.displayName = 'MockBottomSheetModal';
 
@@ -30,7 +34,9 @@ jest.mock('@gorhom/bottom-sheet', () => {
       dismissAll: jest.fn(),
     }),
   };
-});
+},
+{ virtual: true },
+);
 
 afterEach(() => {
   resetQueryClients();
