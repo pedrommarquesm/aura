@@ -119,6 +119,7 @@ Post
   mediaType                     -- photo | video
   status                        -- uploading | processing | published | failed | removed
   likeCount                     -- denormalized
+  commentCount                  -- denormalized. Feed never joins comments
   aura                          -- denormalized Aura awarded to this post
   trendingScore                 -- worker-maintained
   publishedAt                   -- set when status becomes published
@@ -140,6 +141,10 @@ Like
   userId, postId, createdAt
   kind                          -- like | super_like (super_like unused in V0)
   PRIMARY KEY (userId, postId)  -- idempotency
+
+Comment
+  id, postId, authorId, body, createdAt
+  Flat only — no replies. No Aura. Authors may comment on their own post.
 
 AuraEvent
   id
@@ -166,6 +171,7 @@ posts (status, published_at DESC, id DESC)          -- latest feed cursor
 posts (status, trending_score DESC, id DESC)        -- trending feed
 posts (author_id, published_at DESC)                -- profile grid
 likes (post_id, created_at DESC)
+comments (post_id, created_at, id)              -- oldest-first thread cursor
 aura_events (user_id, created_at DESC)
 aura_events (post_id, created_at DESC)
 aura_events (source_user_id, created_at DESC)       -- abuse investigation
@@ -580,7 +586,7 @@ For a page of 10:
 3. Batch-check `likedByMe` for the actor (`WHERE user_id = ? AND post_id IN (...)`)
 4. Return
 
-Avoid N+1. Avoid loading comments (out of V0 anyway). Avoid computing Aura on the fly.
+Avoid N+1. Avoid loading comment bodies on the feed — `commentCount` is denormalized. Avoid computing Aura on the fly.
 
 ### 8.4 Caching
 
@@ -727,6 +733,8 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | DELETE | `/v1/posts/:id` | author only; soft delete |
 | POST | `/v1/posts/:id/like` | idempotent |
 | DELETE | `/v1/posts/:id/like` | |
+| GET | `/v1/posts/:id/comments` | optional auth; oldest-first; published only |
+| POST | `/v1/posts/:id/comments` | required auth; `{ body }` max 500. Author may comment. No Aura |
 | GET | `/v1/users/:username` | public competitive card |
 | GET | `/v1/users/:id/posts` | cursor |
 | GET | `/v1/leaderboards/global` | top + `viewerRank` |

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AuraModule } from './aura/aura.module';
 import { AuthModule } from './auth/auth.module';
+import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from './config/config.module';
 import { DbModule } from './db/db.module';
 import { FeedModule } from './feed/feed.module';
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     FeedModule,
     LikesModule,
+    CommentsModule,
     PostsModule,
     LeaderboardModule,
     UsersModule,

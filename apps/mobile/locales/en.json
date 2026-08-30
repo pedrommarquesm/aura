@@ -34,6 +34,7 @@
     },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
       "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Edit",
@@ -51,6 +52,7 @@
       "a11y": {
         "like": "Like",
         "unlike": "Remove like",
+        "comment": "Comment",
         "doubleTap": "Double-tap to like",
         "doubleTapSound": "Double-tap to like. Tap once for sound",
         "mute": "Mute",
@@ -158,6 +160,14 @@
     "title": "Post",
     "error": {
       "title": "Could not load this post"
+    },
+    "comments": {
+      "title": "Comments",
+      "empty": "No comments yet. Say something.",
+      "placeholder": "Add a comment",
+      "post": "Post",
+      "more": "Load more",
+      "error": "Could not load comments"
     }
   },
   "auth": {
@@ -180,6 +190,10 @@
       "profile": {
         "title": "Start farming Aura",
         "body": "Sign in to claim a username, post, and climb the global board."
+      },
+      "comment": {
+        "title": "Sign in to comment",
+        "body": "Apple or Google — no password — then you can leave a comment."
       },
       "generic": {
         "title": "Sign in to Aura",

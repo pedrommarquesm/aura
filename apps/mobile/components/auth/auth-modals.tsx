@@ -52,6 +52,11 @@ export function AuthModals() {
         return;
       }
 
+      if (pending.type === 'comment') {
+        router.navigate(`/post/${pending.postId}`);
+        return;
+      }
+
       try {
         const result =
           pending.type === 'like'

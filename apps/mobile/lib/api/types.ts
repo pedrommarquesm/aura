@@ -44,10 +44,25 @@ export type FeedCard = {
   media: FeedMedia;
   caption: string | null;
   likeCount: number;
+  commentCount: number;
   /** Aura this post has earned, not the author's total. */
   aura: number;
   likedByMe: boolean;
   createdAt: string;
+};
+
+export type CommentAuthor = FeedAuthor;
+
+export type CommentCard = {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: CommentAuthor;
+};
+
+export type CreateCommentResult = {
+  comment: CommentCard;
+  commentCount: number;
 };
 
 export type LeaderboardEntry = {

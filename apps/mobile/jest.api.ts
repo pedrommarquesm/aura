@@ -12,6 +12,12 @@ jest.mock('@/lib/api/likes', () => ({
   unlikePost: jest.fn(),
 }));
 
+jest.mock('@/lib/api/comments', () => ({
+  fetchComments: jest.fn(),
+  createComment: jest.fn(),
+  COMMENTS_PAGE_SIZE: 20,
+}));
+
 jest.mock('@/lib/api/posts', () => ({
   createUpload: jest.fn(),
   refreshUpload: jest.fn(),

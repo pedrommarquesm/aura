@@ -43,6 +43,7 @@ export interface FeedCard {
     hlsUrl: string | null;
   };
   likeCount: number;
+  commentCount: number;
   aura: number;
   likedByMe: boolean;
 }
@@ -153,6 +154,7 @@ export class FeedService {
           caption: posts.caption,
           mediaType: posts.mediaType,
           likeCount: posts.likeCount,
+          commentCount: posts.commentCount,
           aura: posts.aura,
           trendingScore: posts.trendingScore,
           publishedAt: posts.publishedAt,
@@ -234,6 +236,7 @@ export class FeedService {
         }),
       },
       likeCount: row.likeCount,
+      commentCount: row.commentCount,
       aura: row.aura,
       likedByMe,
     };
@@ -253,6 +256,7 @@ export class FeedService {
         caption: posts.caption,
         mediaType: posts.mediaType,
         likeCount: posts.likeCount,
+        commentCount: posts.commentCount,
         aura: posts.aura,
         trendingScore: posts.trendingScore,
         publishedAt: posts.publishedAt,

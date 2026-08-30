@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 
-export type AuthReason = 'like' | 'create' | 'profile' | 'generic';
+export type AuthReason = 'like' | 'create' | 'profile' | 'comment' | 'generic';
 
 export type PendingAction =
-  { type: 'like'; postId: string } | { type: 'unlike'; postId: string } | { type: 'create' };
+  | { type: 'like'; postId: string }
+  | { type: 'unlike'; postId: string }
+  | { type: 'create' }
+  | { type: 'comment'; postId: string };
 
 type AuthGateState = {
   open: boolean;
@@ -16,8 +19,10 @@ type AuthGateState = {
 };
 
 /**
- * Guest browsing is the default. The first Aura action (like, post) opens this
- * gate; after Apple/Google (+ username if needed) the pending action replays.
+ * Guest browsing is the default. The first signed-in action (like, post,
+ * comment) opens this gate; after Apple/Google (+ username if needed) the
+ * pending action replays. A pending comment only opens the thread — it does
+ * not submit a draft.
  */
 export const useAuthGateStore = create<AuthGateState>((set, get) => ({
   open: false,

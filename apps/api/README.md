@@ -112,6 +112,8 @@ Product endpoints live under `/v1`; health is deliberately outside it.
 | DELETE | `/v1/posts/:id` | required | Author-only soft delete. Same Aura reversal as a staff takedown |
 | POST | `/v1/posts/:id/like` | required | Idempotent |
 | DELETE | `/v1/posts/:id/like` | required | Writes a `REVERSAL` event |
+| GET | `/v1/posts/:id/comments` | optional | Oldest-first thread. Cursor paginated. Published posts only |
+| POST | `/v1/posts/:id/comments` | required | `{ body }` trimmed, max 500. Authors may comment on their own post. No Aura |
 | GET | `/v1/leaderboards/global` | optional | Top N plus the viewer's own rank |
 | POST | `/v1/staff/auth/google` | — | Staff Google sign-in. Invite-only; never creates a `users` row |
 | POST | `/v1/staff/auth/refresh` | — | Rotate a staff refresh token |

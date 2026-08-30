@@ -34,6 +34,7 @@
     },
     "post": {
       "likes": "{count, plural, one {# like} other {# likes}}",
+      "comments": "{count, plural, one {# comentário} other {# comentários}}",
       "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Editar",
@@ -51,6 +52,7 @@
       "a11y": {
         "like": "Dar like",
         "unlike": "Retirar o like",
+        "comment": "Comentar",
         "doubleTap": "Toca duas vezes para dar like",
         "doubleTapSound": "Toca duas vezes para dar like. Toca uma vez para o som",
         "mute": "Silenciar",
@@ -158,6 +160,14 @@
     "title": "Publicação",
     "error": {
       "title": "Não foi possível carregar esta publicação"
+    },
+    "comments": {
+      "title": "Comentários",
+      "empty": "Ainda não há comentários. Diz alguma coisa.",
+      "placeholder": "Escreve um comentário",
+      "post": "Publicar",
+      "more": "Carregar mais",
+      "error": "Não foi possível carregar os comentários"
     }
   },
   "auth": {
@@ -180,6 +190,10 @@
       "profile": {
         "title": "Começa a farmar Aura",
         "body": "Inicia sessão para escolheres um username, publicares e subires no ranking."
+      },
+      "comment": {
+        "title": "Inicia sessão para comentar",
+        "body": "Apple ou Google — sem palavra-passe — e podes deixar um comentário."
       },
       "generic": {
         "title": "Entra na Aura",

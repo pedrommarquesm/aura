@@ -1,14 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, View } from 'react-native';
 
+import { CommentComposer, CommentThread } from '@/components/comments';
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { Screen } from '@/components/layout';
 import { Button, Text } from '@/components/ui';
-import { fetchPost, messageForError } from '@/lib/api';
+import { createComment, fetchComments, fetchPost, messageForError } from '@/lib/api';
+import { applyCreatedComment } from '@/lib/query/feed-cache';
 import { queryKeys } from '@/lib/query/keys';
 import { colors } from '@/theme/tokens';
 
@@ -25,12 +27,32 @@ export default function PostScreen() {
     enabled: Boolean(id),
   });
 
+  const comments = useInfiniteQuery({
+    queryKey: queryKeys.postComments(id ?? ''),
+    queryFn: ({ pageParam, signal }) => fetchComments(id!, pageParam, signal),
+    initialPageParam: null as string | null,
+    getNextPageParam: (page) => page.nextCursor,
+    enabled: Boolean(id),
+  });
+
+  const refresh = useCallback(() => {
+    if (!id) return;
+    void post.refetch();
+    void comments.refetch();
+  }, [id, post, comments]);
+
   useFocusEffect(
     useCallback(() => {
       if (!id) return;
       void queryClient.invalidateQueries({ queryKey: queryKeys.post(id) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.postComments(id) });
     }, [id, queryClient]),
   );
+
+  const items = comments.data?.pages.flatMap((page) => page.items) ?? [];
+  const lastPage = comments.data?.pages.at(-1);
+  const refreshing =
+    (post.isRefetching && !post.isPending) || (comments.isRefetching && !comments.isPending);
 
   return (
     <Screen padded={false}>
@@ -57,22 +79,49 @@ export default function PostScreen() {
       ) : post.isPending || !post.data ? (
         <FeedPostSkeleton />
       ) : (
-        <ScrollView
-          testID="post-scroll"
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={post.isRefetching && !post.isPending}
-              onRefresh={() => void post.refetch()}
-              accessibilityLabel={t('common.actions.refresh')}
-              tintColor={colors.aura.bright}
-              colors={[colors.aura.bright]}
-              progressBackgroundColor={colors.surface.DEFAULT}
-            />
-          }
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <FeedPostCard post={post.data} isActiveVideo onDeleted={() => router.back()} />
-        </ScrollView>
+          <ScrollView
+            testID="post-scroll"
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refresh}
+                accessibilityLabel={t('common.actions.refresh')}
+                tintColor={colors.aura.bright}
+                colors={[colors.aura.bright]}
+                progressBackgroundColor={colors.surface.DEFAULT}
+              />
+            }
+          >
+            <FeedPostCard
+              post={post.data}
+              isActiveVideo
+              commentNavigates={false}
+              onDeleted={() => router.back()}
+            />
+            <CommentThread
+              comments={items}
+              empty={!comments.isPending && items.length === 0 && !comments.isError}
+              error={comments.isError}
+              hasMore={Boolean(lastPage?.hasMore)}
+              loadingMore={comments.isFetchingNextPage}
+              onRetry={() => void comments.refetch()}
+              onLoadMore={() => void comments.fetchNextPage()}
+            />
+          </ScrollView>
+          <CommentComposer
+            postId={id}
+            onSubmit={async (body) => {
+              const result = await createComment(id, body);
+              applyCreatedComment(queryClient, id, result);
+            }}
+          />
+        </KeyboardAvoidingView>
       )}
     </Screen>
   );
