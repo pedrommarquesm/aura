@@ -1,15 +1,14 @@
-import { QueryClient } from '@tanstack/react-query';
-
 import { applyCreatedComment } from '@/lib/query/feed-cache';
 import { queryKeys } from '@/lib/query/keys';
 import { mockFeed } from '@/mocks/feed';
 
 import { createdComment, feedPage } from '../helpers/api';
+import { createTestQueryClient } from '../helpers/query-client';
 
 describe('applyCreatedComment', () => {
   it('writes the new count onto the feed, the permalink, and the thread', () => {
     const post = mockFeed[0]!;
-    const client = new QueryClient();
+    const client = createTestQueryClient();
     client.setQueryData(queryKeys.feed.ranking('latest'), {
       pages: [feedPage([{ ...post, commentCount: 0 }])],
       pageParams: [null],

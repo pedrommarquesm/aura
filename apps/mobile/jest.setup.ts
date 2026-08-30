@@ -1,5 +1,10 @@
 import { resetApiMocks } from './__tests__/helpers/api';
+import { resetQueryClients } from './__tests__/helpers/query-client';
 import { resetSession, routerMocks } from './__tests__/helpers/session';
+
+afterEach(() => {
+  resetQueryClients();
+});
 
 beforeEach(() => {
   resetApiMocks();
