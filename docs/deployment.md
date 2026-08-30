@@ -299,7 +299,7 @@ domain.
 Trending scoring constants (`TRENDING_*`) are environment variables rather than
 code so the feed can be tuned without a deploy.
 
-Mobile sign-in needs `APPLE_CLIENT_ID` (the iOS bundle id `app.aura.mobile`) and
+Mobile sign-in needs `APPLE_CLIENT_ID` (the iOS bundle id `app.aurarankd.mobile`) and
 `GOOGLE_CLIENT_IDS` (comma-separated iOS, Android, and web OAuth client ids) on
 the **api** service. Staging already has the iOS and web Google clients.
 Until Apple's id is set, `POST /v1/auth/apple` still returns

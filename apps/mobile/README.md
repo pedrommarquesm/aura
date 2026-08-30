@@ -126,7 +126,7 @@ rotates refresh tokens and revokes the whole family if one is replayed, so all c
 - Google Sign-In on iOS needs a development build (`npx expo run:ios`). The iOS
   client id is in the app and on staging `GOOGLE_CLIENT_IDS`; Expo Go cannot
   register the reversed client URL scheme. Apple still needs `APPLE_CLIENT_ID`
-  on the API (`app.aura.mobile`) plus a Sign in with Apple capability.
+  on the API (`app.aurarankd.mobile`) plus a Sign in with Apple capability.
 - Video playback is not wired. `expo-video` arrives with `MOB-32`.
 - Preferences are in memory only — persistence needs a storage decision (`FND-06`). That
   includes the language override.
