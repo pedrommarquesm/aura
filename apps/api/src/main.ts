@@ -29,27 +29,12 @@ async function bootstrap(): Promise<void> {
     bodyLimit: 1_048_576,
   });
 
-  // HMAC for Mux is over the raw bytes. Keep them on the request before
-  // Fastify parses JSON, or `video.asset.ready` would fail closed.
-  adapter.getInstance().addContentTypeParser(
-    'application/json',
-    { parseAs: 'buffer' },
-    (request, body, done) => {
-      (request as FastifyRequest & { rawBody?: Buffer | string }).rawBody = body;
-      if (!body.length) {
-        done(null, undefined);
-        return;
-      }
-      try {
-        done(null, JSON.parse(body.toString('utf8')) as unknown);
-      } catch (error) {
-        done(error as Error, undefined);
-      }
-    },
-  );
-
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
     bufferLogs: true,
+    // Mux HMAC is over the raw bytes. Nest's Fastify parser keeps them on
+    // `request.rawBody` when this is set — do not register a second JSON
+    // parser or Fastify refuses to boot.
+    rawBody: true,
   });
 
   app.enableShutdownHooks();
