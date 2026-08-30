@@ -134,6 +134,26 @@ export type CompleteUploadResponse = {
   status: 'processing' | 'published';
 };
 
+export type CreateAvatarUploadRequest = {
+  contentType: string;
+  byteSize: number;
+  width?: number;
+  height?: number;
+};
+
+export type CreateAvatarUploadResponse = {
+  uploadId: string;
+  uploadUrl: string;
+  uploadHeaders: Record<string, string>;
+  method: 'PUT';
+  maxBytes: number;
+  expiresAt: string;
+};
+
+export type CompleteAvatarResponse = {
+  user: PublicUser;
+};
+
 export type PostDetail = FeedCard & {
   status: 'uploading' | 'processing' | 'published' | 'failed' | 'removed';
 };

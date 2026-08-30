@@ -16,6 +16,11 @@ export function variantKey(assetId: string, variant: VariantName, extension = 'j
   return `media/${assetId}/v1/${variant}.${extension}`;
 }
 
+/** Square JPEG for a profile photo. Unique per upload so the CDN cache busts. */
+export function avatarKey(userId: string, uploadId: string, extension: string): string {
+  return `avatars/${userId}/${uploadId}.${extension}`;
+}
+
 export function extensionForContentType(contentType: string): string | null {
   switch (contentType) {
     case 'image/jpeg':

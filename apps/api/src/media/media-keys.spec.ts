@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { extensionForContentType, masterKey, variantKey } from './media-keys';
+import { avatarKey, extensionForContentType, masterKey, variantKey } from './media-keys';
 import { MemoryObjectStore } from './memory.object-store';
 import { isAcceptedContentType, mediaTypeForContentType } from './media-types';
 
@@ -9,6 +9,7 @@ describe('media keys', () => {
     expect(masterKey('abc', 'jpg')).toBe('media/abc/v1/master.jpg');
     expect(variantKey('abc', 'feed')).toBe('media/abc/v1/feed.jpg');
     expect(variantKey('abc', 'thumb')).toBe('media/abc/v1/thumb.jpg');
+    expect(avatarKey('user_1', 'up_1', 'jpg')).toBe('avatars/user_1/up_1.jpg');
   });
 
   it('maps accepted content types onto extensions', () => {

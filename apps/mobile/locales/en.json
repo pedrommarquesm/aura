@@ -136,6 +136,13 @@
     "actions": {
       "edit": "Edit profile"
     },
+    "avatar": {
+      "edit": "Edit photo",
+      "title": "Profile photo",
+      "hint": "Pinch to zoom. Drag to move.",
+      "use": "Use photo",
+      "cancel": "Cancel"
+    },
     "posts": {
       "title": "Posts",
       "empty": "Nothing posted yet. The grid fills as you publish.",

@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } fro
 import { z } from 'zod';
 
 import { AppError } from '../common/errors/app-error';
-import type { User } from '../db/schema';
+import { toPublicUser } from '../users/public-user';
 
 import { AuthGuard, type AuthenticatedRequest } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -23,28 +23,6 @@ const providerSignInSchema = z.object({
 
 const refreshSchema = z.object({ refreshToken: z.string().min(1) });
 const usernameSchema = z.object({ username: z.string().min(3).max(30) });
-
-interface PublicUser {
-  id: string;
-  username: string;
-  displayName: string | null;
-  avatarUrl: string | null;
-  aura: number;
-  title: string | null;
-  locale: string;
-}
-
-function toPublicUser(user: User): PublicUser {
-  return {
-    id: user.id,
-    username: user.username,
-    displayName: user.displayName,
-    avatarUrl: user.avatarUrl,
-    aura: user.aura,
-    title: user.title,
-    locale: user.locale,
-  };
-}
 
 @Controller('auth')
 export class AuthController {

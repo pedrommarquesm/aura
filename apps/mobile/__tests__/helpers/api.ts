@@ -2,7 +2,9 @@ import type { ImagePickerAsset } from 'expo-image-picker';
 
 import { mockFeed } from '@/mocks/feed';
 import type {
+  CompleteAvatarResponse,
   CompleteUploadResponse,
+  CreateAvatarUploadResponse,
   CreateUploadResponse,
   CursorPage,
   FeedCard,
@@ -26,7 +28,8 @@ import {
 } from '@/lib/api/posts';
 import { fetchGlobalLeaderboard } from '@/lib/api/leaderboard';
 import { claimUsername, fetchMe, logout, signInWithProvider } from '@/lib/api/auth';
-import { fetchPublicProfile, fetchUserPosts } from '@/lib/api/users';
+import { completeAvatarUpload, createAvatarUpload, fetchPublicProfile, fetchUserPosts } from '@/lib/api/users';
+import { cropAvatarPhoto } from '@/lib/media/crop-avatar';
 import { pickPhotoFromLibrary } from '@/lib/media/pick-photo';
 import { pickVideoFromLibrary } from '@/lib/media/pick-video';
 import { optimizePickedPhoto } from '@/lib/media/optimize-photo';
@@ -45,6 +48,9 @@ export const api = {
   deletePost: deletePost as jest.MockedFunction<typeof deletePost>,
   fetchPublicProfile: fetchPublicProfile as jest.MockedFunction<typeof fetchPublicProfile>,
   fetchUserPosts: fetchUserPosts as jest.MockedFunction<typeof fetchUserPosts>,
+  createAvatarUpload: createAvatarUpload as jest.MockedFunction<typeof createAvatarUpload>,
+  completeAvatarUpload: completeAvatarUpload as jest.MockedFunction<typeof completeAvatarUpload>,
+  cropAvatarPhoto: cropAvatarPhoto as jest.MockedFunction<typeof cropAvatarPhoto>,
   fetchGlobalLeaderboard: fetchGlobalLeaderboard as jest.MockedFunction<
     typeof fetchGlobalLeaderboard
   >,
@@ -114,6 +120,19 @@ export const completeResponse: CompleteUploadResponse = {
   postId: 'post-new',
   status: 'published',
 };
+
+export const avatarUploadResponse: CreateAvatarUploadResponse = {
+  uploadId: 'avatar-up-1',
+  uploadUrl: 'https://upload.example/avatar',
+  uploadHeaders: { 'Content-Type': 'image/jpeg' },
+  method: 'PUT',
+  maxBytes: 80_000,
+  expiresAt: '2099-01-01T00:00:00.000Z',
+};
+
+export function avatarCompleteResponse(avatarUrl = 'https://cdn.aurarankd.com/avatars/u-tester/v.jpg'): CompleteAvatarResponse {
+  return { user: { ...testUser, avatarUrl } };
+}
 
 export function publishedPost(overrides: Partial<PostDetail> = {}): PostDetail {
   return {
@@ -208,6 +227,15 @@ export function resetApiMocks() {
   api.deletePost.mockResolvedValue({ postId: 'post-new', status: 'removed' });
   api.fetchPublicProfile.mockResolvedValue(profileFor(testUser));
   api.fetchUserPosts.mockResolvedValue(feedPage(mockFeed.slice(0, 2)));
+  api.createAvatarUpload.mockResolvedValue(avatarUploadResponse);
+  api.completeAvatarUpload.mockResolvedValue(avatarCompleteResponse());
+  api.cropAvatarPhoto.mockResolvedValue({
+    uri: 'file:///avatar.jpg',
+    mimeType: 'image/jpeg',
+    byteSize: 80_000,
+    width: 720,
+    height: 720,
+  });
   api.fetchGlobalLeaderboard.mockResolvedValue(leaderboardPage);
   api.logout.mockResolvedValue(undefined);
   api.claimUsername.mockImplementation(async (username) => ({

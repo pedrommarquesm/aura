@@ -14,10 +14,19 @@ export {
   refreshUpload,
   updatePostCaption,
 } from './posts';
-export { USER_POSTS_PAGE_SIZE, fetchPublicProfile, fetchUserPosts } from './users';
+export {
+  USER_POSTS_PAGE_SIZE,
+  completeAvatarUpload,
+  createAvatarUpload,
+  fetchPublicProfile,
+  fetchUserPosts,
+} from './users';
 export type {
   AuthTokens,
+  CompleteAvatarResponse,
   CompleteUploadResponse,
+  CreateAvatarUploadRequest,
+  CreateAvatarUploadResponse,
   CreateUploadRequest,
   CreateUploadResponse,
   CursorPage,

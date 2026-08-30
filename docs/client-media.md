@@ -221,3 +221,31 @@ Never upload the original **and** the derivative. If a smaller (or HEIC-replaced
 - Not a second **image** stack (`react-native-compressor` Image, ffmpeg). Photos stay on `expo-image-manipulator`. Video shrink is native compressor after pick — the picker export blocked the create screen.
 
 When we add hashing or a second concurrent encode, add a roadmap row and change this file in the same PR. The numbers in §2 only change here and in `photo-targets.ts`, together.
+
+---
+
+## 8. Profile photo
+
+Not a post. The avatar is a single square JPEG. The circle on every surface is a **mask** (`rounded-full` + `cover`). We do not upload a circular PNG with transparent corners — worse for CDN, re-crop, and the JPEG pipeline.
+
+```text
+Own profile pencil
+  → library, images only. Same PHPicker rule as Choose photo.
+  → circular crop: pinch-zoom and pan so the face sits in the hole
+  → crop the inscribed square, resize to 720, JPEG 0.85
+  → POST /v1/me/avatar/uploads { contentType: image/jpeg, byteSize, width, height }
+  → PUT
+  → POST /v1/me/avatar/complete { uploadId }
+  → write users.avatarUrl to the public CDN URL of avatars/{userId}/{uploadId}.jpg
+```
+
+| Constraint | Value |
+|---|---|
+| Output | 720×720 JPEG |
+| Quality | 0.85 |
+| Hard cap | **2 MB** (`MEDIA_AVATAR_MAX_BYTES`) |
+| Types | `image/jpeg` only |
+| Camera | No. Take a picture stays off |
+| Web | No upload |
+
+Constants live in `apps/mobile/lib/media/avatar-targets.ts`. The crop math is `avatar-crop.ts`. This is not the post worker path — the client is the encoder; the API only verifies the object exists and is small enough.

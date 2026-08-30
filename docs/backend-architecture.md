@@ -713,8 +713,10 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | POST | `/v1/auth/refresh` | rotate refresh token, reuse detection |
 | POST | `/v1/auth/logout` | revoke current device session |
 | POST | `/v1/auth/username` | claim handle on first login (onboarding) |
-| GET | `/v1/me` | |
+| GET | `/v1/me` | Implemented as `GET /v1/auth/me` |
 | PATCH | `/v1/me` | |
+| POST | `/v1/me/avatar/uploads` | Presign a square JPEG. Photo only. Does not create a post |
+| POST | `/v1/me/avatar/complete` | Verify the object and write `users.avatarUrl` |
 | GET | `/v1/feed` | latest |
 | GET | `/v1/feed/trending` | |
 | POST | `/v1/posts/uploads` | presign |

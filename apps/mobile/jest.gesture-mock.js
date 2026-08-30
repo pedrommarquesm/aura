@@ -11,6 +11,23 @@ function tap() {
   return gesture;
 }
 
+function pinch() {
+  const gesture = {
+    onUpdate: () => gesture,
+    onEnd: () => gesture,
+  };
+  return gesture;
+}
+
+function pan() {
+  const gesture = {
+    minDistance: () => gesture,
+    onUpdate: () => gesture,
+    onEnd: () => gesture,
+  };
+  return gesture;
+}
+
 function GestureHandlerRootView({ children }) {
   return React.createElement(View, null, children);
 }
@@ -24,7 +41,10 @@ module.exports = {
   GestureDetector,
   Gesture: {
     Tap: tap,
+    Pinch: pinch,
+    Pan: pan,
     Exclusive: (...gestures) => gestures[0],
+    Simultaneous: (...gestures) => gestures[0],
   },
   State: {},
   Directions: {},
