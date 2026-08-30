@@ -6,12 +6,12 @@ import { PostsService } from './posts.service';
 
 function createDb(post: Record<string, unknown> | undefined) {
   const set = vi.fn(() => ({
-    where: vi.fn(async () => undefined),
+    where: vi.fn().mockResolvedValue(undefined),
   }));
   return {
     query: {
       posts: {
-        findFirst: vi.fn(async () => post),
+        findFirst: vi.fn().mockResolvedValue(post),
       },
     },
     update: vi.fn(() => ({ set })),
@@ -28,7 +28,7 @@ describe('PostsService.updateCaption', () => {
 
   it('writes the caption when the actor owns the post', async () => {
     const db = createDb({ id: 'post_1', authorId: 'u_alice', status: 'published' });
-    const feed = { getPost: vi.fn(async () => ({ card, authorId: 'u_alice', status: 'published' })) };
+    const feed = { getPost: vi.fn().mockResolvedValue({ card, authorId: 'u_alice', status: 'published' }) };
     const service = new PostsService(db as never, feed as never);
 
     const result = await service.updateCaption('u_alice', 'post_1', '  edited  ');
@@ -39,7 +39,9 @@ describe('PostsService.updateCaption', () => {
 
   it('stores no caption when the description is blank', async () => {
     const db = createDb({ id: 'post_1', authorId: 'u_alice', status: 'published' });
-    const feed = { getPost: vi.fn(async () => ({ card: { ...card, caption: null }, authorId: 'u_alice', status: 'published' })) };
+    const feed = {
+      getPost: vi.fn().mockResolvedValue({ card: { ...card, caption: null }, authorId: 'u_alice', status: 'published' }),
+    };
     const service = new PostsService(db as never, feed as never);
 
     await service.updateCaption('u_alice', 'post_1', '   ');

@@ -166,12 +166,12 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
-| API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | In review | |
+| API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | In review | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
 | MOB-62 | Feed: one tap unmutes. Overlay above VideoView + Exclusive single tap must outlive the double-tap window | Done | [#52](https://github.com/pedrommarquesm/aura/pull/52) |
-| MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | In review | |
+| MOB-65 | Profile grid opens a post. Own posts get Edit (caption only) and Delete in the options menu | In review | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -263,6 +263,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-30 | Authors can edit a post caption (`PATCH /v1/posts/:id`) and delete their own post. Edit does not replace media. Profile tiles open the post | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | 2026-08-30 | Choose video is library-only. Native picker export at 1080p H.264. Refuse over 60s / 100 MB. No in-app camera, no JS transcode, no Mux keys on the phone | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 | 2026-08-30 | Video is Mux, not Stream and not ffmpeg. Phone PUTs the master to R2; worker ingests the public CDN URL; publish waits for `video.asset.ready`. Store asset/playback ids, not Mux URLs. Webhook is `POST /v1/webhooks/mux` | [#47](https://github.com/pedrommarquesm/aura/pull/47) |
 | 2026-08-29 | Language change is in Settings, not the web header or the mobile profile. Web: `/settings` (`/pt/definicoes`) plus a header gear menu. Mobile: Settings screen opened from the profile gear | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
