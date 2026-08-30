@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build so feed video autoplay (`MOB-32`) and the create caption / publish row (`MOB-59`) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
+**Now** — New app build so the video player and create caption / publish row from [#49](https://github.com/pedrommarquesm/aura/pull/49) are on a phone. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -148,7 +148,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-53 | Choose photo must not kill the iOS process (no Photos permission prompt for PHPicker; no HEIC fast-path; no File() on ph://) | Done | [#32](https://github.com/pedrommarquesm/aura/pull/32) |
 | MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | Done | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
-| MOB-59 | Create caption is visible while typing; Post comes first and stays on screen with Cancel | In review | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
+| MOB-59 | Create caption is visible while typing; Post comes first and stays on screen with Cancel | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
 
 ### Feed
 
@@ -164,7 +164,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
-| MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | In review | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
+| MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
