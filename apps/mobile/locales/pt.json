@@ -54,7 +54,8 @@
         "doubleTapSound": "Toca duas vezes para dar like. Toca uma vez para o som",
         "mute": "Silenciar",
         "unmute": "Ativar som",
-        "options": "Opções da publicação"
+        "options": "Opções da publicação",
+        "profile": "Ver @{username}"
       }
     }
   },
@@ -137,7 +138,11 @@
     "posts": {
       "title": "Publicações",
       "empty": "Ainda não publicaste nada. A grelha enche à medida que publicas.",
+      "emptyOther": "@{username} ainda não publicou nada.",
       "open": "Abrir publicação"
+    },
+    "error": {
+      "title": "Não foi possível carregar este perfil"
     },
     "comingSoon": "Aura Sense e Vote Power juntam-se a este cartão na V1 (roadmap AURA-11, AURA-10)."
   },

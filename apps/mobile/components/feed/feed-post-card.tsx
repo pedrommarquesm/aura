@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -19,9 +20,10 @@ import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { AuraValue, Avatar, Text } from '@/components/ui';
 import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
+import { userProfileHref } from '@/lib/navigation/user-profile';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
-import { useIsAuthenticated } from '@/store/session';
+import { useIsAuthenticated, useSessionStore } from '@/store/session';
 import { burstTiming, instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
@@ -120,10 +122,16 @@ export const FeedPostCard = memo(function FeedPostCard({
   onDeleted?: () => void;
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
   const { author, media } = post;
   const queryClient = useQueryClient();
   const isAuthenticated = useIsAuthenticated();
+  const viewerUsername = useSessionStore((state) => state.user?.username);
   const requestAuth = useAuthGateStore((state) => state.requestAuth);
+
+  const openAuthor = useCallback(() => {
+    router.push(userProfileHref(author.username, viewerUsername));
+  }, [author.username, router, viewerUsername]);
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
@@ -184,19 +192,26 @@ export const FeedPostCard = memo(function FeedPostCard({
   return (
     <View className="pb-6">
       <View className="flex-row items-center gap-3 px-gutter py-3">
-        <Avatar uri={author.avatarUrl} username={author.username} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
+          onPress={openAuthor}
+          className="min-w-0 flex-1 flex-row items-center gap-3"
+        >
+          <Avatar uri={author.avatarUrl} username={author.username} accessible={false} />
 
-        <View className="flex-1">
-          <View className="flex-row items-center gap-2">
-            <Text variant="label">@{author.username}</Text>
-            {author.title ? (
-              <Text variant="caption" tone="aura">
-                {author.title}
-              </Text>
-            ) : null}
+          <View className="flex-1">
+            <View className="flex-row items-center gap-2">
+              <Text variant="label">@{author.username}</Text>
+              {author.title ? (
+                <Text variant="caption" tone="aura">
+                  {author.title}
+                </Text>
+              ) : null}
+            </View>
+            <AuraValue value={author.aura} size="sm" tone="secondary" />
           </View>
-          <AuraValue value={author.aura} size="sm" tone="secondary" />
-        </View>
+        </Pressable>
 
         <PostOptions post={post} onDeleted={onDeleted} />
       </View>
@@ -286,7 +301,14 @@ export const FeedPostCard = memo(function FeedPostCard({
 
       {post.caption ? (
         <Text variant="body" className="px-gutter pt-2">
-          <Text variant="label">@{author.username} </Text>
+          <Text
+            variant="label"
+            onPress={openAuthor}
+            accessibilityRole="link"
+            accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
+          >
+            @{author.username}{' '}
+          </Text>
           <Text variant="body" tone="secondary">
             {post.caption}
           </Text>
