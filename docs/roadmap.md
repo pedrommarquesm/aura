@@ -149,8 +149,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-54 | Do not list `expo-image-manipulator` as an Expo config plugin — it has none, and `expo run:ios` then loads `src/index.ts` in Node and dies | Done | [#33](https://github.com/pedrommarquesm/aura/pull/33) |
 | MOB-58 | Choose video (library only). Native 1080p H.264 export. Refuse after export if over 60s / 100 MB. Take a picture stays visible and disabled | Done | [#48](https://github.com/pedrommarquesm/aura/pull/48) |
 | MOB-59 | Create caption is visible while typing; Post comes first and stays on screen with Cancel | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
-| MOB-60 | Create caption stays on screen with the keyboard open (compose layout, no NativeWind color on TextInput) | In review | |
-| MOB-61 | Choose video returns the existing file immediately. Duration / size checks run on the create page. No picker H.264 export | In review | |
+| MOB-60 | Create caption stays on screen with the keyboard open (compose layout, no NativeWind color on TextInput) | In review | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
+| MOB-61 | Choose video returns the existing file immediately. Duration / size checks run on the create page. No picker H.264 export | In review | [#51](https://github.com/pedrommarquesm/aura/pull/51) |
 
 ### Feed
 
