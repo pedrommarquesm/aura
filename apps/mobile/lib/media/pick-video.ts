@@ -6,10 +6,15 @@ import { VIDEO_MAX_DURATION_MS } from './video-targets';
 
 /**
  * Library video only. Same iOS rule as photos: do not ask Photos permission
- * (PHPicker). Compatible + H.264 1080p is the native shrink — no JS encode.
+ * (PHPicker).
+ *
+ * Do not set `videoExportPreset` (H.264 1080p) or Compatible representation.
+ * Both transcode before the picker promise resolves, so the create screen
+ * cannot appear until iOS finishes. Passthrough + Current returns the
+ * existing file; Mux transcodes the master after upload.
  *
  * `videoMaxDuration` is a camera-recording cap on most devices. We still
- * refuse after export in the create screen.
+ * refuse after pick on the create screen.
  */
 export async function pickVideoFromLibrary(): Promise<ImagePicker.ImagePickerAsset | null> {
   if (Platform.OS === 'android') {
@@ -19,16 +24,14 @@ export async function pickVideoFromLibrary(): Promise<ImagePicker.ImagePickerAss
     }
   }
 
-  const compatible = ImagePicker.UIImagePickerPreferredAssetRepresentationMode?.Compatible;
-  const h264_1080 = ImagePicker.VideoExportPreset?.H264_1920x1080;
+  const current = ImagePicker.UIImagePickerPreferredAssetRepresentationMode?.Current;
 
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ['videos'],
     allowsEditing: false,
     // Recording-only on many devices. Still set so a trim UI, if shown, matches us.
     videoMaxDuration: VIDEO_MAX_DURATION_MS / 1000,
-    ...(compatible ? { preferredAssetRepresentationMode: compatible } : {}),
-    ...(h264_1080 != null ? { videoExportPreset: h264_1080 } : {}),
+    ...(current ? { preferredAssetRepresentationMode: current } : {}),
   });
 
   if (result.canceled || !result.assets[0]) return null;
