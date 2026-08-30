@@ -39,7 +39,7 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Leaderboard Redis repair (`AURA-06`). New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments and avatar upload.
+**Now** — New app build for comments, profile photo, the avatar-confirm fix (`MOB-70`), profile posts, Edit / Delete, other people's profiles, pull-to-refresh (`MOB-67`), and video shrink (`MOB-63`). Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live with comments, avatar upload, and the leaderboard repair.
 
 **Next** — Web HLS player when video should play on the site.
 
@@ -204,7 +204,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-06 | Do not `ZINCRBY` onto an empty `lb:global`. Rebuild from `users.aura`. Likes write the set. Pin the viewer row only when they are outside the list | In review | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
+| AURA-06 | Do not `ZINCRBY` onto an empty `lb:global`. Rebuild from `users.aura`. Likes write the set. Pin the viewer row only when they are outside the list | Done | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
 | MOB-40 | Optimistic like with animation, haptics, and rollback on failure | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-44 | Double-tap the photo to like. Already liked only replays the burst. Guests open the auth gate with a pending like | Done | [#38](https://github.com/pedrommarquesm/aura/pull/38) |
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
