@@ -50,6 +50,7 @@ export function CommentComposer({
       <View className="flex-row items-end gap-2">
         <View className="flex-1">
           <TextField
+            testID="comment-body"
             value={body}
             onChangeText={setBody}
             onFocus={() => {
@@ -69,6 +70,7 @@ export function CommentComposer({
           />
         </View>
         <Button
+          testID="comment-submit"
           label={t('post.comments.post')}
           size="sm"
           disabled={!canSend && isAuthenticated}

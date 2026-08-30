@@ -18,22 +18,24 @@ const published = { id: 'post_1', authorId: 'u_bob', status: 'published' };
 
 function createDb(options: {
   post?: Record<string, unknown> | undefined;
-  inserted?: Record<string, unknown>;
   commentCount?: number;
 }) {
-  const returningInsert = vi.fn().mockResolvedValue([
-    options.inserted ?? {
-      id: 'c_1',
-      postId: 'post_1',
-      authorId: actor.id,
-      body: 'nice shot',
-      createdAt: new Date('2026-08-30T12:00:00.000Z'),
-    },
-  ]);
   const returningUpdate = vi.fn().mockResolvedValue([{ commentCount: options.commentCount ?? 1 }]);
 
   const tx = {
-    insert: vi.fn(() => ({ values: vi.fn(() => ({ returning: returningInsert })) })),
+    insert: vi.fn(() => ({
+      values: vi.fn((values: { body: string; postId: string; authorId: string }) => ({
+        returning: vi.fn().mockResolvedValue([
+          {
+            id: 'c_1',
+            postId: values.postId,
+            authorId: values.authorId,
+            body: values.body,
+            createdAt: new Date('2026-08-30T12:00:00.000Z'),
+          },
+        ]),
+      })),
+    })),
     update: vi.fn(() => ({ set: vi.fn(() => ({ where: vi.fn(() => ({ returning: returningUpdate })) })) })),
   };
 
@@ -43,9 +45,8 @@ function createDb(options: {
         findFirst: vi.fn().mockResolvedValue(options.post),
       },
     },
-    transaction: vi.fn(async (fn: (inner: typeof tx) => unknown) => fn(tx)),
+    transaction: vi.fn((fn: (inner: typeof tx) => unknown) => fn(tx)),
     tx,
-    returningInsert,
     returningUpdate,
   };
 }

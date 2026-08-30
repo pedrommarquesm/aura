@@ -168,7 +168,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | API-29 | `POST /v1/me/avatar/uploads` + `POST /v1/me/avatar/complete`. Square JPEG only. Writes `users.avatarUrl` | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
-| API-31 | `GET|POST /v1/posts/:id/comments`. Flat thread. `commentCount` on the card. Authors may comment. No Aura | In review | |
+| API-31 | `GET|POST /v1/posts/:id/comments`. Flat thread. `commentCount` on the card. Authors may comment. No Aura | In review | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
@@ -177,7 +177,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-66 | Other people's profile page. Opened from the post avatar, name, or the handle beside the caption | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | MOB-67 | Pull-to-refresh on profile and post detail. Like/unlike writes the permalink and profile grid, not only the home feed | Done | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | MOB-68 | Own profile: pencil on the avatar, library picker, circular crop (pinch / pan), upload the inscribed square JPEG | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
-| MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | In review | |
+| MOB-69 | Comment icon on the feed card. Thread + composer on the post screen. Guests sign in; authors may comment on their own post | In review | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -252,7 +252,7 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | AURA-15 | Leaderboards: country, city, friends, weekly | Not started | |
 | AURA-16 | Levels and titles | Not started | |
 | API-30 | Following graph + following feed (fan-in) | Not started | |
-| API-31 | Comments | In review | |
+| API-31 | Comments | In review | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | API-32 | Aura Battles | Not started | |
 | API-33 | Daily Challenges | Not started | |
 | API-34 | Notifications, aggregated (never one push per like) | Not started | |
@@ -269,7 +269,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | |
+| 2026-08-30 | Comments are flat (no replies). Anyone signed in can comment, including the post author. No Aura for comments. Feed carries `commentCount` only — bodies load on the post thread | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | 2026-08-30 | Like/unlike writes the post permalink and profile grid, not only the home feed. Profile and post detail pull-to-refresh and refetch on focus | [#57](https://github.com/pedrommarquesm/aura/pull/57) |
 | 2026-08-30 | Authors can edit a post caption (`PATCH /v1/posts/:id`) and delete their own post. Edit does not replace media. Profile tiles open the post. Other people's profiles open from the post avatar, name, or caption handle | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | 2026-08-30 | Choose video is library-only. Native picker export at 1080p H.264. Refuse over 60s / 100 MB. No in-app camera, no JS transcode, no Mux keys on the phone | [#48](https://github.com/pedrommarquesm/aura/pull/48) |

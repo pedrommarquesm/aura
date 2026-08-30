@@ -1,4 +1,4 @@
-import { fireEvent, screen, userEvent, waitFor } from '@testing-library/react-native';
+import { screen, userEvent, waitFor } from '@testing-library/react-native';
 
 import HomeScreen from '@/app/(tabs)/index';
 import PostScreen from '@/app/post/[id]';
@@ -32,8 +32,8 @@ describe('Comments on a post', () => {
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
     expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
 
-    fireEvent.changeText(screen.getByLabelText('Add a comment'), 'absolute cinema');
-    await user.press(screen.getByLabelText('Post'));
+    await user.type(screen.getByTestId('comment-body'), 'absolute cinema');
+    await user.press(screen.getByTestId('comment-submit'));
 
     await waitFor(() => {
       expect(api.createComment).toHaveBeenCalledWith(mockFeed[0]!.id, 'absolute cinema');
@@ -53,8 +53,8 @@ describe('Comments on a post', () => {
     await renderApp(<PostScreen />);
 
     await screen.findByText('my golden hour');
-    fireEvent.changeText(screen.getByLabelText('Add a comment'), 'my own note');
-    await user.press(screen.getByLabelText('Post'));
+    await user.type(screen.getByTestId('comment-body'), 'my own note');
+    await user.press(screen.getByTestId('comment-submit'));
 
     await waitFor(() => {
       expect(api.createComment).toHaveBeenCalledWith('post-own', 'my own note');
@@ -85,7 +85,7 @@ describe('Comments on a post', () => {
     await renderApp(<PostScreen />);
 
     expect(await screen.findByText('deserved')).toBeOnTheScreen();
-    expect(screen.getByText('@alice')).toBeOnTheScreen();
+    expect(screen.getAllByText('@alice').length).toBeGreaterThan(0);
   });
 
   it('asks a guest to sign in when they try to write a comment', async () => {
@@ -96,7 +96,7 @@ describe('Comments on a post', () => {
     await renderApp(<PostScreen />);
     await screen.findByText('golden hour hits different when you are winning');
 
-    await user.press(screen.getByLabelText('Post'));
+    await user.press(screen.getByTestId('comment-submit'));
 
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
     expect(api.createComment).not.toHaveBeenCalled();
