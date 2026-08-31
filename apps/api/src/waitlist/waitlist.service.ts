@@ -74,14 +74,14 @@ export class WaitlistService {
       throw new AppError(ErrorCode.WAITLIST_UNAVAILABLE, 'Waitlist is closed', 503);
     }
 
-    const allowed = await this.consumeSlot(ip);
-    if (!allowed) {
-      throw new AppError(ErrorCode.RATE_LIMITED, 'Too many joins from this network', 429);
-    }
-
     const existing = await this.findByEmail(email);
     if (existing) {
       return this.toPublic(existing, { alreadyJoined: true, awardedAura: 0 });
+    }
+
+    const allowed = await this.consumeSlot(ip);
+    if (!allowed) {
+      throw new AppError(ErrorCode.RATE_LIMITED, 'Too many joins from this network', 429);
     }
 
     const locale = resolveLocale(input.locale) ?? 'en';
