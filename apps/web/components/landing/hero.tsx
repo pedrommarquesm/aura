@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ArrowRightIcon } from "@/components/icons";
+import { DEMO_POSTS, DemoFeedPost, PhoneFrame } from "@/components/landing/demo-feed-post";
 import { Container } from "@/components/landing/section";
 import { buttonClassName } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
@@ -67,36 +68,8 @@ export async function Hero() {
 
 function HeroPhone() {
   return (
-    <div className="relative mx-auto w-full max-w-[336px]">
-      <div
-        aria-hidden
-        className="absolute -inset-8 animate-aura-pulse rounded-full bg-aura/25 blur-3xl"
-      />
-      <div className="relative rounded-[2.25rem] border border-border bg-surface-elevated p-2.5 shadow-aura-glow">
-        <div className="overflow-hidden rounded-[1.85rem] bg-bg">
-          <div className="flex items-center justify-between px-4 py-3">
-            <span className="text-label">Aura</span>
-            <span className="aura-numerals text-caption text-aura-bright">🗿 12,840</span>
-          </div>
-          <div
-            className="relative aspect-4/5"
-            style={{
-              backgroundImage: "linear-gradient(160deg, #3b1d6e, #8b5cf6, #111018)",
-            }}
-          >
-            <span className="absolute inset-0 grid place-items-center text-6xl">🗿</span>
-            <span className="absolute bottom-3 left-3 rounded-full bg-aura-gradient px-3 py-1 text-caption font-semibold">
-              +10 Aura
-            </span>
-          </div>
-          <div className="flex flex-col gap-3 p-4">
-            <p className="text-label">@maya</p>
-            <p className="text-body text-text-secondary">
-              left the group chat on read. unbothered.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PhoneFrame>
+      <DemoFeedPost post={DEMO_POSTS[0]!} />
+    </PhoneFrame>
   );
 }

@@ -158,11 +158,10 @@
       "eyebrow": "Try it",
       "title": "This is a post. Double-tap it.",
       "description": "A like is not a heart for the algorithm. It is Aura, paid to the person who posted. Try it here — nothing leaves this page.",
-      "phoneTitle": "For you",
       "doubleTap": "Double-tap to give Aura",
-      "auraGain": "+{amount, number} Aura",
+      "seeMore": "See more",
       "nextPost": "Next post",
-      "hint": "Tap the heart or double-tap the photo.",
+      "hint": "Tap the 🗿 or double-tap the photo.",
       "steps": {
         "look": {
           "title": "You see the moment",

@@ -71,3 +71,52 @@ export function ArrowRightIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** Ionicons `chatbubble-outline` — comments on the feed card. */
+export function CommentIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <path d="M19.5 15.4a7.6 7.6 0 1 0-3.1 3.2L19.8 20a.6.6 0 0 0 .75-.75l-1.05-3.85Z" />
+    </svg>
+  );
+}
+
+/** Ionicons `arrow-redo-outline` — share on the feed card. */
+export function ShareIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <path d="M9.5 12.5 16 7.8" />
+      <path d="M16 7.8c.4 3.2-1.1 6.3-4.2 8.2-1.3.8-2.8 1.2-4.3 1.2" />
+      <path d="M16 7.8 12.4 4.5" />
+    </svg>
+  );
+}
+
+/** Ionicons `ellipsis-horizontal` — more menu on the feed card. */
+export function MoreIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <circle cx="6" cy="12" r="1.6" />
+      <circle cx="12" cy="12" r="1.6" />
+      <circle cx="18" cy="12" r="1.6" />
+    </svg>
+  );
+}

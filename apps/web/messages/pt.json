@@ -158,11 +158,10 @@
       "eyebrow": "Experimenta",
       "title": "Isto é um post. Dá dois toques.",
       "description": "Um like não é um coração para o algoritmo. É Aura, paga a quem publicou. Experimenta aqui — nada sai desta página.",
-      "phoneTitle": "Para ti",
       "doubleTap": "Dois toques para dar Aura",
-      "auraGain": "+{amount, number} Aura",
+      "seeMore": "Ver mais",
       "nextPost": "Próximo post",
-      "hint": "Toca no coração ou dá dois toques na foto.",
+      "hint": "Toca no 🗿 ou dá dois toques na foto.",
       "steps": {
         "look": {
           "title": "Vês o momento",
