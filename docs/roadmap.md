@@ -101,7 +101,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-30 | Waitlist landing: hide web login, early-beta join, referral share, interactive post demo | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-31 | Public T&C, FAQ, contact form pages | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-32 | Landing post mocks match the mobile TikTok feed card (full-bleed, 🗿 actions, overlay chrome) | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
-| WEB-33 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs, routes, and locale switcher | In review | |
+| WEB-33 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs, routes, and locale switcher | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 
 ---
 
@@ -135,7 +135,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | API-40 | Waitlist join + referral Aura (paid when the friend signs up), email outbox, claim onto account at first sign-in | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
-| API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | In review | |
+| API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 
 ### Media pipeline
 
@@ -224,7 +224,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
 | MOB-56 | Photo like heart starts at the tap and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
 | MOB-57 | Language override lives on the Settings screen, not on the profile. Profile opens Settings via a gear | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
-| MOB-60 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs; `pt-BR` no longer collapses onto European `pt` | In review | |
+| MOB-60 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs; `pt-BR` no longer collapses onto European `pt` | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
@@ -288,7 +288,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-31 | Brazilian Portuguese (`pt-br`) and Spanish (`es`) catalogs on web and mobile. European `pt` stays Portugal. `pt-BR` no longer collapses onto `pt`. Waitlist emails follow the joiner locale | |
+| 2026-08-31 | Brazilian Portuguese (`pt-br`) and Spanish (`es`) catalogs on web and mobile. European `pt` stays Portugal. `pt-BR` no longer collapses onto `pt`. Waitlist emails follow the joiner locale | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 | 2026-08-31 | Landing hero and play demos use the mobile feed card chrome: full-bleed photo, top-right Aura pill, right-side 🗿 / comments / share / more, bottom overlay with username + title. A like is a 🗿, not a heart | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Referral Aura pays when the friend creates a real account, not when they join the waitlist. Join still gives the joiner +10. Waitlist submits are limited per IP, per email, and globally so a fake-inbox flood cannot mint referrals or DDoS the form | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Web launch is a waitlist. Login is hidden and the GIS client is not imported from a reachable page. Early-join Aura (+10) and referral Aura (+10) live on `waitlist_entries` until sign-up ports them as a ledger `BONUS`. Emails render into `email_outbox` until SMTP exists | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
