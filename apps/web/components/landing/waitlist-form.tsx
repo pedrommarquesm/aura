@@ -2,11 +2,13 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 
 import { Button } from "@/components/ui";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { ApiError } from "@/lib/api/errors";
+import { sectionHash } from "@/i18n/sections";
+import type { AppLocale } from "@/i18n/routing";
 import { JOIN_AURA, REFERRAL_AURA, REF_QUERY, REF_STORAGE_KEY, readReferralCode } from "@/lib/launch";
 import { joinWaitlist, type WaitlistPublic } from "@/lib/waitlist";
 
@@ -22,10 +24,10 @@ export function WaitlistForm() {
   const [result, setResult] = useState<WaitlistPublic | null>(null);
   const [copied, setCopied] = useState(false);
   const fromUrl = readReferralCode(search.get(REF_QUERY));
-  const [fromStorage] = useState(() =>
-    typeof window === "undefined"
-      ? null
-      : readReferralCode(sessionStorage.getItem(REF_STORAGE_KEY)),
+  const fromStorage = useSyncExternalStore(
+    () => () => {},
+    () => readReferralCode(sessionStorage.getItem(REF_STORAGE_KEY)),
+    () => null,
   );
   const referralCode = fromUrl ?? fromStorage;
 
@@ -108,7 +110,12 @@ export function WaitlistForm() {
   }
 
   return (
-    <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-4">
+    <form
+      method="post"
+      action={sectionHash(locale as AppLocale, "join")}
+      onSubmit={(event) => void onSubmit(event)}
+      className="flex flex-col gap-4"
+    >
       {referralCode ? (
         <p className="rounded-lg border border-aura/30 bg-surface px-4 py-3 text-label text-text-secondary">
           {t("invited")}

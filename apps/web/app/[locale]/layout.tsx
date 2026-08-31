@@ -60,8 +60,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={htmlLang[locale]} className={`${inter.variable} antialiased`}>
-      <body className="min-h-dvh bg-bg text-text">
+    <html lang={htmlLang[locale]} className={`${inter.variable} overflow-x-hidden antialiased`}>
+      <body className="min-h-dvh overflow-x-hidden bg-bg text-text">
         {/* QueryProvider owns session (`['me']`) and the feed/like cache. */}
         <NextIntlClientProvider
           messages={{

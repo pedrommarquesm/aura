@@ -46,7 +46,12 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={(event) => void onSubmit(event)} className="flex max-w-lg flex-col gap-4">
+    <form
+      method="post"
+      action="#contact"
+      onSubmit={(event) => void onSubmit(event)}
+      className="flex max-w-lg flex-col gap-4"
+    >
       <label className="flex flex-col gap-2">
         <span className="text-caption text-text-secondary">{t("name")}</span>
         <input

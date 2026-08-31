@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { HeartIcon } from "@/components/icons";
 import { Section } from "@/components/landing/section";
@@ -57,6 +57,7 @@ export function Play() {
   const isLiked = Boolean(liked[post.id]);
   const likes = post.likes + (isLiked ? 1 : 0);
   const aura = post.aura + (isLiked ? 10 : 0);
+  const lastTap = useRef(0);
 
   const award = () => {
     setBurst((count) => count + 1);
@@ -66,12 +67,19 @@ export function Play() {
     }
   };
 
+  const onMediaPointerUp = () => {
+    const now = Date.now();
+    if (now - lastTap.current < 320) award();
+    lastTap.current = now;
+  };
+
   return (
     <Section
       id={sectionId(locale, "play")}
       eyebrow={t("eyebrow")}
       title={t("title")}
       description={t("description")}
+      className="overflow-x-hidden"
     >
       <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="relative mx-auto w-full max-w-[336px]">
@@ -89,6 +97,7 @@ export function Play() {
               <button
                 type="button"
                 onDoubleClick={award}
+                onPointerUp={onMediaPointerUp}
                 className="relative block w-full cursor-pointer"
                 aria-label={t("doubleTap")}
               >
