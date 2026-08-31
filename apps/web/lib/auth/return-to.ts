@@ -1,3 +1,8 @@
+import { hasLocale } from "next-intl";
+
+import { getPathname } from "@/i18n/navigation";
+import { routing, type AppLocale } from "@/i18n/routing";
+
 /**
  * Same-origin path the browser may return to after sign-in.
  *
@@ -23,16 +28,20 @@ export function safeReturnPath(raw: string | null | undefined): string | null {
   return value;
 }
 
+function asLocale(locale: string): AppLocale {
+  return hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
+}
+
 export function defaultSignedInPath(locale: string) {
-  return locale === "pt" ? "/pt/explorar" : "/feed";
+  return getPathname({ href: "/feed", locale: asLocale(locale) });
 }
 
 export function loginPath(locale: string) {
-  return locale === "pt" ? "/pt/entrar" : "/login";
+  return getPathname({ href: "/login", locale: asLocale(locale) });
 }
 
 export function usernamePath(locale: string) {
-  return locale === "pt" ? "/pt/nome" : "/username";
+  return getPathname({ href: "/username", locale: asLocale(locale) });
 }
 
 export function authContinueHref(

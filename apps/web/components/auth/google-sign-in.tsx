@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import { googleSignInLocale } from "@/i18n/routing";
 import { GOOGLE_WEB_CLIENT_ID, isGoogleConfigured } from "@/lib/auth/google";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { cn } from "@/lib/cn";
@@ -128,7 +129,7 @@ export function GoogleSignInButton({
       text: "continue_with",
       shape: "pill",
       width: 320,
-      locale: locale === "pt" ? "pt-PT" : "en",
+      locale: googleSignInLocale[locale] ?? "en",
     });
   }, [errors, locale, onSignedIn, scriptReady]);
 

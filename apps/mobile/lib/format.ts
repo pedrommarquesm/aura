@@ -1,4 +1,4 @@
-import type { AppLocale } from '@/lib/i18n/locales';
+import { formatLocale, type AppLocale } from '@/lib/i18n/locales';
 
 /**
  * Number formatting for the values the product is built around.
@@ -18,7 +18,7 @@ function numberFormat(locale: AppLocale, style: 'decimal' | 'compact'): Intl.Num
   if (cached) return cached;
 
   const format = new Intl.NumberFormat(
-    locale,
+    formatLocale[locale],
     style === 'compact' ? { notation: 'compact', maximumFractionDigits: 1 } : undefined,
   );
 

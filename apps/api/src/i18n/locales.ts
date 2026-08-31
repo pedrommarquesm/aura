@@ -9,21 +9,25 @@
  *
  * See docs/i18n.md.
  */
-export const SUPPORTED_LOCALES = ['en', 'pt'] as const;
+export const SUPPORTED_LOCALES = ['en', 'pt', 'pt-br', 'es'] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
 /**
- * BCP 47 tag used for `Intl` formatting and the `lang` attribute.
+ * BCP 47 tag used for `lang` and the `lang` attribute.
  *
  * `pt` means European Portuguese. Kept short in URLs and storage; expanded to
- * `pt-PT` wherever a correct language tag matters.
+ * `pt-PT` wherever a correct language tag matters. `pt-br` expands to `pt-BR`.
+ * Number formatting still uses `pt` / `pt-BR` / `es` (never `pt-PT`) so
+ * thousands group with a dot — see docs/i18n.md.
  */
 const LANGUAGE_TAGS: Record<Locale, string> = {
   en: 'en',
   pt: 'pt-PT',
+  'pt-br': 'pt-BR',
+  es: 'es',
 };
 
 export function languageTag(locale: Locale): string {
@@ -34,18 +38,28 @@ export function isSupportedLocale(value: unknown): value is Locale {
   return typeof value === 'string' && SUPPORTED_LOCALES.includes(value as Locale);
 }
 
+function normalize(tag: string): string {
+  return tag.trim().toLowerCase().replace(/_/g, '-');
+}
+
 /**
  * Narrows any BCP 47 tag to a locale we actually ship.
  *
- * Matches on the primary subtag, so `pt-BR`, `pt-PT`, and `pt` all resolve to
- * `pt`. Brazilian Portuguese is not a separate locale yet; serving it European
- * Portuguese is a far better outcome than falling back to English.
+ * Exact ids win first (`pt-br`), then region: `pt-BR` → `pt-br`, `pt-PT` /
+ * `pt-MZ` → `pt`, `es-MX` → `es`. Order matters — a generic `pt-*` match
+ * would send Brazilians the Portugal catalog.
  */
 export function resolveLocale(tag: string | null | undefined): Locale | undefined {
   if (!tag) return undefined;
 
-  const primary = tag.trim().toLowerCase().split('-')[0];
-  return isSupportedLocale(primary) ? primary : undefined;
+  const code = normalize(tag);
+  if (!code) return undefined;
+  if (isSupportedLocale(code)) return code;
+  if (code.startsWith('pt-br')) return 'pt-br';
+  if (code === 'pt' || code.startsWith('pt-')) return 'pt';
+  if (code === 'es' || code.startsWith('es-')) return 'es';
+  if (code === 'en' || code.startsWith('en-')) return 'en';
+  return undefined;
 }
 
 /**

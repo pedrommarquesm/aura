@@ -67,18 +67,21 @@ Depth comes from surface lightness, not drop shadows. The only shadow is the Aur
 
 ## Internationalization
 
-English and European Portuguese, per the contract in [docs/i18n.md](../../docs/i18n.md).
-`i18next` + `react-i18next` with `i18next-icu` for ICU MessageFormat, and
-`expo-localization` for the device locale. Catalogs are `locales/en.json` and
-`locales/pt.json`; keys match the web app's wherever the string means the same thing, so
-merging both into one package (`FND-03`) stays mechanical.
+English, European Portuguese, Brazilian Portuguese, and Spanish, per the
+contract in [docs/i18n.md](../../docs/i18n.md). `i18next` + `react-i18next`
+with `i18next-icu` for ICU MessageFormat, and `expo-localization` for the
+device locale. Catalogs are `locales/{en,pt,pt-br,es}.json`; keys match the
+web app's wherever the string means the same thing, so merging both into one
+package (`FND-03`) stays mechanical. i18next uses `load: 'currentOnly'` so
+`pt-br` does not collapse onto European `pt`.
 
 Two rules the code enforces:
 
 - No copy in components. Every user-facing string, including accessibility labels, comes
   from a catalog. `tsc` types `t()` against `en.json`, so a bad key fails the typecheck.
 - No number built by hand. Aura values, counts and ranks go through `useFormat()` or an
-  ICU number argument, because English groups thousands with `,` and Portuguese with `.`.
+  ICU number argument, because English groups thousands with `,` and the other
+  locales with `.`.
 
 `Intl` is the part worth knowing about. Hermes ships different Intl implementations per
 platform and a missing one does not throw — `toLocaleString` just returns the number

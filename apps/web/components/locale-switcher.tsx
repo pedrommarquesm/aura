@@ -9,8 +9,8 @@ import { cn } from "@/lib/cn";
 import { isSharePath } from "@/lib/share";
 
 /**
- * Two real links rather than a dropdown: crawlable, keyboard-navigable and
- * usable without JavaScript.
+ * One real link per locale rather than a dropdown: crawlable,
+ * keyboard-navigable and usable without JavaScript.
  *
  * `usePathname` returns the internal route (`/about`), so `Link` re-localizes
  * it for the target locale — switching on `/about` lands on `/pt/sobre`, not on
@@ -38,13 +38,13 @@ export function LocaleSwitcher() {
   return (
     <nav
       aria-label={t("label")}
-      className="flex items-center gap-0.5 rounded-full border border-border bg-surface/70 p-0.5 text-caption backdrop-blur-sm"
+      className="flex flex-wrap items-center gap-0.5 rounded-full border border-border bg-surface/70 p-0.5 text-caption backdrop-blur-sm"
     >
       {routing.locales.map((locale) => {
         const isActive = locale === activeLocale;
 
         const className = cn(
-          "rounded-full px-2.5 py-1 font-semibold transition-colors duration-(--motion-quick) ease-out",
+          "rounded-full px-2 py-1 font-semibold transition-colors duration-(--motion-quick) ease-out",
           isActive
             ? "bg-surface-elevated text-text"
             : "text-text-muted hover:text-text",

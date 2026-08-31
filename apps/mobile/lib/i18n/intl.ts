@@ -14,7 +14,7 @@
  * The locale data is order-independent: it registers directly when a polyfill is
  * active, and buffers (then gets dropped) when it is not.
  *
- * Only `en` and `pt` data is bundled. Adding a locale means adding it here too.
+ * `en`, `pt`, `pt-BR`, and `es` data is bundled. Adding a locale means adding it here too.
  *
  * The `.js` suffixes are required, not stylistic: these packages only list the
  * suffixed paths in their `exports` map, and Metro and TypeScript both honour it.
@@ -23,7 +23,10 @@ import '@formatjs/intl-getcanonicallocales/polyfill.js';
 import '@formatjs/intl-locale/polyfill.js';
 import '@formatjs/intl-pluralrules/polyfill.js';
 import '@formatjs/intl-pluralrules/locale-data/en.js';
+import '@formatjs/intl-pluralrules/locale-data/es.js';
 import '@formatjs/intl-pluralrules/locale-data/pt.js';
 import '@formatjs/intl-numberformat/polyfill.js';
 import '@formatjs/intl-numberformat/locale-data/en.js';
+import '@formatjs/intl-numberformat/locale-data/es.js';
 import '@formatjs/intl-numberformat/locale-data/pt.js';
+import '@formatjs/intl-numberformat/locale-data/pt-BR.js';

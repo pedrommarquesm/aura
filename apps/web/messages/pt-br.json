@@ -1,0 +1,491 @@
+{
+  "meta": {
+    "home": {
+      "title": "Aura — Sua vibe, ranqueada",
+      "description": "Posta o momento. As pessoas curtem, você ganha Aura. Entra na beta antecipada e começa com 10 Aura antes do lançamento."
+    },
+    "terms": {
+      "title": "Termos",
+      "socialTitle": "Termos da Aura",
+      "description": "As regras da beta antecipada da Aura, dos convites e do app quando abrir."
+    },
+    "faq": {
+      "title": "Perguntas",
+      "socialTitle": "Perguntas da Aura",
+      "description": "O que é a Aura, como se farma e como funciona a beta antecipada."
+    },
+    "contact": {
+      "title": "Contato",
+      "socialTitle": "Fala com a Aura",
+      "description": "Dúvidas sobre a beta, o app ou a sua Aura. Escreve pra gente."
+    },
+    "about": {
+      "title": "Sobre",
+      "socialTitle": "Sobre a Aura",
+      "description": "O que é a Aura, como os likes viram uma pontuação pública e os níveis que você sobe no caminho."
+    },
+    "feed": {
+      "title": "Feed",
+      "socialTitle": "Feed da Aura",
+      "description": "Os posts mais recentes na Aura. Fotos e vídeos, na ordem em que chegam, com a Aura que já renderam."
+    },
+    "login": {
+      "title": "Entrar",
+      "socialTitle": "Entra na Aura",
+      "description": "Entra com o Google. Sem senha. Postar continua sendo no app."
+    },
+    "username": {
+      "title": "Escolhe seu username",
+      "socialTitle": "Escolhe seu username na Aura",
+      "description": "É o handle com que você aparece no ranking."
+    },
+    "leaderboard": {
+      "title": "Classificação",
+      "socialTitle": "Classificação global da Aura",
+      "description": "Os 100 com mais Aura. Uma tabela, um número, visível pra todo mundo."
+    },
+    "settings": {
+      "title": "Configurações",
+      "socialTitle": "Configurações da Aura",
+      "description": "Idioma e outras configurações do site."
+    },
+    "post": {
+      "title": "@{username}",
+      "socialTitle": "@{username} na Aura",
+      "description": "{caption}",
+      "descriptionEmpty": "@{username} postou na Aura. Entra pra dar like e farmar Aura.",
+      "alt": "Um post de @{username} na Aura"
+    },
+    "keywords": "Aura, jogo social, classificação, compartilhamento de fotos, vídeo curto",
+    "og": {
+      "title": "Transforma likes em Aura.",
+      "subtitle": "Um jogo social com um número que conta. iOS e Android.",
+      "alt": "Aura — transforma likes em Aura e sobe na classificação global"
+    },
+    "app": {
+      "name": "Aura — O jogo social onde os likes são a pontuação",
+      "description": "Posta fotos e vídeos, junta likes, farma Aura e sobe na classificação global."
+    }
+  },
+  "common": {
+    "aura": "Aura",
+    "avatarAlt": "Avatar de {username}",
+    "actions": {
+      "getApp": "Baixa o app",
+      "getAuraApp": "Baixa o app Aura",
+      "joinEarly": "Entrar na beta",
+      "seeHowItWorks": "Ver como um post funciona",
+      "seeTrending": "Ver o que está bombando",
+      "seeFeed": "Abrir o feed",
+      "loadMore": "Carregar mais",
+      "retry": "Tentar de novo",
+      "downloadIphone": "Baixar no iPhone",
+      "downloadAndroid": "Baixar no Android"
+    }
+  },
+  "nav": {
+    "sections": {
+      "label": "Seções",
+      "whatIsAura": "O que é a Aura",
+      "howItWorks": "Como funciona",
+      "feed": "Feed",
+      "trending": "Em destaque",
+      "leaderboard": "Classificação",
+      "download": "Baixar",
+      "join": "Entrar cedo",
+      "play": "Experimentar",
+      "faq": "Perguntas",
+      "terms": "Termos",
+      "contact": "Contato",
+      "about": "Sobre",
+      "settings": "Configurações"
+    },
+    "footer": {
+      "label": "Rodapé"
+    },
+    "locale": {
+      "label": "Idioma"
+    },
+    "tabs": {
+      "home": "Início",
+      "discover": "Descobrir",
+      "rank": "Ranking",
+      "profile": "Eu"
+    }
+  },
+  "landing": {
+    "hero": {
+      "badge": "Lançamento daqui a 2 semanas",
+      "title": "Sua vibe,<break></break><accent>ranqueada.</accent>",
+      "body": "Posta o momento. As pessoas curtem, você ganha Aura. Todo mundo vê em que lugar você está. Sem contagem de seguidores. Sem esconderijo. Só a pontuação.",
+      "leader": "Neste momento #{rank, number} no mundo",
+      "preview": {
+        "title": "Em destaque",
+        "auraGain": "+{aura, number} Aura",
+        "globalRank": "#{rank, number} global"
+      }
+    },
+    "waitlist": {
+      "eyebrow": "Beta antecipada",
+      "title": "Entra antes de cair",
+      "body": "A gente lança daqui a duas semanas. Entra agora e começa com {join, number} Aura. Compartilha seu link — você ganha mais {referral, number} quando um amigo criar conta e abrir o app.",
+      "points": {
+        "join": "+{aura, number} Aura só por chegar cedo",
+        "share": "+{aura, number} Aura quando um amigo criar conta por você",
+        "port": "Quando o app abrir, essa Aura cai na sua conta"
+      },
+      "emailLabel": "Seu email",
+      "emailPlaceholder": "voce@mail.com",
+      "submit": "Entrar na beta",
+      "submitting": "Fechando sua vaga…",
+      "invited": "Alguém te mandou. Entra agora — eles ganham Aura quando você abrir o app.",
+      "finePrint": "A gente te avisa por email quando abrir. Sem spam. Sai quando quiser.",
+      "success": {
+        "eyebrow": "Você está dentro",
+        "title": "Boa. Você acabou de farmar sua primeira Aura.",
+        "body": "+{aura, number} Aura por entrar cedo. Compartilha esse link. Você ganha +{referral, number} Aura quando um amigo criar conta e abrir o app.",
+        "againEyebrow": "Já está dentro",
+        "againTitle": "Esse email já está na lista.",
+        "againBody": "Sua Aura antecipada continua aqui: {aura, number}. O mesmo link. Continua compartilhando.",
+        "score": "🗿 {aura, number}",
+        "referrals": "{count, plural, one {# amigo criou conta por você} other {# amigos criaram conta por você}}",
+        "copy": "Copiar seu link",
+        "copied": "Copiado",
+        "shareHint": "Manda no WhatsApp. Por mensagem. Nos stories. Só conta quando eles criarem conta de verdade."
+      }
+    },
+    "play": {
+      "eyebrow": "Experimenta",
+      "title": "Isso é um post. Dá dois toques.",
+      "description": "Um like não é um coração pro algoritmo. É Aura, paga pra quem postou. Experimenta aqui — nada sai dessa página.",
+      "doubleTap": "Dois toques pra dar Aura",
+      "seeMore": "Ver mais",
+      "nextPost": "Próximo post",
+      "hint": "Toca no 🗿 ou dá dois toques na foto.",
+      "steps": {
+        "look": {
+          "title": "Você vê o momento",
+          "body": "Uma foto ou um vídeo. Sem contagem de seguidores na frente. Se bateu, bateu."
+        },
+        "like": {
+          "title": "Você dá Aura",
+          "body": "Um toque. Eles ganham +10. O número se mexe na sua frente. É essa a mecânica toda."
+        },
+        "climb": {
+          "title": "Eles sobem. Você fica bem.",
+          "body": "A posição deles sobe porque você viu primeiro. Depois, postar é como você sobe."
+        }
+      }
+    },
+    "whatIsAura": {
+      "eyebrow": "A ideia",
+      "title": "O que é a Aura?",
+      "description": "Você já sabe o que é aura. A gente transformou isso numa pontuação de verdade — pública, ganha, e o único número que conta.",
+      "points": {
+        "vibe": {
+          "title": "Sua vibe, medida",
+          "body": "Posta uma foto ou um vídeo. Quando as pessoas curtem, você ganha Aura. É o recibo de que bateu."
+        },
+        "score": {
+          "title": "Um número. Todo mundo vê.",
+          "body": "A Aura fica do lado do seu nome. No feed. No perfil. Na tabela. Não tem mais nada pra explicar."
+        },
+        "fair": {
+          "title": "Sem joguinho de seguidor",
+          "body": "Você não precisa de audiência pra ser visto. Não se compra Aura. Farma."
+        }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "O ciclo",
+      "title": "Como se farma",
+      "description": "Quatro jogadas. A última te manda de volta pra primeira. É esse o jogo.",
+      "steps": {
+        "post": {
+          "label": "Posta",
+          "body": "Seu melhor momento. Foto ou vídeo. Em segundos, do celular."
+        },
+        "like": {
+          "label": "Recebe likes",
+          "body": "Cada like te paga Aura no segundo em que chega. Não é contador de vaidade. É pontuação."
+        },
+        "climb": {
+          "label": "Sobe",
+          "body": "Seu total é seu lugar. Global. À vista. Você sempre sabe exatamente onde está."
+        },
+        "repeat": {
+          "label": "Repete",
+          "body": "Acha fire cedo. Posta de novo. Quem vê primeiro também fica bem."
+        }
+      }
+    },
+    "trending": {
+      "eyebrow": "Ao vivo do app",
+      "title": "Em destaque agora",
+      "description": "Em destaque não é contagem de seguidores. É Aura ganha por minuto, ponderada pela idade do post — por isso um primeiro post pode passar na frente de um criador estabelecido no mesmo dia.",
+      "note": "Cada post tem um link público, então tudo o que é feito no app pode ser compartilhado fora dele. Entra aqui pra dar like. Postar continua sendo no app.",
+      "seeAll": "Abrir o feed completo",
+      "empty": "O feed está calmo agora. Volta quando alguém postar.",
+      "unavailable": "Não deu pra carregar o que está em destaque."
+    },
+    "leaderboard": {
+      "eyebrow": "Classificação",
+      "title": "A tabela global",
+      "description": "Aura de sempre, de cima pra baixo, atualizada conforme os likes chegam. No app você também vê a sua posição — mesmo quando está longe do top 100.",
+      "aside": {
+        "title": "Você ainda não está nessa tabela.",
+        "body": "Todo mundo começa com zero Aura e o título de NPC. O jeito mais rápido de sair do fundo é postar algo que valha um like."
+      },
+      "empty": "A tabela está vazia. Todo mundo começa no zero.",
+      "unavailable": "Não deu pra carregar a classificação.",
+      "seeAll": "Abrir a classificação completa"
+    },
+    "download": {
+      "eyebrow": "Baixar",
+      "title": "Zero Aura é uma escolha. Resolve isso em uns noventa segundos.",
+      "body": "Instala o app, posta uma vez e vê o que o feed faz com isso. Grátis no iOS e no Android, sem convite.",
+      "note": "Fotos e vídeos, likes, Aura e a classificação global. Postar só acontece no app."
+    },
+    "footer": {
+      "note": "O app abre daqui a duas semanas. Este site é pra você entrar cedo, farmar Aura antes dos outros e ver como um post funciona.",
+      "copyright": "© {year} Aura"
+    }
+  },
+  "legal": {
+    "terms": {
+      "eyebrow": "Legal",
+      "title": "Termos",
+      "intro": "Estes termos cobrem o site da Aura, a lista da beta antecipada e o app quando abrir. Se você entra na lista ou usa o site, concorda com eles.",
+      "sections": {
+        "waitlist": {
+          "title": "Beta antecipada",
+          "body": "Entrar na lista é de graça. Você nos dá um email pra gente avisar quando a Aura abrir e te mandar seu link de convite. A Aura antecipada é uma promessa que a gente honra quando você criar conta com o mesmo email. Não é dinheiro, não é um título, e não se transfere pra outra pessoa."
+        },
+        "aura": {
+          "title": "Aura",
+          "body": "A Aura é uma pontuação dentro do produto. A gente pode reverter Aura que veio de abuso, contas falsas ou regras quebradas. A Aura de convite é dada quando uma pessoa nova cria conta pelo seu link. Entrar na lista não chega. Você não pode se convidar."
+        },
+        "content": {
+          "title": "Seus posts",
+          "body": "Quando o app abrir, você fica com os direitos do que postar. Você dá à Aura licença pra mostrar no feed, nas páginas de compartilhamento e nas classificações. Não posta nada que você não tenha o direito de compartilhar."
+        },
+        "conduct": {
+          "title": "Mantém limpo",
+          "body": "Sem spam, ódio, assédio, bots ou anéis de farming. Quebra as regras e a gente pode remover conteúdo, tirar Aura ou fechar a conta. Não vamos discutir isso nos comentários."
+        },
+        "privacy": {
+          "title": "O que a gente guarda",
+          "body": "A gente guarda o email que você nos dá, o link que compartilha e as mensagens que manda pelo formulário. Não vendemos essa lista. Usamos pra rodar a lista de espera, enviar os emails que você pediu e, depois, abrir sua conta. Pode escrever pra ser removido."
+        },
+        "changes": {
+          "title": "Mudanças",
+          "body": "A gente pode atualizar estes termos quando o produto abrir. A data nesta página é a que vale. O site é oferecido como está enquanto estamos em beta antecipada."
+        }
+      },
+      "contact": "Dúvidas: usa o formulário de contato. A Aura é operada pelo time por trás de aurarankd.com."
+    },
+    "faq": {
+      "eyebrow": "Perguntas",
+      "title": "Perguntas, respondidas",
+      "intro": "Respostas curtas. Se a sua não está aqui, escreve pra gente.",
+      "items": {
+        "what": {
+          "q": "O que é a Aura?",
+          "a": "Sua vibe, em pontuação. Você posta. As pessoas curtem. Você ganha Aura. Todo mundo vê em que lugar você está."
+        },
+        "gain": {
+          "q": "Como se ganha Aura?",
+          "a": "Posta algo que bata. Cada like te paga Aura. Na lista de espera você também ganha Aura por entrar cedo e por cada amigo que criar conta pelo seu link."
+        },
+        "followers": {
+          "q": "Tem seguidores?",
+          "a": "Não. Só Aura. O feed não é um concurso de popularidade que você já ganhou antes de postar."
+        },
+        "lose": {
+          "q": "Posso perder Aura?",
+          "a": "Só se você quebrar as regras ou a gente tiver que reverter algo falso. Os likes que você ganhou de verdade ficam."
+        },
+        "waitlist": {
+          "q": "O que é a beta antecipada?",
+          "a": "O app lança daqui a duas semanas. Entra agora com seu email. Você ganha +10 Aura por chegar cedo e um link pra trazer amigos."
+        },
+        "referral": {
+          "q": "Como funciona o link de convite?",
+          "a": "Compartilha seu link. Cada pessoa nova que criar conta por ele te dá +10 Aura. Um email na lista sozinho não conta. Você não pode se convidar."
+        },
+        "port": {
+          "q": "Essa Aura passa pro app?",
+          "a": "Sim. Quando você criar a conta com o mesmo email, a gente passa a Aura antecipada pra ela. É por isso que vale entrar agora."
+        },
+        "launch": {
+          "q": "Quando é o lançamento?",
+          "a": "Daqui a duas semanas. A gente te avisa por email."
+        },
+        "free": {
+          "q": "É de graça?",
+          "a": "Sim."
+        },
+        "age": {
+          "q": "Que idade eu preciso ter?",
+          "a": "13 ou mais. Se você tem menos de 18, precisa de um responsável que esteja de boa com você estar aqui."
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Contato",
+      "title": "Escreve pra gente",
+      "intro": "Lista de espera, imprensa, parcerias, algo quebrado. A gente lê.",
+      "name": "Nome",
+      "email": "Email",
+      "message": "Mensagem",
+      "submit": "Enviar",
+      "sending": "Enviando…",
+      "success": "Recebido. A gente responde.",
+      "note": "Isso cai na nossa caixa. Sem formulário de terceiros. Não manda senha."
+    }
+  },
+  "about": {
+    "intro": {
+      "eyebrow": "O produto",
+      "title": "Sobre a Aura",
+      "body": "A Aura é um jogo social, e a rede social é o tabuleiro. Você posta uma foto ou um vídeo, as pessoas dão like, e cada like paga Aura pra quem postou. Um número público, um lugar na tabela, à vista de todos."
+    },
+    "levels": {
+      "eyebrow": "Progressão",
+      "title": "Níveis",
+      "description": "Cada patamar que você passa muda o título do lado do seu nome. Não tem nada pra comprar nem pra desbloquear — só a Aura te faz subir.",
+      "start": "Onde todo mundo começa",
+      "from": "A partir de {aura, number} Aura"
+    },
+    "principles": {
+      "eyebrow": "As regras",
+      "title": "Como a pontuação se comporta",
+      "ledger": {
+        "title": "Cada ponto tem recibo",
+        "body": "A Aura é um livro de registros, não um contador. Cada ponto volta pro like que o criou, então um like tirado ou um post removido levam a Aura junto. É isso que faz um lugar alto valer a pena."
+      },
+      "levels": {
+        "title": "Os títulos são cosméticos",
+        "body": "Um nível muda o título do lado do seu nome e mais nada. Não compra alcance, não dá mais Aura por like e não te coloca na frente de ninguém."
+      },
+      "web": {
+        "title": "Pra que serve este site",
+        "body": "A web é descoberta, compartilhamento e voto: você vê o que está em destaque, abre qualquer post a partir de um link, consulta a tabela global e dá Aura. Postar continua sendo no app."
+      }
+    }
+  },
+  "feed": {
+    "page": {
+      "eyebrow": "Ao vivo do app",
+      "title": "O feed",
+      "description": "Os posts mais recentes, na ordem em que chegam. O app abre daqui a duas semanas — entra na beta antecipada pra começar com Aura.",
+      "empty": "O feed está calmo agora. Volta quando alguém postar.",
+      "unavailable": "Não deu pra carregar o feed.",
+      "end": "Você já viu tudo."
+    },
+    "post": {
+      "likes": "{count, plural, one {# like} other {# likes}}",
+      "auraGain": "+{amount, number} Aura",
+      "a11y": {
+        "like": "Dar like",
+        "unlike": "Tirar o like",
+        "doubleClick": "Clica duas vezes pra dar like",
+        "unmute": "Ativar som",
+        "mute": "Silenciar"
+      },
+      "video": "Vídeo"
+    }
+  },
+  "post": {
+    "page": {
+      "eyebrow": "Compartilhado a partir do app",
+      "openInApp": "Abrir no app Aura",
+      "installTitle": "Posta no app",
+      "installBody": "Cada like paga Aura pro criador. Você pode dar like aqui. Postar continua sendo no app.",
+      "unavailable": "Este post sumiu, ou nunca chegou a ser publicado."
+    }
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "providers": {
+      "google": "Continuar com o Google"
+    },
+    "page": {
+      "title": "Entra na Aura",
+      "body": "Google — sem senha. Postar continua sendo no app."
+    },
+    "reasons": {
+      "like": {
+        "title": "Entra pra dar Aura",
+        "body": "Os likes são a pontuação. Google — sem senha — e este like conta."
+      }
+    },
+    "unavailable": {
+      "google": "O Google Sign-In ainda não está configurado nesta build."
+    },
+    "username": {
+      "title": "Escolhe seu username",
+      "body": "É assim que você aparece na tabela. 3–30 letras, números ou underscore.",
+      "placeholder": "username",
+      "submit": "Reservar username",
+      "taken": "Esse username já está ocupado.",
+      "reserved": "Esse username não está disponível.",
+      "invalid": "3–30 caracteres. Letras, números ou underscore."
+    }
+  },
+  "leaderboard": {
+    "rank": "#{rank, number}",
+    "header": {
+      "rankCreator": "Posição / criador",
+      "aura": "Aura"
+    },
+    "page": {
+      "eyebrow": "Classificação",
+      "title": "A tabela global",
+      "description": "Aura de sempre, do primeiro ao último, atualizada conforme os likes chegam. No app você também vê o seu lugar — mesmo quando ainda não está no top 100.",
+      "empty": "A tabela está vazia. Todo mundo começa no zero.",
+      "unavailable": "Não deu pra carregar a classificação."
+    }
+  },
+  "errors": {
+    "bad_request": "Tinha algo errado nesse pedido. Tenta de novo.",
+    "validation_failed": "Alguns dados não são válidos. Confere e tenta de novo.",
+    "unauthorized": "Você precisa entrar pra fazer isso.",
+    "forbidden": "Você não tem acesso a isso.",
+    "not_found": "A gente não encontrou isso.",
+    "conflict": "Isso mudou em outro lugar no meio do caminho. Atualiza e tenta de novo.",
+    "rate_limited": "Vai com calma e tenta de novo daqui a pouco.",
+    "internal_error": "Quebrou algo do nosso lado. Tenta de novo daqui a pouco.",
+    "service_unavailable": "A Aura está indisponível por uns instantes. Tenta de novo daqui a pouco.",
+    "invalid_token": "Sua sessão já não é válida. Entra de novo.",
+    "token_expired": "Sua sessão expirou. Entra de novo.",
+    "refresh_reuse_detected": "A gente encerrou sua sessão pra proteger a conta. Entra de novo.",
+    "account_suspended": "Esta conta está suspensa.",
+    "account_banned": "Esta conta foi banida.",
+    "upload_expired": "Esse upload demorou demais. Começa de novo.",
+    "upload_too_large": "Esse arquivo é grande demais.",
+    "unsupported_media_type": "Esse tipo de arquivo não é suportado.",
+    "post_not_published": "Esse post ainda não está publicado.",
+    "already_liked": "Você já deu like neste post.",
+    "not_liked": "Você ainda não deu like neste post.",
+    "cannot_like_own_post": "Você não pode dar like no seu próprio post.",
+    "already_reported": "Você já denunciou isso.",
+    "already_blocked": "Você já bloqueou essa conta.",
+    "cannot_block_self": "Você não pode bloquear a si mesmo.",
+    "cannot_report_self": "Você não pode denunciar a si mesmo.",
+    "invalid_email": "Esse email não parece certo.",
+    "invalid_referral": "Esse código de convite não é válido.",
+    "waitlist_unavailable": "A lista de espera está fechada agora.",
+    "unknown": "Algo falhou. Tenta de novo."
+  },
+  "settings": {
+    "title": "Configurações",
+    "open": "Configurações",
+    "body": "Muda o idioma deste site.",
+    "language": {
+      "title": "Idioma",
+      "subtitle": "A escolha fica neste navegador."
+    }
+  }
+}

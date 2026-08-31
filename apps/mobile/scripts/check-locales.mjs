@@ -25,8 +25,10 @@ const read = (locale) => JSON.parse(readFileSync(join(localesDir, `${locale}.jso
 
 const en = read('en');
 const pt = read('pt');
+const ptBr = read('pt-br');
+const es = read('es');
 
-const CATALOGS = { en, pt };
+const CATALOGS = { en, pt, 'pt-br': ptBr, es };
 const SOURCE_LOCALE = 'en';
 
 const failures = [];
@@ -109,7 +111,7 @@ function options(language, resources) {
     supportedLngs: Object.keys(CATALOGS),
     defaultNS: 'translation',
     ns: ['translation'],
-    load: 'languageOnly',
+    load: 'currentOnly',
     interpolation: { escapeValue: false },
   };
 }
@@ -137,7 +139,7 @@ for (const locale of Object.keys(CATALOGS)) {
   }
 
   // Numbers must be grouped by the active locale, never by a baked-in separator.
-  const expectedGroup = locale === 'pt' ? '12.421' : '12,421';
+  const expectedGroup = locale === 'en' ? '12,421' : '12.421';
   check(
     i18n.t('common.auraAmount', { amount: 12_421 }).includes(expectedGroup),
     `${locale}: expected "${expectedGroup}" in common.auraAmount`,

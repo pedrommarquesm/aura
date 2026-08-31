@@ -96,6 +96,54 @@ const COPY: Record<
       footer: 'Recebeste isto porque alguém criou conta na Aura pelo teu link.',
     },
   },
+  'pt-br': {
+    joined: {
+      subject: 'Você está dentro. +{aura} Aura por chegar cedo.',
+      preview: 'A beta antecipada é sua. Compartilha o link e farma mais Aura antes do lançamento.',
+      heading: 'Você está na lista.',
+      body: 'A Aura chega daqui a duas semanas. Você acabou de travar +{aura} Aura por entrar cedo. Quando o app abrir, essa pontuação cai na sua conta.',
+      viaBody:
+        'A Aura chega daqui a duas semanas. Você acabou de travar +{aura} Aura por entrar cedo. Quando você abrir o app, essa pontuação cai na sua conta — e quem te mandou isso ganha +{referralAura}.',
+      award: '+{aura} Aura · entrada antecipada',
+      share: 'Manda este link pra um amigo. Você ganha +{referralAura} Aura quando ele criar conta e abrir o app.',
+      cta: 'Copia seu link',
+      footer: 'Você recebeu isto porque entrou na beta antecipada da Aura. Só escrevemos quando importa.',
+    },
+    referral: {
+      subject: 'Alguém criou conta pelo seu link. +{referralAura} Aura.',
+      preview: 'Seu link funcionou. Entraram no app. Você acabou de ser pago.',
+      heading: 'Essa contou.',
+      body: 'Um amigo criou conta com o seu link. Você ganhou +{referralAura} Aura. Já trouxe {referralCount} pessoas de verdade.',
+      award: '+{referralAura} Aura · convite',
+      share: 'Continua compartilhando. O mesmo link. Mais +{referralAura} cada vez que alguém criar conta.',
+      cta: 'Compartilhar de novo',
+      footer: 'Você recebeu isto porque alguém criou conta na Aura pelo seu link.',
+    },
+  },
+  es: {
+    joined: {
+      subject: 'Ya estás dentro. +{aura} Aura por llegar temprano.',
+      preview: 'La beta anticipada es tuya. Comparte tu link y farmea más Aura antes del lanzamiento.',
+      heading: 'Ya estás en la lista.',
+      body: 'Aura llega en dos semanas. Acabas de asegurar +{aura} Aura por entrar temprano. Cuando la app abra, este puntaje cae en tu cuenta.',
+      viaBody:
+        'Aura llega en dos semanas. Acabas de asegurar +{aura} Aura por entrar temprano. Cuando abras la app, este puntaje cae en tu cuenta — y quien te mandó esto gana +{referralAura}.',
+      award: '+{aura} Aura · entrada anticipada',
+      share: 'Manda este link a un amigo. Ganas +{referralAura} Aura cuando cree cuenta y abra la app.',
+      cta: 'Copia tu link',
+      footer: 'Recibiste esto porque entraste a la beta anticipada de Aura. Solo escribimos cuando importa.',
+    },
+    referral: {
+      subject: 'Alguien creó cuenta con tu link. +{referralAura} Aura.',
+      preview: 'Tu link funcionó. Entraron a la app. Acabas de cobrar.',
+      heading: 'Esa contó.',
+      body: 'Un amigo creó cuenta con tu link. Ganaste +{referralAura} Aura. Ya trajiste a {referralCount} personas de verdad.',
+      award: '+{referralAura} Aura · invitación',
+      share: 'Sigue compartiendo. El mismo link. Otros +{referralAura} cada vez que alguien cree cuenta.',
+      cta: 'Compartir otra vez',
+      footer: 'Recibiste esto porque alguien creó cuenta en Aura con tu link.',
+    },
+  },
 };
 
 function fill(template: string, values: Record<string, string | number>): string {

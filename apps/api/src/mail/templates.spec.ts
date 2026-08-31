@@ -42,6 +42,30 @@ describe('waitlist email templates', () => {
     expect(mail.html).not.toContain('<script');
   });
 
+  it('renders a Brazilian join email without falling back to European Portuguese', () => {
+    const mail = renderWaitlistJoined('pt-br', {
+      referralUrl: 'https://www.aurarankd.com/?ref=AB23CD45',
+      aura: 10,
+      referralAura: 10,
+    });
+
+    expect(mail.subject).toContain('Você está dentro');
+    expect(mail.text).toContain('abrir o app');
+    expect(mail.text).not.toContain('Estás');
+  });
+
+  it('renders a Spanish referral email', () => {
+    const mail = renderWaitlistReferral('es', {
+      aura: 20,
+      referralCount: 3,
+      referralUrl: 'https://www.aurarankd.com/?ref=AB23CD45',
+      referralAura: 10,
+    });
+
+    expect(mail.subject).toContain('creó cuenta');
+    expect(mail.text).toContain('3');
+  });
+
   it('pays the referrer copy at signup, not at waitlist join', () => {
     const mail = renderWaitlistReferral('en', {
       aura: 20,

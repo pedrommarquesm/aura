@@ -86,7 +86,8 @@ web app shipping a blank error.
 
 ## i18n
 
-English and European Portuguese, via `next-intl`. `docs/i18n.md` is the contract
+English, European Portuguese, Brazilian Portuguese, and Spanish, via
+`next-intl`. `docs/i18n.md` is the contract
 both clients follow; this section is only how it is wired here.
 
 | File | Role |
@@ -174,10 +175,11 @@ hooks need a request context that image generation does not have.
 ### Locale switcher
 
 `components/locale-switcher.tsx`. It lives in Settings (`/settings`,
-`/pt/definicoes`) and in the header settings menu — not as EN/PT pills in the
-header chrome. Two plain links, so it is crawlable and works without
-JavaScript. It links to `usePathname()` — the *internal* pathname — in the
-other locale, so switching on `/sobre` lands on `/about` and not the homepage.
+`/pt/definicoes`, `/pt-br/configuracoes`, `/es/ajustes`) and in the header
+settings menu — not as language pills in the header chrome. One plain link
+per locale, so it is crawlable and works without JavaScript. It links to
+`usePathname()` — the *internal* pathname — in the other locale, so switching
+on `/sobre` lands on `/about` and not the homepage.
 First visit is detected from `accept-language`; an explicit choice is written
 to the locale cookie and wins from then on.
 
@@ -294,7 +296,7 @@ canonical URLs, Open Graph and Twitter cards.
 
 `buildMetadata` takes a locale and an internal pathname and derives the rest:
 canonical URL, `hreflang` alternates for every locale plus `x-default`,
-`og:locale` and `og:locale:alternate`. `sitemap.ts` lists both locales of every
+`og:locale` and `og:locale:alternate`. `sitemap.ts` lists every locale of every
 route with the same alternates. Adding a locale to `i18n/routing.ts` therefore
 extends the sitemap and every page's alternates without touching either file.
 

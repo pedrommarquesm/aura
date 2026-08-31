@@ -50,9 +50,12 @@ async function viewerLocale(): Promise<AppLocale> {
 
   const accept = (await headers()).get("accept-language") ?? "";
   for (const part of accept.split(",")) {
-    const tag = part.split(";")[0]?.trim().toLowerCase();
+    const tag = part.split(";")[0]?.trim().toLowerCase().replace(/_/g, "-");
     if (!tag) continue;
+    // `pt-br` before generic `pt-*` or Brazilian browsers land on Portugal.
+    if (tag === "pt-br" || tag.startsWith("pt-br-")) return "pt-br";
     if (tag === "pt" || tag.startsWith("pt-")) return "pt";
+    if (tag === "es" || tag.startsWith("es-")) return "es";
     if (tag === "en" || tag.startsWith("en-")) return "en";
   }
 

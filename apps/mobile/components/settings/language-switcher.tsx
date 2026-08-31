@@ -45,7 +45,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
         {t('settings.language.subtitle')}
       </Text>
 
-      <Card surface="elevated" padded={false} className="flex-row gap-1 p-1">
+      <Card surface="elevated" padded={false} className="flex-row flex-wrap gap-1 p-1">
         {OPTIONS.map((option) => {
           const selected = option.value === override;
 
@@ -55,7 +55,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
               accessibilityRole="radio"
               accessibilityState={{ selected }}
               onPress={() => setOverride(option.value)}
-              className="flex-1 items-center rounded-md px-2 py-2"
+              className="min-w-[30%] flex-1 items-center rounded-md px-2 py-2"
               style={selected ? { backgroundColor: colors.aura.deep } : undefined}
             >
               <Text
