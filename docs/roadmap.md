@@ -67,7 +67,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-09 | Promote design tokens into a shared package — mobile and web each hold a copy today | Not started | |
 | FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
-| FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | In review | |
+| FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | In review | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
 
 ### Mobile bootstrap
 
@@ -283,7 +283,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-08-31 | Product brand is **Auraclimb**. Aura stays the score and the spoken/wordmark name. Store, domain (`auraclimb.com`), socials (`@auraclimb`), and legal use Auraclimb. `aurarankd.com` stays staging until the new zone is bought ([brand.md](./brand.md)) | |
+| 2026-08-31 | Product brand is **Auraclimb**. Aura stays the score and the spoken/wordmark name. Store, domain (`auraclimb.com`), socials (`@auraclimb`), and legal use Auraclimb. `aurarankd.com` stays staging until the new zone is bought ([brand.md](./brand.md)) | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
 | 2026-08-31 | Captions index `#tag` (Unicode letters, stored lowercase) into `post_hashtags`. Compose colours the tag and does nothing. Viewing a post, a tap opens `/hashtag/:tag` with back + a search field pre-filled with `#tag` | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
 | 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
 | 2026-08-30 | Feed fetch waits until session restore finishes. Query key includes the viewer so a guest `/feed` (no `likedByMe`) cannot stick after sign-in. Tapping the Feed tab scrolls to the top | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
