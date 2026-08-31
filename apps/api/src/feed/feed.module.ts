@@ -5,10 +5,11 @@ import { SafetyModule } from '../safety/safety.module';
 
 import { FeedController } from './feed.controller';
 import { FeedService } from './feed.service';
+import { HashtagsController } from './hashtags.controller';
 
 @Module({
   imports: [AuthModule, SafetyModule],
-  controllers: [FeedController],
+  controllers: [FeedController, HashtagsController],
   providers: [FeedService],
   exports: [FeedService],
 })

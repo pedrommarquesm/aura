@@ -3,7 +3,7 @@ import { and, desc, eq, inArray, lt, ne, notInArray, or, sql } from 'drizzle-orm
 
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
-import { likes, mediaAssets, posts, users } from '../db/schema';
+import { likes, mediaAssets, postHashtags, posts, users } from '../db/schema';
 import { MediaUrlResolver } from '../media/media-url.resolver';
 import { SafetyService } from '../safety/safety.service';
 
@@ -18,6 +18,8 @@ export interface FeedQuery {
   viewerId?: string | undefined;
   /** When set, only this author's published posts. Profile grid. */
   authorId?: string | undefined;
+  /** When set, only posts whose caption indexed this lowercase tag. */
+  hashtag?: string | undefined;
 }
 
 export interface FeedCard {
@@ -78,6 +80,7 @@ export class FeedService {
 
     const rows = await this.selectPage(query.kind, cursor, limit + 1, {
       authorId: query.authorId,
+      hashtag: query.hashtag,
       hiddenAuthors,
     });
 
@@ -111,7 +114,11 @@ export class FeedService {
     kind: FeedKind,
     cursor: FeedCursorValue,
     limit: number,
-    options: { authorId?: string | undefined; hiddenAuthors?: Set<string> } = {},
+    options: {
+      authorId?: string | undefined;
+      hashtag?: string | undefined;
+      hiddenAuthors?: Set<string>;
+    } = {},
   ) {
     // Published only. Banned authors leave the public surface. Suspended
     // accounts keep their existing posts (they just cannot act). Blocks are
@@ -147,41 +154,48 @@ export class FeedService {
         ? [desc(posts.trendingScore), desc(posts.id)]
         : [desc(posts.publishedAt), desc(posts.id)];
 
-    return (
-      this.db
-        .select({
-          postId: posts.id,
-          caption: posts.caption,
-          mediaType: posts.mediaType,
-          likeCount: posts.likeCount,
-          commentCount: posts.commentCount,
-          aura: posts.aura,
-          trendingScore: posts.trendingScore,
-          publishedAt: posts.publishedAt,
-          authorId: users.id,
-          username: users.username,
-          displayName: users.displayName,
-          avatarUrl: users.avatarUrl,
-          authorAura: users.aura,
-          authorTitle: users.title,
-          status: posts.status,
-          assetProvider: mediaAssets.storageProvider,
-          assetBucket: mediaAssets.storageBucket,
-          assetVariants: mediaAssets.variants,
-          assetExternalProvider: mediaAssets.externalProvider,
-          assetWidth: mediaAssets.width,
-          assetHeight: mediaAssets.height,
-          assetDurationMs: mediaAssets.durationMs,
-        })
-        .from(posts)
-        .innerJoin(users, eq(users.id, posts.authorId))
-        // Left join: a post whose asset row is missing should still render rather
-        // than vanish from the feed.
-        .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id))
-        .where(keyset ? and(scope, keyset) : scope)
-        .orderBy(...order)
-        .limit(limit)
-    );
+    const base = this.db
+      .select({
+        postId: posts.id,
+        caption: posts.caption,
+        mediaType: posts.mediaType,
+        likeCount: posts.likeCount,
+        commentCount: posts.commentCount,
+        aura: posts.aura,
+        trendingScore: posts.trendingScore,
+        publishedAt: posts.publishedAt,
+        authorId: users.id,
+        username: users.username,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+        authorAura: users.aura,
+        authorTitle: users.title,
+        status: posts.status,
+        assetProvider: mediaAssets.storageProvider,
+        assetBucket: mediaAssets.storageBucket,
+        assetVariants: mediaAssets.variants,
+        assetExternalProvider: mediaAssets.externalProvider,
+        assetWidth: mediaAssets.width,
+        assetHeight: mediaAssets.height,
+        assetDurationMs: mediaAssets.durationMs,
+      })
+      .from(posts)
+      .innerJoin(users, eq(users.id, posts.authorId))
+      // Left join: a post whose asset row is missing should still render rather
+      // than vanish from the feed.
+      .leftJoin(mediaAssets, eq(mediaAssets.postId, posts.id));
+
+    const scoped = options.hashtag
+      ? base.innerJoin(
+          postHashtags,
+          and(eq(postHashtags.postId, posts.id), eq(postHashtags.tag, options.hashtag)),
+        )
+      : base;
+
+    return scoped
+      .where(keyset ? and(scope, keyset) : scope)
+      .orderBy(...order)
+      .limit(limit);
   }
 
   /**
