@@ -63,7 +63,7 @@ const COPY: Record<
     },
     referral: {
       subject: 'Someone signed up through you. +{referralAura} Aura.',
-      preview: 'Your link worked. They opened the app. You just got paid.',
+      preview: 'Your link worked. They opened the app. You just farmed more Aura.',
       heading: 'That one counted.',
       body: 'A friend signed up with your link. You just earned +{referralAura} Aura. {referralCount} people have signed up through you.',
       award: '+{referralAura} Aura · referral',
@@ -87,7 +87,7 @@ const COPY: Record<
     },
     referral: {
       subject: 'Alguém criou conta pelo teu link. +{referralAura} Aura.',
-      preview: 'O teu link funcionou. Entraram na app. Acabaste de ser pago.',
+      preview: 'O teu link funcionou. Entraram na app. Acabaste de farmar mais Aura.',
       heading: 'Essa contou.',
       body: 'Um amigo criou conta com o teu link. Ganhaste +{referralAura} Aura. Já trouxeste {referralCount} pessoas a sério.',
       award: '+{referralAura} Aura · convite',
@@ -111,7 +111,7 @@ const COPY: Record<
     },
     referral: {
       subject: 'Alguém criou conta pelo seu link. +{referralAura} Aura.',
-      preview: 'Seu link funcionou. Entraram no app. Você acabou de ser pago.',
+      preview: 'Seu link funcionou. Entraram no app. Você acabou de farmar mais Aura.',
       heading: 'Essa contou.',
       body: 'Um amigo criou conta com o seu link. Você ganhou +{referralAura} Aura. Já trouxe {referralCount} pessoas de verdade.',
       award: '+{referralAura} Aura · convite',
@@ -135,7 +135,7 @@ const COPY: Record<
     },
     referral: {
       subject: 'Alguien creó cuenta con tu link. +{referralAura} Aura.',
-      preview: 'Tu link funcionó. Entraron a la app. Acabas de cobrar.',
+      preview: 'Tu link funcionó. Entraron a la app. Acabas de farmear más Aura.',
       heading: 'Esa contó.',
       body: 'Un amigo creó cuenta con tu link. Ganaste +{referralAura} Aura. Ya trajiste a {referralCount} personas de verdad.',
       award: '+{referralAura} Aura · invitación',

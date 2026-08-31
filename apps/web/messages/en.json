@@ -151,13 +151,13 @@
         "referrals": "{count, plural, one {# friend signed up through you} other {# friends signed up through you}}",
         "copy": "Copy your link",
         "copied": "Copied",
-        "shareHint": "WhatsApp it. Text it. Story it. You get paid when they actually sign up."
+        "shareHint": "WhatsApp it. Text it. Story it. You farm Aura when they actually sign up."
       }
     },
     "play": {
       "eyebrow": "Try it",
       "title": "This is a post. Double-tap it.",
-      "description": "A like is not a heart for the algorithm. It is Aura, paid to the person who posted. Try it here — nothing leaves this page.",
+      "description": "A like is not a heart for the algorithm. It is Aura for the person who posted. Try it here — nothing leaves this page.",
       "doubleTap": "Double-tap to give Aura",
       "seeMore": "See more",
       "nextPost": "Next post",
@@ -207,7 +207,7 @@
         },
         "like": {
           "label": "Get liked",
-          "body": "Each like pays you Aura the second it lands. Not a vanity counter. A score."
+          "body": "Each like gives you Aura the second it lands. Not a vanity counter. A score."
         },
         "climb": {
           "label": "Climb",
@@ -295,7 +295,7 @@
         },
         "gain": {
           "q": "How do I gain Aura?",
-          "a": "Post something that hits. Each like pays you Aura. On the waitlist, you also get Aura for joining early and for every friend who signs up through your link."
+          "a": "Post something that hits. Each like gives you Aura. On the waitlist, you also get Aura for joining early and for every friend who signs up through your link."
         },
         "followers": {
           "q": "Are followers a thing?",
@@ -348,7 +348,7 @@
     "intro": {
       "eyebrow": "The product",
       "title": "About Aura",
-      "body": "Aura is a social game, and the social network is the game board. You post a photo or a video, people like it, and every like pays Aura straight to the creator. One public number, one place on the board, visible to everyone."
+      "body": "Aura is a social game, and the social network is the game board. You post a photo or a video, people like it, and every like gives Aura straight to the creator. One public number, one place on the board, visible to everyone."
     },
     "levels": {
       "eyebrow": "Progression",
@@ -401,7 +401,7 @@
       "eyebrow": "Shared from the app",
       "openInApp": "Open in the Aura app",
       "installTitle": "Post it in the app",
-      "installBody": "Every like pays Aura to the creator. You can like it here. Posting stays in the app.",
+      "installBody": "Every like gives Aura to the creator. You can like it here. Posting stays in the app.",
       "unavailable": "This post is gone, or it was never published."
     }
   },

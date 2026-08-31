@@ -157,7 +157,7 @@
     "play": {
       "eyebrow": "Pruébalo",
       "title": "Esto es un post. Dale dos toques.",
-      "description": "Un like no es un corazón para el algoritmo. Es Aura, pagada a quien publicó. Pruébalo aquí — nada sale de esta página.",
+      "description": "Un like no es un corazón para el algoritmo. Es Aura para quien publicó. Pruébalo aquí — nada sale de esta página.",
       "doubleTap": "Dos toques para dar Aura",
       "seeMore": "Ver más",
       "nextPost": "Siguiente post",
@@ -207,7 +207,7 @@
         },
         "like": {
           "label": "Recibe likes",
-          "body": "Cada like te paga Aura en el segundo en que llega. No es un contador de vanidad. Es un puntaje."
+          "body": "Cada like te da Aura en el segundo en que llega. No es un contador de vanidad. Es un puntaje."
         },
         "climb": {
           "label": "Sube",
@@ -295,7 +295,7 @@
         },
         "gain": {
           "q": "¿Cómo gano Aura?",
-          "a": "Publica algo que pegue. Cada like te paga Aura. En la lista de espera también ganas Aura por entrar temprano y por cada amigo que cree cuenta con tu link."
+          "a": "Publica algo que pegue. Cada like te da Aura. En la lista de espera también ganas Aura por entrar temprano y por cada amigo que cree cuenta con tu link."
         },
         "followers": {
           "q": "¿Hay seguidores?",
@@ -348,7 +348,7 @@
     "intro": {
       "eyebrow": "El producto",
       "title": "Acerca de Aura",
-      "body": "Aura es un juego social, y la red social es el tablero. Publicas una foto o un video, la gente da like, y cada like paga Aura a quien publicó. Un número público, un lugar en la tabla, visible para todos."
+      "body": "Aura es un juego social, y la red social es el tablero. Publicas una foto o un video, la gente da like, y cada like da Aura a quien publicó. Un número público, un lugar en la tabla, visible para todos."
     },
     "levels": {
       "eyebrow": "Progresión",
@@ -401,7 +401,7 @@
       "eyebrow": "Compartido desde la app",
       "openInApp": "Abrir en la app Aura",
       "installTitle": "Publícalo en la app",
-      "installBody": "Cada like paga Aura al creador. Puedes dar like aquí. Publicar sigue siendo en la app.",
+      "installBody": "Cada like da Aura al creador. Puedes dar like aquí. Publicar sigue siendo en la app.",
       "unavailable": "Este post desapareció, o nunca se publicó."
     }
   },
