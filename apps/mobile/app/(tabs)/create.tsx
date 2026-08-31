@@ -17,7 +17,7 @@ import {
 
 import { PostVideo, VideoMuteBadge } from '@/components/feed';
 import { Screen } from '@/components/layout';
-import { Button, Text, TextField } from '@/components/ui';
+import { Button, CaptionField, Text } from '@/components/ui';
 import { messageForError } from '@/lib/api';
 import { completeUpload, createUpload, fetchPost, refreshUpload } from '@/lib/api/posts';
 import { measureFileBytes } from '@/lib/media/measure-file';
@@ -418,13 +418,12 @@ export default function CreateScreen() {
               </Text>
             </Pressable>
 
-            <TextField
+            <CaptionField
               label={t('create.caption.label')}
               placeholder={t('create.caption.placeholder')}
               value={caption}
               onChangeText={setCaption}
               maxLength={2200}
-              multiline
               numberOfLines={4}
               autoCapitalize="sentences"
               autoCorrect

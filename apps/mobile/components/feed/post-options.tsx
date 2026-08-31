@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Text, TextField } from '@/components/ui';
+import { Button, CaptionField, Text } from '@/components/ui';
 import { deletePost, messageForError, updatePostCaption, type FeedCard } from '@/lib/api';
 import { applyCaptionUpdate, applyPostRemoved } from '@/lib/query/post-cache';
 import { useSessionStore } from '@/store/session';
@@ -127,13 +127,12 @@ export function PostOptions({
               {sheet === 'edit' ? (
                 <View className="gap-3">
                   <Text variant="title">{t('feed.post.edit.title')}</Text>
-                  <TextField
+                  <CaptionField
                     label={t('create.caption.label')}
                     placeholder={t('create.caption.placeholder')}
                     value={caption}
                     onChangeText={setCaption}
                     maxLength={CAPTION_MAX}
-                    multiline
                     numberOfLines={4}
                     autoCapitalize="sentences"
                     autoCorrect

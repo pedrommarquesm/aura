@@ -18,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CaptionText } from './caption-text';
 import { FeedCommentsSheet } from './feed-comments-sheet';
 import { LikeButton, type LikeButtonHandle } from './like-button';
 import { PostOptions } from './post-options';
@@ -27,6 +28,7 @@ import type { FeedCard } from '@/lib/api';
 import { likePost, unlikePost } from '@/lib/api/likes';
 import { celebrateFeedback } from '@/lib/haptics';
 import { useFormat } from '@/lib/i18n';
+import { hashtagPath } from '@/lib/hashtags';
 import { userProfileHref } from '@/lib/navigation/user-profile';
 import { applyLikeResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
@@ -345,16 +347,16 @@ export const FeedPostCard = memo(function FeedPostCard({
               </View>
               {post.caption ? (
                 <View>
-                  <Text
+                  <CaptionText
+                    caption={post.caption}
                     variant="label"
                     tone="secondary"
                     numberOfLines={captionLines}
-                  >
-                    {post.caption}
-                  </Text>
+                    onHashtagPress={(tag) => router.push(hashtagPath(tag))}
+                  />
                   {shouldTruncateCaption ? (
                     <Text variant="caption" tone="aura" className="pt-1">
-                      See more
+                      {t('feed.post.seeMore')}
                     </Text>
                   ) : null}
                 </View>

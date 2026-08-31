@@ -35,6 +35,7 @@
     "post": {
       "likes": "{count, plural, one {# aura} other {# auras}}",
       "comments": "{count, plural, one {# comentário} other {# comentários}}",
+      "seeMore": "Ver mais",
       "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Editar",
@@ -213,6 +214,17 @@
       "taken": "Esse username já está ocupado.",
       "reserved": "Esse username não está disponível.",
       "invalid": "3–30 caracteres. Letras, números ou underscore."
+    }
+  },
+  "hashtag": {
+    "search": "Pesquisar hashtag",
+    "empty": "Ainda não há publicações com #{tag}.",
+    "invalid": "Essa hashtag não é válida.",
+    "error": {
+      "title": "Não foi possível carregar esta hashtag"
+    },
+    "a11y": {
+      "open": "Abrir #{tag}"
     }
   },
   "settings": {

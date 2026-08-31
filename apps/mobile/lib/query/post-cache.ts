@@ -1,7 +1,7 @@
 import type { InfiniteData, QueryClient } from '@tanstack/react-query';
 
 import type { CursorPage, FeedCard, PostDetail, PublicProfile } from '@/lib/api';
-import { queryKeys } from '@/lib/query/keys';
+import { isInfiniteCardQuery, queryKeys } from '@/lib/query/keys';
 
 type InfiniteCards = InfiniteData<CursorPage<FeedCard>, string | null>;
 
@@ -34,11 +34,8 @@ function filterInfinite(
 }
 
 function patchLists(queryClient: QueryClient, mapItem: (item: FeedCard) => FeedCard) {
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.feed.all }, (current) =>
-    mapInfinite(current, mapItem),
-  );
   queryClient.setQueriesData<InfiniteCards>(
-    { predicate: (query) => query.queryKey[0] === 'user' && query.queryKey[2] === 'posts' },
+    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapInfinite(current, mapItem),
   );
 }
@@ -57,11 +54,9 @@ export function applyPostRemoved(
   postId: string,
   author: { id: string; username: string },
 ) {
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.feed.all }, (current) =>
-    filterInfinite(current, (item) => item.id !== postId),
-  );
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.userPosts(author.id) }, (current) =>
-    filterInfinite(current, (item) => item.id !== postId),
+  queryClient.setQueriesData<InfiniteCards>(
+    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
+    (current) => filterInfinite(current, (item) => item.id !== postId),
   );
   queryClient.removeQueries({ queryKey: queryKeys.post(postId) });
   queryClient.setQueryData<PublicProfile>(queryKeys.user(author.username), (current) =>

@@ -9,7 +9,7 @@ import type {
   PostDetail,
   PublicProfile,
 } from '@/lib/api/types';
-import { queryKeys } from '@/lib/query/keys';
+import { isInfiniteCardQuery, queryKeys } from '@/lib/query/keys';
 
 type InfiniteCards = InfiniteData<CursorPage<FeedCard>, string | null>;
 
@@ -46,11 +46,8 @@ function mapInfinite(
  * reads `['post', id]` and the grid reads `['user', id, 'posts']`.
  */
 export function applyLikeResult(queryClient: QueryClient, postId: string, result: LikeResult) {
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.feed.all }, (current) =>
-    mapInfinite(current, postId, result),
-  );
   queryClient.setQueriesData<InfiniteCards>(
-    { predicate: (query) => query.queryKey[0] === 'user' && query.queryKey[2] === 'posts' },
+    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapInfinite(current, postId, result),
   );
 
@@ -117,11 +114,8 @@ function appendComment(
 
 /** Writes the denormalized comment count into every list that already shows this post. */
 export function applyCommentCount(queryClient: QueryClient, postId: string, commentCount: number) {
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.feed.all }, (current) =>
-    mapCommentCount(current, postId, commentCount),
-  );
   queryClient.setQueriesData<InfiniteCards>(
-    { predicate: (query) => query.queryKey[0] === 'user' && query.queryKey[2] === 'posts' },
+    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapCommentCount(current, postId, commentCount),
   );
   queryClient.setQueryData<PostDetail>(queryKeys.post(postId), (current) =>

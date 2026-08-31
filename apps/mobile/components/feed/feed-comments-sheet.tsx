@@ -7,12 +7,15 @@ import {
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState, type RefObject } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CaptionText } from './caption-text';
 import { CommentComposer, CommentThread } from '@/components/comments';
 import { Avatar, Text } from '@/components/ui';
+import { hashtagPath } from '@/lib/hashtags';
 import { createComment, fetchComments, type FeedCard } from '@/lib/api';
 import { applyCreatedComment } from '@/lib/query/feed-cache';
 import { queryKeys } from '@/lib/query/keys';
@@ -28,6 +31,7 @@ export function FeedCommentsSheet({
   onOpenAuthor: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const snapPoints = useMemo(() => ['50%', '90%'], []);
   const [open, setOpen] = useState(false);
@@ -85,9 +89,15 @@ export function FeedCommentsSheet({
 
           {post.caption ? (
             <View className="mx-gutter border-b border-border py-4">
-              <Text variant="body" tone="secondary">
-                {post.caption}
-              </Text>
+              <CaptionText
+                caption={post.caption}
+                variant="body"
+                tone="secondary"
+                onHashtagPress={(tag) => {
+                  sheetRef.current?.dismiss();
+                  router.push(hashtagPath(tag));
+                }}
+              />
             </View>
           ) : null}
 

@@ -1,7 +1,7 @@
 import type { InfiniteData, QueryClient } from '@tanstack/react-query';
 
 import type { CursorPage, FeedCard, PostDetail, PublicProfile } from '@/lib/api/types';
-import { queryKeys } from '@/lib/query/keys';
+import { isInfiniteCardQuery, queryKeys } from '@/lib/query/keys';
 
 type InfiniteCards = InfiniteData<CursorPage<FeedCard>, string | null>;
 
@@ -36,11 +36,8 @@ export function applyAvatarUrl(
     current ? { ...current, avatarUrl: input.avatarUrl } : current,
   );
 
-  queryClient.setQueriesData<InfiniteCards>({ queryKey: queryKeys.feed.all }, (current) =>
-    mapInfinite(current, input.userId, input.avatarUrl),
-  );
   queryClient.setQueriesData<InfiniteCards>(
-    { predicate: (query) => query.queryKey[0] === 'user' && query.queryKey[2] === 'posts' },
+    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapInfinite(current, input.userId, input.avatarUrl),
   );
   // `postComments` is `['post', id, 'comments']`. A prefix match on `['post']`

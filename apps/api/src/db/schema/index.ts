@@ -2,6 +2,7 @@ export * from './enums';
 export * from './users';
 export * from './auth';
 export * from './posts';
+export * from './hashtags';
 export * from './media';
 export * from './likes';
 export * from './comments';

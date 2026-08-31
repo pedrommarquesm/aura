@@ -19,6 +19,7 @@ import type {
 import type { OptimizedVideo } from '@/lib/media/optimize-video';
 
 import { fetchFeedPage } from '@/lib/api/feed';
+import { fetchHashtagPage } from '@/lib/api/hashtags';
 import { createComment, fetchComments } from '@/lib/api/comments';
 import { likePost, unlikePost } from '@/lib/api/likes';
 import {
@@ -41,6 +42,7 @@ import { putPresignedObject } from '@/lib/upload/put-presigned';
 
 export const api = {
   fetchFeedPage: fetchFeedPage as jest.MockedFunction<typeof fetchFeedPage>,
+  fetchHashtagPage: fetchHashtagPage as jest.MockedFunction<typeof fetchHashtagPage>,
   likePost: likePost as jest.MockedFunction<typeof likePost>,
   unlikePost: unlikePost as jest.MockedFunction<typeof unlikePost>,
   fetchComments: fetchComments as jest.MockedFunction<typeof fetchComments>,
@@ -250,6 +252,7 @@ export function resetApiMocks() {
   }
 
   api.fetchFeedPage.mockResolvedValue(feedPage());
+  api.fetchHashtagPage.mockResolvedValue(feedPage());
   api.likePost.mockResolvedValue(likeResult(true));
   api.unlikePost.mockResolvedValue(likeResult(false));
   api.fetchComments.mockResolvedValue(commentsPage());
