@@ -968,6 +968,7 @@ Cursor pagination obrigatório.
 POST /posts
 GET /posts/:id
 DELETE /posts/:id
+GET /hashtags/:tag
 ```
 
 ### Likes

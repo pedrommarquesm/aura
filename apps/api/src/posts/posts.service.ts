@@ -7,6 +7,7 @@ import { posts } from '../db/schema';
 import { FeedService, type FeedCard } from '../feed/feed.service';
 
 import { normalizeCaption } from './caption';
+import { replacePostHashtags } from './hashtag-index';
 
 export type UpdateCaptionResult = FeedCard & {
   status: 'uploading' | 'processing' | 'published' | 'failed' | 'removed';
@@ -36,10 +37,10 @@ export class PostsService {
       throw AppError.forbidden('You can only edit your own post');
     }
 
-    await this.db
-      .update(posts)
-      .set({ caption: normalizeCaption(caption) })
-      .where(eq(posts.id, postId));
+    const nextCaption = normalizeCaption(caption);
+
+    await this.db.update(posts).set({ caption: nextCaption }).where(eq(posts.id, postId));
+    await replacePostHashtags(this.db, postId, nextCaption);
 
     const found = await this.feed.getPost(postId, actorId);
     if (!found) throw AppError.notFound('Post not found');

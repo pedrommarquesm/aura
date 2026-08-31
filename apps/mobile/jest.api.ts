@@ -7,6 +7,11 @@ jest.mock('@/lib/api/feed', () => ({
   FEED_PAGE_SIZE: 10,
 }));
 
+jest.mock('@/lib/api/hashtags', () => ({
+  fetchHashtagPage: jest.fn(),
+  HASHTAG_PAGE_SIZE: 12,
+}));
+
 jest.mock('@/lib/api/likes', () => ({
   likePost: jest.fn(),
   unlikePost: jest.fn(),

@@ -183,6 +183,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-72 | Do not fetch the feed while session is `restoring`. Key the feed by viewer so a guest snapshot cannot freeze empty hearts | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | MOB-73 | Tapping the Feed tab scrolls the list back to the first post | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | MOB-74 | Flow tests match the TikTok feed: Give/Remove aura, comment opens the drawer, one profile control on the card overlay. Moai tap toggles unlike | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
+| API-35 | Extract hashtags from captions into `post_hashtags`. `GET /v1/hashtags/:tag` returns the latest published posts for that tag | In review | |
+| MOB-75 | Create/edit caption colours hashtags with no action. Tapping a tag on a post opens `/hashtag/:tag` (back + pre-filled search, grid of tagged posts) | In review | |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -264,6 +266,7 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | API-32 | Aura Battles | Not started | |
 | API-33 | Daily Challenges | Not started | |
 | API-34 | Notifications, aggregated (never one push per like) | Not started | |
+| API-35 | Hashtag index + `GET /v1/hashtags/:tag` | In review | |
 | TS-10 | Like-ring / multi-account detection over the ledger | Not started | |
 | TS-11 | NSFW + spam detection in the media worker. On hold: third-party classifier on `ProcessMediaJob` (architecture §6.5), fail closed, user only sees generic vs `content_rejected` | Blocked | |
 | TS-12 | Admin/moderation dashboard | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
@@ -277,6 +280,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-31 | Captions index `#tag` (Unicode letters, stored lowercase) into `post_hashtags`. Compose colours the tag and does nothing. Viewing a post, a tap opens `/hashtag/:tag` with back + a search field pre-filled with `#tag` | |
 | 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
 | 2026-08-30 | Feed fetch waits until session restore finishes. Query key includes the viewer so a guest `/feed` (no `likedByMe`) cannot stick after sign-in. Tapping the Feed tab scrolls to the top | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | 2026-08-30 | The top RefreshControl spinner is pull-to-refresh only. `isRefetching` from focus, reconnect, or invalidate must not drive it. First-load comments are a skeleton | [#62](https://github.com/pedrommarquesm/aura/pull/62) |

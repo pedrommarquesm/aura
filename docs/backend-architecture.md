@@ -124,6 +124,10 @@ Post
   trendingScore                 -- worker-maintained
   publishedAt                   -- set when status becomes published
 
+PostHashtag
+  postId, tag                   -- tag stored lowercase; caption stays source of truth
+                                -- composite PK; index on tag for GET /hashtags/:tag
+
 MediaAsset
   id, postId
   storageProvider               -- r2 | s3 | bunny | ...  per asset, never global (§6.6)
@@ -727,9 +731,9 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | GET | `/v1/feed/trending` | |
 | POST | `/v1/posts/uploads` | presign |
 | POST | `/v1/posts/:id/uploads` | refresh an expired presign for the same post |
-| POST | `/v1/posts/:id/complete` | caption + enqueue processing |
+| POST | `/v1/posts/:id/complete` | caption + enqueue processing. Replaces `post_hashtags` for that post |
 | GET | `/v1/posts/:id` | public if published |
-| PATCH | `/v1/posts/:id` | author only; caption only. Body `{ caption }`. Blank becomes `null`. Media is not replaced |
+| PATCH | `/v1/posts/:id` | author only; caption only. Body `{ caption }`. Blank becomes `null`. Media is not replaced. Reindexes hashtags |
 | DELETE | `/v1/posts/:id` | author only; soft delete |
 | POST | `/v1/posts/:id/like` | idempotent |
 | DELETE | `/v1/posts/:id/like` | |
@@ -737,6 +741,7 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 | POST | `/v1/posts/:id/comments` | required auth; `{ body }` max 500. Author may comment. No Aura |
 | GET | `/v1/users/:username` | public competitive card |
 | GET | `/v1/users/:id/posts` | cursor |
+| GET | `/v1/hashtags/:tag` | latest published posts whose caption indexed this tag. Optional auth. Cursor. Strip a leading `#`; lowercase; 1–64 letters / numbers / underscore |
 | GET | `/v1/leaderboards/global` | top + `viewerRank` |
 | GET | `/v1/notifications` | stub empty in V0 or skip |
 

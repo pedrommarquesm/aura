@@ -9,6 +9,7 @@ import { newId } from '../common/ids';
 import { DB, type Database } from '../db/db.module';
 import { mediaAssets, posts, type User } from '../db/schema';
 import { normalizeCaption } from '../posts/caption';
+import { replacePostHashtags } from '../posts/hashtag-index';
 import { MediaJob, type MediaProcessPayload } from '../queue/queue.constants';
 import { MEDIA_QUEUE } from '../queue/queue.module';
 
@@ -184,6 +185,7 @@ export class UploadsService {
     const caption = normalizeCaption(input.caption);
 
     await this.db.update(posts).set({ status: 'processing', caption }).where(eq(posts.id, postId));
+    await replacePostHashtags(this.db, postId, caption);
     await this.db
       .update(mediaAssets)
       .set({ byteSize: object.contentLength, updatedAt: new Date() })

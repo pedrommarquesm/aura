@@ -35,6 +35,7 @@
     "post": {
       "likes": "{count, plural, one {# aura} other {# auras}}",
       "comments": "{count, plural, one {# comment} other {# comments}}",
+      "seeMore": "See more",
       "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Edit",
@@ -213,6 +214,17 @@
       "taken": "That username is taken.",
       "reserved": "That username is not available.",
       "invalid": "3–30 characters. Letters, numbers or underscore."
+    }
+  },
+  "hashtag": {
+    "search": "Search hashtag",
+    "empty": "Nothing tagged #{tag} yet.",
+    "invalid": "That hashtag is not valid.",
+    "error": {
+      "title": "Could not load this hashtag"
+    },
+    "a11y": {
+      "open": "Open #{tag}"
     }
   },
   "settings": {
