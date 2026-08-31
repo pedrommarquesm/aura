@@ -91,6 +91,8 @@ export default defineRailway(() => {
     MUX_TOKEN_ID: preserve(),
     MUX_TOKEN_SECRET: preserve(),
     STAFF_OWNER_EMAIL: 'pedrommarquesm@gmail.com',
+    PUBLIC_SITE_URL: 'https://www.aurarankd.com',
+    WAITLIST_ENABLED: 'true',
   };
 
   const api = service('api', {
@@ -149,6 +151,8 @@ export default defineRailway(() => {
       // answers; a rebuild is what actually bakes this into the bundle.
       NEXT_PUBLIC_API_BASE_URL: 'https://api.aurarankd.com',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
+      // Waitlist launch. Flip to true when web sign-in opens.
+      NEXT_PUBLIC_WEB_AUTH_ENABLED: 'false',
       // Public web OAuth client. The secret is GOOGLE_CLIENT_SECRET on the
       // service (preserve), never in this file.
       NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID:

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
-import { LoginForm } from "./login-form";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container } from "@/components/landing/section";
@@ -21,6 +20,7 @@ import {
 import { getSession } from "@/lib/auth/session";
 import { isPostId } from "@/lib/likes/ids";
 import { applyPendingLike } from "@/lib/likes/server";
+import { webAuthEnabled } from "@/lib/launch";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -33,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t("title"),
     socialTitle: t("socialTitle"),
     description: t("description"),
+    noIndex: !webAuthEnabled,
   });
 }
 
@@ -41,6 +42,10 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ next?: string; like?: string }>;
 }) {
+  if (!webAuthEnabled) {
+    redirect("/");
+  }
+
   const locale = await getLocale();
   const { next, like } = await searchParams;
   const returnTo = safeReturnPath(next) ?? defaultSignedInPath(locale);
@@ -59,6 +64,8 @@ export default async function LoginPage({
   const t = pendingLike
     ? await getTranslations("auth.reasons.like")
     : await getTranslations("auth.page");
+
+  const { LoginForm } = await import("./login-form");
 
   return (
     <>

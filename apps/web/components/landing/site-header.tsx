@@ -3,27 +3,21 @@ import { useLocale, useTranslations } from "next-intl";
 import { AuraMark } from "@/components/aura-mark";
 import { SessionMenu } from "@/components/auth/session-menu";
 import { SettingsMenu } from "@/components/settings-menu";
-import { ButtonLink } from "@/components/ui";
+import { buttonClassName } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { sectionHash, sectionId } from "@/i18n/sections";
-import { downloadHref } from "@/lib/site";
+import { sectionId } from "@/i18n/sections";
+import { webAuthEnabled } from "@/lib/launch";
 
 export function SiteHeader() {
   const locale = useLocale();
   const t = useTranslations("nav.sections");
   const actions = useTranslations("common.actions");
 
-  // The sections live on the landing page, so the links carry the route as
-  // well as the hash and keep working from any other page.
-  const navLinks: Array<
-    | { label: string; href: "/feed" | "/leaderboard" }
-    | { label: string; hash: string }
-  > = [
-    { label: t("feed"), href: "/feed" },
-    { label: t("leaderboard"), href: "/leaderboard" },
+  const navLinks: Array<{ label: string; hash: string }> = [
     { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
     { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
-    { label: t("trending"), hash: sectionId(locale, "trending") },
+    { label: t("play"), hash: sectionId(locale, "play") },
+    { label: t("join"), hash: sectionId(locale, "join") },
   ];
 
   return (
@@ -31,13 +25,11 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
         <div className="flex min-w-0 items-center gap-4">
           <AuraMark />
-          {/* Desktop keeps the full section nav. On a phone that row is
-              hidden, so Feed has to live next to the mark. */}
           <Link
-            href="/feed"
+            href={{ pathname: "/", hash: sectionId(locale, "join") }}
             className="text-label text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text lg:hidden"
           >
-            {t("feed")}
+            {t("join")}
           </Link>
         </div>
 
@@ -45,38 +37,29 @@ export function SiteHeader() {
           aria-label={t("label")}
           className="hidden items-center gap-6 lg:flex"
         >
-          {navLinks.map((link) =>
-            "href" in link ? (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
-              >
-                {link.label}
-              </Link>
-            ) : (
-              <Link
-                key={link.hash}
-                href={{ pathname: "/", hash: link.hash }}
-                className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
-              >
-                {link.label}
-              </Link>
-            ),
-          )}
+          {navLinks.map((link) => (
+            <Link
+              key={link.hash}
+              href={{ pathname: "/", hash: link.hash }}
+              className="text-label whitespace-nowrap text-text-secondary transition-colors duration-(--motion-quick) ease-out hover:text-text"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
           <SettingsMenu />
-          <SessionMenu />
-          <ButtonLink
-            href={downloadHref(sectionHash(locale, "download"))}
-            size="sm"
-            variant="secondary"
-            className="hidden sm:inline-flex"
-          >
-            {actions("getApp")}
-          </ButtonLink>
+          {webAuthEnabled ? (
+            <SessionMenu />
+          ) : (
+            <Link
+              href={{ pathname: "/", hash: sectionId(locale, "join") }}
+              className={buttonClassName({ size: "sm", className: "hidden sm:inline-flex" })}
+            >
+              {actions("joinEarly")}
+            </Link>
+          )}
         </div>
       </div>
     </header>

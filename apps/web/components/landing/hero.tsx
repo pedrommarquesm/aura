@@ -1,23 +1,12 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ArrowRightIcon } from "@/components/icons";
-import { AppPreview } from "@/components/landing/app-preview";
 import { Container } from "@/components/landing/section";
-import { AuraValue, ButtonLink, buttonClassName } from "@/components/ui";
+import { buttonClassName } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { sectionHash } from "@/i18n/sections";
-import type { FeedCard, LeaderboardEntry } from "@/lib/api/types";
-import { downloadHref } from "@/lib/site";
 
-export async function Hero({
-  topPost,
-  leader,
-  authorRank,
-}: {
-  topPost?: FeedCard;
-  leader?: LeaderboardEntry;
-  authorRank?: number | null;
-}) {
+export async function Hero() {
   const locale = await getLocale();
   const t = await getTranslations("landing.hero");
   const actions = await getTranslations("common.actions");
@@ -33,7 +22,7 @@ export async function Hero({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-aura-gradient opacity-60"
       />
 
-      <Container className="grid gap-16 pt-16 pb-20 sm:pt-24 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10 lg:pt-28 lg:pb-28">
+      <Container className="grid gap-16 pt-16 pb-20 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-10 lg:pt-28 lg:pb-28">
         <div className="animate-rise">
           <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-caption text-text-secondary backdrop-blur-sm">
             <span aria-hidden className="size-1.5 rounded-full bg-success" />
@@ -41,8 +30,6 @@ export async function Hero({
           </p>
 
           <h1 className="mt-6 text-display tracking-tight text-balance sm:text-[3.5rem] sm:leading-[1.05] lg:text-[4.25rem]">
-            {/* One message, so the line break and the accent stay with the
-                sentence instead of being glued together in JSX. */}
             {t.rich("title", {
               break: () => <br />,
               accent: (chunks) => (
@@ -51,44 +38,65 @@ export async function Hero({
             })}
           </h1>
 
-          <p className="mt-6 max-w-xl text-body text-text-secondary">
-            {t("body")}
-          </p>
+          <p className="mt-6 max-w-xl text-body text-text-secondary">{t("body")}</p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <ButtonLink
-              href={downloadHref(sectionHash(locale, "download"))}
-              size="lg"
-            >
-              {actions("getAuraApp")}
-            </ButtonLink>
             <Link
-              href="/feed"
+              href={{ pathname: "/", hash: sectionHash(locale, "join").slice(1) }}
+              className={buttonClassName({ size: "lg" })}
+            >
+              {actions("joinEarly")}
+            </Link>
+            <Link
+              href={{ pathname: "/", hash: sectionHash(locale, "play").slice(1) }}
               className={buttonClassName({ size: "lg", variant: "secondary" })}
             >
-              {actions("seeTrending")}
+              {actions("seeHowItWorks")}
               <ArrowRightIcon className="size-4" />
             </Link>
           </div>
-
-          {leader ? (
-            <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-label text-text-muted">
-              <span>{t("leader", { rank: leader.rank })}</span>
-              <span aria-hidden>·</span>
-              <span className="text-text-secondary">
-                @{leader.username}
-              </span>
-              <AuraValue value={leader.aura} size="sm" tone="aura" />
-            </p>
-          ) : null}
         </div>
 
-        {topPost ? (
-          <div className="animate-rise [animation-delay:120ms]">
-            <AppPreview post={topPost} rank={authorRank ?? null} />
-          </div>
-        ) : null}
+        <div className="animate-rise [animation-delay:120ms]">
+          <HeroPhone />
+        </div>
       </Container>
     </section>
+  );
+}
+
+function HeroPhone() {
+  return (
+    <div className="relative mx-auto w-full max-w-[336px]">
+      <div
+        aria-hidden
+        className="absolute -inset-8 animate-aura-pulse rounded-full bg-aura/25 blur-3xl"
+      />
+      <div className="relative rounded-[2.25rem] border border-border bg-surface-elevated p-2.5 shadow-aura-glow">
+        <div className="overflow-hidden rounded-[1.85rem] bg-bg">
+          <div className="flex items-center justify-between px-4 py-3">
+            <span className="text-label">Aura</span>
+            <span className="aura-numerals text-caption text-aura-bright">🗿 12,840</span>
+          </div>
+          <div
+            className="relative aspect-4/5"
+            style={{
+              backgroundImage: "linear-gradient(160deg, #3b1d6e, #8b5cf6, #111018)",
+            }}
+          >
+            <span className="absolute inset-0 grid place-items-center text-6xl">🗿</span>
+            <span className="absolute bottom-3 left-3 rounded-full bg-aura-gradient px-3 py-1 text-caption font-semibold">
+              +10 Aura
+            </span>
+          </div>
+          <div className="flex flex-col gap-3 p-4">
+            <p className="text-label">@maya</p>
+            <p className="text-body text-text-secondary">
+              left the group chat on read. unbothered.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

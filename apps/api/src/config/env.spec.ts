@@ -18,6 +18,9 @@ describe('loadEnv', () => {
     expect(env.LIKE_RATE_LIMIT_MAX).toBe(60);
     expect(env.LIKE_RATE_LIMIT_WINDOW_MS).toBe(60_000);
     expect(env.MEDIA_DAILY_UPLOAD_QUOTA).toBe(20);
+    expect(env.PUBLIC_SITE_URL).toBe('https://www.aurarankd.com');
+    expect(env.WAITLIST_ENABLED).toBe(true);
+    expect(env.SMTP_HOST).toBeUndefined();
   });
 
   it('coerces numeric strings, since every value arrives as a string', () => {

@@ -9,6 +9,8 @@ import { DB, type Database } from '../db/db.module';
 import { authIdentities, users, type User } from '../db/schema';
 import { resolveLocale } from '../i18n/locales';
 
+import { WaitlistService } from '../waitlist/waitlist.service';
+
 import { AppleProvider } from './providers/apple.provider';
 import { GoogleProvider } from './providers/google.provider';
 import type { IdentityProvider } from './providers/identity-provider';
@@ -42,6 +44,7 @@ export class AuthService {
     private readonly tokens: TokensService,
     private readonly apple: AppleProvider,
     private readonly google: GoogleProvider,
+    private readonly waitlist: WaitlistService,
   ) {}
 
   private provider(name: 'apple' | 'google'): IdentityProvider {
@@ -109,6 +112,17 @@ export class AuthService {
     }
 
     assertAccountActive(user.status);
+
+    if (identity.email) {
+      try {
+        await this.waitlist.claimForAccount(user.id, identity.email);
+        const refreshed = await this.findUserById(user.id);
+        if (refreshed) user = refreshed;
+      } catch {
+        // Claiming early-beta Aura must never block sign-in. The waitlist
+        // row stays unclaimed and the next sign-in retries.
+      }
+    }
 
     const issued = await this.tokens.issue(user.id, options.device ?? {});
 

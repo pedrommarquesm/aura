@@ -147,6 +147,31 @@ const envSchema = z.object({
    * always gets in, domain list or not.
    */
   STAFF_ALLOWED_DOMAINS: z.string().optional(),
+
+  /**
+   * Public site origin used in waitlist referral links and emails.
+   * Must match the canonical web host.
+   */
+  PUBLIC_SITE_URL: z.string().default('https://www.aurarankd.com'),
+
+  /** Flip to close the waitlist without a deploy of the form itself. */
+  WAITLIST_ENABLED: booleanish.default(true),
+
+  WAITLIST_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(8),
+  WAITLIST_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
+
+  CONTACT_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(5),
+  CONTACT_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
+
+  /**
+   * Optional SMTP. Unset parks sending — waitlist and referral emails stay
+   * in `email_outbox` as `queued` until a transport is wired.
+   */
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  MAIL_FROM: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

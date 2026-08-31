@@ -19,6 +19,9 @@ import { StaffModule } from './staff/staff.module';
 import { AdminModule } from './admin/admin.module';
 import { TrendingModule } from './trending/trending.module';
 import { UsersModule } from './users/users.module';
+import { MailModule } from './mail/mail.module';
+import { WaitlistModule } from './waitlist/waitlist.module';
+import { ContactModule } from './contact/contact.module';
 
 /**
  * Shared by the HTTP process and the worker process.
@@ -33,6 +36,7 @@ import { UsersModule } from './users/users.module';
     DbModule,
     RedisModule,
     QueueModule,
+    MailModule,
     MediaModule,
     AuraModule,
     TrendingModule,
@@ -48,6 +52,8 @@ import { UsersModule } from './users/users.module';
     StaffModule,
     AdminModule,
     ModerationModule,
+    WaitlistModule,
+    ContactModule,
   ],
 })
 export class AppModule {}

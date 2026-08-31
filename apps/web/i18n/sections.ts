@@ -8,6 +8,8 @@ import type { AppLocale } from "./routing";
 const SECTION_IDS = {
   whatIsAura: { en: "what-is-aura", pt: "o-que-e-aura" },
   howItWorks: { en: "how-it-works", pt: "como-funciona" },
+  join: { en: "join", pt: "entrar" },
+  play: { en: "play", pt: "jogar" },
   trending: { en: "trending", pt: "em-destaque" },
   leaderboard: { en: "leaderboard", pt: "classificacao" },
   download: { en: "download", pt: "descarregar" },

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
-import { UsernameClaimForm } from "./username-claim-form";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Container } from "@/components/landing/section";
@@ -21,6 +20,7 @@ import {
 import { getSession } from "@/lib/auth/session";
 import { isPostId } from "@/lib/likes/ids";
 import { applyPendingLike } from "@/lib/likes/server";
+import { webAuthEnabled } from "@/lib/launch";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -42,6 +42,10 @@ export default async function UsernamePage({
 }: {
   searchParams: Promise<{ next?: string; like?: string }>;
 }) {
+  if (!webAuthEnabled) {
+    redirect("/");
+  }
+
   const locale = await getLocale();
   const t = await getTranslations("auth.username");
   const { next, like } = await searchParams;
@@ -57,6 +61,8 @@ export default async function UsernamePage({
     await applyPendingLike(session.accessToken, pendingLike);
     redirect(returnTo);
   }
+
+  const { UsernameClaimForm } = await import("./username-claim-form");
 
   return (
     <>

@@ -39,9 +39,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — New app build for comments, profile photo, pull-to-refresh, liked hearts on first load, and Feed-tab scroll. Apple `APPLE_CLIENT_ID` on staging is still needed for Sign in with Apple. Staging API is live.
+**Now** — Web launch waitlist: login hidden, early-beta join + referral Aura, legal pages. Email sending is queued until SMTP exists.
 
-**Next** — Store links (`WEB-07`) before real traffic.
+**Next** — Store links (`WEB-07`) and SMTP so waitlist emails actually leave the outbox.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -98,6 +98,8 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-20 | i18n: next-intl, English + Portuguese, translated routes | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | WEB-21 | Localized SEO: hreflang, per-locale sitemap and metadata | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
 | WEB-22 | Point the public landing (trending + leaderboard) at the live API | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
+| WEB-30 | Waitlist landing: hide web login, early-beta join, referral share, interactive post demo | In review | |
+| WEB-31 | Public T&C, FAQ, contact form pages | In review | |
 
 ---
 
@@ -129,6 +131,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-11 | Username claim / onboarding flow | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
+| API-40 | Waitlist join + referral Aura, email outbox, claim onto account at first sign-in | In review | |
+| API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | In review | |
 
 ### Media pipeline
 
@@ -277,6 +281,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-31 | Web launch is a waitlist. Login is hidden and the GIS client is not imported from a reachable page. Early-join Aura (+10) and referral Aura (+10) live on `waitlist_entries` until sign-up ports them as a ledger `BONUS`. Emails render into `email_outbox` until SMTP exists | |
 | 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | [#64](https://github.com/pedrommarquesm/aura/pull/64) |
 | 2026-08-30 | Feed fetch waits until session restore finishes. Query key includes the viewer so a guest `/feed` (no `likedByMe`) cannot stick after sign-in. Tapping the Feed tab scrolls to the top | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | 2026-08-30 | The top RefreshControl spinner is pull-to-refresh only. `isRefetching` from focus, reconnect, or invalidate must not drive it. First-load comments are a skeleton | [#62](https://github.com/pedrommarquesm/aura/pull/62) |

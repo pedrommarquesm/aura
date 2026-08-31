@@ -34,6 +34,9 @@ export const API_ERROR_CODES = [
   "already_blocked",
   "cannot_block_self",
   "cannot_report_self",
+  "invalid_email",
+  "invalid_referral",
+  "waitlist_unavailable",
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

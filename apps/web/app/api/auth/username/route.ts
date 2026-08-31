@@ -2,11 +2,15 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { ApiError } from "@/lib/api/errors";
+import { disabledAuthResponse } from "@/lib/auth/disabled";
 import { clearOnboardingCookie, readSessionCookies } from "@/lib/auth/cookies";
 import { claimUsername } from "@/lib/auth/session";
 import { normalizeUsername, usernameProblem } from "@/lib/auth/username";
 
 export async function POST(request: Request) {
+  const disabled = disabledAuthResponse();
+  if (disabled) return disabled;
+
   const { accessToken } = await readSessionCookies();
 
   if (!accessToken) {

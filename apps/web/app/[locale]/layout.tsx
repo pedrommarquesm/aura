@@ -72,6 +72,8 @@ export default async function LocaleLayout({
             feed: messages.feed,
             post: messages.post,
             settings: messages.settings,
+            landing: messages.landing,
+            legal: messages.legal,
           }}
         >
           <QueryProvider>{children}</QueryProvider>
