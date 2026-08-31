@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
 
@@ -20,11 +20,8 @@ export default function HashtagScreen() {
   const raw = useLocalSearchParams<{ tag?: string | string[] }>().tag;
   const encoded = Array.isArray(raw) ? raw[0] : raw;
   const tag = normalizeHashtagQuery(safeDecode(encoded));
-  const [search, setSearch] = useState(tag ? displayHashtag(tag) : '#');
-
-  useEffect(() => {
-    setSearch(tag ? displayHashtag(tag) : '#');
-  }, [tag]);
+  const [draft, setDraft] = useState<{ tag: string | null; value: string } | null>(null);
+  const search = draft && draft.tag === tag ? draft.value : tag ? displayHashtag(tag) : '#';
 
   const posts = useInfiniteQuery({
     queryKey: queryKeys.hashtag(tag ?? ''),
@@ -68,7 +65,7 @@ export default function HashtagScreen() {
         <View className="flex-1">
           <TextField
             value={search}
-            onChangeText={setSearch}
+            onChangeText={(value) => setDraft({ tag, value })}
             onSubmitEditing={submitSearch}
             returnKeyType="search"
             autoCapitalize="none"
