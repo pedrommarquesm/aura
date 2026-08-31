@@ -8,11 +8,10 @@ export function HowItWorks() {
   const t = useTranslations("landing.howItWorks");
 
   const steps = [
-    { label: t("steps.discover.label"), body: t("steps.discover.body") },
-    { label: t("steps.like.label"), body: t("steps.like.body") },
-    { label: t("steps.gainAura.label"), body: t("steps.gainAura.body") },
-    { label: t("steps.climb.label"), body: t("steps.climb.body") },
     { label: t("steps.post.label"), body: t("steps.post.body") },
+    { label: t("steps.like.label"), body: t("steps.like.body") },
+    { label: t("steps.climb.label"), body: t("steps.climb.body") },
+    { label: t("steps.repeat.label"), body: t("steps.repeat.body") },
   ];
 
   return (
@@ -22,7 +21,7 @@ export function HowItWorks() {
       title={t("title")}
       description={t("description")}
     >
-      <ol className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-5">
+      <ol className="grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
         {steps.map((step, index) => (
           <li
             key={step.label}
@@ -39,11 +38,6 @@ export function HowItWorks() {
           </li>
         ))}
       </ol>
-
-      <p className="mt-6 flex items-center gap-3 text-label text-text-muted">
-        <span aria-hidden className="h-px w-8 bg-aura" />
-        {t("repeat")}
-      </p>
     </Section>
   );
 }

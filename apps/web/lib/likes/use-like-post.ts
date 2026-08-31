@@ -9,7 +9,11 @@ import { useSession } from "@/components/auth/session-context";
 import { ApiError } from "@/lib/api/errors";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import type { Post } from "@/lib/api/types";
+import { getPathname } from "@/i18n/navigation";
+import { sectionHash } from "@/i18n/sections";
+import type { AppLocale } from "@/i18n/routing";
 import { authContinueHref } from "@/lib/auth/return-to";
+import { webAuthEnabled } from "@/lib/launch";
 import { likePost, unlikePost } from "@/lib/likes/client";
 import {
   applyLikeResult,
@@ -62,6 +66,11 @@ export function useLikePost({
   const creatorAura = optimistic?.authorAura ?? authorAura;
 
   const goToAuth = (kind: "login" | "username") => {
+    if (!webAuthEnabled) {
+      const home = getPathname({ href: "/", locale: locale as AppLocale });
+      router.push(`${home}${sectionHash(locale as AppLocale, "join")}`);
+      return;
+    }
     const next = `${window.location.pathname}${window.location.search}`;
     router.push(authContinueHref(locale, kind, next, postId));
   };

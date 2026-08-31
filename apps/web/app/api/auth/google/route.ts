@@ -2,10 +2,14 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { ApiError } from "@/lib/api/errors";
+import { disabledAuthResponse } from "@/lib/auth/disabled";
 import { signInWithGoogle } from "@/lib/auth/session";
 import { writeSessionCookies } from "@/lib/auth/cookies";
 
 export async function POST(request: Request) {
+  const disabled = disabledAuthResponse();
+  if (disabled) return disabled;
+
   let body: { identityToken?: string; nonce?: string; locale?: string };
 
   try {

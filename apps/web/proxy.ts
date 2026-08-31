@@ -9,6 +9,7 @@ import {
   writeSessionOnResponse,
 } from "./lib/auth/cookies";
 import { rotateRefreshToken } from "./lib/auth/session";
+import { isReferralPath } from "./lib/launch";
 import { isSharePath, sharePathWithoutAtPrefix } from "./lib/share";
 
 /**
@@ -45,10 +46,14 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Share URLs stay unprefixed (docs/i18n.md). next-intl would otherwise
-  // rewrite `/a/alice/post/…` to `/en/a/…` or `/pt/a/…`. Session refresh
-  // still runs so `likedByMe` works when the viewer is signed in.
-  if (isSharePath(request.nextUrl.pathname)) {
+  // Share URLs and short referral links stay unprefixed (docs/i18n.md).
+  // next-intl would otherwise rewrite `/a/alice/post/…` or `/r/AB23CD45`
+  // into `/en/…` or `/pt/…`. Session refresh still runs so `likedByMe`
+  // works when the viewer is signed in.
+  if (
+    isSharePath(request.nextUrl.pathname) ||
+    isReferralPath(request.nextUrl.pathname)
+  ) {
     const response = NextResponse.next();
     await attachRefreshedSession(request, response);
     return response;

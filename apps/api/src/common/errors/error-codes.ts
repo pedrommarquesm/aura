@@ -47,6 +47,11 @@ export const ErrorCode = {
   STAFF_DEACTIVATED: 'staff_deactivated',
   STAFF_EMAIL_REQUIRED: 'staff_email_required',
   CANNOT_MUTATE_OWNER: 'cannot_mutate_owner',
+
+  // Waitlist / launch
+  INVALID_EMAIL: 'invalid_email',
+  INVALID_REFERRAL: 'invalid_referral',
+  WAITLIST_UNAVAILABLE: 'waitlist_unavailable',
 } as const;
 
 export type ErrorCodeValue = (typeof ErrorCode)[keyof typeof ErrorCode];

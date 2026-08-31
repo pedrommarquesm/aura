@@ -11,16 +11,13 @@ export function SiteFooter() {
   const footer = useTranslations("nav.footer");
   const landing = useTranslations("landing.footer");
 
-  const sectionLinks: Array<
-    | { label: string; href: "/feed" | "/leaderboard" }
-    | { label: string; hash: string }
-  > = [
-    { label: t("feed"), href: "/feed" },
-    { label: t("leaderboard"), href: "/leaderboard" },
-    { label: t("whatIsAura"), hash: sectionId(locale, "whatIsAura") },
-    { label: t("howItWorks"), hash: sectionId(locale, "howItWorks") },
-    { label: t("trending"), hash: sectionId(locale, "trending") },
-    { label: t("download"), hash: sectionId(locale, "download") },
+  const links: Array<{ label: string; href: "/" | "/about" | "/faq" | "/terms" | "/contact" | "/settings"; hash?: string }> = [
+    { label: t("join"), href: "/", hash: sectionId(locale, "join") },
+    { label: t("faq"), href: "/faq" },
+    { label: t("terms"), href: "/terms" },
+    { label: t("contact"), href: "/contact" },
+    { label: t("about"), href: "/about" },
+    { label: t("settings"), href: "/settings" },
   ];
 
   return (
@@ -32,16 +29,8 @@ export function SiteFooter() {
             aria-label={footer("label")}
             className="flex flex-wrap gap-x-6 gap-y-2 text-label text-text-secondary"
           >
-            {sectionLinks.map((link) =>
-              "href" in link ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
-                >
-                  {link.label}
-                </Link>
-              ) : (
+            {links.map((link) =>
+              link.hash ? (
                 <Link
                   key={link.hash}
                   href={{ pathname: "/", hash: link.hash }}
@@ -49,29 +38,22 @@ export function SiteFooter() {
                 >
                   {link.label}
                 </Link>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
+                >
+                  {link.label}
+                </Link>
               ),
             )}
-            <Link
-              href="/about"
-              className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
-            >
-              {t("about")}
-            </Link>
-            <Link
-              href="/settings"
-              className="transition-colors duration-(--motion-quick) ease-out hover:text-text"
-            >
-              {t("settings")}
-            </Link>
           </nav>
         </div>
 
-        <p className="max-w-xl text-caption text-text-muted">
-          {landing("note")}
-        </p>
+        <p className="max-w-xl text-caption text-text-muted">{landing("note")}</p>
 
         <p className="text-caption text-text-muted">
-          {/* A year is an identifier, not a quantity: no thousands separator. */}
           {landing("copyright", {
             year: format.dateTime(new Date(), { year: "numeric" }),
           })}

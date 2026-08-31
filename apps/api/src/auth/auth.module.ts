@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { WaitlistModule } from '../waitlist/waitlist.module';
+
 import { AuthController } from './auth.controller';
 import { AuthGuard, OptionalAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -8,6 +10,7 @@ import { GoogleProvider } from './providers/google.provider';
 import { TokensService } from './tokens.service';
 
 @Module({
+  imports: [WaitlistModule],
   controllers: [AuthController],
   providers: [
     AuthService,

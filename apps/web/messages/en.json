@@ -1,8 +1,23 @@
 {
   "meta": {
     "home": {
-      "title": "Aura — The social game where likes are the score",
-      "description": "Aura is a social game. Post photos and videos, collect likes, farm Aura and climb the global leaderboard. Free on iOS and Android."
+      "title": "Aura — Your vibe, ranked",
+      "description": "Post the moment. People like it, you gain Aura. Join the early beta and start with 10 Aura before we launch."
+    },
+    "terms": {
+      "title": "Terms",
+      "socialTitle": "Aura terms",
+      "description": "The rules for the Aura early beta, referrals, and the app when it opens."
+    },
+    "faq": {
+      "title": "FAQ",
+      "socialTitle": "Aura FAQ",
+      "description": "What Aura is, how you farm it, and how the early beta works."
+    },
+    "contact": {
+      "title": "Contact",
+      "socialTitle": "Talk to Aura",
+      "description": "Questions about the early beta, the app, or your Aura. Write us."
     },
     "about": {
       "title": "About",
@@ -58,6 +73,8 @@
     "actions": {
       "getApp": "Get the app",
       "getAuraApp": "Get the Aura app",
+      "joinEarly": "Join early beta",
+      "seeHowItWorks": "See how a post works",
       "seeTrending": "See what's trending",
       "seeFeed": "Open the feed",
       "loadMore": "Load more",
@@ -75,6 +92,11 @@
       "trending": "Trending",
       "leaderboard": "Leaderboard",
       "download": "Download",
+      "join": "Join early",
+      "play": "Try a post",
+      "faq": "FAQ",
+      "terms": "Terms",
+      "contact": "Contact",
       "about": "About",
       "settings": "Settings"
     },
@@ -93,9 +115,9 @@
   },
   "landing": {
     "hero": {
-      "badge": "Open beta · iOS and Android",
-      "title": "Turn likes into Aura.<break></break><accent>Climb the board.</accent>",
-      "body": "Aura is a social game built on one number. Post a photo or a video, collect likes, and every like pays Aura straight to you. Everyone can see exactly where you rank.",
+      "badge": "Launching in 2 weeks",
+      "title": "Your vibe,<break></break><accent>ranked.</accent>",
+      "body": "Post the moment. People like it, you gain Aura. Everyone can see where you stand. No follower count. No hiding. Just the score.",
       "leader": "Currently #{rank, number} globally",
       "preview": {
         "title": "Trending",
@@ -103,53 +125,99 @@
         "globalRank": "#{rank, number} global"
       }
     },
+    "waitlist": {
+      "eyebrow": "Early beta",
+      "title": "Get in before it drops",
+      "body": "We're launching in two weeks. Join now and you start with {join, number} Aura. Share your link — you get another {referral, number} when a friend signs up and opens the app.",
+      "points": {
+        "join": "+{aura, number} Aura just for showing up early",
+        "share": "+{aura, number} Aura when a friend signs up through you",
+        "port": "When the app opens, this Aura lands on your account"
+      },
+      "emailLabel": "Your email",
+      "emailPlaceholder": "you@mail.com",
+      "submit": "Join early beta",
+      "submitting": "Locking it in…",
+      "invited": "Someone sent you. Join now — they get Aura when you open the app.",
+      "finePrint": "We'll email you when it opens. No spam. Unsubscribe whenever.",
+      "success": {
+        "eyebrow": "You're in",
+        "title": "Congrats. You just farmed your first Aura.",
+        "body": "+{aura, number} Aura for joining early. Share this link. You'll get +{referral, number} Aura when a friend signs up and opens the app.",
+        "againEyebrow": "Already in",
+        "againTitle": "This email is already on the list.",
+        "againBody": "Your early Aura is still here: {aura, number}. Same link. Keep sharing.",
+        "score": "🗿 {aura, number}",
+        "referrals": "{count, plural, one {# friend signed up through you} other {# friends signed up through you}}",
+        "copy": "Copy your link",
+        "copied": "Copied",
+        "shareHint": "WhatsApp it. Text it. Story it. You get paid when they actually sign up."
+      }
+    },
+    "play": {
+      "eyebrow": "Try it",
+      "title": "This is a post. Double-tap it.",
+      "description": "A like is not a heart for the algorithm. It is Aura, paid to the person who posted. Try it here — nothing leaves this page.",
+      "doubleTap": "Double-tap to give Aura",
+      "seeMore": "See more",
+      "nextPost": "Next post",
+      "hint": "Tap the 🗿 or double-tap the photo.",
+      "steps": {
+        "look": {
+          "title": "You see the moment",
+          "body": "A photo or a video. No follower count in the way. If it hits, it hits."
+        },
+        "like": {
+          "title": "You give it Aura",
+          "body": "One tap. They get +10. The number moves in front of you. That's the whole mechanic."
+        },
+        "climb": {
+          "title": "They climb. You look good.",
+          "body": "Their rank goes up because you saw it first. Later, posting is how you climb."
+        }
+      }
+    },
     "whatIsAura": {
       "eyebrow": "The idea",
       "title": "What is Aura?",
-      "description": "Aura is a score you can only get from other people. You cannot buy it and nobody hands it to you. It comes from likes, and it is public.",
+      "description": "You already know what aura is. We made it a real score — public, earned, and the only number that matters.",
       "points": {
-        "oneNumber": {
-          "title": "One number, everywhere",
-          "body": "Your Aura sits next to your name in the feed, on your profile and on the leaderboard. There is no other score to explain."
+        "vibe": {
+          "title": "Your vibe, measured",
+          "body": "Post a photo or a video. When people like it, you gain Aura. That's the receipt that it hit."
         },
-        "likesPay": {
-          "title": "Likes pay out",
-          "body": "Every like on your post credits Aura to you the moment it lands. Not a vanity counter that resets — a balance that only goes up as people back your content."
+        "score": {
+          "title": "One number. Everyone sees it.",
+          "body": "Aura sits next to your name. On the feed. On your profile. On the board. There is nothing else to explain."
         },
-        "onRecord": {
-          "title": "Kept on the record",
-          "body": "Aura is a ledger, not a tally. Each point traces back to the like that created it, so a fake like can be reversed and the board stays worth climbing."
+        "fair": {
+          "title": "No follower games",
+          "body": "You don't need a following to be seen. You don't buy Aura. You farm it."
         }
-      },
-      "quote": "Aura is not a social network with gamification. It is a social game where the social network is the game board."
+      }
     },
     "howItWorks": {
       "eyebrow": "The loop",
-      "title": "How it works",
-      "description": "Five steps, and the fifth one sends you back to the first. That loop is the whole product.",
+      "title": "How you farm it",
+      "description": "Four moves. The last one sends you back to the first. That's the game.",
       "steps": {
-        "discover": {
-          "label": "Discover",
-          "body": "Open the feed. Photos and videos, ordered by what is gaining Aura fastest right now."
+        "post": {
+          "label": "Post",
+          "body": "Your best moment. Photo or video. Done in seconds, from the phone."
         },
         "like": {
-          "label": "Like",
-          "body": "One tap. The like registers instantly — nothing sits there waiting on a spinner."
-        },
-        "gainAura": {
-          "label": "Gain Aura",
-          "body": "The creator is paid in Aura the moment you tap, and the number moves in front of you."
+          "label": "Get liked",
+          "body": "Each like pays you Aura the second it lands. Not a vanity counter. A score."
         },
         "climb": {
           "label": "Climb",
-          "body": "Your total decides your place on the global board. You can always see your exact rank."
+          "body": "Your total is your rank. Global. Visible. You always know exactly where you stand."
         },
-        "post": {
-          "label": "Post",
-          "body": "Then it is your turn. Camera, caption, published in seconds — and the loop starts again."
+        "repeat": {
+          "label": "Repeat",
+          "body": "Find fire early. Post again. The people who see it first look good too."
         }
-      },
-      "repeat": "Repeat. That is the game."
+      }
     },
     "trending": {
       "eyebrow": "Live from the app",
@@ -179,8 +247,101 @@
       "note": "Photos and videos, likes, Aura and the global leaderboard. Posting only happens in the app."
     },
     "footer": {
-      "note": "Posting stays in the app. The web is here to show you the game, hand you a public link, and let you award Aura.",
+      "note": "The app opens in two weeks. This site is how you get in early, farm Aura before anyone else, and see how a post works.",
       "copyright": "© {year} Aura"
+    }
+  },
+  "legal": {
+    "terms": {
+      "eyebrow": "Legal",
+      "title": "Terms",
+      "intro": "These terms cover the Aura website, the early beta waitlist, and the Aura app when it opens. If you join the waitlist or use the site, you agree to them.",
+      "sections": {
+        "waitlist": {
+          "title": "Early beta",
+          "body": "Joining the waitlist is free. You give us an email so we can tell you when Aura opens and send you your referral link. Early Aura is a promise we honour when you create an account with that same email. It is not cash, not a security, and not transferable to anyone else."
+        },
+        "aura": {
+          "title": "Aura",
+          "body": "Aura is a score inside the product. We can reverse Aura that came from abuse, fake accounts, or broken rules. Referral Aura is awarded when a new person creates an account through your link. Joining the waitlist is not enough. You cannot refer yourself."
+        },
+        "content": {
+          "title": "Your posts",
+          "body": "When the app opens, you keep the rights to what you post. You give Aura a licence to show it in the feed, on share pages, and in rankings. Do not post anything you do not have the right to share."
+        },
+        "conduct": {
+          "title": "Keep it clean",
+          "body": "No spam, hate, harassment, bots, or farming rings. Break the rules and we can remove content, take Aura back, or close the account. We will not argue about it in a comment section."
+        },
+        "privacy": {
+          "title": "What we keep",
+          "body": "We store the email you give us, the referral link you share, and messages you send through the contact form. We do not sell that list. We use it to run the waitlist, send the emails you asked for, and later open your account. You can write us to be removed."
+        },
+        "changes": {
+          "title": "Changes",
+          "body": "We may update these terms as the product opens. The date on this page is the one that applies. The site is provided as-is while we are still in early beta."
+        }
+      },
+      "contact": "Questions: use the contact form. Aura is operated by the team behind aurarankd.com."
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions, answered",
+      "intro": "Short answers. If yours is missing, write us.",
+      "items": {
+        "what": {
+          "q": "What is Aura?",
+          "a": "Your vibe, as a score. You post. People like it. You gain Aura. Everyone can see where you rank."
+        },
+        "gain": {
+          "q": "How do I gain Aura?",
+          "a": "Post something that hits. Each like pays you Aura. On the waitlist, you also get Aura for joining early and for every friend who signs up through your link."
+        },
+        "followers": {
+          "q": "Are followers a thing?",
+          "a": "Nah. Just Aura. The feed is not a popularity contest you already won before you posted."
+        },
+        "lose": {
+          "q": "Can I lose Aura?",
+          "a": "Only if you break the rules or we have to reverse something fake. Likes you earned honestly stay."
+        },
+        "waitlist": {
+          "q": "What is the early beta?",
+          "a": "The app launches in two weeks. Join now with your email. You get +10 Aura for showing up early and a link to bring friends."
+        },
+        "referral": {
+          "q": "How does the referral link work?",
+          "a": "Share your link. Each new person who signs up through it gives you +10 Aura. A waitlist email alone does not count. You cannot refer yourself."
+        },
+        "port": {
+          "q": "Does this Aura carry into the app?",
+          "a": "Yes. When you create your account with the same email, we move your early Aura onto it. That is the whole point of joining now."
+        },
+        "launch": {
+          "q": "When does it launch?",
+          "a": "In two weeks. We'll email you."
+        },
+        "free": {
+          "q": "Is this free?",
+          "a": "Yeah."
+        },
+        "age": {
+          "q": "How old do I have to be?",
+          "a": "13 or older. If you are under 18, you need a parent or guardian who is fine with you being here."
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "Write us",
+      "intro": "Waitlist, press, partnerships, something broken. We'll read it.",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "submit": "Send",
+      "sending": "Sending…",
+      "success": "Got it. We'll get back to you.",
+      "note": "This lands in our inbox. No third-party form. Don't send passwords."
     }
   },
   "about": {
@@ -217,7 +378,7 @@
     "page": {
       "eyebrow": "Live from the app",
       "title": "The feed",
-      "description": "Latest posts, as they land. Sign in with Google to like a post and award Aura. Posting stays in the app.",
+      "description": "Latest posts, as they land. The app opens in two weeks — join the early beta to start with Aura.",
       "empty": "The feed is quiet right now. Check back once someone posts.",
       "unavailable": "Could not load the feed.",
       "end": "You are caught up."
@@ -313,6 +474,9 @@
     "already_blocked": "You already blocked that account.",
     "cannot_block_self": "You cannot block yourself.",
     "cannot_report_self": "You cannot report yourself.",
+    "invalid_email": "That email does not look right.",
+    "invalid_referral": "That invite code is not valid.",
+    "waitlist_unavailable": "The waitlist is closed right now.",
     "unknown": "Something went wrong. Try again."
   },
   "settings": {

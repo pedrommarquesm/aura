@@ -4,10 +4,10 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { AboutIntro } from "@/components/about/about-intro";
 import { Levels } from "@/components/about/levels";
 import { AboutPrinciples } from "@/components/about/principles";
-import { DownloadCta } from "@/components/landing/download-cta";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
+import { WaitlistSection } from "@/components/landing/waitlist-section";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,7 +32,7 @@ export default function AboutPage() {
         <HowItWorks />
         <Levels />
         <AboutPrinciples />
-        <DownloadCta />
+        <WaitlistSection />
       </main>
       <SiteFooter />
     </>

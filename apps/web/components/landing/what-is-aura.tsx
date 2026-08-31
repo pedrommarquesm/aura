@@ -9,9 +9,9 @@ export function WhatIsAura() {
   const t = useTranslations("landing.whatIsAura");
 
   const points = [
-    { title: t("points.oneNumber.title"), body: t("points.oneNumber.body") },
-    { title: t("points.likesPay.title"), body: t("points.likesPay.body") },
-    { title: t("points.onRecord.title"), body: t("points.onRecord.body") },
+    { title: t("points.vibe.title"), body: t("points.vibe.body") },
+    { title: t("points.score.title"), body: t("points.score.body") },
+    { title: t("points.fair.title"), body: t("points.fair.body") },
   ];
 
   return (
@@ -31,12 +31,6 @@ export function WhatIsAura() {
           </Card>
         ))}
       </div>
-
-      <figure className="mt-12 border-l-2 border-aura pl-6 sm:mt-16">
-        <blockquote className="max-w-3xl text-heading text-balance sm:text-title">
-          {t("quote")}
-        </blockquote>
-      </figure>
     </Section>
   );
 }

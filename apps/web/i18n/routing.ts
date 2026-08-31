@@ -27,6 +27,9 @@ export const routing = defineRouting({
     "/login": { en: "/login", pt: "/entrar" },
     "/username": { en: "/username", pt: "/nome" },
     "/settings": { en: "/settings", pt: "/definicoes" },
+    "/terms": { en: "/terms", pt: "/termos" },
+    "/faq": { en: "/faq", pt: "/perguntas" },
+    "/contact": { en: "/contact", pt: "/contacto" },
   },
 });
 
