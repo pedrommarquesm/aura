@@ -19,3 +19,8 @@ export function readReferralCode(raw: string | null | undefined): string | null 
   const code = raw.trim().toUpperCase();
   return /^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{8}$/.test(code) ? code : null;
 }
+
+/** Short share URLs (`/r/AB23CD45`). Unprefixed, same rule as `/a/…`. */
+export function isReferralPath(pathname: string) {
+  return pathname === "/r" || pathname.startsWith("/r/");
+}
