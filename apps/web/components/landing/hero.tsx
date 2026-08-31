@@ -1,7 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ArrowRightIcon } from "@/components/icons";
-import { DEMO_POSTS, DemoFeedPost, PhoneFrame } from "@/components/landing/demo-feed-post";
+import { DemoFeedPost, PhoneFrame } from "@/components/landing/demo-feed-post";
+import { DEMO_POSTS } from "@/lib/demo-posts";
 import { Container } from "@/components/landing/section";
 import { buttonClassName } from "@/components/ui";
 import { Link } from "@/i18n/navigation";

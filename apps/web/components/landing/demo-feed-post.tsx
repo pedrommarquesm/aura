@@ -8,53 +8,10 @@ import { CommentIcon, MoreIcon, ShareIcon } from "@/components/icons";
 import { Avatar } from "@/components/ui";
 import { auraTitle } from "@/lib/aura";
 import { cn } from "@/lib/cn";
+import type { DemoPost } from "@/lib/demo-posts";
 import { formatCount } from "@/lib/format";
 
-/**
- * Landing stand-in for mobile `FeedPostCard`: full-bleed media, top-right
- * Aura pill, right action stack (🗿 / comments / share / more), bottom
- * overlay with avatar, username, title, caption. Chrome is `bg/70`.
- */
-export type DemoPost = {
-  id: string;
-  username: string;
-  caption: string;
-  image: string;
-  aura: number;
-  likes: number;
-  comments: number;
-};
-
-export const DEMO_POSTS: DemoPost[] = [
-  {
-    id: "unbothered",
-    username: "maya",
-    caption: "left the group chat on read. unbothered.",
-    image: "/demo/maya.jpg",
-    aura: 1280,
-    likes: 128,
-    comments: 18,
-  },
-  {
-    id: "fit",
-    username: "kai",
-    caption: "the fit spoke first. i just showed up.",
-    image: "/demo/kai.jpg",
-    aura: 860,
-    likes: 86,
-    comments: 9,
-  },
-  {
-    id: "cold",
-    username: "noura",
-    caption:
-      "coldest walk home of my life and i meant it. the air hit different and i did not look back once.",
-    image: "/demo/noura.jpg",
-    aura: 2140,
-    likes: 214,
-    comments: 31,
-  },
-];
+export type { DemoPost };
 
 const CHROME = "bg-[rgba(10,10,15,0.7)]";
 const ACTION = "size-[3.25rem]";
@@ -91,6 +48,7 @@ export function DemoFeedPost({
   const format = useFormatter();
   const t = useTranslations("landing.play");
   const stageRef = useRef<HTMLDivElement>(null);
+  if (!post) return null;
   const likes = post.likes + (liked ? 1 : 0);
   const aura = post.aura + (liked ? 10 : 0);
   const title = auraTitle(aura);

@@ -3,7 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { DEMO_POSTS, DemoFeedPost, PhoneFrame } from "@/components/landing/demo-feed-post";
+import { DemoFeedPost, PhoneFrame } from "@/components/landing/demo-feed-post";
+import { DEMO_POSTS } from "@/lib/demo-posts";
 import { Section } from "@/components/landing/section";
 import { sectionId } from "@/i18n/sections";
 import { cn } from "@/lib/cn";
