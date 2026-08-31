@@ -43,7 +43,11 @@ export const waitlistEntries = pgTable(
 
     locale: varchar('locale', { length: 10 }).notNull().default('en'),
 
-    /** Join bonus + referral bonuses. Ported in one BONUS event on claim. */
+    /**
+     * Join bonus plus referral bonuses earned before this row is claimed.
+     * Ported in one BONUS event on first sign-in. Referrals that land after
+     * claim go to the ledger directly so they are not stuck here.
+     */
     aura: bigint('aura', { mode: 'number' }).notNull().default(0),
 
     referralCount: integer('referral_count').notNull().default(0),
@@ -52,6 +56,12 @@ export const waitlistEntries = pgTable(
       onDelete: 'set null',
     }),
     claimedAt: timestamp('claimed_at', { withTimezone: true }),
+
+    /**
+     * When the referred person created an account and we paid the referrer.
+     * Join stores `referredById` only — a waitlist email is not a signup.
+     */
+    referralCreditedAt: timestamp('referral_credited_at', { withTimezone: true }),
 
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

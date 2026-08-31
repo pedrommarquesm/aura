@@ -93,6 +93,11 @@ export default defineRailway(() => {
     STAFF_OWNER_EMAIL: 'pedrommarquesm@gmail.com',
     PUBLIC_SITE_URL: 'https://www.aurarankd.com',
     WAITLIST_ENABLED: 'true',
+    WAITLIST_RATE_LIMIT_MAX: '8',
+    WAITLIST_EMAIL_RATE_LIMIT_MAX: '5',
+    WAITLIST_GLOBAL_RATE_LIMIT_MAX: '200',
+    CONTACT_RATE_LIMIT_MAX: '5',
+    CONTACT_EMAIL_RATE_LIMIT_MAX: '3',
   };
 
   const api = service('api', {

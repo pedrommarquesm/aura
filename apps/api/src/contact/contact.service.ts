@@ -29,8 +29,11 @@ export class ContactService {
   async submit(input: SubmitContactInput, ip: string): Promise<{ ok: true }> {
     const email = parseWaitlistEmail(input.email);
     if (!email) {
+      await this.assertContactLimits(ip, null);
       throw new AppError(ErrorCode.INVALID_EMAIL, 'That email does not look right');
     }
+
+    await this.assertContactLimits(ip, email);
 
     const name = input.name.trim();
     const message = input.message.trim();
@@ -39,11 +42,6 @@ export class ContactService {
     }
     if (message.length < 10 || message.length > 2000) {
       throw AppError.badRequest('Message must be 10–2000 characters');
-    }
-
-    const allowed = await this.consumeSlot(ip);
-    if (!allowed) {
-      throw new AppError(ErrorCode.RATE_LIMITED, 'Too many messages from this network', 429);
     }
 
     await this.db.insert(contactMessages).values({
@@ -57,12 +55,32 @@ export class ContactService {
     return { ok: true };
   }
 
-  private async consumeSlot(ip: string): Promise<boolean> {
-    const key = `rl:contact:${ip}`;
+  private async assertContactLimits(ip: string, email: string | null): Promise<void> {
+    const allowed = await Promise.all([
+      this.consumeBucket(
+        `rl:contact:${ip}`,
+        this.env.CONTACT_RATE_LIMIT_MAX,
+        this.env.CONTACT_RATE_LIMIT_WINDOW_MS,
+      ),
+      email
+        ? this.consumeBucket(
+            `rl:contact:email:${email}`,
+            this.env.CONTACT_EMAIL_RATE_LIMIT_MAX,
+            this.env.CONTACT_EMAIL_RATE_LIMIT_WINDOW_MS,
+          )
+        : Promise.resolve(true),
+    ]);
+
+    if (allowed.some((ok) => !ok)) {
+      throw new AppError(ErrorCode.RATE_LIMITED, 'Too many messages from this network', 429);
+    }
+  }
+
+  private async consumeBucket(key: string, max: number, windowMs: number): Promise<boolean> {
     const count = await this.redis.incr(key);
     if (count === 1) {
-      await this.redis.pexpire(key, this.env.CONTACT_RATE_LIMIT_WINDOW_MS);
+      await this.redis.pexpire(key, windowMs);
     }
-    return count <= this.env.CONTACT_RATE_LIMIT_MAX;
+    return count <= max;
   }
 }

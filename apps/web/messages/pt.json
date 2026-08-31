@@ -128,30 +128,30 @@
     "waitlist": {
       "eyebrow": "Beta antecipada",
       "title": "Entra antes de cair",
-      "body": "Lançamos daqui a duas semanas. Entra agora e começas com {join, number} Aura. Partilha o teu link — cada amigo que entrar dá-te mais {referral, number}.",
+      "body": "Lançamos daqui a duas semanas. Entra agora e começas com {join, number} Aura. Partilha o teu link — ganhas mais {referral, number} quando um amigo criar conta e abrir a app.",
       "points": {
         "join": "+{aura, number} Aura só por chegares cedo",
-        "share": "+{aura, number} Aura de cada vez que um amigo entra por ti",
+        "share": "+{aura, number} Aura quando um amigo criar conta por ti",
         "port": "Quando a app abrir, esta Aura vai para a tua conta"
       },
       "emailLabel": "O teu email",
       "emailPlaceholder": "tu@mail.com",
       "submit": "Entrar na beta",
       "submitting": "A fechar o sítio…",
-      "invited": "Alguém mandou-te. Entra e os dois ganham Aura.",
+      "invited": "Alguém mandou-te. Entra agora — eles ganham Aura quando abrires a app.",
       "finePrint": "Avisamos-te por email quando abrir. Sem spam. Sais quando quiseres.",
       "success": {
         "eyebrow": "Estás dentro",
         "title": "Boa. Acabaste de farmar a tua primeira Aura.",
-        "body": "+{aura, number} Aura por entrares cedo. Partilha este link. Ganhas +{referral, number} Aura por cada amigo que também entrar.",
+        "body": "+{aura, number} Aura por entrares cedo. Partilha este link. Ganhas +{referral, number} Aura quando um amigo criar conta e abrir a app.",
         "againEyebrow": "Já estás dentro",
         "againTitle": "Este email já está na lista.",
         "againBody": "A tua Aura antecipada continua aqui: {aura, number}. O mesmo link. Continua a partilhar.",
         "score": "🗿 {aura, number}",
-        "referrals": "{count, plural, one {# amigo entrou por ti} other {# amigos entraram por ti}}",
+        "referrals": "{count, plural, one {# amigo criou conta por ti} other {# amigos criaram conta por ti}}",
         "copy": "Copiar o teu link",
         "copied": "Copiado",
-        "shareHint": "Manda no WhatsApp. Por mensagem. Nos stories. Cada entrada por este link paga-te."
+        "shareHint": "Manda no WhatsApp. Por mensagem. Nos stories. Só contas quando eles criarem conta a sério."
       }
     },
     "play": {
@@ -264,7 +264,7 @@
         },
         "aura": {
           "title": "Aura",
-          "body": "A Aura é uma pontuação dentro do produto. Podemos reverter Aura que venha de abuso, contas falsas ou regras partidas. A Aura de convite é dada quando uma pessoa nova entra na lista pelo teu link. Não te podes convidar a ti próprio."
+          "body": "A Aura é uma pontuação dentro do produto. Podemos reverter Aura que venha de abuso, contas falsas ou regras partidas. A Aura de convite é dada quando uma pessoa nova cria conta pelo teu link. Entrar na lista não chega. Não te podes convidar a ti próprio."
         },
         "content": {
           "title": "Os teus posts",
@@ -296,7 +296,7 @@
         },
         "gain": {
           "q": "Como se ganha Aura?",
-          "a": "Publica algo que bata. Cada like paga-te Aura. Na lista de espera também ganhas Aura por entrares cedo e por cada amigo que entrar pelo teu link."
+          "a": "Publica algo que bata. Cada like paga-te Aura. Na lista de espera também ganhas Aura por entrares cedo e por cada amigo que criar conta pelo teu link."
         },
         "followers": {
           "q": "Há seguidores?",
@@ -312,7 +312,7 @@
         },
         "referral": {
           "q": "Como funciona o link de convite?",
-          "a": "Partilha o teu link. Cada pessoa nova que entrar por ele dá-te +10 Aura. A mesma pessoa não entra duas vezes. Não te podes convidar a ti próprio."
+          "a": "Partilha o teu link. Cada pessoa nova que criar conta por ele dá-te +10 Aura. Um email na lista sozinho não conta. Não te podes convidar a ti próprio."
         },
         "port": {
           "q": "Esta Aura passa para a app?",

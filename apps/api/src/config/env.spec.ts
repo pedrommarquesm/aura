@@ -20,6 +20,11 @@ describe('loadEnv', () => {
     expect(env.MEDIA_DAILY_UPLOAD_QUOTA).toBe(20);
     expect(env.PUBLIC_SITE_URL).toBe('https://www.aurarankd.com');
     expect(env.WAITLIST_ENABLED).toBe(true);
+    expect(env.WAITLIST_RATE_LIMIT_MAX).toBe(8);
+    expect(env.WAITLIST_EMAIL_RATE_LIMIT_MAX).toBe(5);
+    expect(env.WAITLIST_GLOBAL_RATE_LIMIT_MAX).toBe(200);
+    expect(env.CONTACT_RATE_LIMIT_MAX).toBe(5);
+    expect(env.CONTACT_EMAIL_RATE_LIMIT_MAX).toBe(3);
     expect(env.SMTP_HOST).toBeUndefined();
   });
 

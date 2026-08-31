@@ -31,3 +31,8 @@ export const REFERRAL_AURA = 10;
 export function waitlistClaimIdempotencyKey(entryId: string): string {
   return `waitlist-claim:${entryId}`;
 }
+
+/** One referral payout per joiner, even if claim or mail retries. */
+export function waitlistReferralIdempotencyKey(joinerId: string): string {
+  return `waitlist-referral:${joinerId}`;
+}

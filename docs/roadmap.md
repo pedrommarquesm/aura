@@ -131,7 +131,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-11 | Username claim / onboarding flow | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| API-40 | Waitlist join + referral Aura, email outbox, claim onto account at first sign-in | In review | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
+| API-40 | Waitlist join + referral Aura (paid when the friend signs up), email outbox, claim onto account at first sign-in | In review | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | In review | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 
 ### Media pipeline
@@ -284,6 +284,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-08-31 | Referral Aura pays when the friend creates a real account, not when they join the waitlist. Join still gives the joiner +10. Waitlist submits are limited per IP, per email, and globally so a fake-inbox flood cannot mint referrals or DDoS the form | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Web launch is a waitlist. Login is hidden and the GIS client is not imported from a reachable page. Early-join Aura (+10) and referral Aura (+10) live on `waitlist_entries` until sign-up ports them as a ledger `BONUS`. Emails render into `email_outbox` until SMTP exists | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Captions index `#tag` (Unicode letters, stored lowercase) into `post_hashtags`. Compose colours the tag and does nothing. Viewing a post, a tap opens `/hashtag/:tag` with back + a search field pre-filled with `#tag` | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
 | 2026-08-30 | Web plays the API `hlsUrl` (Mux or our CDN). Safari uses native HLS; everyone else uses hls.js. Cards use `posterUrl` because Mux `feedUrl` is null. No Mux keys in `NEXT_PUBLIC_*` | [#64](https://github.com/pedrommarquesm/aura/pull/64) |

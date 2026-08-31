@@ -128,30 +128,30 @@
     "waitlist": {
       "eyebrow": "Early beta",
       "title": "Get in before it drops",
-      "body": "We're launching in two weeks. Join now and you start with {join, number} Aura. Share your link — every friend who joins gives you another {referral, number}.",
+      "body": "We're launching in two weeks. Join now and you start with {join, number} Aura. Share your link — you get another {referral, number} when a friend signs up and opens the app.",
       "points": {
         "join": "+{aura, number} Aura just for showing up early",
-        "share": "+{aura, number} Aura every time a friend joins through you",
+        "share": "+{aura, number} Aura when a friend signs up through you",
         "port": "When the app opens, this Aura lands on your account"
       },
       "emailLabel": "Your email",
       "emailPlaceholder": "you@mail.com",
       "submit": "Join early beta",
       "submitting": "Locking it in…",
-      "invited": "Someone sent you. Join and you both get Aura.",
+      "invited": "Someone sent you. Join now — they get Aura when you open the app.",
       "finePrint": "We'll email you when it opens. No spam. Unsubscribe whenever.",
       "success": {
         "eyebrow": "You're in",
         "title": "Congrats. You just farmed your first Aura.",
-        "body": "+{aura, number} Aura for joining early. Share this link. You'll get +{referral, number} Aura for each friend who also joins.",
+        "body": "+{aura, number} Aura for joining early. Share this link. You'll get +{referral, number} Aura when a friend signs up and opens the app.",
         "againEyebrow": "Already in",
         "againTitle": "This email is already on the list.",
         "againBody": "Your early Aura is still here: {aura, number}. Same link. Keep sharing.",
         "score": "🗿 {aura, number}",
-        "referrals": "{count, plural, one {# friend joined through you} other {# friends joined through you}}",
+        "referrals": "{count, plural, one {# friend signed up through you} other {# friends signed up through you}}",
         "copy": "Copy your link",
         "copied": "Copied",
-        "shareHint": "WhatsApp it. Text it. Story it. Every join through this link pays you."
+        "shareHint": "WhatsApp it. Text it. Story it. You get paid when they actually sign up."
       }
     },
     "play": {
@@ -264,7 +264,7 @@
         },
         "aura": {
           "title": "Aura",
-          "body": "Aura is a score inside the product. We can reverse Aura that came from abuse, fake accounts, or broken rules. Referral Aura is awarded when a new person joins the waitlist through your link. You cannot refer yourself."
+          "body": "Aura is a score inside the product. We can reverse Aura that came from abuse, fake accounts, or broken rules. Referral Aura is awarded when a new person creates an account through your link. Joining the waitlist is not enough. You cannot refer yourself."
         },
         "content": {
           "title": "Your posts",
@@ -296,7 +296,7 @@
         },
         "gain": {
           "q": "How do I gain Aura?",
-          "a": "Post something that hits. Each like pays you Aura. On the waitlist, you also get Aura for joining early and for every friend who joins through your link."
+          "a": "Post something that hits. Each like pays you Aura. On the waitlist, you also get Aura for joining early and for every friend who signs up through your link."
         },
         "followers": {
           "q": "Are followers a thing?",
@@ -312,7 +312,7 @@
         },
         "referral": {
           "q": "How does the referral link work?",
-          "a": "Share your link. Each new person who joins through it gives you +10 Aura. Same person cannot join twice. You cannot refer yourself."
+          "a": "Share your link. Each new person who signs up through it gives you +10 Aura. A waitlist email alone does not count. You cannot refer yourself."
         },
         "port": {
           "q": "Does this Aura carry into the app?",

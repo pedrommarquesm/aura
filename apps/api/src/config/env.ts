@@ -159,9 +159,17 @@ const envSchema = z.object({
 
   WAITLIST_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(8),
   WAITLIST_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
+  /** Same address hammering the join form with a new (or invalid) email. */
+  WAITLIST_EMAIL_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(5),
+  WAITLIST_EMAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
+  /** Cap across every IP so a botnet of unique addresses cannot flood joins. */
+  WAITLIST_GLOBAL_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(200),
+  WAITLIST_GLOBAL_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
 
   CONTACT_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(5),
   CONTACT_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
+  CONTACT_EMAIL_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(3),
+  CONTACT_EMAIL_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(3_600_000),
 
   /**
    * Optional SMTP. Unset parks sending — waitlist and referral emails stay
