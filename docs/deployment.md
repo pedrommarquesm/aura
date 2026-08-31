@@ -182,6 +182,8 @@ Commit the generated SQL. Never edit an applied migration; add a new one.
 
 The public hostnames are on **`aurarankd.com`**. Staging is the only
 environment, so these point at staging until production exists.
+The product brand is **Auraclimb** (`auraclimb.com`); this zone is the
+staging stand-in until OPS-14 buys and cuts over ([brand.md](./brand.md)).
 
 | Hostname | Service | Notes |
 |---|---|---|
