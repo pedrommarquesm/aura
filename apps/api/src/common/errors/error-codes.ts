@@ -23,6 +23,8 @@ export const ErrorCode = {
   REFRESH_REUSE_DETECTED: 'refresh_reuse_detected',
   ACCOUNT_SUSPENDED: 'account_suspended',
   ACCOUNT_BANNED: 'account_banned',
+  INVALID_CREDENTIALS: 'invalid_credentials',
+  EMAIL_TAKEN: 'email_taken',
 
   // Posts and uploads
   UPLOAD_EXPIRED: 'upload_expired',

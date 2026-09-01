@@ -33,6 +33,12 @@ export const authIdentities = pgTable(
      */
     emailAtSignup: text('email_at_signup'),
 
+    /**
+     * scrypt hash. Only set when `provider = 'password'`. OAuth rows stay null.
+     * Local and staging only — production refuses password routes.
+     */
+    passwordHash: text('password_hash'),
+
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
   },

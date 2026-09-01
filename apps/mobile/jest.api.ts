@@ -47,6 +47,8 @@ jest.mock('@/lib/api/leaderboard', () => ({
 
 jest.mock('@/lib/api/auth', () => ({
   signInWithProvider: jest.fn(),
+  signInWithPassword: jest.fn(),
+  registerWithPassword: jest.fn(),
   fetchMe: jest.fn(),
   claimUsername: jest.fn(),
   logout: jest.fn(async () => undefined),

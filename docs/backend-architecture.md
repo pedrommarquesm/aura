@@ -720,6 +720,8 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 |---|---|---|
 | POST | `/v1/auth/apple` | verify Apple identity token → issue Aura tokens |
 | POST | `/v1/auth/google` | verify Google ID token → issue Aura tokens |
+| POST | `/v1/auth/login` | email or username + password. Local/staging only. 404 in production |
+| POST | `/v1/auth/register` | email + username + password. Local/staging only. 404 in production |
 | POST | `/v1/auth/refresh` | rotate refresh token, reuse detection |
 | POST | `/v1/auth/logout` | revoke current device session |
 | POST | `/v1/auth/username` | claim handle on first login (onboarding) |
@@ -798,7 +800,7 @@ The device never holds a client secret. Verification is server-side against the 
 |---|---|---|
 | **Sign in with Apple** | **Yes** | Required by App Store rules once we offer Google. One tap, no password. |
 | **Google Sign-In** | **Yes** | Covers Android and most iOS users who avoid Apple ID. |
-| **Email + password** | **Skip in V0** | Worst conversion of the three, and it drags in password reset, email deliverability, and breach liability. Aura's loop dies on signup friction. |
+| **Email + password** | **Local / staging only** | Exists so e2e can sign in without Apple/Google. Production still 404s these routes. No password reset, no email verify. |
 | **Phone / OTP** | **Later, as an anti-abuse tier** | SMS costs real money per signup and invites toll fraud. But a phone number is *expensive to farm*, which makes it the best anti-multi-account signal we have. |
 
 On phone verification, the useful framing is not "how do users log in" but "what does an account have to prove before its Aura counts". Gate **earning and ranking**, not signup:

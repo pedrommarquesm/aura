@@ -179,10 +179,20 @@
       "apple": "Continue with Apple",
       "google": "Continue with Google"
     },
+    "password": {
+      "or": "or",
+      "identifier": "Email or username",
+      "email": "Email",
+      "password": "Password",
+      "signIn": "Sign in with email",
+      "create": "Create account",
+      "toggleCreate": "Create an account",
+      "toggleSignIn": "Already have an account"
+    },
     "reasons": {
       "like": {
         "title": "Sign in to award Aura",
-        "body": "Auras are the score. Apple or Google — no password — then this aura lands."
+        "body": "Auras are the score. Apple, Google, or email — then this aura lands."
       },
       "create": {
         "title": "Sign in to post",
@@ -194,11 +204,11 @@
       },
       "comment": {
         "title": "Sign in to comment",
-        "body": "Apple or Google — no password — then you can leave a comment."
+        "body": "Apple, Google, or email — then you can leave a comment."
       },
       "generic": {
         "title": "Sign in to Aura",
-        "body": "Apple or Google. No password."
+        "body": "Apple, Google, or email."
       }
     },
     "unavailable": {
@@ -254,6 +264,8 @@
     "bad_request": "That did not work. Try again.",
     "validation_failed": "Check what you entered and try again.",
     "unauthorized": "Sign in to do that.",
+    "invalid_credentials": "Email, username or password is wrong.",
+    "email_taken": "That email is already in use.",
     "forbidden": "You are not allowed to do that.",
     "not_found": "That is not here any more.",
     "conflict": "Something changed. Refresh and try again.",

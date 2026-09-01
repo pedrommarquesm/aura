@@ -1,6 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import { signInWithProvider, type AuthProvider } from '@/lib/api';
+import {
+  registerWithPassword,
+  signInWithPassword,
+  signInWithProvider,
+  type AuthProvider,
+} from '@/lib/api';
 import { requestAppleIdentityToken } from '@/lib/auth/apple';
 import { AuthNotConfiguredError, isAuthCanceled } from '@/lib/auth/errors';
 import { requestGoogleIdentityToken } from '@/lib/auth/google';
@@ -9,7 +14,7 @@ import { useSessionStore } from '@/store/session';
 
 export function useSignIn() {
   const authenticate = useSessionStore((state) => state.authenticate);
-  const [busy, setBusy] = useState<AuthProvider | null>(null);
+  const [busy, setBusy] = useState<AuthProvider | 'password' | 'register' | null>(null);
   const [error, setError] = useState<unknown>(null);
 
   const signIn = useCallback(
@@ -37,8 +42,48 @@ export function useSignIn() {
     [authenticate, busy],
   );
 
+  const signInPassword = useCallback(
+    async (identifier: string, password: string) => {
+      if (busy) return;
+      setBusy('password');
+      setError(null);
+      try {
+        const result = await signInWithPassword(identifier.trim(), password);
+        await authenticate(result, result.user, result.needsUsername);
+      } catch (caught) {
+        setError(caught);
+      } finally {
+        setBusy(null);
+      }
+    },
+    [authenticate, busy],
+  );
+
+  const registerPassword = useCallback(
+    async (input: { email: string; username: string; password: string }) => {
+      if (busy) return;
+      setBusy('register');
+      setError(null);
+      try {
+        const result = await registerWithPassword({
+          email: input.email.trim(),
+          username: input.username.trim(),
+          password: input.password,
+        });
+        await authenticate(result, result.user, result.needsUsername);
+      } catch (caught) {
+        setError(caught);
+      } finally {
+        setBusy(null);
+      }
+    },
+    [authenticate, busy],
+  );
+
   return {
     signIn,
+    signInPassword,
+    registerPassword,
     busy,
     error,
     errorMessage:

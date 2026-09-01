@@ -24,6 +24,29 @@ const providerSignInSchema = z.object({
 const refreshSchema = z.object({ refreshToken: z.string().min(1) });
 const usernameSchema = z.object({ username: z.string().min(3).max(30) });
 
+const deviceSchema = z
+  .object({
+    name: z.string().max(120).optional(),
+    platform: z.enum(['ios', 'android', 'web']).optional(),
+    appVersion: z.string().max(20).optional(),
+  })
+  .optional();
+
+const passwordLoginSchema = z.object({
+  identifier: z.string().min(1).max(320),
+  password: z.string().min(8).max(128),
+  locale: z.string().optional(),
+  device: deviceSchema,
+});
+
+const passwordRegisterSchema = z.object({
+  email: z.string().email().max(320),
+  username: z.string().min(3).max(30),
+  password: z.string().min(8).max(128),
+  locale: z.string().optional(),
+  device: deviceSchema,
+});
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -57,6 +80,56 @@ export class AuthController {
       },
     });
 
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+      expiresIn: result.expiresIn,
+      needsUsername: result.needsUsername,
+      user: toPublicUser(result.user),
+    };
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() body: unknown, @Req() request: AuthenticatedRequest) {
+    const input = passwordLoginSchema.parse(body);
+    await this.auth.consumePasswordAttempt(request.ip ?? 'unknown', input.identifier);
+
+    const result = await this.auth.signInWithPassword(input.identifier, input.password, {
+      device: {
+        deviceName: input.device?.name,
+        platform: input.device?.platform,
+        appVersion: input.device?.appVersion,
+        ip: request.ip,
+      },
+    });
+
+    return this.toSession(result);
+  }
+
+  @Post('register')
+  @HttpCode(HttpStatus.OK)
+  async register(@Body() body: unknown, @Req() request: AuthenticatedRequest) {
+    const input = passwordRegisterSchema.parse(body);
+    await this.auth.consumePasswordAttempt(request.ip ?? 'unknown', input.email);
+
+    const result = await this.auth.registerWithPassword(
+      { email: input.email, username: input.username, password: input.password },
+      {
+        locale: input.locale ?? request.headers['accept-language'],
+        device: {
+          deviceName: input.device?.name,
+          platform: input.device?.platform,
+          appVersion: input.device?.appVersion,
+          ip: request.ip,
+        },
+      },
+    );
+
+    return this.toSession(result);
+  }
+
+  private toSession(result: Awaited<ReturnType<AuthService['signInWithPassword']>>) {
     return {
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,

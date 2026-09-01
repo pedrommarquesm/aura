@@ -2,7 +2,7 @@ import { pgEnum } from 'drizzle-orm/pg-core';
 
 export const userStatus = pgEnum('user_status', ['active', 'suspended', 'banned']);
 
-export const authProvider = pgEnum('auth_provider', ['apple', 'google', 'phone']);
+export const authProvider = pgEnum('auth_provider', ['apple', 'google', 'phone', 'password']);
 
 /**
  * Backoffice roles. Owner is the seeded GOD account and cannot be demoted.
