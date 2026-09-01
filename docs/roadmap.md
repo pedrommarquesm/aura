@@ -3,7 +3,7 @@
 Single source of truth for what is planned, in flight, and done.
 
 - Product spec: [product-spec.md](./product-spec.md)
-- **Vote & receipts redesign:** [redesign-tracker.md](./redesign-tracker.md) — blocked on screenshots in [redesign-screens/](./redesign-screens/)
+- **Vote & receipts redesign:** [redesign-tracker.md](./redesign-tracker.md) — Q1–Q20 locked; slider UI waits on [redesign-screens/](./redesign-screens/)
 - Brand & naming: [brand.md](./brand.md)
 - Backend architecture: [backend-architecture.md](./backend-architecture.md)
 - Client media (pick → shrink → PUT): [client-media.md](./client-media.md)
@@ -45,9 +45,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Two tracks. (1) Early beta is still a private install + waitlist, not a store launch ([early-beta-launch.md](./early-beta-launch.md)). (2) Product redesign of **comments** and **how Aura is awarded** is specced in [redesign-tracker.md](./redesign-tracker.md) and **blocked on UI screenshots**. Do not ship more like/comment UI as if it were the final interaction.
+**Now** — Two tracks. (1) Early beta is still a private install + waitlist, not a store launch ([early-beta-launch.md](./early-beta-launch.md)). (2) Vote/receipts questions are **locked** ([redesign-tracker.md](./redesign-tracker.md)). Schema is **greenfield**: drop `likes`/`comments`, no backfill. Do not ship more like/comment UI.
 
-**Next** — Once screenshots land: lock `RDX-02`, then the vote API and the slider/receipts UI. In parallel, daily ops before waitlist wave 1 still stand: Sentry (`OPS-17`, `MOB-77`, `WEB-34`), PostHog (`ANL-01`–`ANL-04`), admin waitlist / contact / mail / thumbs (`API-43`, `TS-13`–`TS-14`). Comment-admin (`API-44`, `TS-15`) should wait for receipts (`RDX-63`) so we do not build a staff tool for an object that is about to change shape.
+**Next** — Vote API (`RDX-10`–`RDX-21`) can start. Slider/receipts UI waits on screenshots (`RDX-00`). In parallel, daily ops before waitlist wave 1 still stand: Sentry (`OPS-17`, `MOB-77`, `WEB-34`), PostHog (`ANL-01`–`ANL-04`), admin waitlist / contact / mail / thumbs (`API-43`, `TS-13`–`TS-14`). Comment-admin (`API-44`, `TS-15`) waits for receipts (`RDX-63`).
 
 **Later** — Push after testers exist. The push plan still says comments + like digest; `RDX-61` will retarget it at receipts + net-Aura digest. V1 competition (Vote Power, Super Like, Aura Sense) is parked against the new chosen-amount economy (`RDX-60`). Manifesto extras (Live Check / Certified / Cooked, 3-tab nav, calibration) stay later until screenshots show them.
 
@@ -57,9 +57,9 @@ Worth doing early rather than late: `FND-03`, and the three things waiting on it
 
 ## Redesign — votes and receipts
 
-Not implemented yet. The like button and the comment thread are the two objects that will be replaced. Full rows, manifesto, open questions, and screenshot gate: [redesign-tracker.md](./redesign-tracker.md). Drop files in [redesign-screens/](./redesign-screens/).
+Not implemented yet. The like button and the comment thread are the two objects that will be replaced. Q1–Q20 are locked. Full rows: [redesign-tracker.md](./redesign-tracker.md). Slider UI still waits on [redesign-screens/](./redesign-screens/).
 
-Do not add like, unlike, or comment features as if they were the final interaction. Admin comment tools (`API-44`, `TS-15`) wait for `RDX-63`. The `FND-13` row in M0 is the pointer in this file.
+Do not add like, unlike, or comment features. Do not write a likes→votes data migration. Admin comment tools (`API-44`, `TS-15`) wait for `RDX-63`. The `FND-13` row in M0 is the pointer in this file.
 
 ---
 
@@ -81,7 +81,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 | FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | Done | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
-| FND-13 | Vote & receipts redesign tracker ([redesign-tracker.md](./redesign-tracker.md)). Implementation waits on screenshots | In review | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| FND-13 | Vote & receipts redesign tracker ([redesign-tracker.md](./redesign-tracker.md)). Q1–Q20 locked. Greenfield schema (no likes/comments backfill). Slider UI waits on screenshots | In review | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 
 ### Mobile bootstrap
 
@@ -339,7 +339,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Next product cut is votes + receipts, not more like/comment work. Tracker: [redesign-tracker.md](./redesign-tracker.md). Implementation blocked on screenshots. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| 2026-09-01 | Q1–Q20 locked. Greenfield: drop `likes`/`comments`, no data port. Vote API can start; slider UI still waits on screenshots. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md). Will be retargeted at receipts + net-Aura digest in `RDX-61` | [#85](https://github.com/pedrommarquesm/aura/pull/85) |
 | 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |

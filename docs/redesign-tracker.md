@@ -9,7 +9,7 @@ Single source of truth for the redesign whose **user-visible change is comments 
 - Screenshot drop: [redesign-screens/](./redesign-screens/)
 - Main work plan: [roadmap.md](./roadmap.md) (early-beta ops, push, admin). This file owns the redesign rows.
 
-**Implementation is blocked on screenshots.** Do not start `RDX-10+` until `RDX-02` is `Done`.
+**Q1–Q20 are locked.** `RDX-02` is done. Mobile slider/receipts UI (`RDX-30+`) still waits on screenshots. The vote API and schema (`RDX-10`–`RDX-21`) can start: we have not launched, so this is a **greenfield rewrite**, not a data port.
 
 ---
 
@@ -31,9 +31,9 @@ Prefix: **`RDX`** — this redesign only. Keep `AURA` / `MOB` / `API` IDs on the
 
 ## Now / Next / Later
 
-**Now** — Wait for screenshots in `docs/redesign-screens/`. Meanwhile this file is the brief: manifesto, current seams, open questions.
+**Now** — Product questions are locked (below). Schema/API work is a **new stack**: drop `likes` / `comments`, no backfill, staging may be wiped. Spec rewrite is `RDX-03`.
 
-**Next** — `RDX-01`–`RDX-04` (diff screenshots, lock decisions, rewrite spec/tokens). Then the vote API (`RDX-10`–`RDX-21`) and the mobile slider + receipts (`RDX-30`–`RDX-46`).
+**Next** — Vote API (`RDX-10`–`RDX-21`). Slider + receipts UI (`RDX-30`–`RDX-46`) after screenshots land (`RDX-00`).
 
 **Later, and only if screenshots show them** — three swipe feeds, 24h expiry, Certified/Cooked halls, 3-tab nav, calibration onboarding, create-button restyle (`RDX-50`–`RDX-58`). The manifesto describes those. The instruction for this cut is that they stay as they are until design proves otherwise.
 
@@ -63,7 +63,7 @@ What does **not** change in this cut (keep building as-is):
 
 ## Manifesto
 
-Source copy for the redesign. `[cite: 4]` markers from the original paste are stripped. Numbers in here are **examples** until `RDX-02` locks them.
+Source copy for the redesign. `[cite: 4]` markers from the original paste are stripped. Numeric examples below are superseded by the locked table: cap is ±100, overlay copy uses values inside that cap.
 
 ### 1. The core philosophy
 
@@ -90,7 +90,7 @@ Traditional social only goes up. This economy is volatile.
 - **Slide down:** charges negative Aura. Sluggish, heavy haptics. Floating `−10`, `−45`.
 - **Cap:** one user, one post, at most +100 or −100. Vote once.
 - **Score:** the author's total Aura updates live and **may go negative** (“Aura Debt”). The video's live score sits large and bold at the bottom left.
-- **Receipts (in-feed):** releasing the slider may prompt *“Drop a receipt...”*. Short receipts float up the left side: square avatar, username, text, signed amount. Manifesto example: `[Square Avatar] @judge_name: CLEAN RECOVERY (+200)` — **+200 contradicts the ±100 cap**; treat as mock copy until `RDX-02`.
+- **Receipts (in-feed):** releasing the slider may prompt *“Drop a receipt...”*. Short receipts (max 80 chars) float up the left side: square avatar, username, text, signed amount. Overlay shows the **vote** (e.g. `+85`), never a value outside ±100. Votes with no text do not float; they still appear in the ledger.
 - **Receipt ledger:** tap a floating receipt or the score → semi-transparent sheet covering ~70%. Every vote: square avatar, username, text (if any), colour-coded points.
 
 ### 4. Onboarding & the lurker funnel
@@ -159,49 +159,72 @@ These will lie once Aura Debt is real:
 
 **Mobile:** `components/feed/feed-post-card.tsx`, `like-button`, `feed-comments-sheet.tsx`, `components/comments/*`, `app/post/[id].tsx`, `lib/api/likes.ts`, `lib/haptics`, `store/auth-gate.ts`, flow tests that tap Give/Remove aura and open the comment drawer (`MOB-74`).
 
-**Web:** `lib/likes/*`, `lib/query/feed-cache.ts`, landing post demo chrome. Web voting UX is an open question (`RDX-21`).
+**Web:** `lib/likes/*`, `lib/query/feed-cache.ts`, landing post demo chrome. Web is read-only for this cut (`RDX-21`).
 
 ---
 
-## Open questions — lock in `RDX-02`
+## Greenfield — do not port data
 
-Do not invent answers in an implementation PR. Fill this table when screenshots exist.
+We have not launched. **Do not migrate likes or comments into votes.** Do not dual-write. Do not keep old tables around “until clients catch up.”
 
-| # | Question | Default if screenshots are silent | Locked |
-|---|---|---|---|
-| Q1 | Slider step (1, 5, 10)? Manifesto floats `+10`, `+45`. | Step 1, commit whatever the finger is on, display rounded | |
-| Q2 | Is **0** a legal commit, or a cancel? | Release at 0 = no vote, prompt stays closed | |
-| Q3 | Can the voter **edit** amount or receipt text later? Manifesto says once. | Locked amount. Receipt text editable once if empty, then frozen | |
-| Q4 | Receipt **without** a vote? | No. Ledger rows are votes. Text is optional on the vote | |
-| Q5 | Receipt **character limit**. Comments are 500. Overlay copy is short. | 80 chars for the overlay; 500 is too long to float | |
-| Q6 | Ledger sort. Comments are oldest-first. Overlay feels newest-first. | Newest first in the sheet; overlay shows the latest few | |
-| Q7 | Manifesto overlay `(+200)` vs ±100 cap. | Cap is ±100. Overlay shows the **vote**, not a made-up 200 | |
-| Q8 | **Self-vote.** Today 403. | Keep forbidden | |
-| Q9 | **Own-post receipts** with no Aura (today authors may comment). | Authors may not vote. They do not appear in the ledger unless we later add a caption-only row | |
-| Q10 | Existing **likes** in staging. | Each like becomes a `+10` vote, no receipt text | |
-| Q11 | Existing **comments** with no like. | Keep as receipts with amount `0`, or drop. Prefer keep: they are already judgements | |
-| Q12 | **Web.** Slider is a thumb gesture. | Permalink shows the live score + ledger read-only. No web vote in this cut (revert WEB-15 behaviour for writes). Confirm if a screenshot shows otherwise | |
-| Q13 | Certified / Cooked **thresholds**. | Not this cut. When they ship, remote config, not a migrate | |
-| Q14 | Live Check **24h**. | Not this cut | |
-| Q15 | Colour tokens for + / − / debt. | + uses `success`, − and debt use `danger`, until screenshots give neon green / pure red | |
-| Q16 | Square avatars **everywhere** or only on receipts? | Receipts + ledger only. Profile/feed stay circular until a screenshot says square globally | |
-| Q17 | Vote Power, Super Like, Aura Sense. | Parked. The user now *chooses* the magnitude. Do not multiply a chosen −47 by 2.4x (`RDX-60`) | |
-| Q18 | Push: one push per receipt vs digest. | Keep the existing plan's shape: receipts immediate (collapse if a thread explodes), Aura awards as a digest of **net** signed Aura, never one push per vote | |
-| Q19 | Can a vote be **0-text** and still float? | No float without text. Amount still in the ledger | |
-| Q20 | Haptic pattern (timings, `UIImpactFeedback` style). | Up: light → increasing frequency. Down: heavy, slower. Tune when a device is in hand | |
+Write new modules (`votes`, `clampVoteAmount`, ledger type `VOTE`). Delete the like/comment schema that the new model does not use. Staging may be dropped and recreated.
+
+| Drop | Why |
+|---|---|
+| `likes` table + `like_kind` enum | Binary like is gone |
+| `comments` table | Receipts live on the vote row, max 80 chars, optional |
+| `posts.like_count`, `posts.comment_count` | Replace with `vote_count` (≥ 0) |
+| `LIKE` / `SUPER_LIKE` event types | Replaced by signed `VOTE` |
+| `auraForLike()` + like/unlike HTTP | New `POST /v1/posts/:id/votes` |
+| Client `likedByMe` / `likeCount` / hardcoded `* 10` | New contract: `votedByMe`, `myAmount`, `voteCount`, signed `aura` |
+
+Keep users, posts, media, auth, waitlist. Zero `posts.aura`. Rebuild `users.aura` from leftover non-like ledger rows (waitlist `BONUS` only) or wipe those too if ops prefers a full consumer reset. Either is fine; **a likes→votes backfill is not**.
+
+Q10/Q11 below described a migration path. They are **superseded** by this section. Amount-0 votes are also illegal (Q2), so comments could not have become votes anyway.
+
+---
+
+## Locked questions (`RDX-02`)
+
+Locked 2026-09-01. Implementation PRs follow this table. Do not re-open a row in an implementation PR.
+
+| # | Question | Locked answer |
+|---|---|---|
+| Q1 | Slider step | **Step 1.** Commit the integer the thumb is on at release. Display rounded. |
+| Q2 | Zero release | **Cancel.** Release at 0 writes nothing. Receipt prompt stays closed. |
+| Q3 | Edit vote / receipt | **Amount frozen on release.** Receipt text may be added/edited **once** if it was left empty, then frozen. |
+| Q4 | Receipt without a vote | **No.** Receipts are optional metadata on an active vote row. |
+| Q5 | Receipt length | **Max 80 characters.** |
+| Q6 | Ledger sort | **Newest first** in the sheet. Overlay shows the latest incoming receipts. |
+| Q7 | Cap vs overlay copy | Cap is strictly **±100**. Overlay examples use in-range values (e.g. `+85`), never +200. |
+| Q8 | Self-vote | **Forbidden.** API 403. |
+| Q9 | Own-post receipts | Authors **cannot vote** on their own posts and **do not appear** in the ledger. |
+| Q10 | Existing likes | *Answered as “migrate to +10” — **superseded: no data port.** Drop `likes`. See Greenfield.* |
+| Q11 | Existing comments | *Answered as “migrate as amount 0” — **superseded: no data port.** Amount 0 is illegal (Q2). Drop `comments`.* |
+| Q12 | Web | **Read-only.** Permalink shows live score + ledger. No slider, no vote write. |
+| Q13 | Certified / Cooked thresholds | **Parked.** Remote config later, no schema for it now. |
+| Q14 | Live Check 24h | **Parked.** Future backend job. |
+| Q15 | Colour tokens | Positive = `success` (**neon green**). Negative / Aura Debt = `danger` (**pure red**). |
+| Q16 | Square avatars | **Receipts + ledger only.** Profile / feed avatars stay circular. |
+| Q17 | Vote Power / multipliers | **Parked.** User picks ±1…±100. No automated multiplier. |
+| Q18 | Push | Immediate push for **written receipts** (collapsed if a thread explodes). Aura as a **periodic digest of net score**. Never one push per vote. |
+| Q19 | Float 0-text votes | **No.** No receipt text → ledger only, no overlay. |
+| Q20 | Haptics | Slide up = light / fast pulse. Slide down = heavy / sluggish impact. Fine-tune on device. |
 
 ---
 
 ## Economy notes (so V1 seams stay honest)
 
-1. **The client sends the amount. The server clamps and stores it.** Never trust the slider's last pixel. Reject `amount === 0`. Reject `abs(amount) > 100`. Integer only — same ledger rule as today.
-2. **One row per `(user, post)`.** Same PK idea as `likes`. A retry returns the existing vote, it does not add. There is no unlike.
-3. **Aura Debt is a product feature, not a bug.** `users.aura` and `posts.aura` must be allowed to go negative. Drop `GREATEST(..., 0)` on those two counters. Keep the clamp on `like_count` only for as long as that column survives; it probably becomes `vote_count` (always ≥ 0).
-4. **`auraForLike()` is the wrong seam after this.** Replace it with `clampVoteAmount(n)` plus a ledger type `VOTE` (signed). `REVERSAL` stays for takedowns, not for “I changed my mind.”
-5. **Do not turn on Vote Power on top of a chosen amount.** Architecture §7.5 was written for a hidden multiplier on a flat like. A visible −100 already *is* the voter's intensity. Multiplying it recreates the compounding loop that section exists to prevent (`RDX-60`).
-6. **Trending** still uses aura velocity. Signed velocity means a pile-on of −Aura should push a post toward Cooked, not “engagement.” When `RDX-19` ships, `engagement = log(1 + vote_count)` and the aura term keeps its sign.
-7. **Anti-spam is the ±100 cap + one vote**, not a like-rate firehose. Keep a coarse Redis budget so a script cannot probe the endpoint. Tighter than today's like limit is fine because each call is now a permanent economic event.
-8. **Idempotency key** `vote:{userId}:{postId}` on the ledger row. Do not encode the amount in the key — a buggy client retrying a different number must not mint a second event.
+1. **The client sends the amount. The server clamps and stores it.** Never trust the slider's last pixel. Reject `amount === 0` (Q2 is a client cancel — if 0 arrives, 400, no row). Reject `abs(amount) > 100`. Integer only.
+2. **One row per `(user, post)`.** PK is the idempotency. A retry returns the existing vote, it does not add. There is no unlike. Amount never changes after insert (Q3).
+3. **Receipt is a nullable `varchar(80)` on that row.** Empty at insert → one later `PATCH` to set it, then frozen. Non-empty at insert → already frozen. No receipt-only rows (Q4).
+4. **Aura Debt is a product feature, not a bug.** `users.aura` and `posts.aura` may go negative. `vote_count` stays ≥ 0.
+5. **`auraForLike()` is deleted, not wrapped.** `clampVoteAmount(n)` + ledger type `VOTE` (signed). `REVERSAL` stays for takedowns only.
+6. **Do not turn on Vote Power on top of a chosen amount.** Q17. Architecture §7.5 stays as a warning, not a roadmap item (`RDX-60`).
+7. **Trending** uses signed aura velocity. `engagement = log(1 + vote_count)`.
+8. **Anti-spam is the ±100 cap + one vote**, plus a coarse Redis budget on the endpoint.
+9. **Idempotency key** `vote:{userId}:{postId}` on the ledger row. Do not encode the amount in the key.
+10. **Greenfield.** No likes→votes SQL. Drop the old tables in the same migration that creates `votes`.
 
 ---
 
@@ -222,58 +245,58 @@ When files land in `docs/redesign-screens/`, record a row per screen. Copy is en
 
 ---
 
-## Milestone R0 — Intake (blocked on screenshots)
+## Milestone R0 — Intake
 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | RDX-00 | Screenshots in `docs/redesign-screens/` covering the checklist in that folder's README | Blocked | waiting on upload |
 | RDX-01 | Diff each screenshot against the manifesto; fill the checklist above | Blocked | waits on RDX-00 |
-| RDX-02 | Lock Q1–Q20. Write the answers in this file. Anything still open stays `Blocked`, not guessed | Blocked | waits on RDX-00 |
-| RDX-03 | Rewrite product-spec like/comment sections and architecture §5/§7 for votes + receipts + Aura Debt. Changelog both files | Blocked | waits on RDX-02 |
-| RDX-04 | Design tokens: slider, +/− Aura, debt, receipt overlay, square avatar radius. Do not invent neon Certified/Cooked until those screens exist | Blocked | waits on RDX-00 |
+| RDX-02 | Lock Q1–Q20 | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| RDX-03 | Rewrite product-spec like/comment sections and architecture §5/§7 for votes + receipts + Aura Debt + greenfield drop of likes/comments. Changelog both files | Not started | waits on this lock |
+| RDX-04 | Design tokens: `success` = neon green (positive Aura), `danger` = pure red (debt / negative). Slider, receipt overlay, square avatar radius for receipts only (Q16) | Not started | Q15 locked; still no Certified/Cooked tokens |
 
 ---
 
 ## Milestone R1 — Vote economy (API)
 
-Replace like/unlike. Comments become an optional field on the vote, not a parallel object that can award nothing while likes award 10.
+New code. Drop likes/comments. No backfill.
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-10 | Ledger: event type `VOTE`, signed amount, `users.aura` / `posts.aura` allowed negative. Reconciliation job already sums the ledger — confirm it does not clamp | Not started | |
-| RDX-11 | `POST /v1/posts/:id/votes` (name bikeshed in RDX-03). Body `{ amount, receipt? }`. PK `(user_id, post_id)`. Repeat is 200 with the original vote, not 409. No PATCH, no DELETE for the voter | Not started | |
-| RDX-12 | Server clamp −100…+100, nonzero integer. Delete `auraForLike` from the hot path. Clients must not hardcode `* 10` | Not started | |
-| RDX-13 | Receipt text optional, normalised, length from Q5. Empty string stored as null. GET ledger: vote amount + receipt + author card, cursor page | Not started | |
-| RDX-14 | Feed card: `votedByMe`, `myAmount`, `voteCount`, `aura` (signed). Drop `likedByMe` / `likeCount` from the contract once clients ship | Not started | |
-| RDX-15 | Migration: likes → votes of +10; comments per Q11. Keep a read of old tables until both clients are out | Not started | |
-| RDX-16 | Redis budget for votes. Retire like-rate-limit or point it at the new path | Not started | |
+| RDX-10 | Ledger: event type `VOTE`, signed amount, `users.aura` / `posts.aura` allowed negative. Reconciliation job already sums the ledger — confirm it does not clamp. Delete `LIKE` / `SUPER_LIKE` from the enum | Not started | |
+| RDX-11 | `POST /v1/posts/:id/votes` body `{ amount, receipt? }`. PK `(user_id, post_id)`. Repeat is 200 with the original vote. No DELETE. `PATCH` receipt **once** if still null (Q3), then 409 | Not started | |
+| RDX-12 | Server clamp −100…+100, nonzero integer. Delete `auraForLike`. Clients must not hardcode `* 10` | Not started | |
+| RDX-13 | Receipt `varchar(80)`, empty → null. GET ledger newest-first (Q6): amount + receipt + author card, cursor page. Overlay payload is the latest rows with non-null receipt | Not started | |
+| RDX-14 | Feed card: `votedByMe`, `myAmount`, `voteCount`, signed `aura`. Drop `likedByMe` / `likeCount` / `commentCount` from the contract in the same PR as the clients that read them | Not started | |
+| RDX-15 | **Drop** `likes`, `comments`, `like_kind`, `like_count`, `comment_count`. Create `votes`. No data backfill. Staging wipe of like-derived Aura is expected | Not started | |
+| RDX-16 | Redis budget for votes. Delete like-rate-limit | Not started | |
 | RDX-17 | Takedown: reverse **net** post Aura (positive *or* debt) so a removed post contributes 0. Own-delete same | Not started | |
 | RDX-18 | Leaderboard: negative Aura is a real score. Stop treating a −10 singleton as a cold-set bug — use a dedicated poison marker or a rebuild flag, not a magic score | Not started | |
-| RDX-19 | Trending worker: signed aura velocity; vote_count not like_count | Not started | |
-| RDX-20 | Self-vote remains forbidden. Map `CANNOT_LIKE_OWN_POST` → a vote error code | Not started | |
-| RDX-21 | Web: no vote write in this cut unless RDX-02 Q12 flips. Remove or hide the like control so the waitlist demo does not mint Aura with a binary heart | Not started | |
+| RDX-19 | Trending worker: signed aura velocity; `vote_count` not `like_count` | Not started | |
+| RDX-20 | Self-vote 403 (Q8). Error code is vote-shaped, not `CANNOT_LIKE_OWN_POST` | Not started | |
+| RDX-21 | Web: strip vote/like writes (Q12). Permalink is live score + ledger read-only | Not started | |
 
 ---
 
 ## Milestone R2 — Slider & receipts (mobile)
 
-Depends on R1 for the real API; UI can be built against a typed client stub after RDX-02.
+Depends on R1 for the real API; UI waits on `RDX-00` screenshots.
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-30 | Vertical slider track on the right edge of the feed card. Does not steal vertical paging | Not started | |
-| RDX-31 | Charge gesture: floating ±N, up = rapid light haptics, down = heavy slow haptics (`expo-haptics` already wired, `MOB-07`) | Not started | |
-| RDX-32 | On release: clamp, commit once, optimistic score, rollback on failure. Second gesture on a voted post is inert (maybe a faint tick) | Not started | |
-| RDX-33 | Guests: existing auth gate, pending vote `{ postId, amount, receipt? }` replayed after username claim | Not started | |
-| RDX-34 | Remove moai/heart like control and double-tap like from the feed card and permalink | Not started | |
-| RDX-35 | Live score large, bold, bottom-left, tabular figures, signed, ticks instead of snapping (`MOB-41` pattern) | Not started | |
-| RDX-40 | Optional “Drop a receipt...” after a successful commit. Skip must still leave the vote | Not started | |
-| RDX-41 | Floating receipts, left side, transparent, square avatar + `@user: TEXT (+N)` | Not started | |
-| RDX-42 | Ledger sheet ~70%, semi-transparent, every vote, colour-coded amount | Not started | |
-| RDX-43 | Tap score or a floating receipt opens the ledger. Comment icon goes away or becomes this | Not started | |
-| RDX-44 | Square avatar variant for receipts/ledger only (Q16) | Not started | |
-| RDX-45 | Copy in `en` / `pt` / `pt-br` / `es`. Vernacular (receipt, cooked, certified, live check, aura debt) — lock in RDX-02 whether they stay English | Not started | |
-| RDX-46 | Replace `MOB-74` flow tests: slider commit +/−, cap, one-shot, receipt optional, ledger opens, guest gate. Comment-drawer tests die with the drawer | Not started | |
+| RDX-30 | Vertical slider track on the right edge of the feed card. Does not steal vertical paging | Not started | waits on RDX-00 |
+| RDX-31 | Charge gesture: floating ±N (step 1). Up = light/fast pulse. Down = heavy/sluggish (`MOB-07` already wired) | Not started | waits on RDX-00 |
+| RDX-32 | Release: 0 = cancel (no prompt). Else clamp, commit once, optimistic score, rollback on failure. Second gesture is inert | Not started | waits on RDX-00 |
+| RDX-33 | Guests: existing auth gate, pending vote `{ postId, amount, receipt? }` replayed after username claim | Not started | waits on RDX-00 |
+| RDX-34 | Remove moai/heart like control and double-tap like from the feed card and permalink | Not started | waits on RDX-00 |
+| RDX-35 | Live score large, bold, bottom-left, tabular figures, signed, ticks instead of snapping (`MOB-41` pattern). Neon green / pure red (Q15) | Not started | waits on RDX-00 |
+| RDX-40 | Optional “Drop a receipt...” after a successful **nonzero** commit. Skip leaves the vote. One later fill if skipped (Q3) | Not started | waits on RDX-00 |
+| RDX-41 | Floating receipts, left side, only rows with text (Q19). Square avatar + `@user: TEXT (+N)` in-range | Not started | waits on RDX-00 |
+| RDX-42 | Ledger sheet ~70%, semi-transparent, every vote newest-first, colour-coded amount | Not started | waits on RDX-00 |
+| RDX-43 | Tap score or a floating receipt opens the ledger. Comment icon goes away | Not started | waits on RDX-00 |
+| RDX-44 | Square avatar variant for receipts/ledger only (Q16) | Not started | waits on RDX-00 |
+| RDX-45 | Copy in `en` / `pt` / `pt-br` / `es`. Vernacular (receipt, Aura Debt) stays English unless a later decision says otherwise | Not started | waits on RDX-00 |
+| RDX-46 | Replace `MOB-74` flow tests: slider ±, 0-cancel, cap, one-shot, receipt optional + one fill, ledger, guest gate | Not started | waits on RDX-00 |
 
 ---
 
@@ -299,26 +322,26 @@ Do not pick these up because the manifesto mentions them. Pick them up when a sc
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-60 | Park Vote Power / Super Like / Aura Sense / voter-reward jobs. Changelog architecture §7.4–7.5: chosen amount replaces hidden multiplier | Not started | |
-| RDX-61 | Rewrite [push-notifications.md](./push-notifications.md): `comment` → `receipt`, like digest → net-Aura digest. Do not implement push here | Not started | |
+| RDX-60 | Park Vote Power / Super Like / Aura Sense / voter-reward jobs (Q17). Changelog architecture §7.4–7.5: chosen amount replaces hidden multiplier | Not started | Q17 locked |
+| RDX-61 | Rewrite [push-notifications.md](./push-notifications.md): written receipts immediate (collapsed), net-Aura digest. Never one push per vote (Q18) | Not started | Q18 locked |
 | RDX-62 | Analytics events: `like` / `unlike` / `comment` → `vote` / `receipt`. Update ANL-01/02/04 when those rows move | Not started | |
 | RDX-63 | Admin: report target for receipts (today API-44 is comments). Same staff delete path | Not started | |
 | RDX-64 | North star metric: an Aura Action is a vote or a post, not a like. Update product-spec §29 in the RDX-03 PR | Not started | |
 
 ---
 
-## Suggested PR slices (after RDX-02)
+## Suggested PR slices (after this lock)
 
 Keep PRs inside one prefix cluster so this file does not become a merge battlefield.
 
-1. **Spec lock** — `RDX-01`–`RDX-04`, `RDX-60`, `RDX-61`, `RDX-64` (docs only).
-2. **Ledger + vote API** — `RDX-10`–`RDX-13`, `RDX-16`, `RDX-20`. No client UI yet; tests hit the API.
-3. **Migration + feed projection** — `RDX-14`, `RDX-15`, `RDX-17`–`RDX-19`.
-4. **Slider** — `RDX-30`–`RDX-35`.
-5. **Receipts + ledger** — `RDX-40`–`RDX-46`.
-6. **Web** — `RDX-21` (and `RDX-57` if the demo is in the same screenshots).
+1. **Spec lock** — `RDX-03`, `RDX-04`, `RDX-60`, `RDX-61`, `RDX-64` (docs only).
+2. **New vote schema + API** — `RDX-10`–`RDX-13`, `RDX-15`, `RDX-16`, `RDX-20`. Drop likes/comments in the same PR. Tests hit the API. Staging wipe is expected.
+3. **Feed projection + trending + leaderboard + takedown** — `RDX-14`, `RDX-17`–`RDX-19`.
+4. **Slider** — `RDX-30`–`RDX-35` (after screenshots).
+5. **Receipts + ledger** — `RDX-40`–`RDX-46` (after screenshots).
+6. **Web read-only** — `RDX-21`.
 
-Do not combine 2 and 4 in one PR. The ledger has to be right before the slider can be honest.
+Do not combine 2 and 4 in one PR. The ledger has to be right before the slider can be honest. Do not ship a likes→votes backfill.
 
 ---
 
@@ -326,4 +349,5 @@ Do not combine 2 and 4 in one PR. The ledger has to be right before the slider c
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Q1–Q20 locked. Greenfield: **no data port**; drop `likes`/`comments`. Receipt max 80, one fill if empty, newest-first ledger, web read-only, ±100 hard cap, Aura Debt colours neon green / pure red | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Redesign cut is **votes + receipts**. Manifesto feeds/nav/onboarding are tracked but screenshot-gated. Implementation waits on files in `docs/redesign-screens/` | [#87](https://github.com/pedrommarquesm/aura/pull/87) |

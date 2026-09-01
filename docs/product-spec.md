@@ -2,7 +2,7 @@
 
 The product brand is **Auraclimb**. **Aura** is the score and the casual spoken name. Store listing, domain, socials, and legal identifiers are in [brand.md](./brand.md). This spec still says Aura everywhere the user-facing game does.
 
-**Redesign in progress.** Likes (flat +10, unlike reverses) and comments (no Aura) are the current shipped objects. They will be replaced by a one-shot signed vote (−100…+100) and optional receipts. Do not extend the like/comment model. Tracker, manifesto, and open questions: [redesign-tracker.md](./redesign-tracker.md). Spec sections 7.2, 11, and 21 will be rewritten in `RDX-03` after screenshots land.
+**Redesign in progress.** Likes and comments are the current shipped objects. They will be replaced by a one-shot signed vote (−100…+100) and optional receipts. Questions are locked in [redesign-tracker.md](./redesign-tracker.md). Do not extend the like/comment model. Do not migrate those tables. Spec sections 7.2, 11, and 21 are `RDX-03`.
 
 ## 1. Introdução
 

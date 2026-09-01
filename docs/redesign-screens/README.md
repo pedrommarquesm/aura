@@ -24,5 +24,5 @@ If the screens also change navigation, feeds, or onboarding (3-tab bar, Live Che
 ## After upload
 
 1. Tick `RDX-00` in the tracker.
-2. Walk `RDX-01` (screenshot vs manifesto) and `RDX-02` (lock the open questions) in the same PR that adds the files, or the next one.
-3. Do not start `RDX-10+` until `RDX-02` is `Done`.
+2. Walk `RDX-01` (screenshot vs manifesto) in the same PR that adds the files, or the next one.
+3. Product questions (`RDX-02`) are already locked. Do not reopen them from a screenshot unless a locked row is explicitly wrong.
