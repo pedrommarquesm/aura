@@ -130,14 +130,14 @@ the English product name.
 | Subtitle (Apple, 30) | `Farm Aura. Climb.` |
 | Short description | `Post photos and videos, farm Aura, climb the board.` |
 | Category | Social / Entertainment — never Health, never Sports |
-| iOS bundle id (production) | `app.auraclimb.mobile` |
+| iOS bundle id (production) | `com.auraclimb.mobile` |
 | Android application id (production) | `app.auraclimb.mobile` |
 | URL scheme | `auraclimb` |
 | Universal / App Links | `https://auraclimb.com/a/...` |
 
-Staging can keep `app.aurarankd.mobile` and `aura://` until the new
-Apple / Google clients exist. Changing the bundle id breaks Sign in
-with Apple. Do that on a dedicated cutover, not in a drive-by PR.
+The iOS bundle id is `com.auraclimb.mobile`. Changing it again breaks
+Sign in with Apple and Google's iOS OAuth client — both must be
+re-registered against the new App ID.
 
 Store search will still surface the meditation app for the query
 "Aura". That is expected. We win on "Auraclimb", "farm aura app", and
@@ -168,8 +168,7 @@ and those URLs are meant to live forever.
 - Moai (🗿) stays the score glyph. It is not the company name.
 - Staging hostnames are `www.auraclimb.com`, `api.auraclimb.com`, and
   `cdn.auraclimb.com` (OPS-14 / [#77](https://github.com/pedrommarquesm/aura/pull/77)).
-  `aurarankd.com` is detached. iOS bundle id stays
-  `app.aurarankd.mobile` until the Apple client cutover.
+  `aurarankd.com` is detached. iOS bundle id is `com.auraclimb.mobile`.
 
 ## Name in a sentence
 

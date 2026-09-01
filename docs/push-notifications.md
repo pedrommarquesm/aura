@@ -74,7 +74,7 @@ No NextAuth, no third-party notification SaaS. Expo’s push service is the pipe
 
 EAS can store APNs key + FCM. Need:
 
-- Apple Developer: Push Notifications on the App ID (`app.aurarankd.mobile` until the bundle cutover)
+- Apple Developer: Push Notifications on the App ID (`com.auraclimb.mobile`)
 - Android: FCM on the Firebase/Google project already used for Sign-In
 - EAS `eas credentials` for the **preview** profile, not only production
 

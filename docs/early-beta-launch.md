@@ -52,7 +52,7 @@ Do these before anyone outside your machine tries the app.
 | # | What | Why |
 |---|---|---|
 | 1 | **EAS preview / TestFlight + internal Android** | There is no install path. `eas.json` has `preview` (internal) and `production` submit, but no shipped build. Expo Go cannot do Google on iOS. |
-| 2 | **`APPLE_CLIENT_ID` on the API** | Until it is set, `POST /v1/auth/apple` returns `service_unavailable`. Staging still uses bundle id `app.aurarankd.mobile` — keep it until a dedicated Apple-client cutover ([brand.md](./brand.md)). |
+| 2 | **`APPLE_CLIENT_ID` on the API** | Until it is set, `POST /v1/auth/apple` returns `service_unavailable`. Must match the iOS bundle id `com.auraclimb.mobile` ([brand.md](./brand.md)). |
 | 3 | **Seed the feed (`OPS-08`)** | An empty board kills the loop. Seed or post ~20 real photos/videos yourself before inviting anyone. |
 | 4 | **Resend domain + `RESEND_API_KEY` live** | Code is Done. Unset key parks mail as `queued`. Verify `auraclimb.com` in Resend and send from `Aura <hello@auraclimb.com>`. |
 | 5 | **Mailboxes** | `hello@`, `support@`, `privacy@`, `abuse@` on auraclimb.com ([brand.md](./brand.md)). Contact form does not notify you. |
@@ -135,7 +135,7 @@ After the first 20 have posted and the feed is not empty:
 10. One public teaser on TikTok/IG that ends on auraclimb.com
 11. Referral links from people who already have accounts
 
-**Stop and decide.** If the loop feels dead, do not scale the list. If it feels alive, keep waving the waitlist. Store submit is a separate project (bundle id `app.auraclimb.mobile`, `WEB-07`, production).
+**Stop and decide.** If the loop feels dead, do not scale the list. If it feels alive, keep waving the waitlist. Store submit is a separate project (bundle id `com.auraclimb.mobile`, `WEB-07`, production).
 
 ---
 
