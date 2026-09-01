@@ -25,6 +25,21 @@
       "latest": "Recientes",
       "trending": "En tendencia"
     },
+    "mode": {
+      "cooked": "Cooked",
+      "liveCheck": "Live Check",
+      "certified": "Certified",
+      "comingSoon": {
+        "cooked": {
+          "title": "Todavía no hay nada cooked",
+          "body": "Los posts que se hunden en Aura Debt aparecen aquí. Todavía nadie la ha fallado lo suficiente."
+        },
+        "certified": {
+          "title": "Todavía no hay nada certified",
+          "body": "Los posts que superan el límite de Aura se archivan aquí. Dale tiempo."
+        }
+      }
+    },
     "empty": {
       "title": "Todavía no hay nada aquí",
       "body": "Publica algo y Aura empieza a moverse."
@@ -69,7 +84,8 @@
       "title": "Libro de recibos",
       "empty": "Todavía no hay votos. Sé el primero.",
       "error": "No se pudieron cargar los recibos",
-      "more": "Cargar más"
+      "more": "Cargar más",
+      "seeAll": "Ver todos los votos"
     }
   },
   "discover": {

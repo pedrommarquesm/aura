@@ -4,14 +4,30 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, StyleSheet, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
+import {
+  FEED_MODE_ORDER,
+  FeedModeHeader,
+  FeedPlaceholderPage,
+  FeedPostCard,
+  FeedPostSkeleton,
+  type FeedMode,
+} from '@/components/feed';
 import { TAB_BAR_CONTENT_HEIGHT } from '@/components/navigation/tab-bar';
 import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
-import { useFormat } from '@/lib/i18n';
 import { useScrollToTopOnTabPress } from '@/lib/navigation/use-scroll-to-top-on-tab-press';
 import { queryKeys } from '@/lib/query/keys';
 import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
@@ -32,50 +48,40 @@ const VIDEO_VIEWABILITY = {
   minimumViewTime: 250,
 };
 
-function FeedHeader({ aura }: { aura?: number }) {
+/**
+ * Latest/Trending is a secondary control now — the swipe header
+ * (`FeedModeHeader`) is Home's primary chrome (`RDX-51`). Live Check only.
+ */
+function FeedRankingToggle() {
   const { t } = useTranslation();
-  const format = useFormat();
   const ranking = usePreferencesStore((state) => state.feedRanking);
   const setRanking = usePreferencesStore((state) => state.setFeedRanking);
 
   return (
-    <View className="px-gutter py-2" style={styles.header}>
-      <View className="flex-row items-center justify-center">
-        {RANKINGS.map((option, index) => {
-          const active = option.value === ranking;
+    <View className="flex-row items-center justify-center px-gutter pb-2">
+      {RANKINGS.map((option, index) => {
+        const active = option.value === ranking;
 
-          return (
-            <View key={option.value} className="flex-row items-center">
-              {index > 0 ? (
-                <Text variant="label" className="px-3" style={styles.rankSep}>
-                  |
-                </Text>
-              ) : null}
-              <Pressable
-                accessibilityRole="tab"
-                accessibilityState={{ selected: active }}
-                hitSlop={10}
-                onPress={() => setRanking(option.value)}
-              >
-                <Text variant="label" style={active ? styles.rankActive : styles.rankIdle}>
-                  {t(option.labelKey)}
-                </Text>
-              </Pressable>
-            </View>
-          );
-        })}
-      </View>
-      {aura != null ? (
-        <View pointerEvents="none" style={styles.rankAuraWrap}>
-          <View style={styles.rankAuraSpread}>
-            <View style={styles.rankAuraPill}>
-              <Text variant="caption" style={styles.rankAura}>
-                {format.count(aura)} 🗿
+        return (
+          <View key={option.value} className="flex-row items-center">
+            {index > 0 ? (
+              <Text variant="label" className="px-3" style={styles.rankSep}>
+                |
               </Text>
-            </View>
+            ) : null}
+            <Pressable
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              hitSlop={10}
+              onPress={() => setRanking(option.value)}
+            >
+              <Text variant="label" style={active ? styles.rankActive : styles.rankIdle}>
+                {t(option.labelKey)}
+              </Text>
+            </Pressable>
           </View>
-        </View>
-      ) : null}
+        );
+      })}
     </View>
   );
 }
@@ -83,13 +89,15 @@ function FeedHeader({ aura }: { aura?: number }) {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const isFocused = useIsFocused();
   const ranking = usePreferencesStore((state) => state.feedRanking);
   const sessionStatus = useSessionStore((state) => state.status);
   const viewerId = useSessionStore((state) => state.user?.id);
   const viewer = sessionStatus === 'authenticated' && viewerId ? viewerId : 'guest';
   const listRef = useRef<FlashListRef<FeedCard>>(null);
+  const pagerRef = useRef<ScrollView>(null);
+  const [mode, setMode] = useState<FeedMode>('liveCheck');
 
   const feed = useInfiniteQuery({
     queryKey: queryKeys.feed.ranking(ranking, viewer),
@@ -141,13 +149,32 @@ export default function HomeScreen() {
   );
 
   const scrollToTop = useCallback(() => {
+    const liveCheckIndex = FEED_MODE_ORDER.indexOf('liveCheck');
+    pagerRef.current?.scrollTo({ x: liveCheckIndex * windowWidth, animated: true });
     listRef.current?.scrollToOffset({ offset: 0, animated: true });
-  }, []);
+  }, [windowWidth]);
   useScrollToTopOnTabPress(scrollToTop);
 
-  const playingVideoId = isFocused ? activeVideoId : null;
-  const currentPost = posts.find((post) => post.id === activePostId) ?? posts[0];
-  const currentAura = currentPost?.aura;
+  const playingVideoId = isFocused && mode === 'liveCheck' ? activeVideoId : null;
+
+  const onPagerSettled = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (windowWidth <= 0) return;
+      const index = Math.round(event.nativeEvent.contentOffset.x / windowWidth);
+      const clamped = Math.min(Math.max(index, 0), FEED_MODE_ORDER.length - 1);
+      const next = FEED_MODE_ORDER[clamped];
+      if (next) setMode(next);
+    },
+    [windowWidth],
+  );
+
+  const onSelectMode = useCallback(
+    (next: FeedMode) => {
+      const index = FEED_MODE_ORDER.indexOf(next);
+      pagerRef.current?.scrollTo({ x: index * windowWidth, animated: true });
+    },
+    [windowWidth],
+  );
 
   // The tab scene is already above the tab bar. Cards must match this viewport
   // exactly — a guessed height (window minus status bar minus ~80) was short,
@@ -170,11 +197,8 @@ export default function HomeScreen() {
   if (isPending) {
     return (
       <View className="flex-1 bg-bg">
-        <View 
-          className="absolute top-0 left-0 right-0 z-10"
-          style={{ paddingTop: insets.top }}
-        >
-          <FeedHeader />
+        <View className="absolute top-0 left-0 right-0 z-10">
+          <FeedModeHeader mode={mode} onSelect={setMode} />
         </View>
         <FeedPostSkeleton />
       </View>
@@ -184,11 +208,8 @@ export default function HomeScreen() {
   if (isError) {
     return (
       <View className="flex-1 bg-bg">
-        <View 
-          className="absolute top-0 left-0 right-0 z-10 bg-bg"
-          style={{ paddingTop: insets.top }}
-        >
-          <FeedHeader />
+        <View className="absolute top-0 left-0 right-0 z-10 bg-bg">
+          <FeedModeHeader mode={mode} onSelect={setMode} />
         </View>
         <View className="flex-1 items-start justify-center gap-3 px-gutter pb-24">
           <Text variant="title">{t('feed.error.title')}</Text>
@@ -213,7 +234,6 @@ export default function HomeScreen() {
           left: 0,
           right: 0,
           zIndex: 10,
-          paddingTop: insets.top,
           paddingBottom: 16,
           overflow: 'visible',
         }}
@@ -223,57 +243,91 @@ export default function HomeScreen() {
           pointerEvents="none"
           style={StyleSheet.absoluteFill}
         />
-        <FeedHeader aura={currentAura} />
+        <FeedModeHeader mode={mode} onSelect={onSelectMode} />
+        {mode === 'liveCheck' ? <FeedRankingToggle /> : null}
       </View>
 
-      <FlashList
-        ref={listRef}
-        data={posts}
-        style={{ flex: 1 }}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <FeedPostCard
-            post={item}
-            isActiveVideo={item.id === playingVideoId}
-            isActive={item.id === activePostId}
-            height={viewportHeight}
-            overlayInsetTop={headerHeight}
-          />
-        )}
-        extraData={`${playingVideoId}:${activePostId}:${viewportHeight}:${headerHeight}`}
-        viewabilityConfig={VIDEO_VIEWABILITY}
-        onViewableItemsChanged={onViewableItemsChanged}
+      {/* Cooked ← Live Check → Certified (docs/redesign-screens/09, `RDX-51`).
+          Certified/Cooked are placeholders — the inject threshold (`RDX-53`/
+          `RDX-54`) is parked behind remote config that does not exist yet. */}
+      <ScrollView
+        ref={pagerRef}
+        horizontal
         pagingEnabled
-        snapToInterval={viewportHeight}
-        snapToAlignment="start"
-        disableIntervalMomentum
-        decelerationRate="fast"
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <View className="px-gutter py-16" style={{ height: viewportHeight, justifyContent: 'center' }}>
-            <Text variant="title">{t('feed.empty.title')}</Text>
-            <Text variant="body" tone="secondary" className="pt-2">
-              {t('feed.empty.body')}
-            </Text>
-          </View>
-        }
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
-          }
-        }}
-        onEndReachedThreshold={0.6}
-        refreshControl={
-          <RefreshControl
-            testID="pull-to-refresh"
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.aura.bright}
-            colors={[colors.aura.bright]}
-            progressBackgroundColor={colors.surface.DEFAULT}
+        directionalLockEnabled
+        showsHorizontalScrollIndicator={false}
+        contentOffset={{ x: FEED_MODE_ORDER.indexOf('liveCheck') * windowWidth, y: 0 }}
+        onMomentumScrollEnd={onPagerSettled}
+        onScrollEndDrag={onPagerSettled}
+        style={{ flex: 1 }}
+      >
+        <FeedPlaceholderPage
+          icon="flame-outline"
+          title={t('feed.mode.comingSoon.cooked.title')}
+          body={t('feed.mode.comingSoon.cooked.body')}
+          width={windowWidth}
+          height={viewportHeight}
+        />
+
+        <View style={{ width: windowWidth, height: viewportHeight }}>
+          <FlashList
+            ref={listRef}
+            data={posts}
+            style={{ flex: 1 }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <FeedPostCard
+                post={item}
+                isActiveVideo={item.id === playingVideoId}
+                isActive={item.id === activePostId}
+                height={viewportHeight}
+                overlayInsetTop={headerHeight}
+              />
+            )}
+            extraData={`${playingVideoId}:${activePostId}:${viewportHeight}:${headerHeight}`}
+            viewabilityConfig={VIDEO_VIEWABILITY}
+            onViewableItemsChanged={onViewableItemsChanged}
+            pagingEnabled
+            snapToInterval={viewportHeight}
+            snapToAlignment="start"
+            disableIntervalMomentum
+            decelerationRate="fast"
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View className="px-gutter py-16" style={{ height: viewportHeight, justifyContent: 'center' }}>
+                <Text variant="title">{t('feed.empty.title')}</Text>
+                <Text variant="body" tone="secondary" className="pt-2">
+                  {t('feed.empty.body')}
+                </Text>
+              </View>
+            }
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) {
+                void fetchNextPage();
+              }
+            }}
+            onEndReachedThreshold={0.6}
+            refreshControl={
+              <RefreshControl
+                testID="pull-to-refresh"
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={colors.aura.bright}
+                colors={[colors.aura.bright]}
+                progressBackgroundColor={colors.surface.DEFAULT}
+              />
+            }
           />
-        }
-      />
+        </View>
+
+        <FeedPlaceholderPage
+          icon="ribbon-outline"
+          title={t('feed.mode.comingSoon.certified.title')}
+          body={t('feed.mode.comingSoon.certified.body')}
+          width={windowWidth}
+          height={viewportHeight}
+        />
+      </ScrollView>
     </View>
   );
 }
@@ -285,9 +339,6 @@ const rankShadow = {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    overflow: 'visible',
-  },
   rankActive: {
     ...rankShadow,
     color: colors.text.DEFAULT,
@@ -301,35 +352,5 @@ const styles = StyleSheet.create({
   rankSep: {
     ...rankShadow,
     color: withAlpha(colors.text.DEFAULT, 0.55),
-  },
-  rankAuraWrap: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    overflow: 'visible',
-  },
-  rankAuraSpread: {
-    borderRadius: 999,
-    backgroundColor: withAlpha(colors.bg, 0.65),
-    shadowColor: colors.aura.DEFAULT,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.45,
-    shadowRadius: 18,
-    elevation: 10,
-  },
-  rankAuraPill: {
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    shadowColor: colors.aura.DEFAULT,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 5,
-  },
-  rankAura: {
-    color: colors.text.DEFAULT,
-    fontWeight: '700',
   },
 });
