@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 
-import { Avatar, Text } from '@/components/ui';
+import { Text } from '@/components/ui';
 import { fetchVoteOverlay, type VoteReceipt } from '@/lib/api';
 import { useFormat } from '@/lib/i18n';
 import { queryKeys } from '@/lib/query/keys';
@@ -13,6 +14,7 @@ import { colors, withAlpha } from '@/theme/tokens';
 const POLL_INTERVAL_MS = 15_000;
 
 function ReceiptRow({ row }: { row: VoteReceipt }) {
+  const { t } = useTranslation();
   const format = useFormat();
   const positive = row.amount > 0;
 
@@ -20,16 +22,22 @@ function ReceiptRow({ row }: { row: VoteReceipt }) {
     <Animated.View
       entering={FadeInDown.duration(220)}
       exiting={FadeOut.duration(200)}
-      className="mb-2 flex-row items-center gap-2 self-start rounded-sm px-2 py-1.5"
+      className="mb-2 self-start rounded-sm px-2 py-1.5"
       style={{ backgroundColor: withAlpha(colors.bg, 0.65), maxWidth: '84%' }}
+      accessibilityLabel={t('feed.post.a11y.receipt', {
+        username: row.author.username,
+        text: row.receipt,
+        amount: format.signed(row.amount),
+      })}
     >
-      <Avatar uri={row.author.avatarUrl} username={row.author.username} size="sm" shape="square" />
-      <Text variant="caption" numberOfLines={2} style={{ flexShrink: 1 }}>
-        <Text variant="caption" className="font-semibold">
-          @{row.author.username}:{' '}
-        </Text>
+      <Text variant="label" className="font-bold" numberOfLines={2} allowFontScaling={false}>
         {row.receipt}{' '}
-        <Text variant="caption" style={{ color: positive ? colors.aura.DEFAULT : colors.danger }}>
+        <Text
+          variant="label"
+          className="font-bold"
+          allowFontScaling={false}
+          style={{ color: positive ? colors.aura.DEFAULT : colors.danger }}
+        >
           ({format.signed(row.amount)})
         </Text>
       </Text>
@@ -40,9 +48,12 @@ function ReceiptRow({ row }: { row: VoteReceipt }) {
 /**
  * Floating receipts, left side. Only votes with text float here — a vote
  * with no receipt lands in the ledger silently (docs/redesign-tracker.md
- * Q19). There is no live push channel yet, so this polls the "latest
- * receipts with text" endpoint while the card is on screen; a future pass
- * can replace the poll with a socket without changing this component's shape.
+ * Q19). Plain text + signed amount, no avatar or `@username` — the fuller
+ * reference screenshot (`RDX-41` follow-up) shows the receipt text alone;
+ * the voter's identity still lives in the ledger. There is no live push
+ * channel yet, so this polls the "latest receipts with text" endpoint while
+ * the card is on screen; a future pass can replace the poll with a socket
+ * without changing this component's shape.
  */
 export function VoteReceiptOverlay({ postId, active }: { postId: string; active: boolean }) {
   const overlay = useQuery({
@@ -57,7 +68,7 @@ export function VoteReceiptOverlay({ postId, active }: { postId: string; active:
   if (rows.length === 0) return null;
 
   return (
-    <View pointerEvents="none" style={{ maxWidth: '70%' }}>
+    <View pointerEvents="none" style={{ maxWidth: '80%' }}>
       {rows.map((row, index) => (
         <Fragment key={`${row.author.id}:${row.createdAt}`}>
           {index < 3 ? <ReceiptRow row={row} /> : null}

@@ -67,6 +67,7 @@
         "voteSlider": "Slide up or down to give aura",
         "voteLocked": "You gave {amount} aura",
         "openLedger": "Open receipts",
+        "receipt": "@{username}: {text} ({amount})",
         "mute": "Mute",
         "unmute": "Unmute",
         "options": "Post options",

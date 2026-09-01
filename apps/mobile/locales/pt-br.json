@@ -67,6 +67,7 @@
         "voteSlider": "Arraste pra cima ou pra baixo pra dar aura",
         "voteLocked": "Você deu {amount} de aura",
         "openLedger": "Abrir recibos",
+        "receipt": "@{username}: {text} ({amount})",
         "mute": "Silenciar",
         "unmute": "Ativar som",
         "options": "Opções do post",

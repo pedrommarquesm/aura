@@ -13,16 +13,23 @@ import { queryKeys } from '@/lib/query/keys';
 import { quick } from '@/theme/motion';
 import { colors, withAlpha } from '@/theme/tokens';
 
-/** Header-only. Always visible (docs/redesign-screens/02, `RDX-42`). */
-export const LEDGER_PANEL_COLLAPSED_HEIGHT = 40;
+/**
+ * Fully hidden when collapsed — the fuller reference screenshot shows no
+ * persistent strip above the score, only the score itself as the entry
+ * point (tap to expand). Not RDX-42's earlier "always-visible header bar".
+ */
+export const LEDGER_PANEL_COLLAPSED_HEIGHT = 0;
+
+const HEADER_ROW_HEIGHT = 40;
 
 /** Only the newest rows — pagination lives in `VoteLedgerSheet`, opened via "see all". */
 const PANEL_PREVIEW_COUNT = 4;
 
 /**
- * In-frame collapsible receipt ledger (screen 02) sitting just above the
- * caption bar. Replaces the sheet as the primary way to check recent votes;
- * `VoteLedgerSheet` stays for the full, paginated history ("see all" below).
+ * In-frame collapsible receipt ledger (screen 02), sliding up from the
+ * bottom when the score is tapped. Replaces the sheet as the primary way to
+ * check recent votes; `VoteLedgerSheet` stays for the full, paginated
+ * history ("see all" below).
  */
 export function VoteLedgerPanel({
   post,
@@ -63,79 +70,76 @@ export function VoteLedgerPanel({
   const hasMore = expanded && !loading && !empty && !ledger.isError;
 
   return (
-    <Animated.View style={[styles.panel, animatedStyle]}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('feed.ledger.title')}
-        accessibilityState={{ expanded }}
-        onPress={onToggle}
-        className="flex-row items-center justify-between px-gutter"
-        style={styles.header}
-      >
-        <Text variant="label" style={styles.headerLabel} numberOfLines={1}>
-          {t('feed.ledger.title')}
-        </Text>
-        <Ionicons
-          name={expanded ? 'chevron-down' : 'chevron-up'}
-          size={16}
-          color={colors.text.secondary}
-        />
-      </Pressable>
-
+    <Animated.View style={[styles.clip, animatedStyle]}>
       {expanded ? (
-        <ScrollView style={styles.body} contentContainerStyle={{ paddingBottom: 8 }}>
-          {ledger.isError ? (
-            <View className="gap-2 px-gutter py-3">
-              <Text variant="body" tone="secondary">
-                {t('feed.ledger.error')}
-              </Text>
-              <Button
-                label={t('common.actions.retry')}
-                size="sm"
-                onPress={() => void ledger.refetch()}
-              />
-            </View>
-          ) : loading ? (
-            <View testID="ledger-panel-skeleton">
-              <LedgerRowSkeleton />
-              <LedgerRowSkeleton />
-            </View>
-          ) : empty ? (
-            <Text variant="body" tone="secondary" className="px-gutter py-3">
-              {t('feed.ledger.empty')}
+        <View style={styles.panel}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('feed.ledger.title')}
+            accessibilityState={{ expanded }}
+            onPress={onToggle}
+            className="flex-row items-center justify-between px-gutter"
+            style={styles.header}
+          >
+            <Text variant="label" style={styles.headerLabel} numberOfLines={1}>
+              {t('feed.ledger.title')}
             </Text>
-          ) : (
-            items.map((row) => (
-              <VoteLedgerRow key={`${row.author.id}:${row.createdAt}`} row={row} />
-            ))
-          )}
+            <Ionicons name="chevron-down" size={16} color={colors.text.secondary} />
+          </Pressable>
 
-          {hasMore ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={onSeeAll}
-              className="px-gutter py-2"
-            >
-              <Text variant="label" tone="aura">
-                {t('feed.ledger.seeAll')}
+          <ScrollView style={styles.body} contentContainerStyle={{ paddingBottom: 8 }}>
+            {ledger.isError ? (
+              <View className="gap-2 px-gutter py-3">
+                <Text variant="body" tone="secondary">
+                  {t('feed.ledger.error')}
+                </Text>
+                <Button
+                  label={t('common.actions.retry')}
+                  size="sm"
+                  onPress={() => void ledger.refetch()}
+                />
+              </View>
+            ) : loading ? (
+              <View testID="ledger-panel-skeleton">
+                <LedgerRowSkeleton />
+                <LedgerRowSkeleton />
+              </View>
+            ) : empty ? (
+              <Text variant="body" tone="secondary" className="px-gutter py-3">
+                {t('feed.ledger.empty')}
               </Text>
-            </Pressable>
-          ) : null}
-        </ScrollView>
+            ) : (
+              items.map((row) => (
+                <VoteLedgerRow key={`${row.author.id}:${row.createdAt}`} row={row} />
+              ))
+            )}
+
+            {hasMore ? (
+              <Pressable accessibilityRole="button" onPress={onSeeAll} className="px-gutter py-2">
+                <Text variant="label" tone="aura">
+                  {t('feed.ledger.seeAll')}
+                </Text>
+              </Pressable>
+            ) : null}
+          </ScrollView>
+        </View>
       ) : null}
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  panel: {
+  clip: {
     overflow: 'hidden',
+  },
+  panel: {
+    flex: 1,
     backgroundColor: withAlpha(colors.surface.DEFAULT, 0.92),
     borderTopWidth: 1,
     borderColor: colors.border,
   },
   header: {
-    height: LEDGER_PANEL_COLLAPSED_HEIGHT,
+    height: HEADER_ROW_HEIGHT,
   },
   headerLabel: {
     color: colors.text.secondary,

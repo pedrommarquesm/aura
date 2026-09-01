@@ -15,10 +15,10 @@ import { CaptionText } from './caption-text';
 import { PostOptions } from './post-options';
 import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { ReceiptPrompt } from './receipt-prompt';
-import { LEDGER_PANEL_COLLAPSED_HEIGHT, VoteLedgerPanel } from './vote-ledger-panel';
+import { VoteLedgerPanel } from './vote-ledger-panel';
 import { VoteLedgerSheet } from './vote-ledger-sheet';
 import { VoteReceiptOverlay } from './vote-receipt-overlay';
-import { Avatar, Text } from '@/components/ui';
+import { Text } from '@/components/ui';
 import type { CastVoteResult, FeedCard } from '@/lib/api';
 import { useFormat } from '@/lib/i18n';
 import { hashtagPath } from '@/lib/hashtags';
@@ -32,6 +32,13 @@ import { colors, withAlpha } from '@/theme/tokens';
 
 /** Semi-transparent chrome on media. Slash-opacity class names crash Expo Router. */
 const onMedia = { backgroundColor: withAlpha(colors.bg, 0.7) };
+
+/** Legibility for text floating directly on the video — no background bar. */
+const textShadow = {
+  textShadowColor: withAlpha(colors.bg, 0.85),
+  textShadowOffset: { width: 0, height: 1 },
+  textShadowRadius: 6,
+};
 
 function formatDuration(durationMs: number): string {
   const totalSeconds = Math.round(durationMs / 1000);
@@ -82,7 +89,7 @@ export const FeedPostCard = memo(function FeedPostCard({
     router.push(userProfileHref(author.username, viewerUsername));
   }, [author.username, router, viewerUsername]);
 
-  const [captionHeight, setCaptionHeight] = useState(96);
+  const [authorBlockHeight, setAuthorBlockHeight] = useState(72);
   const [pendingReceiptAmount, setPendingReceiptAmount] = useState<number | null>(null);
   const [ledgerPanelExpanded, setLedgerPanelExpanded] = useState(false);
   const muted = usePreferencesStore((state) => state.feedMuted);
@@ -213,7 +220,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           pointerEvents="box-none"
           style={[
             styles.sliderColumn,
-            { top: overlayInsetTop + 32, bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 176 },
+            { top: overlayInsetTop + 32, bottom: authorBlockHeight + 176 },
           ]}
         >
           <AuraVoteSlider
@@ -230,39 +237,35 @@ export const FeedPostCard = memo(function FeedPostCard({
           accessibilityLabel={t('feed.post.voteCount', { count: post.voteCount })}
           hitSlop={8}
           onPress={toggleLedgerPanel}
-          style={[styles.scoreWrap, { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 96 }]}
+          style={[styles.scoreWrap, { bottom: authorBlockHeight + 96 }]}
         >
           <Text
             variant="display"
             allowFontScaling={false}
-            style={{ color: post.aura >= 0 ? colors.aura.DEFAULT : colors.danger }}
+            style={[textShadow, { color: post.aura >= 0 ? colors.aura.DEFAULT : colors.danger }]}
           >
-            {format.signed(post.aura)}
+            {format.signed(post.aura)}{' '}
+            <Text
+              variant="heading"
+              allowFontScaling={false}
+              style={[textShadow, { color: post.aura >= 0 ? colors.aura.DEFAULT : colors.danger }]}
+            >
+              {t('common.aura').toUpperCase()}
+            </Text>
           </Text>
         </Pressable>
 
-        <View
-          pointerEvents="box-none"
-          style={[
-            styles.receiptOverlayWrap,
-            { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 96 },
-          ]}
-        >
+        <View pointerEvents="box-none" style={[styles.receiptOverlayWrap, { bottom: authorBlockHeight + 96 }]}>
           <VoteReceiptOverlay postId={post.id} active={isActive} />
         </View>
 
         {pendingReceiptAmount !== null ? (
-          <View
-            style={[
-              styles.receiptPromptWrap,
-              { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 16 },
-            ]}
-          >
+          <View style={[styles.receiptPromptWrap, { bottom: authorBlockHeight + 16 }]}>
             <ReceiptPrompt postId={post.id} onDone={() => dismissReceiptPrompt()} />
           </View>
         ) : null}
 
-        <View style={[styles.ledgerPanelWrap, { bottom: captionHeight }]}>
+        <View style={[styles.ledgerPanelWrap, { bottom: authorBlockHeight }]}>
           <VoteLedgerPanel
             post={post}
             expanded={ledgerPanelExpanded}
@@ -273,39 +276,29 @@ export const FeedPostCard = memo(function FeedPostCard({
         </View>
 
         <View
-          className="absolute bottom-0 left-0 right-0"
+          className="absolute bottom-0 left-4"
+          style={{ right: ACTION + 28 }}
           onLayout={(event) => {
             const next = Math.round(event.nativeEvent.layout.height);
-            if (next > 0) setCaptionHeight(next);
+            if (next > 0) setAuthorBlockHeight(next);
           }}
         >
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
             onPress={shouldTruncateCaption ? openLedgerSheet : openAuthor}
-            className="rounded-t-lg px-4 py-3"
-            style={[onMedia, { paddingRight: ACTION + 28 }]}
+            className="py-3"
           >
-            <View className="flex-row items-center gap-2 pb-2">
-              <Avatar
-                uri={author.avatarUrl}
-                username={author.username}
-                accessible={false}
-                size="sm"
-              />
-              <View className="flex-1">
-                <Text variant="label" className="font-semibold">
-                  @{author.username}
-                </Text>
-                {author.title ? (
-                  <Text variant="caption" tone="aura">
-                    {author.title}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
+            <Text variant="label" className="font-bold" allowFontScaling={false} style={textShadow}>
+              @{author.username}
+            </Text>
+            {author.title ? (
+              <Text variant="caption" tone="aura" style={textShadow}>
+                {author.title}
+              </Text>
+            ) : null}
             {post.caption ? (
-              <View>
+              <View className="pt-1">
                 <CaptionText
                   caption={post.caption}
                   variant="label"
@@ -323,7 +316,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           </Pressable>
         </View>
 
-        <View style={[styles.actions, { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 8 }]}>
+        <View style={[styles.actions, { bottom: authorBlockHeight + 8 }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('common.actions.share')}

@@ -67,6 +67,7 @@
         "voteSlider": "Desliza hacia arriba o abajo para dar aura",
         "voteLocked": "Diste {amount} de aura",
         "openLedger": "Abrir recibos",
+        "receipt": "@{username}: {text} ({amount})",
         "mute": "Silenciar",
         "unmute": "Activar sonido",
         "options": "Opciones del post",
