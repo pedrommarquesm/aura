@@ -21,13 +21,13 @@ export function SiteFooter() {
   ];
 
   return (
-    <footer className="border-t border-border/70 py-12">
+    <footer className="border-t border-border py-10">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 sm:px-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <AuraMark />
           <nav
             aria-label={footer("label")}
-            className="flex flex-wrap gap-x-6 gap-y-2 text-label text-text-secondary"
+            className="flex flex-wrap gap-x-6 gap-y-2 text-caption tracking-[0.1em] text-text-secondary uppercase"
           >
             {links.map((link) =>
               link.hash ? (

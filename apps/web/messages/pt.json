@@ -88,6 +88,9 @@
       "label": "Secções",
       "whatIsAura": "O que é a Aura",
       "howItWorks": "Como funciona",
+      "liveCheck": "Live Check",
+      "slider": "O Slider",
+      "ledger": "O Livro-Razão",
       "feed": "Feed",
       "trending": "Em destaque",
       "leaderboard": "Classificação",
@@ -115,9 +118,9 @@
   },
   "landing": {
     "hero": {
-      "badge": "Lançamento daqui a 2 semanas",
-      "title": "A tua vibe,<break></break><accent>ranqueada.</accent>",
-      "body": "Publica o momento. As pessoas gostam, ganhas Aura. Toda a gente vê em que lugar estás. Sem contagem de seguidores. Sem esconderijos. Só a pontuação.",
+      "badge": "Aura Public Square",
+      "title": "Estabelece a tua<break></break>baseline.",
+      "body": "Uma pontuação em tempo real baseada no julgamento da comunidade. Desliza para cima para dar pontos, para baixo para retirar. Deixa um recibo para justificar o teu voto.",
       "leader": "Neste momento #{rank, number} no mundo",
       "preview": {
         "title": "Em destaque",
@@ -134,24 +137,66 @@
         "share": "+{aura, number} Aura quando um amigo criar conta por ti",
         "port": "Quando a app abrir, esta Aura vai para a tua conta"
       },
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@username",
       "emailLabel": "O teu email",
-      "emailPlaceholder": "tu@mail.com",
-      "submit": "Entrar na beta",
+      "emailPlaceholder": "email@dominio.com",
+      "submit": "Reservar username e entrar",
       "submitting": "A fechar o sítio…",
       "invited": "Alguém mandou-te. Entra agora — eles ganham Aura quando abrires a app.",
-      "finePrint": "Avisamos-te por email quando abrir. Sem spam. Sais quando quiseres.",
+      "finePrint": "Partilha o teu link. Recebe +{referral, number} Aura inicial por cada amigo que entrar.",
       "success": {
         "eyebrow": "Estás dentro",
-        "title": "Boa. Acabaste de farmar a tua primeira Aura.",
+        "title": "Bem-vindo, @{username}.",
         "body": "+{aura, number} Aura por entrares cedo. Partilha este link. Ganhas +{referral, number} Aura quando um amigo criar conta e abrir a app.",
         "againEyebrow": "Já estás dentro",
-        "againTitle": "Este email já está na lista.",
+        "againTitle": "@{username} já está na lista.",
         "againBody": "A tua Aura antecipada continua aqui: {aura, number}. O mesmo link. Continua a partilhar.",
         "score": "🗿 {aura, number}",
         "referrals": "{count, plural, one {# amigo criou conta por ti} other {# amigos criaram conta por ti}}",
         "copy": "Copiar o teu link",
         "copied": "Copiado",
         "shareHint": "Manda no WhatsApp. Por mensagem. Nos stories. Só contas quando eles criarem conta a sério."
+      }
+    },
+    "demo": {
+      "liveCheck": {
+        "badge": "REC 00:14",
+        "receipts": [
+          { "username": "user_99", "body": "Isto está fora de linha. A retirar." },
+          { "username": "admin_x", "body": "Falta contexto. A segurar." }
+        ],
+        "aura": "+3.840 AURA"
+      },
+      "slider": {
+        "value": "+85",
+        "hint": "Desliza para cima ou para baixo na borda do ecrã"
+      },
+      "ledger": {
+        "title": "Livro-razão",
+        "entries": [
+          { "username": "c_smith", "body": "Ação verificada. Boa execução.", "amount": "+100" },
+          { "username": "anon_44", "body": "Falta contexto. Não convence.", "amount": "-50" },
+          { "username": "judex", "body": "Aceitável.", "amount": "+25" },
+          { "username": "sys_bot", "body": "Absteve-se.", "amount": "0" }
+        ]
+      }
+    },
+    "features": {
+      "liveCheck": {
+        "eyebrow": "01",
+        "title": "Live Check",
+        "body": "Cada upload entra numa janela de 24 horas onde a comunidade vota no teu clip."
+      },
+      "slider": {
+        "eyebrow": "02",
+        "title": "O Slider",
+        "body": "Vota numa escala de -100 a +100 com um único gesto na borda do teu ecrã."
+      },
+      "ledger": {
+        "eyebrow": "03",
+        "title": "O Livro-Razão",
+        "body": "Histórico de votação transparente. Toca em qualquer post para ver quem votou, quantos pontos deu, e porquê."
       }
     },
     "play": {

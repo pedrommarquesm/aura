@@ -1,6 +1,7 @@
 import { ApiError } from "@/lib/api/errors";
 
 export type WaitlistPublic = {
+  username: string;
   referralCode: string;
   aura: number;
   referralCount: number;
@@ -11,6 +12,7 @@ export type WaitlistPublic = {
 
 export async function joinWaitlist(input: {
   email: string;
+  username: string;
   referralCode?: string | null;
   locale: string;
 }): Promise<WaitlistPublic> {
