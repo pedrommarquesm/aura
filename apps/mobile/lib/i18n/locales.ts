@@ -18,7 +18,9 @@ export const DEFAULT_LOCALE: AppLocale = 'en';
 export const formatLocale: Record<AppLocale, string> = {
   en: 'en',
   pt: 'pt',
-  'pt-br': 'pt-BR',
+  // CLDR `pt` is Brazilian. `pt-BR` is not a formatjs locale-data file, and
+  // `pt-PT` groups with a space — both of our Portuguese catalogs want a dot.
+  'pt-br': 'pt',
   es: 'es',
 };
 
