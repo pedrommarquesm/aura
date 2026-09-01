@@ -328,7 +328,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md) | |
+| 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md) | [#85](https://github.com/pedrommarquesm/aura/pull/85) |
 | 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
