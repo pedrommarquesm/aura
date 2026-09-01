@@ -33,10 +33,8 @@
       "title": "Could not load the feed"
     },
     "post": {
-      "likes": "{count, plural, one {# aura} other {# auras}}",
-      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "voteCount": "{count, plural, one {# vote} other {# votes}}",
       "seeMore": "See more",
-      "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
@@ -51,16 +49,27 @@
         "confirm": "Delete"
       },
       "a11y": {
-        "like": "Give aura",
-        "unlike": "Remove aura",
-        "comment": "Comment",
-        "doubleTap": "Double-tap to give aura",
-        "doubleTapSound": "Double-tap to give aura. Tap once for sound",
+        "voteSlider": "Slide up or down to give aura",
+        "voteLocked": "You gave {amount} aura",
+        "openLedger": "Open receipts",
         "mute": "Mute",
         "unmute": "Unmute",
         "options": "Post options",
         "profile": "View @{username}"
       }
+    },
+    "vote": {
+      "receipt": {
+        "placeholder": "Drop a receipt...",
+        "post": "Post",
+        "skip": "Skip"
+      }
+    },
+    "ledger": {
+      "title": "Receipt ledger",
+      "empty": "No votes yet. Be the first.",
+      "error": "Could not load receipts",
+      "more": "Load more"
     }
   },
   "discover": {
@@ -81,7 +90,7 @@
   },
   "create": {
     "title": "Post something with Aura",
-    "subtitle": "Every like you get is Aura. Every point of Aura moves you up the board.",
+    "subtitle": "Every vote you get is Aura. Every point of Aura moves you up the board.",
     "actions": {
       "takePhoto": "Take a picture",
       "takePhotoHint": "Camera comes in a later build.",
@@ -162,13 +171,11 @@
     "error": {
       "title": "Could not load this post"
     },
-    "comments": {
-      "title": "Comments",
-      "empty": "No comments yet. Say something.",
-      "placeholder": "Add a comment",
-      "post": "Post",
+    "ledger": {
+      "title": "Receipts",
+      "empty": "No votes yet. Be the first.",
       "more": "Load more",
-      "error": "Could not load comments"
+      "error": "Could not load receipts"
     }
   },
   "auth": {
@@ -190,9 +197,9 @@
       "toggleSignIn": "Already have an account"
     },
     "reasons": {
-      "like": {
-        "title": "Sign in to award Aura",
-        "body": "Auras are the score. Apple, Google, or email — then this aura lands."
+      "vote": {
+        "title": "Sign in to give Aura",
+        "body": "Apple, Google, or email — then this vote lands."
       },
       "create": {
         "title": "Sign in to post",
@@ -201,10 +208,6 @@
       "profile": {
         "title": "Start farming Aura",
         "body": "Sign in to claim a username, post, and climb the global board."
-      },
-      "comment": {
-        "title": "Sign in to comment",
-        "body": "Apple, Google, or email — then you can leave a comment."
       },
       "generic": {
         "title": "Sign in to Aura",
@@ -281,9 +284,8 @@
     "upload_too_large": "That file is too big.",
     "unsupported_media_type": "That file type is not supported.",
     "post_not_published": "That post is not live yet.",
-    "already_liked": "You already liked this post.",
-    "not_liked": "You have not liked this post.",
-    "cannot_like_own_post": "You cannot like your own post. Nice try.",
+    "cannot_vote_own_post": "You cannot vote on your own post. Nice try.",
+    "receipt_already_set": "This vote already has a receipt.",
     "already_reported": "You already reported that.",
     "already_blocked": "You already blocked that account.",
     "cannot_block_self": "You cannot block yourself.",

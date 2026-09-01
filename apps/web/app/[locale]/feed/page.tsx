@@ -18,7 +18,7 @@ import { buildMetadata } from "@/lib/seo";
 
 /**
  * `[locale]` prerenders every locale at build time. A shared guest snapshot
- * would freeze `likedByMe: false` for signed-in viewers (WEB-19). The
+ * would freeze `votedByMe: false` for signed-in viewers (WEB-19). The
  * permalink is outside this tree and already session-aware.
  */
 export const dynamic = "force-dynamic";

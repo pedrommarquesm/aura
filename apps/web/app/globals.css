@@ -3,29 +3,36 @@
 /*
  * Aura design tokens. These values are shared with the React Native app and are
  * the only place a raw colour, type scale or radius should appear.
+ *
+ * Palette locked for the vote & receipts redesign (docs/redesign-tracker.md,
+ * docs/redesign-screens/DESIGN.md): Neo-Brutalism / Digital Utilitarianism —
+ * pure black background, neon green for positive Aura, pure red for Aura
+ * Debt / destructive actions, white content, mid-gray structural borders.
  */
 @theme {
   /* Drop Tailwind's palette and type scale so only Aura tokens are reachable. */
   --color-*: initial;
   --text-*: initial;
 
-  --color-bg: #0a0a0f;
-  --color-surface: #14141c;
-  --color-surface-elevated: #1e1e29;
-  --color-border: #2a2a38;
+  --color-bg: #000000;
+  --color-surface: #121212;
+  --color-surface-elevated: #1a1a1a;
+  --color-border: #333333;
   --color-text: #ffffff;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
-  --color-aura: #8b5cf6;
-  --color-aura-bright: #a78bfa;
-  --color-aura-deep: #6d28d9;
-  --color-like: #ff3b5c;
+  --color-text-secondary: #a6a6a6;
+  --color-text-muted: #6b6b6b;
+  /* Brand and positive Aura share one colour on purpose — see tokens.js. */
+  --color-aura: #00ff00;
+  --color-aura-bright: #5cff5c;
+  --color-aura-deep: #00b300;
+  /** Deprecated with the like button. Kept only until WEB-* removes the last reference. */
+  --color-like: #ff0000;
   --color-super: #ff8a00;
   --color-gold: #facc15;
   --color-silver: #cbd5e1;
   --color-bronze: #d97706;
-  --color-success: #22c55e;
-  --color-danger: #ef4444;
+  --color-success: #00ff00;
+  --color-danger: #ff0000;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 

@@ -6,7 +6,7 @@ Companion: [Product spec](./product-spec.md) · [Client media](./client-media.md
 
 This is a starting architecture, not a final one. The goal is to ship the core loop — **Discover → Like → Gain Aura → Climb → Post** — without painting ourselves into a corner on media, traffic, or the Aura economy.
 
-The like write path (`auraForLike` = 10, unlike → `REVERSAL`) is the current implementation. The next economy is a **one-shot signed vote** and **Aura Debt** (counters may go negative). Do not add Vote Power on top of a client-chosen amount. Details and the replacement tasks: [redesign-tracker.md](./redesign-tracker.md) (`RDX-10`–`RDX-21`, `RDX-60`). `RDX-03` rewrites §5 and §7 after product questions lock.
+**This document is stale on likes.** The like write path described below (`auraForLike` = 10, unlike → `REVERSAL`) has been removed. It is now a **one-shot signed vote** (−100…+100, no unvote) and **Aura Debt** (counters may go negative) — see `apps/api/src/votes/`, `apps/api/src/aura/vote-amount.ts`. Do not add Vote Power on top of a client-chosen amount. Details: [redesign-tracker.md](./redesign-tracker.md) (`RDX-10`–`RDX-21`, `RDX-60`). Rewriting §5 and §7 below to match is `RDX-03`, not yet done.
 
 ---
 

@@ -384,12 +384,8 @@
       "end": "Já viste tudo."
     },
     "post": {
-      "likes": "{count, plural, one {# like} other {# likes}}",
-      "auraGain": "+{amount, number} Aura",
+      "voteCount": "{count, plural, one {# voto} other {# votos}}",
       "a11y": {
-        "like": "Dar like",
-        "unlike": "Retirar o like",
-        "doubleClick": "Clica duas vezes para dar like",
         "unmute": "Ativar som",
         "mute": "Silenciar"
       },
@@ -400,8 +396,8 @@
     "page": {
       "eyebrow": "Partilhado a partir da app",
       "openInApp": "Abrir na app Aura",
-      "installTitle": "Publica na app",
-      "installBody": "Cada like dá Aura ao criador. Podes dar like aqui. Publicar continua a ser coisa da app.",
+      "installTitle": "Vota na app",
+      "installBody": "A Aura aqui é só de leitura. Abre a app para deslizares um voto para cima ou para baixo.",
       "unavailable": "Este post desapareceu, ou nunca chegou a ser publicado."
     }
   },
@@ -413,13 +409,7 @@
     },
     "page": {
       "title": "Entra na Aura",
-      "body": "Google — sem palavra-passe. Publicar continua a ser coisa da app."
-    },
-    "reasons": {
-      "like": {
-        "title": "Inicia sessão para dar Aura",
-        "body": "Os likes são a pontuação. Google — sem palavra-passe — e este like conta."
-      }
+      "body": "Google — sem palavra-passe. Publicar e votar continuam a ser coisa da app."
     },
     "unavailable": {
       "google": "O Google Sign-In ainda não está configurado nesta build."

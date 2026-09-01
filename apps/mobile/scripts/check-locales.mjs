@@ -82,9 +82,9 @@ for (const [locale, messages] of Object.entries(flat)) {
 // 3. A representative set of keys resolves through the app's own i18next configuration.
 const SAMPLES = [
   ['common.auraAmount', { amount: 12421 }],
-  ['feed.post.likes', { count: 1 }],
-  ['feed.post.likes', { count: 12421 }],
-  ['feed.post.auraGain', { amount: 10 }],
+  ['feed.post.voteCount', { count: 1 }],
+  ['feed.post.voteCount', { count: 12421 }],
+  ['feed.post.a11y.voteLocked', { amount: '+45' }],
   ['leaderboard.rank', { rank: 42 }],
   ['leaderboard.rank', { rank: 12421 }],
   ['leaderboard.place', { rank: 1 }],
@@ -97,9 +97,9 @@ const SAMPLES = [
   ['discover.challenges.entries', { count: 1 }],
   ['discover.challenges.entries', { count: 2140 }],
   ['nav.discover', {}],
-  ['auth.reasons.like.title', {}],
+  ['auth.reasons.vote.title', {}],
   ['auth.username.submit', {}],
-  ['errors.cannot_like_own_post', {}],
+  ['errors.cannot_vote_own_post', {}],
 ];
 
 /** Mirrors `i18nOptions()` in `lib/i18n/config.ts`. */

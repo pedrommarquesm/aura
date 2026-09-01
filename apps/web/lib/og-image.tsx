@@ -45,9 +45,9 @@ export function renderOgImage({
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px",
-          backgroundColor: "#0A0A0F",
+          backgroundColor: "#000000",
           backgroundImage:
-            "radial-gradient(circle at 15% 0%, #6D28D9 0%, rgba(109,40,217,0) 55%), radial-gradient(circle at 100% 100%, #8B5CF6 0%, rgba(139,92,246,0) 50%)",
+            "radial-gradient(circle at 15% 0%, #00B300 0%, rgba(0,179,0,0) 55%), radial-gradient(circle at 100% 100%, #00FF00 0%, rgba(0,255,0,0) 50%)",
           color: "#FFFFFF",
           fontFamily: "sans-serif",
         }}

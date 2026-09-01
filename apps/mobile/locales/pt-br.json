@@ -33,10 +33,8 @@
       "title": "Não deu pra carregar o feed"
     },
     "post": {
-      "likes": "{count, plural, one {# aura} other {# auras}}",
-      "comments": "{count, plural, one {# comentário} other {# comentários}}",
+      "voteCount": "{count, plural, one {# voto} other {# votos}}",
       "seeMore": "Ver mais",
-      "auraGain": "+{amount, number} Aura",
       "actions": {
         "edit": "Editar",
         "delete": "Excluir",
@@ -51,16 +49,27 @@
         "confirm": "Excluir"
       },
       "a11y": {
-        "like": "Dar aura",
-        "unlike": "Tirar aura",
-        "comment": "Comentar",
-        "doubleTap": "Dois toques pra dar aura",
-        "doubleTapSound": "Dois toques pra dar aura. Um toque pro som",
+        "voteSlider": "Arraste pra cima ou pra baixo pra dar aura",
+        "voteLocked": "Você deu {amount} de aura",
+        "openLedger": "Abrir recibos",
         "mute": "Silenciar",
         "unmute": "Ativar som",
         "options": "Opções do post",
         "profile": "Ver @{username}"
       }
+    },
+    "vote": {
+      "receipt": {
+        "placeholder": "Deixa um recibo...",
+        "post": "Postar",
+        "skip": "Pular"
+      }
+    },
+    "ledger": {
+      "title": "Livro de recibos",
+      "empty": "Ainda sem votos. Seja o primeiro.",
+      "error": "Não deu pra carregar os recibos",
+      "more": "Carregar mais"
     }
   },
   "discover": {
@@ -162,13 +171,11 @@
     "error": {
       "title": "Não deu pra carregar este post"
     },
-    "comments": {
-      "title": "Comentários",
-      "empty": "Ainda não tem comentários. Fala alguma coisa.",
-      "placeholder": "Escreve um comentário",
-      "post": "Postar",
+    "ledger": {
+      "title": "Recibos",
+      "empty": "Ainda sem votos. Seja o primeiro.",
       "more": "Carregar mais",
-      "error": "Não deu pra carregar os comentários"
+      "error": "Não deu pra carregar os recibos"
     }
   },
   "auth": {
@@ -190,9 +197,9 @@
       "toggleSignIn": "Já tenho conta"
     },
     "reasons": {
-      "like": {
+      "vote": {
         "title": "Entra pra dar Aura",
-        "body": "As auras são a pontuação. Apple, Google ou email — e esta aura conta."
+        "body": "Apple, Google ou email — e este voto conta."
       },
       "create": {
         "title": "Entra pra postar",
@@ -201,10 +208,6 @@
       "profile": {
         "title": "Começa a farmar Aura",
         "body": "Entra pra escolher um username, postar e subir no ranking."
-      },
-      "comment": {
-        "title": "Entra pra comentar",
-        "body": "Apple, Google ou email — e você pode deixar um comentário."
       },
       "generic": {
         "title": "Entra na Aura",
@@ -281,9 +284,8 @@
     "upload_too_large": "Esse arquivo é grande demais.",
     "unsupported_media_type": "Esse tipo de arquivo não é suportado.",
     "post_not_published": "Esse post ainda não está no ar.",
-    "already_liked": "Você já deu like neste post.",
-    "not_liked": "Você ainda não deu like neste post.",
-    "cannot_like_own_post": "Você não pode dar like no seu próprio post. Boa tentativa.",
+    "cannot_vote_own_post": "Você não pode votar no seu próprio post. Boa tentativa.",
+    "receipt_already_set": "Esse voto já tem um recibo.",
     "already_reported": "Você já denunciou isso.",
     "already_blocked": "Você já bloqueou essa conta.",
     "cannot_block_self": "Você não pode bloquear a si mesmo.",

@@ -2,13 +2,11 @@ import { Module } from '@nestjs/common';
 
 import { AuraModule } from './aura/aura.module';
 import { AuthModule } from './auth/auth.module';
-import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from './config/config.module';
 import { DbModule } from './db/db.module';
 import { FeedModule } from './feed/feed.module';
 import { HealthModule } from './health/health.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
-import { LikesModule } from './likes/likes.module';
 import { MediaModule } from './media/media.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { PostsModule } from './posts/posts.module';
@@ -22,6 +20,7 @@ import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { ContactModule } from './contact/contact.module';
+import { VotesModule } from './votes/votes.module';
 
 /**
  * Shared by the HTTP process and the worker process.
@@ -43,8 +42,7 @@ import { ContactModule } from './contact/contact.module';
     HealthModule,
     AuthModule,
     FeedModule,
-    LikesModule,
-    CommentsModule,
+    VotesModule,
     PostsModule,
     LeaderboardModule,
     UsersModule,

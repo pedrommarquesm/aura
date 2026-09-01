@@ -10,7 +10,7 @@ import { asGuest, asSignedIn, routerMocks } from '../helpers/session';
 
 const alice = mockFeed[0]!;
 
-describe('Other people\'s profiles', () => {
+describe("Other people's profiles", () => {
   it('opens their profile from the post avatar and name', async () => {
     asGuest();
     const user = userEvent.setup();

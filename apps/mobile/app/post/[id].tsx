@@ -35,7 +35,7 @@ export default function PostScreen() {
     useCallback(() => {
       if (!id) return;
       void queryClient.invalidateQueries({ queryKey: queryKeys.post(id) });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.postComments(id) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.postVotes(id) });
     }, [id, queryClient]),
   );
 

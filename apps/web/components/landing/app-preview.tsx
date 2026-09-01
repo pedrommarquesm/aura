@@ -1,10 +1,8 @@
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { HeartIcon } from "@/components/icons";
 import { PostMedia } from "@/components/post-media";
 import { AuraValue, Avatar } from "@/components/ui";
 import type { FeedCard } from "@/lib/api";
-import { formatCount } from "@/lib/format";
 
 /**
  * Static rendition of the mobile feed card. It exists to show the product on a
@@ -17,7 +15,6 @@ export function AppPreview({
   post: FeedCard;
   rank: number | null;
 }) {
-  const format = useFormatter();
   const t = useTranslations("landing.hero.preview");
   const tabs = useTranslations("nav.tabs");
   const feed = useTranslations("feed");
@@ -53,9 +50,6 @@ export function AppPreview({
               className="aspect-4/5"
               playInView={false}
             />
-            <span className="absolute bottom-3 left-3 rounded-full bg-aura-gradient px-3 py-1 text-caption font-semibold">
-              {t("auraGain", { aura: 10 })}
-            </span>
           </div>
 
           <div className="flex flex-col gap-3 p-4">
@@ -75,14 +69,12 @@ export function AppPreview({
             </div>
 
             <div className="flex items-center gap-4 text-label text-text-secondary">
-              <span className="inline-flex items-center gap-1.5 text-like">
-                <HeartIcon className="size-4" />
-                <span aria-hidden>{formatCount(format, post.likeCount)}</span>
-                <span className="sr-only">
-                  {feed("post.likes", { count: post.likeCount })}
-                </span>
-              </span>
-              <AuraValue value={post.aura} size="sm" tone="secondary" />
+              <span>{feed("post.voteCount", { count: post.voteCount })}</span>
+              <AuraValue
+                value={post.aura}
+                size="sm"
+                tone={post.aura >= 0 ? "aura" : "danger"}
+              />
             </div>
           </div>
 

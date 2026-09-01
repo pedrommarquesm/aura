@@ -26,6 +26,8 @@ const tones = {
   default: "text-text",
   secondary: "text-text-secondary",
   aura: "text-aura-bright",
+  /** Aura Debt — a post or user in the negative. */
+  danger: "text-danger",
 } as const;
 
 export function AuraValue({

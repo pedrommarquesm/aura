@@ -12,15 +12,18 @@ import { formatLocale, type AppLocale } from '@/lib/i18n/locales';
  */
 const cache = new Map<string, Intl.NumberFormat>();
 
-function numberFormat(locale: AppLocale, style: 'decimal' | 'compact'): Intl.NumberFormat {
+function numberFormat(
+  locale: AppLocale,
+  style: 'decimal' | 'compact' | 'signed',
+): Intl.NumberFormat {
   const key = `${locale}:${style}`;
   const cached = cache.get(key);
   if (cached) return cached;
 
-  const format = new Intl.NumberFormat(
-    formatLocale[locale],
-    style === 'compact' ? { notation: 'compact', maximumFractionDigits: 1 } : undefined,
-  );
+  const format = new Intl.NumberFormat(formatLocale[locale], {
+    ...(style === 'compact' ? { notation: 'compact' as const, maximumFractionDigits: 1 } : {}),
+    ...(style === 'signed' ? { signDisplay: 'exceptZero' as const } : {}),
+  });
 
   cache.set(key, format);
   return format;
@@ -41,4 +44,13 @@ export function formatCount(value: number, locale: AppLocale): string {
 
 export function formatNumber(value: number, locale: AppLocale): string {
   return numberFormat(locale, 'decimal').format(value);
+}
+
+/**
+ * A vote or a post's Aura, always with an explicit sign. The vote slider and
+ * floating receipts show `+85` / `-40`, never a bare `85` that could read as
+ * a count. `0` never reaches this — a 0 release is a client-side cancel.
+ */
+export function formatSigned(value: number, locale: AppLocale): string {
+  return numberFormat(locale, 'signed').format(Math.trunc(value));
 }

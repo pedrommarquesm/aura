@@ -24,10 +24,7 @@ describe('Password sign-in', () => {
     await user.press(screen.getByLabelText('Sign in with email'));
 
     await waitFor(() => {
-      expect(api.signInWithPassword).toHaveBeenCalledWith(
-        'e2e@auraclimb.test',
-        'long-enough',
-      );
+      expect(api.signInWithPassword).toHaveBeenCalledWith('e2e@auraclimb.test', 'long-enough');
     });
     await waitFor(() => {
       expect(screen.queryByText('Sign in to post')).toBeNull();

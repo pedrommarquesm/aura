@@ -15,7 +15,7 @@ const feedQuerySchema = z.object({
  *
  * A new install scrolls immediately and only meets an auth prompt on its first
  * Aura action, which converts far better than a cold signup wall. Anonymous
- * callers simply get `likedByMe: false` throughout.
+ * callers simply get `votedByMe: false` throughout.
  */
 @Controller('feed')
 @UseGuards(OptionalAuthGuard)

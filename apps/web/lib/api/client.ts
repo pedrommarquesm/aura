@@ -39,7 +39,7 @@ async function readError(response: Response) {
  * The only place the app talks to the network.
  *
  * Guest reads use the trending-window revalidate so the landing page can be
- * cached. A signed-in request always bypasses that cache: `likedByMe` is
+ * cached. A signed-in request always bypasses that cache: `votedByMe` is
  * per-user and a refresh token must never be mixed into a shared page.
  */
 export async function apiGet<T>(

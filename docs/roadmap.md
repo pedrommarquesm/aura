@@ -45,9 +45,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Two tracks. (1) Early beta is still a private install + waitlist, not a store launch ([early-beta-launch.md](./early-beta-launch.md)). (2) Vote/receipts questions are **locked**. Screenshots are in [redesign-screens/](./redesign-screens/). Schema is **greenfield**: drop `likes`/`comments`, no backfill.
+**Now** — Two tracks. (1) Early beta is still a private install + waitlist, not a store launch ([early-beta-launch.md](./early-beta-launch.md)). (2) The vote & receipts redesign shipped: likes/comments are gone, the vote API and mobile slider/receipts/ledger are live, web is read-only. **This is a schema-breaking release** — deploying it means dropping and recreating the database (see [redesign-tracker.md](./redesign-tracker.md) `RDX-15`).
 
-**Next** — Vote API (`RDX-10`–`RDX-21`), then UI against the screenshots. Home swipe is COOKED ← LIVE CHECK → CERTIFIED (`RDX-51`). Bottom bar is HOME \| PROFILE (`RDX-50`).
+**Next** — Docs still describe the old like/comment model in prose (`RDX-03`). Home swipe COOKED ← LIVE CHECK → CERTIFIED (`RDX-51`) and the 2-tab bar (`RDX-50`) are screenshot-confirmed but not yet built.
 
 **Later** — Push after testers exist. `RDX-61` retargets it at receipts + net-Aura digest. Vote Power stays parked (`RDX-60`). 24h expiry / Certified-Cooked inject / calibration / in-app camera still need screens (`RDX-52`–`RDX-56`).
 
@@ -57,9 +57,9 @@ Worth doing early rather than late: `FND-03`, and the three things waiting on it
 
 ## Redesign — votes and receipts
 
-Not implemented yet. Q1–Q20 are locked. Screenshots: [redesign-screens/](./redesign-screens/). Full rows: [redesign-tracker.md](./redesign-tracker.md).
+**Shipped.** Likes and comments are gone; votes and receipts are the product now. Full rows and remaining caveats: [redesign-tracker.md](./redesign-tracker.md).
 
-Do not add like, unlike, or comment features. Do not write a likes→votes data migration. Admin comment tools (`API-44`, `TS-15`) wait for `RDX-63`. The `FND-13` row in M0 is the pointer in this file.
+Do not add like, unlike, or comment features back. Admin comment tools (`API-44`, `TS-15`) wait for `RDX-63`. The `FND-13` row in M0 is the pointer in this file.
 
 ---
 
@@ -81,7 +81,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 | FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | Done | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
-| FND-13 | Vote & receipts redesign tracker ([redesign-tracker.md](./redesign-tracker.md)). Q1–Q20 locked. Screenshots 01–09 landed. Greenfield schema | In review | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| FND-13 | Vote & receipts redesign: tracker, greenfield schema, vote API, mobile slider/receipts/ledger, web read-only. Deploy requires dropping the database — see `RDX-15` | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87), [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 
 ### Mobile bootstrap
 
@@ -193,7 +193,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | Done | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | API-29 | `POST /v1/me/avatar/uploads` + `POST /v1/me/avatar/complete`. Square JPEG only. Writes `users.avatarUrl` | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
-| API-31 | `GET|POST /v1/posts/:id/comments`. Flat thread. `commentCount` on the card. Authors may comment. No Aura. **Superseded as the product object by receipts — see `RDX-13`** | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
+| API-31 | `GET|POST /v1/posts/:id/comments`. Flat thread. `commentCount` on the card. Authors may comment. No Aura. **Removed — replaced by receipts on the vote row, see `RDX-13`** | Dropped | superseded by `RDX-13` in [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | MOB-30 | FlashList feed, infinite scroll, prefetch, pull to refresh | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-31 | Loading, empty, and error/retry states | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-32 | Video autoplay in viewport, muted by default, tap for sound. Create plays the local file before publish | Done | [#49](https://github.com/pedrommarquesm/aura/pull/49) |
@@ -232,8 +232,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | ID | Task | Status | PR |
 |---|---|---|---|
 | AURA-01 | `AuraLedger`: single writer, transactional event + counter update | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-02 | `auraForLike()` seam, flat 10, with the Vote Power warning comment (architecture §7.4). **Hot path goes away in `RDX-12` — amount becomes the voter's chosen integer** | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
-| AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike. **Superseded by one-shot votes (`RDX-11`); `REVERSAL` remains for takedowns** | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
+| AURA-02 | `auraForLike()` seam, flat 10, with the Vote Power warning comment (architecture §7.4). **Removed — the voter now chooses the amount, see `RDX-12`** | Dropped | superseded by `RDX-12` in [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| AURA-03 | Like / unlike endpoints, idempotent, no self-like, `REVERSAL` on unlike. **Removed — replaced by one-shot votes, see `RDX-11`. `REVERSAL` remains for takedowns** | Dropped | superseded by `RDX-11` in [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | AURA-04 | Reconciliation job: rebuild `users.aura` from the ledger | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-05 | Global leaderboard: Redis sorted set + SQL fallback + viewer rank | Done | [#11](https://github.com/pedrommarquesm/aura/pull/11) |
 | AURA-06 | Do not `ZINCRBY` onto an empty `lb:global`. Rebuild from `users.aura`. Likes write the set. Pin the viewer row only when they are outside the list | Done | [#61](https://github.com/pedrommarquesm/aura/pull/61) |
@@ -339,6 +339,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Vote & receipts redesign shipped. `likes` / `comments` tables dropped, `votes` is the only object; migration history squashed to a fresh init — deploying requires dropping the database. Mobile has a vertical slider (haptics, receipts, ledger sheet); web is read-only. Full breakdown: [redesign-tracker.md](./redesign-tracker.md) | [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 | 2026-09-01 | Design screenshots 01–09 in `docs/redesign-screens/`. Home swipe is COOKED ← LIVE CHECK → CERTIFIED. Bottom bar is HOME \| PROFILE | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Q1–Q20 locked. Greenfield: drop `likes`/`comments`, no data port. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md). Will be retargeted at receipts + net-Aura digest in `RDX-61` | [#85](https://github.com/pedrommarquesm/aura/pull/85) |

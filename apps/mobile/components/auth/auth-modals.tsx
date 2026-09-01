@@ -7,8 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SignInCard } from './sign-in-card';
 import { UsernameCard } from './username-card';
-import { likePost, unlikePost } from '@/lib/api';
-import { applyLikeResult } from '@/lib/query/feed-cache';
+import { castVote } from '@/lib/api';
+import { applyVoteResult } from '@/lib/query/feed-cache';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useSessionStore } from '@/store/session';
 import { colors, withAlpha } from '@/theme/tokens';
@@ -17,7 +17,7 @@ import { colors, withAlpha } from '@/theme/tokens';
  * Overlay for guest conversion and first-login username claim.
  *
  * Stays mounted above the tabs so the feed does not unmount while the user
- * signs in — the pending like then replays against the same cards.
+ * signs in — the pending vote then replays against the same card.
  */
 export function AuthModals() {
   const { t } = useTranslation();
@@ -53,19 +53,11 @@ export function AuthModals() {
         return;
       }
 
-      if (pending.type === 'comment') {
-        router.navigate(`/post/${pending.postId}`);
-        return;
-      }
-
       try {
-        const result =
-          pending.type === 'like'
-            ? await likePost(pending.postId)
-            : await unlikePost(pending.postId);
-        applyLikeResult(queryClient, pending.postId, result);
+        const result = await castVote(pending.postId, pending.amount, pending.receipt);
+        applyVoteResult(queryClient, pending.postId, result);
       } catch {
-        // The user is signed in; the like can be retried from the card.
+        // The user is signed in; the vote can be retried from the card.
       }
     })();
   }, [authenticated, needsUsername, takePending, close, queryClient, router]);

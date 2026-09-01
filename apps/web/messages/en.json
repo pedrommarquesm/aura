@@ -384,12 +384,8 @@
       "end": "You are caught up."
     },
     "post": {
-      "likes": "{count, plural, one {# like} other {# likes}}",
-      "auraGain": "+{amount, number} Aura",
+      "voteCount": "{count, plural, one {# vote} other {# votes}}",
       "a11y": {
-        "like": "Like",
-        "unlike": "Remove like",
-        "doubleClick": "Double-click to like",
         "unmute": "Unmute",
         "mute": "Mute"
       },
@@ -400,8 +396,8 @@
     "page": {
       "eyebrow": "Shared from the app",
       "openInApp": "Open in the Aura app",
-      "installTitle": "Post it in the app",
-      "installBody": "Every like gives Aura to the creator. You can like it here. Posting stays in the app.",
+      "installTitle": "Vote in the app",
+      "installBody": "Aura here is read-only. Open the app to slide a vote up or down.",
       "unavailable": "This post is gone, or it was never published."
     }
   },
@@ -413,13 +409,7 @@
     },
     "page": {
       "title": "Sign in to Aura",
-      "body": "Google — no password. Posting stays in the app."
-    },
-    "reasons": {
-      "like": {
-        "title": "Sign in to award Aura",
-        "body": "Likes are the score. Google — no password — then this like lands."
-      }
+      "body": "Google — no password. Posting and voting stay in the app."
     },
     "unavailable": {
       "google": "Google Sign-In is not configured in this build yet."

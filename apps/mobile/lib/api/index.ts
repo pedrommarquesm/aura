@@ -14,8 +14,13 @@ export {
 export { FEED_PAGE_SIZE, fetchFeedPage, type FeedRanking } from './feed';
 export { HASHTAG_PAGE_SIZE, fetchHashtagPage } from './hashtags';
 export { LEADERBOARD_PAGE_SIZE, fetchGlobalLeaderboard } from './leaderboard';
-export { COMMENTS_PAGE_SIZE, createComment, fetchComments } from './comments';
-export { likePost, unlikePost } from './likes';
+export {
+  VOTE_LEDGER_PAGE_SIZE,
+  castVote,
+  fetchVoteLedger,
+  fetchVoteOverlay,
+  setVoteReceipt,
+} from './votes';
 export {
   completeUpload,
   createUpload,
@@ -33,13 +38,11 @@ export {
 } from './users';
 export type {
   AuthTokens,
-  CommentAuthor,
-  CommentCard,
+  CastVoteResult,
   CompleteAvatarResponse,
   CompleteUploadResponse,
   CreateAvatarUploadRequest,
   CreateAvatarUploadResponse,
-  CreateCommentResult,
   CreateUploadRequest,
   CreateUploadResponse,
   CursorPage,
@@ -48,10 +51,12 @@ export type {
   FeedMedia,
   LeaderboardEntry,
   LeaderboardPage,
-  LikeResult,
   MediaType,
   PostDetail,
   PublicProfile,
   PublicUser,
+  SetReceiptResult,
   SignInResponse,
+  VoteAuthor,
+  VoteReceipt,
 } from './types';

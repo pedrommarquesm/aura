@@ -44,15 +44,9 @@ export function usernamePath(locale: string) {
   return getPathname({ href: "/username", locale: asLocale(locale) });
 }
 
-export function authContinueHref(
-  locale: string,
-  kind: "login" | "username",
-  next: string,
-  like?: string | null,
-) {
+export function authContinueHref(locale: string, kind: "login" | "username", next: string) {
   const path = kind === "login" ? loginPath(locale) : usernamePath(locale);
   const params = new URLSearchParams();
   params.set("next", next);
-  if (like) params.set("like", like);
   return `${path}?${params.toString()}`;
 }

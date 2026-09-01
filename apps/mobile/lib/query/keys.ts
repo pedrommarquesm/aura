@@ -24,7 +24,8 @@ export const queryKeys = {
   userPosts: (userId: string) => ['user', userId, 'posts'] as const,
   hashtag: (tag: string) => ['hashtag', tag] as const,
   post: (id: string) => ['post', id] as const,
-  postComments: (id: string) => ['post', id, 'comments'] as const,
+  postVotes: (id: string) => ['post', id, 'votes'] as const,
+  postVoteOverlay: (id: string) => ['post', id, 'votes', 'overlay'] as const,
   leaderboard: {
     global: ['leaderboard', 'global'] as const,
   },

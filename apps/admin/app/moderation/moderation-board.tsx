@@ -175,7 +175,7 @@ export function ModerationBoard() {
               </Link>
               <p className="truncate text-caption text-text-secondary">{post.caption || "Untitled"}</p>
               <p className="text-caption text-text-muted">
-                {formatNumber(post.likeCount)} likes · {formatDate(post.createdAt)}
+                {formatNumber(post.voteCount)} votes · {formatDate(post.createdAt)}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">

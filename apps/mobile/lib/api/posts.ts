@@ -1,5 +1,10 @@
 import { api } from './client';
-import type { CompleteUploadResponse, CreateUploadRequest, CreateUploadResponse, PostDetail } from './types';
+import type {
+  CompleteUploadResponse,
+  CreateUploadRequest,
+  CreateUploadResponse,
+  PostDetail,
+} from './types';
 
 export function createUpload(input: CreateUploadRequest) {
   return api.post<CreateUploadResponse>('/posts/uploads', input);

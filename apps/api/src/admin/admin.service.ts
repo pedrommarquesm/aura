@@ -3,7 +3,7 @@ import { and, count, desc, eq, ilike, or, sql, type SQL } from 'drizzle-orm';
 
 import { AppError } from '../common/errors/app-error';
 import { DB, type Database } from '../db/db.module';
-import { authIdentities, likes, mediaAssets, posts, reports, staff, users } from '../db/schema';
+import { authIdentities, mediaAssets, posts, reports, staff, users, votes } from '../db/schema';
 import { MediaUrlResolver } from '../media/media-url.resolver';
 
 export const ADMIN_PAGE_SIZE = 25;
@@ -12,7 +12,7 @@ export const ADMIN_MAX_PAGE_SIZE = 100;
 export interface AdminStats {
   users: { total: number; active: number; suspended: number; banned: number; createdLast7Days: number };
   posts: { published: number; removed: number; createdLast7Days: number };
-  likes: { total: number; last7Days: number };
+  votes: { total: number; last7Days: number };
   reports: { open: number; dismissed: number; actioned: number };
   staff: { total: number; active: number };
 }
@@ -43,7 +43,7 @@ export interface AdminPostRow {
   caption: string | null;
   status: (typeof posts.$inferSelect)['status'];
   mediaType: (typeof posts.$inferSelect)['mediaType'];
-  likeCount: number;
+  voteCount: number;
   aura: number;
   createdAt: string;
   publishedAt: string | null;
@@ -74,7 +74,7 @@ export class AdminService {
   async stats(): Promise<AdminStats> {
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const [userStats, postStats, likeStats, reportStats, staffStats] = await Promise.all([
+    const [userStats, postStats, voteStats, reportStats, staffStats] = await Promise.all([
       this.db
         .select({
           total: count(),
@@ -102,11 +102,11 @@ export class AdminService {
       this.db
         .select({
           total: count(),
-          last7Days: sql<number>`count(*) filter (where ${likes.createdAt} >= ${since})`.mapWith(
+          last7Days: sql<number>`count(*) filter (where ${votes.createdAt} >= ${since})`.mapWith(
             Number,
           ),
         })
-        .from(likes),
+        .from(votes),
       this.db
         .select({
           open: sql<number>`count(*) filter (where ${reports.status} = 'open')`.mapWith(Number),
@@ -139,9 +139,9 @@ export class AdminService {
         removed: postStats[0]?.removed ?? 0,
         createdLast7Days: postStats[0]?.createdLast7Days ?? 0,
       },
-      likes: {
-        total: Number(likeStats[0]?.total ?? 0),
-        last7Days: likeStats[0]?.last7Days ?? 0,
+      votes: {
+        total: Number(voteStats[0]?.total ?? 0),
+        last7Days: voteStats[0]?.last7Days ?? 0,
       },
       reports: {
         open: reportStats[0]?.open ?? 0,
@@ -314,7 +314,7 @@ export class AdminService {
         caption: posts.caption,
         status: posts.status,
         mediaType: posts.mediaType,
-        likeCount: posts.likeCount,
+        voteCount: posts.voteCount,
         aura: posts.aura,
         createdAt: posts.createdAt,
         publishedAt: posts.publishedAt,
@@ -349,7 +349,7 @@ export class AdminService {
           caption: row.caption,
           status: row.status,
           mediaType: row.mediaType,
-          likeCount: row.likeCount,
+          voteCount: row.voteCount,
           aura: row.aura,
           createdAt: row.createdAt.toISOString(),
           publishedAt: row.publishedAt ? row.publishedAt.toISOString() : null,

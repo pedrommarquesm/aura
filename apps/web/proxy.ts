@@ -49,7 +49,7 @@ export default async function proxy(request: NextRequest) {
 
   // Share URLs and short referral links stay unprefixed (docs/i18n.md).
   // next-intl would otherwise rewrite `/a/alice/post/…` or `/r/AB23CD45`
-  // into `/en/…` or `/pt/…`. Session refresh still runs so `likedByMe`
+  // into `/en/…` or `/pt/…`. Session refresh still runs so `votedByMe`
   // works when the viewer is signed in.
   if (
     isSharePath(request.nextUrl.pathname) ||

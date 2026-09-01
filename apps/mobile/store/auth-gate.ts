@@ -1,12 +1,10 @@
 import { create } from 'zustand';
 
-export type AuthReason = 'like' | 'create' | 'profile' | 'comment' | 'generic';
+export type AuthReason = 'vote' | 'create' | 'profile' | 'generic';
 
 export type PendingAction =
-  | { type: 'like'; postId: string }
-  | { type: 'unlike'; postId: string }
-  | { type: 'create' }
-  | { type: 'comment'; postId: string };
+  | { type: 'vote'; postId: string; amount: number; receipt?: string | null }
+  | { type: 'create' };
 
 type AuthGateState = {
   open: boolean;
@@ -19,10 +17,9 @@ type AuthGateState = {
 };
 
 /**
- * Guest browsing is the default. The first signed-in action (like, post,
- * comment) opens this gate; after Apple/Google (+ username if needed) the
- * pending action replays. A pending comment only opens the thread — it does
- * not submit a draft.
+ * Guest browsing is the default. The first signed-in action (vote, post)
+ * opens this gate; after Apple/Google (+ username if needed) the pending
+ * action replays against the same slider gesture the guest already made.
  */
 export const useAuthGateStore = create<AuthGateState>((set, get) => ({
   open: false,

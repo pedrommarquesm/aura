@@ -16,7 +16,7 @@ const hashtagQuerySchema = z.object({
  * Published posts whose caption indexed this tag.
  *
  * Readable without auth, same as the feed. Anonymous callers get
- * `likedByMe: false`.
+ * `votedByMe: false`.
  */
 @Controller('hashtags')
 @UseGuards(OptionalAuthGuard)

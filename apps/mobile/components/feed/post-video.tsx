@@ -95,9 +95,7 @@ export function VideoMuteBadge({ muted, hostHeight }: { muted: boolean; hostHeig
     seen.current = muted;
 
     progress.set(0);
-    progress.set(
-      withSequence(withTiming(1, instant), withTiming(1, HOLD), withTiming(0, quick)),
-    );
+    progress.set(withSequence(withTiming(1, instant), withTiming(1, HOLD), withTiming(0, quick)));
   }, [muted, progress]);
 
   const flash = useAnimatedStyle(() => {

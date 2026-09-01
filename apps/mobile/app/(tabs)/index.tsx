@@ -97,7 +97,7 @@ export default function HomeScreen() {
     initialPageParam: null as string | null,
     getNextPageParam: (last) => (last.hasMore ? last.nextCursor : undefined),
     // Cold start is `restoring` with no access token. Fetching then caches a
-    // guest snapshot (`likedByMe: false`) and `refetchOnMount: false` keeps it
+    // guest snapshot (`votedByMe: false`) and `refetchOnMount: false` keeps it
     // until the user pulls to refresh.
     enabled: sessionStatus !== 'restoring',
   });
@@ -235,11 +235,12 @@ export default function HomeScreen() {
           <FeedPostCard
             post={item}
             isActiveVideo={item.id === playingVideoId}
+            isActive={item.id === activePostId}
             height={viewportHeight}
             overlayInsetTop={headerHeight}
           />
         )}
-        extraData={`${playingVideoId}:${viewportHeight}:${headerHeight}`}
+        extraData={`${playingVideoId}:${activePostId}:${viewportHeight}:${headerHeight}`}
         viewabilityConfig={VIDEO_VIEWABILITY}
         onViewableItemsChanged={onViewableItemsChanged}
         pagingEnabled

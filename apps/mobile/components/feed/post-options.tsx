@@ -15,13 +15,7 @@ const CAPTION_MAX = 2_200;
 
 type Sheet = 'closed' | 'menu' | 'edit' | 'confirmDelete';
 
-export function PostOptions({
-  post,
-  onDeleted,
-}: {
-  post: FeedCard;
-  onDeleted?: () => void;
-}) {
+export function PostOptions({ post, onDeleted }: { post: FeedCard; onDeleted?: () => void }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();

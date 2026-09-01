@@ -17,7 +17,6 @@ const tones = {
   secondary: 'text-text-secondary',
   muted: 'text-text-muted',
   aura: 'text-aura-bright',
-  like: 'text-like',
   success: 'text-success',
   danger: 'text-danger',
 } as const;

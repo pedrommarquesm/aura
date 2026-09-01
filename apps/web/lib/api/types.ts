@@ -50,11 +50,12 @@ export type FeedCard = {
   author: PostAuthor;
   media: PostMedia;
   caption: string | null;
-  likeCount: number;
-  commentCount: number;
-  /** Aura this post has earned, not the author's total. */
+  voteCount: number;
+  /** Signed. This post may be in Aura Debt (negative). Not the author's total. */
   aura: number;
-  likedByMe: boolean;
+  /** Read-only on web (docs/redesign-tracker.md Q12) — the slider is a mobile gesture. */
+  votedByMe: boolean;
+  myAmount: number | null;
 };
 
 /** `GET /v1/posts/:id` — the permalink is the feed card. */
@@ -99,15 +100,6 @@ export type AuthTokens = {
 export type SignInResponse = AuthTokens & {
   needsUsername: boolean;
   user: PublicUser;
-};
-
-/** `POST|DELETE /v1/posts/:id/like` — same shape the mobile client already uses. */
-export type LikeResult = {
-  liked: boolean;
-  likeCount: number;
-  postAura: number;
-  creatorAura: number;
-  actorAuraDelta: number;
 };
 
 /** Reads the public web surface is allowed to make. Auth is a separate BFF. */

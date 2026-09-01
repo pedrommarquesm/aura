@@ -9,14 +9,15 @@ import { loadEnv } from '../config/env';
 import * as schema from './schema';
 import { hashPassword, normalizeEmail } from '../auth/password';
 
-import { auraEvents, authIdentities, likes, mediaAssets, posts, users } from './schema';
+import { auraEvents, authIdentities, mediaAssets, posts, users, votes } from './schema';
 
 /**
  * Development seed.
  *
  * Gives the mobile and web clients something real to render while the upload
- * pipeline is still being built: published posts with media variants, likes,
- * and a matching ledger so Aura totals reconcile instead of being invented.
+ * pipeline is still being built: published posts with media variants, votes
+ * (some with receipts, some without, a couple negative), and a matching
+ * ledger so Aura totals reconcile instead of being invented.
  *
  * Runs against local and staging. Refuses production, because it truncates.
  *
@@ -44,6 +45,17 @@ const CAPTIONS = [
   'this one goes hard',
 ];
 
+const POSITIVE_RECEIPTS = [
+  'clean recovery',
+  'unbothered fr',
+  'this one is certified',
+  'the aura is real',
+  null,
+  null,
+];
+
+const NEGATIVE_RECEIPTS = ['forced pose', 'tried way too hard', 'cooked ngl', null];
+
 async function main(): Promise<void> {
   const env = loadEnv();
 
@@ -65,7 +77,7 @@ async function main(): Promise<void> {
   try {
     console.log('[seed] clearing existing data');
     await db.delete(auraEvents);
-    await db.delete(likes);
+    await db.delete(votes);
     await db.delete(mediaAssets);
     await db.delete(posts);
     await db.delete(users);
@@ -163,48 +175,60 @@ async function main(): Promise<void> {
       createdPosts.push({ id: postId, authorId: author.id });
     }
 
-    console.log('[seed] creating likes and matching ledger events');
-    const BASE_LIKE_AURA = 10;
-    let likeTotal = 0;
+    console.log('[seed] creating votes, receipts, and matching ledger events');
+    let voteTotal = 0;
 
     for (const [postIndex, post] of createdPosts.entries()) {
-      // Newer posts get more likes, so trending has something to rank.
-      const likeCount = Math.max(0, 12 - Math.floor(postIndex / 2));
+      // Newer posts get more votes, so trending has something to rank. Every
+      // fourth post skews negative (Aura Debt / "Cooked") so the feed shows
+      // both directions of the economy, not just a climb.
+      const isCooked = postIndex % 4 === 3;
+      const voterCount = Math.max(0, 12 - Math.floor(postIndex / 2));
+      const voters = created.filter((user) => user.id !== post.authorId).slice(0, voterCount);
 
-      const voters = created.filter((user) => user.id !== post.authorId).slice(0, likeCount);
+      let postAura = 0;
 
-      for (const voter of voters) {
+      for (const [voterIndex, voter] of voters.entries()) {
+        const amount = isCooked
+          ? -(20 + (voterIndex % 5) * 15) // -20..-80
+          : 10 + (voterIndex % 5) * 18; // 10..82
+        const receiptPool = amount > 0 ? POSITIVE_RECEIPTS : NEGATIVE_RECEIPTS;
+        const receipt = receiptPool[voterIndex % receiptPool.length] ?? null;
+
         const eventId = newId();
-        const createdAt = new Date(Date.now() - postIndex * 60_000);
+        const createdAt = new Date(Date.now() - postIndex * 60_000 - voterIndex * 1_000);
 
         await db.insert(auraEvents).values({
           id: eventId,
           userId: post.authorId,
           sourceUserId: voter.id,
           postId: post.id,
-          type: 'LIKE',
-          amount: BASE_LIKE_AURA,
-          idempotencyKey: `like:${voter.id}:${post.id}`,
+          type: 'VOTE',
+          amount,
+          idempotencyKey: `vote:${voter.id}:${post.id}`,
           createdAt,
         });
 
-        await db.insert(likes).values({
+        await db.insert(votes).values({
           userId: voter.id,
           postId: post.id,
+          amount,
+          receipt,
           auraEventId: eventId,
           createdAt,
         });
 
-        likeTotal += 1;
+        postAura += amount;
+        voteTotal += 1;
       }
 
       await db
         .update(posts)
         .set({
-          likeCount: voters.length,
-          aura: voters.length * BASE_LIKE_AURA,
+          voteCount: voters.length,
+          aura: postAura,
           // Stand-in until the worker's first recompute; keeps /feed/trending ordered.
-          trendingScore: voters.length * BASE_LIKE_AURA,
+          trendingScore: postAura,
         })
         .where(eq(posts.id, post.id));
     }
@@ -232,7 +256,7 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      `[seed] done: ${created.length} users, ${createdPosts.length} posts, ${likeTotal} likes`,
+      `[seed] done: ${created.length} users, ${createdPosts.length} posts, ${voteTotal} votes`,
     );
   } finally {
     await client.end({ timeout: 5 });

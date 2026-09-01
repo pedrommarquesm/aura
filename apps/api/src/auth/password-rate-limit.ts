@@ -1,6 +1,6 @@
 import type { Redis } from 'ioredis';
 
-/** Same INCR + expire pattern as likes. Fail closed if Redis is down. */
+/** Same INCR + expire pattern as votes. Fail closed if Redis is down. */
 export async function consumePasswordSlot(
   redis: Redis,
   key: string,

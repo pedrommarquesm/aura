@@ -27,12 +27,12 @@ export function Dashboard() {
 
   const cards = useMemo(() => {
     if (!stats.data) return [];
-    const { users: u, posts, likes, reports } = stats.data;
+    const { users: u, posts, votes, reports } = stats.data;
     return [
       { label: "Users", value: u.total, hint: `${formatNumber(u.createdLast7Days)} new this week` },
       { label: "Active", value: u.active, hint: `${formatNumber(u.suspended)} suspended · ${formatNumber(u.banned)} banned` },
       { label: "Published posts", value: posts.published, hint: `${formatNumber(posts.removed)} removed` },
-      { label: "Likes", value: likes.total, hint: `${formatNumber(likes.last7Days)} this week` },
+      { label: "Votes", value: votes.total, hint: `${formatNumber(votes.last7Days)} this week` },
       { label: "Open reports", value: reports.open, hint: `${formatNumber(reports.actioned)} actioned` },
     ];
   }, [stats.data]);

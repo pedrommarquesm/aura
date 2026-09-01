@@ -18,8 +18,6 @@ import {
   safeReturnPath,
 } from "@/lib/auth/return-to";
 import { getSession } from "@/lib/auth/session";
-import { isPostId } from "@/lib/likes/ids";
-import { applyPendingLike } from "@/lib/likes/server";
 import { webAuthEnabled } from "@/lib/launch";
 import { buildMetadata } from "@/lib/seo";
 
@@ -40,30 +38,26 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; like?: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
   if (!webAuthEnabled) {
     redirect("/");
   }
 
   const locale = await getLocale();
-  const { next, like } = await searchParams;
+  const { next } = await searchParams;
   const returnTo = safeReturnPath(next) ?? defaultSignedInPath(locale);
-  const pendingLike = isPostId(like) ? like : null;
   const session = await getSession();
 
   if (session?.needsUsername) {
-    redirect(authContinueHref(locale, "username", returnTo, pendingLike));
+    redirect(authContinueHref(locale, "username", returnTo));
   }
 
   if (session) {
-    await applyPendingLike(session.accessToken, pendingLike);
     redirect(returnTo);
   }
 
-  const t = pendingLike
-    ? await getTranslations("auth.reasons.like")
-    : await getTranslations("auth.page");
+  const t = await getTranslations("auth.page");
 
   const { LoginForm } = await import("./login-form");
 
@@ -78,7 +72,7 @@ export default async function LoginPage({
               <CardDescription>{t("body")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <LoginForm next={returnTo} like={pendingLike} />
+              <LoginForm next={returnTo} />
             </CardContent>
           </Card>
         </Container>

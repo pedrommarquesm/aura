@@ -6,7 +6,7 @@ import { DB, type Database } from '../db/db.module';
 import { auraEvents, posts, users } from '../db/schema';
 
 export type AuraEventType =
-  'LIKE' | 'SUPER_LIKE' | 'BATTLE_WIN' | 'CHALLENGE' | 'VOTER_REWARD' | 'BONUS' | 'REVERSAL';
+  'VOTE' | 'BATTLE_WIN' | 'CHALLENGE' | 'VOTER_REWARD' | 'BONUS' | 'REVERSAL';
 
 export interface ApplyAuraInput {
   /** Who receives the Aura. */
