@@ -98,6 +98,10 @@ export default defineRailway(() => {
     WAITLIST_GLOBAL_RATE_LIMIT_MAX: '200',
     CONTACT_RATE_LIMIT_MAX: '5',
     CONTACT_EMAIL_RATE_LIMIT_MAX: '3',
+    // Resend. The key stays in the dashboard; applying this file must never
+    // clobber it. MAIL_FROM is public (the From header we send as).
+    RESEND_API_KEY: preserve(),
+    MAIL_FROM: 'Aura <hello@auraclimb.com>',
   };
 
   const api = service('api', {

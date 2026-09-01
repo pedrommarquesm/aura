@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
+import { Resend } from 'resend';
 
 import { newId } from '../common/ids';
 import { ENV, type Env } from '../config/env';
@@ -20,20 +21,23 @@ export type OutboundMail =
   | { template: 'waitlist_referral'; to: string; locale: Locale; payload: WaitlistReferralPayload };
 
 /**
- * Queues product email. Sending is optional until SMTP exists.
+ * Queues product email, then delivers through Resend when `RESEND_API_KEY` is set.
  *
- * A waitlist join must not fail because the mail server is not up. We always
- * persist the rendered message. If SMTP is configured we try once; if it is
- * not, the row stays `queued` for a later flush.
+ * A waitlist join must not fail because mail is down. We always persist the
+ * rendered message. Unset key → row stays `queued`. Send failure → `failed`
+ * with `lastError`; the join itself still succeeds.
  */
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
+  private readonly resend: Resend | null;
 
   constructor(
     @Inject(DB) private readonly db: Database,
     @Inject(ENV) private readonly env: Env,
-  ) {}
+  ) {
+    this.resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
+  }
 
   async enqueue(mail: OutboundMail): Promise<void> {
     const rendered =
@@ -54,49 +58,47 @@ export class MailService {
       status: 'queued',
     });
 
-    if (!this.env.SMTP_HOST) {
-      this.logger.log(`queued ${mail.template} to ${mail.to} (no SMTP yet)`);
+    if (!this.resend) {
+      this.logger.log(`queued ${mail.template} to ${mail.to} (no RESEND_API_KEY)`);
       return;
     }
 
+    const from = this.env.MAIL_FROM ?? 'Aura <hello@auraclimb.com>';
     try {
-      this.deliver({
-        to: mail.to,
-        subject: rendered.subject,
-        text: rendered.text,
-        html: rendered.html,
-      });
+      const { data, error } = await this.resend.emails.send(
+        {
+          from,
+          to: [mail.to],
+          subject: rendered.subject,
+          html: rendered.html,
+          text: rendered.text,
+          tags: [{ name: 'template', value: mail.template }],
+        },
+        { idempotencyKey: `outbox/${id}` },
+      );
+
+      if (error) {
+        await this.markFailed(id, mail.template, error.message || 'Resend send failed');
+        return;
+      }
+
+      this.logger.log(`sent ${mail.template} to ${mail.to} (${data?.id ?? 'no-id'})`);
       await this.db
         .update(emailOutbox)
         .set({ status: 'sent', sentAt: new Date(), lastError: null })
         .where(eq(emailOutbox.id, id));
     } catch (error) {
       const message = error instanceof Error ? error.message : 'send failed';
-      this.logger.warn(`SMTP send failed for ${mail.template}: ${message}`);
-      await this.db
-        .update(emailOutbox)
-        .set({ status: 'failed', lastError: message })
-        .where(eq(emailOutbox.id, id));
+      await this.markFailed(id, mail.template, message);
     }
   }
 
-  /**
-   * Minimal SMTP submit over a raw socket. Enough for a single message when
-   * a host is configured; not a full client. STARTTLS / auth land with the
-   * real mail server.
-   */
-  private deliver(message: {
-    to: string;
-    subject: string;
-    text: string;
-    html: string;
-  }): never {
-    const from = this.env.MAIL_FROM ?? 'Aura <hello@auraclimb.com>';
-    this.logger.log(`would send "${message.subject}" to ${message.to} from ${from}`);
-    // SMTP transport is intentionally not opened here. The outbox is the
-    // contract. Wiring nodemailer (or the chosen provider) is a one-file
-    // change once credentials exist — do not invent a half-working socket.
-    throw new Error('SMTP transport is not wired yet');
+  private async markFailed(id: string, template: MailTemplateId, message: string): Promise<void> {
+    this.logger.warn(`Resend send failed for ${template}: ${message}`);
+    await this.db
+      .update(emailOutbox)
+      .set({ status: 'failed', lastError: message })
+      .where(eq(emailOutbox.id, id));
   }
 }
 

@@ -27,7 +27,7 @@ describe('loadEnv', () => {
     expect(env.WAITLIST_GLOBAL_RATE_LIMIT_MAX).toBe(200);
     expect(env.CONTACT_RATE_LIMIT_MAX).toBe(5);
     expect(env.CONTACT_EMAIL_RATE_LIMIT_MAX).toBe(3);
-    expect(env.SMTP_HOST).toBeUndefined();
+    expect(env.RESEND_API_KEY).toBeUndefined();
   });
 
   it('coerces numeric strings, since every value arrives as a string', () => {
