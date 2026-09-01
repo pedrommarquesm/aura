@@ -81,7 +81,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 | FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | Done | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
-| FND-13 | Vote & receipts redesign tracker ([redesign-tracker.md](./redesign-tracker.md)). Implementation waits on screenshots | In review | *this PR* |
+| FND-13 | Vote & receipts redesign tracker ([redesign-tracker.md](./redesign-tracker.md)). Implementation waits on screenshots | In review | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 
 ### Mobile bootstrap
 
@@ -339,7 +339,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Next product cut is votes + receipts, not more like/comment work. Tracker: [redesign-tracker.md](./redesign-tracker.md). Implementation blocked on screenshots. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | *this PR* |
+| 2026-09-01 | Next product cut is votes + receipts, not more like/comment work. Tracker: [redesign-tracker.md](./redesign-tracker.md). Implementation blocked on screenshots. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md). Will be retargeted at receipts + net-Aura digest in `RDX-61` | [#85](https://github.com/pedrommarquesm/aura/pull/85) |
 | 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |

@@ -326,4 +326,4 @@ Do not combine 2 and 4 in one PR. The ledger has to be right before the slider c
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Redesign cut is **votes + receipts**. Manifesto feeds/nav/onboarding are tracked but screenshot-gated. Implementation waits on files in `docs/redesign-screens/` | *this PR* |
+| 2026-09-01 | Redesign cut is **votes + receipts**. Manifesto feeds/nav/onboarding are tracked but screenshot-gated. Implementation waits on files in `docs/redesign-screens/` | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
