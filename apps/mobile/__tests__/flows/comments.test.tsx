@@ -9,6 +9,12 @@ import { api, commentsPage, createdComment, ownPost, sampleComment } from '../he
 import { renderApp } from '../helpers/render';
 import { asGuest, asSignedIn, routerMocks } from '../helpers/session';
 
+async function openCommentsDrawer() {
+  const user = userEvent.setup();
+  await user.press(screen.getAllByHintText('Comment')[0]!);
+  return user;
+}
+
 describe('Comments on a post', () => {
   it('opens the comments drawer when they tap the comment icon on the feed', async () => {
     asSignedIn();
@@ -48,12 +54,14 @@ describe('Comments on a post', () => {
     api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
     api.fetchComments.mockResolvedValue(commentsPage());
     api.createComment.mockResolvedValue(createdComment('absolute cinema', 1));
-    const user = userEvent.setup();
     await renderApp(<PostScreen />);
 
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
-    expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
+    expect(screen.queryByTestId('comment-body')).toBeNull();
     expect(screen.getByLabelText('0 comments')).toBeOnTheScreen();
+
+    const user = await openCommentsDrawer();
+    expect(await screen.findByText('No comments yet. Say something.')).toBeOnTheScreen();
 
     await user.type(screen.getByTestId('comment-body'), 'absolute cinema');
     await user.press(screen.getByTestId('comment-submit'));
@@ -73,10 +81,10 @@ describe('Comments on a post', () => {
     api.fetchPost.mockResolvedValue(post);
     api.fetchComments.mockResolvedValue(commentsPage());
     api.createComment.mockResolvedValue(createdComment('my own note', 1));
-    const user = userEvent.setup();
     await renderApp(<PostScreen />);
 
     await screen.findByText('my golden hour');
+    const user = await openCommentsDrawer();
     await user.type(screen.getByTestId('comment-body'), 'my own note');
     await user.press(screen.getByTestId('comment-submit'));
 
@@ -107,7 +115,10 @@ describe('Comments on a post', () => {
       ]),
     );
     await renderApp(<PostScreen />);
+    await screen.findByText('golden hour hits different when you are winning');
+    expect(screen.queryByText('deserved')).toBeNull();
 
+    await openCommentsDrawer();
     expect(await screen.findByText('deserved')).toBeOnTheScreen();
     expect(screen.getByText('@joao')).toBeOnTheScreen();
   });
@@ -116,10 +127,10 @@ describe('Comments on a post', () => {
     asGuest();
     routerMocks().params = { id: mockFeed[0]!.id };
     api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
-    const user = userEvent.setup();
     await renderApp(<PostScreen />);
     await screen.findByText('golden hour hits different when you are winning');
 
+    const user = await openCommentsDrawer();
     await user.press(screen.getByTestId('comment-submit'));
 
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
@@ -141,6 +152,9 @@ describe('Comments on a post', () => {
     await renderApp(<PostScreen />);
 
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+    expect(screen.queryByTestId('comment-thread-skeleton')).toBeNull();
+
+    await openCommentsDrawer();
     expect(screen.getByTestId('comment-thread-skeleton')).toBeOnTheScreen();
     expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
 
@@ -160,6 +174,8 @@ describe('Comments on a post', () => {
     );
 
     const { queryClient } = await renderApp(<PostScreen />);
+    await screen.findByText('golden hour hits different when you are winning');
+    await openCommentsDrawer();
     expect(await screen.findByText('deserved')).toBeOnTheScreen();
 
     api.fetchComments.mockResolvedValue(
@@ -177,10 +193,10 @@ describe('Comments on a post', () => {
     asGuest();
     routerMocks().params = { id: mockFeed[0]!.id };
     api.fetchPost.mockResolvedValue({ ...mockFeed[0]!, status: 'published' });
-    const user = userEvent.setup();
     await renderApp(<PostScreen />);
     await screen.findByText('golden hour hits different when you are winning');
 
+    const user = await openCommentsDrawer();
     await user.press(screen.getByTestId('comment-submit'));
     expect(await screen.findByText('Sign in to comment')).toBeOnTheScreen();
 

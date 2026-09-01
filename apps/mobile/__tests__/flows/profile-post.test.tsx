@@ -109,21 +109,22 @@ describe('Profile post view and post menu', () => {
     expect(screen.queryAllByHintText('Remove aura')).toHaveLength(0);
   });
 
-  it('pulls to refresh the post', async () => {
+  it('keeps comments in the drawer instead of under the post', async () => {
     asSignedIn();
     const post = ownPost();
     routerMocks().params = { id: post.id };
     api.fetchPost.mockResolvedValue(post);
+    const user = userEvent.setup();
     await renderApp(<PostScreen />);
     await screen.findByText('my golden hour');
 
-    api.fetchPost.mockClear();
-    await act(async () => {
-      fireEvent(screen.getByTestId('post-scroll').children[0] as never, 'refresh');
-    });
-    await waitFor(() => {
-      expect(api.fetchPost).toHaveBeenCalled();
-    });
+    expect(screen.queryByTestId('comment-body')).toBeNull();
+    expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
+
+    await user.press(screen.getAllByHintText('Comment')[0]!);
+
+    expect(await screen.findByTestId('comment-body')).toBeOnTheScreen();
+    expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
   });
 
   it('pulls to refresh the profile', async () => {

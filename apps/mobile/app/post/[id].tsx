@@ -1,50 +1,35 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback } from 'react';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFocusEffect, useIsFocused, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, View } from 'react-native';
+import { Pressable, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CommentComposer, CommentThread } from '@/components/comments';
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
-import { Screen } from '@/components/layout';
 import { Button, Text } from '@/components/ui';
-import { createComment, fetchComments, fetchPost, messageForError } from '@/lib/api';
-import { applyCreatedComment } from '@/lib/query/feed-cache';
+import { fetchPost, messageForError } from '@/lib/api';
 import { queryKeys } from '@/lib/query/keys';
-import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
 import { colors } from '@/theme/tokens';
 
 export default function PostScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
+  const { height: windowHeight } = useWindowDimensions();
   const raw = useLocalSearchParams<{ id?: string | string[] }>().id;
   const id = Array.isArray(raw) ? raw[0] : raw;
+
+  const [viewportHeight, setViewportHeight] = useState(() => Math.round(windowHeight));
 
   const post = useQuery({
     queryKey: queryKeys.post(id ?? ''),
     queryFn: () => fetchPost(id!),
     enabled: Boolean(id),
   });
-
-  const comments = useInfiniteQuery({
-    queryKey: queryKeys.postComments(id ?? ''),
-    queryFn: ({ pageParam, signal }) => fetchComments(id!, pageParam, signal),
-    initialPageParam: null as string | null,
-    getNextPageParam: (page) => page.nextCursor,
-    enabled: Boolean(id),
-  });
-
-  const refetchPost = post.refetch;
-  const refetchComments = comments.refetch;
-
-  const { refreshing, onRefresh } = usePullToRefresh(
-    useCallback(async () => {
-      if (!id) return;
-      await Promise.all([refetchPost(), refetchComments()]);
-    }, [id, refetchPost, refetchComments]),
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -54,78 +39,57 @@ export default function PostScreen() {
     }, [id, queryClient]),
   );
 
-  const items = comments.data?.pages.flatMap((page) => page.items) ?? [];
-  const lastPage = comments.data?.pages.at(-1);
+  const onViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const next = Math.round(event.nativeEvent.layout.height);
+    if (next > 0) setViewportHeight(next);
+  }, []);
 
+  // Provider must live on this screen: the root stack uses native screens, so a
+  // provider above the Stack portals the comments sheet behind the page.
   return (
-    <Screen padded={false}>
-      <View className="flex-row items-center gap-3 px-gutter pb-3 pt-2">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('settings.back')}
-          hitSlop={12}
-          onPress={() => router.back()}
+    <BottomSheetModalProvider>
+      <View className="flex-1 bg-bg" onLayout={onViewportLayout}>
+        <View
+          pointerEvents="box-none"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            paddingTop: insets.top,
+          }}
         >
-          <Ionicons name="chevron-back" size={24} color={colors.text.DEFAULT} />
-        </Pressable>
-        <Text variant="title">{t('post.title')}</Text>
-      </View>
-
-      {!id || post.isError ? (
-        <View className="flex-1 items-start justify-center gap-3 px-gutter pb-24">
-          <Text variant="title">{t('post.error.title')}</Text>
-          <Text variant="body" tone="secondary">
-            {post.error ? messageForError(post.error) : t('errors.not_found')}
-          </Text>
-          <Button label={t('common.actions.retry')} onPress={() => void post.refetch()} />
-        </View>
-      ) : post.isPending || !post.data ? (
-        <FeedPostSkeleton />
-      ) : (
-        <KeyboardAvoidingView
-          className="flex-1"
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <ScrollView
-            testID="post-scroll"
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                accessibilityLabel={t('common.actions.refresh')}
-                tintColor={colors.aura.bright}
-                colors={[colors.aura.bright]}
-                progressBackgroundColor={colors.surface.DEFAULT}
-              />
-            }
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.back')}
+            hitSlop={12}
+            onPress={() => router.back()}
+            className="self-start px-gutter py-2"
           >
-            <FeedPostCard
-              post={post.data}
-              isActiveVideo
-              onDeleted={() => router.back()}
-            />
-            <CommentThread
-              comments={items}
-              loading={comments.isPending && items.length === 0}
-              empty={!comments.isPending && items.length === 0 && !comments.isError}
-              error={comments.isError}
-              hasMore={Boolean(lastPage?.hasMore)}
-              loadingMore={comments.isFetchingNextPage}
-              onRetry={() => void comments.refetch()}
-              onLoadMore={() => void comments.fetchNextPage()}
-            />
-          </ScrollView>
-          <CommentComposer
-            postId={id}
-            onSubmit={async (body) => {
-              const result = await createComment(id, body);
-              applyCreatedComment(queryClient, id, result);
-            }}
+            <Ionicons name="chevron-back" size={24} color={colors.text.DEFAULT} />
+          </Pressable>
+        </View>
+
+        {!id || post.isError ? (
+          <View className="flex-1 items-start justify-center gap-3 px-gutter pb-24">
+            <Text variant="title">{t('post.error.title')}</Text>
+            <Text variant="body" tone="secondary">
+              {post.error ? messageForError(post.error) : t('errors.not_found')}
+            </Text>
+            <Button label={t('common.actions.retry')} onPress={() => void post.refetch()} />
+          </View>
+        ) : post.isPending || !post.data ? (
+          <FeedPostSkeleton />
+        ) : (
+          <FeedPostCard
+            post={post.data}
+            isActiveVideo={isFocused}
+            height={viewportHeight}
+            onDeleted={() => router.back()}
           />
-        </KeyboardAvoidingView>
-      )}
-    </Screen>
+        )}
+      </View>
+    </BottomSheetModalProvider>
   );
 }
