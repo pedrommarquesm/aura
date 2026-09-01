@@ -25,6 +25,21 @@
       "latest": "Latest",
       "trending": "Trending"
     },
+    "mode": {
+      "cooked": "Cooked",
+      "liveCheck": "Live Check",
+      "certified": "Certified",
+      "comingSoon": {
+        "cooked": {
+          "title": "Nothing cooked yet",
+          "body": "Posts that sink deep into Aura Debt land here. Nobody has bombed hard enough — yet."
+        },
+        "certified": {
+          "title": "Nothing certified yet",
+          "body": "Posts that cross the Aura threshold get archived here. Give it time."
+        }
+      }
+    },
     "empty": {
       "title": "Nothing here yet",
       "body": "Post something and the Aura starts moving."
@@ -69,7 +84,8 @@
       "title": "Receipt ledger",
       "empty": "No votes yet. Be the first.",
       "error": "Could not load receipts",
-      "more": "Load more"
+      "more": "Load more",
+      "seeAll": "See all votes"
     }
   },
   "discover": {

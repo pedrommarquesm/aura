@@ -12,24 +12,13 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { CaptionText } from './caption-text';
+import { LedgerRowSkeleton } from './ledger-row-skeleton';
 import { VoteLedgerRow } from './vote-ledger-row';
-import { Avatar, Button, Skeleton, Text } from '@/components/ui';
+import { Avatar, Button, Text } from '@/components/ui';
 import { fetchVoteLedger, type FeedCard } from '@/lib/api';
 import { hashtagPath } from '@/lib/hashtags';
 import { queryKeys } from '@/lib/query/keys';
 import { colors } from '@/theme/tokens';
-
-function LedgerRowSkeleton() {
-  return (
-    <View className="flex-row items-start gap-3 px-gutter py-3" accessibilityElementsHidden>
-      <Skeleton className="h-8 w-8" />
-      <View className="flex-1 gap-1.5 pt-0.5">
-        <Skeleton className="h-3.5 w-24" />
-        <Skeleton className="h-3 w-full" />
-      </View>
-    </View>
-  );
-}
 
 /**
  * The receipt ledger. Covers ~70% of the screen (docs/redesign-tracker.md

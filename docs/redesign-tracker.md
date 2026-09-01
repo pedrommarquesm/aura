@@ -31,9 +31,9 @@ Prefix: **`RDX`** — this redesign only. Keep `AURA` / `MOB` / `API` IDs on the
 
 ## Now / Next / Later
 
-**Now** — R1 (API) and R2 (mobile slider, receipts, ledger, web read-only) are done. Deploy note: this is a schema-breaking release — drop and recreate the database, there is no upgrade path from `likes`/`comments`.
+**Now** — R1 (API) and R2 (mobile slider, receipts, ledger, web read-only) are done. R3's nav/feed shell (2-tab bar `RDX-50`, header swipe `RDX-51`, in-frame ledger `RDX-42`) is also done. Deploy note: this is a schema-breaking release — drop and recreate the database, there is no upgrade path from `likes`/`comments`.
 
-**Next** — Docs still describe the old model in prose (`RDX-03`). Tighten the R2 caveats: in-frame vs sheet ledger (`RDX-42`), gesture-simulation tests (`RDX-46`), real-device haptic tuning (`RDX-31`). Then Home swipe `COOKED` ← `LIVE CHECK` → `CERTIFIED` (`RDX-51`) and the 2-tab bar (`RDX-50`) — both screenshot-confirmed but not yet built.
+**Next** — Docs still describe the old model in prose (`RDX-03`). Remaining R2 caveats: gesture-simulation tests (`RDX-46`), real-device haptic tuning (`RDX-31`). Remaining R3 caveats: no manual verification of the header swipe or the in-frame ledger on an actual device/simulator (`RDX-59` — this environment has no simulator and the project's Expo-web bundle fails for an unrelated, pre-existing reason; see the row). Then the profile blank slate (`RDX-58`).
 
 **Later** — 24h expiry, Certified/Cooked *inject* thresholds, calibration, in-app camera (`RDX-52`–`RDX-56`) still need screens beyond the header swipe.
 
@@ -79,7 +79,7 @@ Horizontal swipe: `COOKED` ← `LIVE CHECK` → `CERTIFIED`.
 - **Certified (right):** posts that cross a high positive threshold (example: +5,000 Aura). Permanent. Neon green accents. Hall of unbothered cool.
 - **Cooked (left):** posts that sink into Aura Debt (example: −5,000 Aura). Permanent. Pure red accents. Hall of fumbles.
 
-**This cut:** the **header swipe** is confirmed (screen 09, `RDX-51`). 24h expiry and Certified/Cooked *inject* thresholds stay parked (`RDX-52`–`RDX-54`, Q13–Q14).
+**This cut:** the **header swipe** is built (screen 09, `RDX-51`) — Home is a 3-page horizontal pager, Live Check is the real feed, Cooked/Certified are placeholder pages (no content model yet). 24h expiry and Certified/Cooked *inject* thresholds stay parked (`RDX-52`–`RDX-54`, Q13–Q14).
 
 ### 3. The Aura economy & slider
 
@@ -91,7 +91,7 @@ Traditional social only goes up. This economy is volatile.
 - **Cap:** one user, one post, at most +100 or −100. Vote once.
 - **Score:** the author's total Aura updates live and **may go negative** (“Aura Debt”). The video's live score sits large and bold at the bottom left.
 - **Receipts (in-feed):** releasing the slider may prompt *“Drop a receipt...”*. Short receipts (max 80 chars) float up the left side: square avatar, username, text, signed amount. Overlay shows the **vote** (e.g. `+85`), never a value outside ±100. Votes with no text do not float; they still appear in the ledger.
-- **Receipt ledger:** tap a floating receipt or the score → semi-transparent sheet covering ~70%. Every vote: square avatar, username, text (if any), colour-coded points.
+- **Receipt ledger:** tap the score → in-frame collapsible **RECEIPT LEDGER** panel above the caption (screen 02, `RDX-42`). "See all" inside it opens the full semi-transparent sheet (~70%) for pagination. Every vote: square avatar, username, text (if any), colour-coded points.
 
 ### 4. Onboarding & the lurker funnel
 
@@ -110,7 +110,7 @@ Do not lock the feed. Do not penalise friend invites.
 - **Create:** heavy utilitarian `[ ● ]` — solid white circle inside thick brackets.
 - **Gallery import** + **in-app recording**. **Zero editing tools** besides trim. Post into Live Check.
 
-**This cut:** bottom bar is **HOME \| PROFILE** (screen 01, `RDX-50`). Create is POST BASELINE on the empty profile, not a centre tab. Create already has gallery pick; in-app camera is still disabled (`MOB-52` / `RDX-56`).
+**This cut:** bottom bar is **HOME \| PROFILE** (screen 01, `RDX-50`) — Discover and Rank dropped off the bar too (their routes still exist, just no tab button). Create is not a centre tab; today it's a small guarded icon in the Profile header (`create-tab-button.tsx`'s `GuardedCreateTab` logic, relocated). The screen 08 blank-slate's bigger **POST BASELINE** CTA is still `RDX-58`, not yet built. Create already has gallery pick; in-app camera is still disabled (`MOB-52` / `RDX-56`).
 
 ---
 
@@ -295,7 +295,7 @@ Depends on R1 for the real API. Visuals: [redesign-screens/](./redesign-screens/
 | RDX-35 | Live score: signed, tabular, neon green / pure red (Q15). Placement per screen 02 | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) — Bottom-left, `variant="display"` (now weight 900), tap opens the ledger |
 | RDX-40 | Optional “Drop a receipt...” after a successful **nonzero** commit (screens 06–07). Skip leaves the vote. One later fill if skipped (Q3). Ignore mock “REQUIRED” | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) — `components/feed/receipt-prompt.tsx`. Skip calls `onDone()` with no network call, matching Q3/Q4 |
 | RDX-41 | Floating receipts, left side, only rows with text (Q19). Square avatar + `@user: TEXT (+N)` in-range | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) — `components/feed/vote-receipt-overlay.tsx`. **No live push channel yet** — polls `GET /posts/:id/votes/overlay` every 15s while the card is active, not a socket. Swapping to real-time later does not change this component's shape |
-| RDX-42 | Receipt ledger: screen 02 shows an in-frame collapsible list. Build that, plus a sheet if we still need one for overflow | Partial | [#88](https://github.com/pedrommarquesm/aura/pull/88) — Built as a 70% `BottomSheetModal` (`vote-ledger-sheet.tsx`), matching the manifesto's "~70% sheet" language and `RDX-42`'s own earlier "sheet" description — **not** the in-frame collapsible list screen 02 also shows. Revisit if the in-frame variant is the intended final state |
+| RDX-42 | Receipt ledger: screen 02 shows an in-frame collapsible list. Build that, plus a sheet if we still need one for overflow | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) built the 70% `BottomSheetModal` first. This PR adds `vote-ledger-panel.tsx` — the in-frame collapsible panel screen 02 actually shows, anchored just above the caption, tap-to-expand, previews the newest 4 votes. Tapping the score now opens/closes this panel (not the sheet). The sheet (`vote-ledger-sheet.tsx`) stays as "see all" — full pagination, plus the caption for the long-caption "read more" path |
 | RDX-43 | Tap score or a floating receipt expands/focuses the ledger. Comment icon goes away | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) — Score tap opens the ledger sheet. Tapping an individual floating receipt does not (yet) deep-link to that row — opens the same ledger |
 | RDX-44 | Square avatars on receipts + ledger (screen 02). Profile portrait is also square in screen 08 — follow the screen | Done (receipts/ledger) | [#88](https://github.com/pedrommarquesm/aura/pull/88) — `Avatar` gained a `shape="square"` prop, used only in `vote-receipt-overlay.tsx` and `vote-ledger-row.tsx`. Profile/feed avatars are still circular — screen 08's square profile portrait is **not** applied (Q16 default: profile stays circular; screen 08 as the exception is a follow-up if desired) |
 | RDX-45 | Copy in `en` / `pt` / `pt-br` / `es`. Vernacular (receipt, cooked, certified, live check, aura debt) stays English | Done | [#88](https://github.com/pedrommarquesm/aura/pull/88) — All 4 locale catalogs updated (`feed.post.voteCount`, `feed.vote.receipt.*`, `feed.ledger.*`, `post.ledger.*`, `auth.reasons.vote.*`, `errors.cannot_vote_own_post` / `receipt_already_set`). `npm run locales:check` passes |
@@ -309,8 +309,8 @@ Screens 01, 08, 09 landed. Still do not implement these in the first vote-API PR
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-50 | Bottom bar is **HOME \| PROFILE** (screen 01), not a 3-tab Create button. Drop Discover + Rank from the bar. Create is **POST BASELINE** on the empty profile (screen 08) | Not started | screenshot landed |
-| RDX-51 | Horizontal swipe on Home, **left → right**: `COOKED` ← `LIVE CHECK` → `CERTIFIED` (screen 09). Active title is large white; neighbours are dim | Not started | screenshot landed |
+| RDX-50 | Bottom bar is **HOME \| PROFILE** (screen 01), not a 3-tab Create button. Drop Discover + Rank from the bar. Create is **POST BASELINE** on the empty profile (screen 08) | Done | this PR — `app/(tabs)/_layout.tsx` now renders only Home/Profile; Discover/Create/Rank are `href: null` (routes still exist, no tab button). Active tab gets a full-width-of-that-tab neon green top border (`ActiveTabIndicator`). **POST BASELINE** itself (screen 08's empty-profile CTA) is still `RDX-58` — as a bridge, Create is reachable via a small guarded icon in the Profile header so it isn't stranded in the meantime |
+| RDX-51 | Horizontal swipe on Home, **left → right**: `COOKED` ← `LIVE CHECK` → `CERTIFIED` (screen 09). Active title is large white; neighbours are dim | Done | this PR — `components/feed/feed-mode-header.tsx` + a horizontal `ScrollView` pager in `app/(tabs)/index.tsx`. All three labels always render; the active one is bold white and larger, the other two dim and muted; tapping a label or swiping moves the pager. Cooked/Certified are placeholder pages (`RDX-52`–`RDX-54` still blocked, no content model). The settings gear moved above this row (matches screen 02) instead of colliding with `CERTIFIED` at the right edge. The old Latest/Trending ranking toggle is demoted to a secondary control shown only on the Live Check page |
 | RDX-52 | Live Check 24h public expiry; post remains on the author's profile | Blocked | Q14 parked; no screenshot of the timer |
 | RDX-53 | Certified inject at a remote-config positive threshold, neon green chrome | Blocked | Q13 parked; header exists, hall-of-fame screen does not |
 | RDX-54 | Cooked inject at a remote-config negative threshold, red chrome | Blocked | Q13 parked; header exists, hall-of-shame screen does not |
@@ -318,6 +318,7 @@ Screens 01, 08, 09 landed. Still do not implement these in the first vote-API PR
 | RDX-56 | In-app record + trim-only create. Camera is currently disabled; gallery already works | Blocked | needs screenshot |
 | RDX-57 | Landing / OG / waitlist demo card: slider + receipts instead of 🗿 like | Blocked | after R2, or with a landing screenshot |
 | RDX-58 | Profile blank slate (screen 08): 0 Aura, no rank/title/Vote Power chrome, POST BASELINE, empty posts. Do not delete the API fields | Not started | screenshot landed |
+| RDX-59 | Manual device/simulator pass on `RDX-50`/`RDX-51`/`RDX-42`: nested horizontal-pager-over-vertical-FlashList gesture behaviour, the ledger panel's expand/collapse animation, the tab bar's active indicator | Blocked | No iOS/Android simulator in this environment, and this repo's Expo-web bundle fails for an unrelated, pre-existing reason ("importing a module from 'react-native' instead of 'react-native-web'" — not caused by this PR; reproduce with `npm run web` on `main`). Verified instead by `tsc`/`eslint`/the full Jest suite (51 tests) passing and close reading against screens 01/02/09. Needs a real device/simulator pass, or `MOB-80` (Maestro E2E, `docs/testing-strategy.md`) once it exists |
 
 ---
 
@@ -353,6 +354,7 @@ Do not combine 2 and 4 in one PR. The ledger has to be right before the slider c
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | R3 nav/feed shell built: 2-tab bottom bar with a per-tab active indicator (`RDX-50`), the `COOKED`/`LIVE CHECK`/`CERTIFIED` header swipe with placeholder Cooked/Certified pages (`RDX-51`), and the in-frame collapsible receipt ledger from screen 02 (`RDX-42`, upgraded from `Partial`) — the sheet stays as "see all"/overflow. Create moved off the tab bar to a small guarded icon on Profile as a bridge until the screen 08 blank slate (`RDX-58`) exists. No device/simulator to manually verify gesture behaviour in this environment (`RDX-59`, new row) — verified by `tsc`/`eslint`/Jest (51 tests) instead | — |
 | 2026-09-01 | R1 + R2 implemented: greenfield `votes` schema (migration history squashed — deploy requires dropping the database), vote API, mobile slider/receipts/ledger, web stripped to read-only, tokens repointed to the neo-brutalist palette. All four apps typecheck/lint/test clean. Caveats: ledger is a 70% sheet not the in-frame list from screen 02 (`RDX-42`), no gesture-drag test coverage (`RDX-46`), receipts poll rather than push (`RDX-41`), docs prose not yet rewritten (`RDX-03`) | [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 | 2026-09-01 | Screenshots 01–09 in `docs/redesign-screens/`. Last file is Home swipe COOKED ← LIVE CHECK → CERTIFIED. Mock +200/+450/+500 stay over-cap; implement ±100 | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Q1–Q20 locked. Greenfield: **no data port**; drop `likes`/`comments`. Receipt max 80, one fill if empty, newest-first ledger, web read-only, ±100 hard cap, Aura Debt colours neon green / pure red | [#87](https://github.com/pedrommarquesm/aura/pull/87) |

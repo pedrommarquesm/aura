@@ -15,6 +15,7 @@ import { CaptionText } from './caption-text';
 import { PostOptions } from './post-options';
 import { PostVideo, VideoMuteBadge, videoPlaybackUrl } from './post-video';
 import { ReceiptPrompt } from './receipt-prompt';
+import { LEDGER_PANEL_COLLAPSED_HEIGHT, VoteLedgerPanel } from './vote-ledger-panel';
 import { VoteLedgerSheet } from './vote-ledger-sheet';
 import { VoteReceiptOverlay } from './vote-receipt-overlay';
 import { Avatar, Text } from '@/components/ui';
@@ -83,6 +84,7 @@ export const FeedPostCard = memo(function FeedPostCard({
 
   const [captionHeight, setCaptionHeight] = useState(96);
   const [pendingReceiptAmount, setPendingReceiptAmount] = useState<number | null>(null);
+  const [ledgerPanelExpanded, setLedgerPanelExpanded] = useState(false);
   const muted = usePreferencesStore((state) => state.feedMuted);
   const toggleFeedMuted = usePreferencesStore((state) => state.toggleFeedMuted);
 
@@ -98,8 +100,13 @@ export const FeedPostCard = memo(function FeedPostCard({
   const captionLines = 2;
   const shouldTruncateCaption = post.caption && post.caption.length > 80;
 
-  const openLedger = useCallback(() => {
+  const openLedgerSheet = useCallback(() => {
+    setLedgerPanelExpanded(false);
     ledgerSheetRef.current?.present();
+  }, []);
+
+  const toggleLedgerPanel = useCallback(() => {
+    setLedgerPanelExpanded((expanded) => !expanded);
   }, []);
 
   const toggleMuted = useCallback(() => {
@@ -204,7 +211,10 @@ export const FeedPostCard = memo(function FeedPostCard({
 
         <View
           pointerEvents="box-none"
-          style={[styles.sliderColumn, { top: overlayInsetTop + 32, bottom: captionHeight + 176 }]}
+          style={[
+            styles.sliderColumn,
+            { top: overlayInsetTop + 32, bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 176 },
+          ]}
         >
           <AuraVoteSlider
             postId={post.id}
@@ -219,8 +229,8 @@ export const FeedPostCard = memo(function FeedPostCard({
           accessibilityRole="button"
           accessibilityLabel={t('feed.post.voteCount', { count: post.voteCount })}
           hitSlop={8}
-          onPress={openLedger}
-          style={[styles.scoreWrap, { bottom: captionHeight + 96 }]}
+          onPress={toggleLedgerPanel}
+          style={[styles.scoreWrap, { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 96 }]}
         >
           <Text
             variant="display"
@@ -233,16 +243,34 @@ export const FeedPostCard = memo(function FeedPostCard({
 
         <View
           pointerEvents="box-none"
-          style={[styles.receiptOverlayWrap, { bottom: captionHeight + 96 }]}
+          style={[
+            styles.receiptOverlayWrap,
+            { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 96 },
+          ]}
         >
           <VoteReceiptOverlay postId={post.id} active={isActive} />
         </View>
 
         {pendingReceiptAmount !== null ? (
-          <View style={[styles.receiptPromptWrap, { bottom: captionHeight + 16 }]}>
+          <View
+            style={[
+              styles.receiptPromptWrap,
+              { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 16 },
+            ]}
+          >
             <ReceiptPrompt postId={post.id} onDone={() => dismissReceiptPrompt()} />
           </View>
         ) : null}
+
+        <View style={[styles.ledgerPanelWrap, { bottom: captionHeight }]}>
+          <VoteLedgerPanel
+            post={post}
+            expanded={ledgerPanelExpanded}
+            expandedHeight={Math.round(cardHeight * 0.42)}
+            onToggle={toggleLedgerPanel}
+            onSeeAll={openLedgerSheet}
+          />
+        </View>
 
         <View
           className="absolute bottom-0 left-0 right-0"
@@ -254,7 +282,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
-            onPress={shouldTruncateCaption ? openLedger : openAuthor}
+            onPress={shouldTruncateCaption ? openLedgerSheet : openAuthor}
             className="rounded-t-lg px-4 py-3"
             style={[onMedia, { paddingRight: ACTION + 28 }]}
           >
@@ -295,7 +323,7 @@ export const FeedPostCard = memo(function FeedPostCard({
           </Pressable>
         </View>
 
-        <View style={[styles.actions, { bottom: captionHeight + 8 }]}>
+        <View style={[styles.actions, { bottom: captionHeight + LEDGER_PANEL_COLLAPSED_HEIGHT + 8 }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('common.actions.share')}
@@ -359,6 +387,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     right: 16,
+  },
+  ledgerPanelWrap: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: 5,
   },
   actions: {
     position: 'absolute',
