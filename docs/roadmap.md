@@ -133,8 +133,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-10 | Native Apple/Google sign-in screens + SecureStore token storage | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-11 | Username claim / onboarding flow | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
 | MOB-12 | Guest browsing + auth prompt on first Aura action, replaying the pending action | Done | [#17](https://github.com/pedrommarquesm/aura/pull/17) |
-| API-36 | `POST /v1/auth/login` + `POST /v1/auth/register` (email or username + password). scrypt hash on `auth_identities`. Off in production. For e2e | In review | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
-| MOB-76 | Sign-in sheet: email/username + password, plus create-account. Same JWT session as Apple/Google | In review | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
+| API-36 | `POST /v1/auth/login` + `POST /v1/auth/register` (email or username + password). scrypt hash on `auth_identities`. Off in production. For e2e | Done | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
+| MOB-76 | Sign-in sheet: email/username + password, plus create-account. Same JWT session as Apple/Google | Done | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | API-40 | Waitlist join + referral Aura (paid when the friend signs up), email outbox, claim onto account at first sign-in | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
