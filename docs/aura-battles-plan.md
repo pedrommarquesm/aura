@@ -12,7 +12,9 @@ for when "later" arrives — with one fast-follow option flagged in §10 if we
 want a thin slice sooner.
 
 Companion: [roadmap.md](./roadmap.md) · [product-spec.md](./product-spec.md) ·
-[backend-architecture.md](./backend-architecture.md) · [brand.md](./brand.md)
+[backend-architecture.md](./backend-architecture.md) · [brand.md](./brand.md) ·
+[aura-battles-stitch-brief.md](./aura-battles-stitch-brief.md) (screen-by-screen
+design brief and Stitch prompts)
 
 ---
 
@@ -132,7 +134,10 @@ doc, since it touches four message catalogs.
 Four concept screens, on-brand (existing dark theme, `--color-aura` violet
 family, moai as the score glyph). These are directional, not final visual
 design — enough to argue about shape and hierarchy before anyone touches
-Figma.
+Figma. For the full screen inventory (every existing screen that needs
+edits, every new one, three style variants, and ready-to-paste Google
+Stitch prompts), see
+[aura-battles-stitch-brief.md](./aura-battles-stitch-brief.md).
 
 ### Feed: the VS card
 

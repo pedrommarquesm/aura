@@ -9,6 +9,7 @@ Single source of truth for what is planned, in flight, and done.
 - Early-beta launch: [early-beta-launch.md](./early-beta-launch.md)
 - Push notifications: [push-notifications.md](./push-notifications.md)
 - Aura Battles (head-to-head, proposed): [aura-battles-plan.md](./aura-battles-plan.md)
+- Aura Battles design brief + Stitch prompts: [aura-battles-stitch-brief.md](./aura-battles-stitch-brief.md)
 
 ---
 
@@ -313,6 +314,7 @@ have a real design in [aura-battles-plan.md](./aura-battles-plan.md) — the
 | BATL-05 | Rebuttal rounds (`parent_battle_id`), challenge notifications, web voting + public battle permalinks | Not started | |
 | BATL-06 | Aura Cup: `aura_cups` / bracket schema, staff cup creation, `advanceCupRound` worker, shareable recap card | Not started | |
 | BATL-07 | Landing page "How Battles Work" section + live vote demo (aura-battles-plan.md §9) | Not started | |
+| BATL-08 | Design pass in Stitch from aura-battles-stitch-brief.md (screen inventory, style variants, navigation pattern) before any of BATL-02..07 gets real UI | Not started | |
 | AURA-10 | Vote Power — **requires the economics guardrails in architecture §7.5** | Not started | |
 | AURA-11 | Aura Sense (prediction quality) | Not started | |
 | AURA-12 | Voter rewards worker | Not started | |
