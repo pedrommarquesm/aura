@@ -22,18 +22,17 @@ copy later) doesn't drift:
 | Moment | Verb | Who acts |
 |---|---|---|
 | Tapping/double-tapping a solo Farm post | **Give Aura** | The viewer, directly. This is today's mechanic, unchanged. |
-| Judging a Battle | **Back** (a side) | The viewer picks a winner. They are not spending their own Aura — see below. |
-| The system paying out a battle's stake to the winner | **Award Aura** | The system, on decision. Notification copy: *"You were awarded +50 Aura"*, not *"@leo gave you Aura."* |
+| Voting on a Battle | **Give Aura** (to the side you pick) | The viewer. Same verb, same action, same cost to the voter as today: zero. |
+| The system crediting a battle's stake to the winner once voting closes | **Award Aura** | The system, on decision. Notification copy: *"You were awarded +50 Aura"* — the individual votes are folded into one payout, not narrated as "@leo gave you Aura." |
 | A challenger overtaking the current champion | **Dethrone** | Narrative copy only (notifications, Lineage screen), not a button. |
 
-One thing to settle before this is real, flagged here because it changes the
-vote button's copy: **does backing a side cost the voter anything, or are
-voters free judges and the stake is fixed at battle creation?** This brief
-assumes the latter (matches `aura_stake` being set once, at creation, in
-`aura-battles-plan.md` §6) — voting is free, judged, and the app pays the
-winner. If that's wrong, "Back" needs to become something that reads as a
-real stake ("Bet," "Put Aura on…"), which is a much bigger economic decision
-than a button label and shouldn't be decided by copy alone.
+Correction from an earlier draft of this brief, which used "Back" as the vote
+verb — wrong, and directly contradicts the instruction that started this
+section. Fixed everywhere below. It also resolves cleanly against the
+mechanic that already ships: giving Aura on a normal post already costs the
+tapper nothing while creating Aura for someone else. Voting in a battle is
+the identical shape — tap 🗿 on the side you think should win, they might
+gain Aura, you don't spend any. No new verb, no new economics.
 
 ### "Should the like be the Moai emoji 🗿?"
 
@@ -226,9 +225,11 @@ global leaderboard.
 
 NEW MECHANIC — Battles: anyone can "Challenge" a post by posting their own
 video/photo response. That creates a Battle: the two clips side by side,
-and the crowd "Backs" a side (that's the vote verb — voters are judges, not
-spending their own Aura). The winner is "Awarded" Aura. Whoever is
-currently unbeaten on a battle thread is the "Champion"; a "Lineage" screen
+and the crowd taps the moai emoji on the side they think should win — same
+"Give Aura" action and same zero-cost mechanic as a normal post, just
+choosing between two sides instead of one. The winner is "Awarded" Aura
+once voting closes. Whoever is currently unbeaten on a battle thread is the
+"Champion"; a "Lineage" screen
 shows the champion and everyone they've beaten. A losing clip in a decided
 battle is stamped with a skull emoji (💀) — this is the only negative
 signal in the app, and it only appears on a decided battle, never as a
@@ -252,10 +253,10 @@ Generate the Home feed screen first: an infinite vertical feed of
 full-bleed photo/video posts (username, caption, 🗿 + Aura count, comment
 and share icons), plus one post rendered as a distinct "Battle" card type:
 a vertical split showing two competing clips side by side with usernames,
-a live vote percentage bar in the violet gradient, "Back" buttons under
-each side, and small text reading the Aura at stake. Add a bell icon in
-the top header for notifications (currently no notification entry point
-exists) next to the app wordmark.
+a live vote percentage bar in the violet gradient, a "Give Aura" button
+with the moai emoji under each side, and small text reading the Aura at
+stake. Add a bell icon in the top header for notifications (currently no
+notification entry point exists) next to the app wordmark.
 ```
 
 ### 5.2 Screen prompts — paste one at a time, in order
@@ -266,9 +267,11 @@ exists) next to the app wordmark.
 Now design the full-screen version of that Battle card, opened when someone
 taps into it from the feed: both clips large, side by side or a swipeable
 split, a bigger live vote-split bar, a countdown to when voting closes, the
-Aura at stake shown prominently near the top, and two large "Back @username"
-buttons in the violet gradient. Match the dark, minimal style already
-established — no new colors.
+Aura at stake shown prominently near the top, and two large "Give Aura"
+buttons in the violet gradient with the moai emoji, one under each clip —
+the usernames are already visible above each clip, so the buttons
+themselves don't need to repeat them. Match the dark, minimal style
+already established — no new colors.
 ```
 
 **Challenge camera**
