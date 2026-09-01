@@ -2,7 +2,9 @@ import type { InitOptions } from 'i18next';
 
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type AppLocale } from './locales';
 import en from '@/locales/en.json';
+import es from '@/locales/es.json';
 import pt from '@/locales/pt.json';
+import ptBr from '@/locales/pt-br.json';
 
 /** One namespace. The catalogs are namespaced by key prefix instead (docs/i18n.md). */
 export const NAMESPACE = 'translation';
@@ -10,6 +12,8 @@ export const NAMESPACE = 'translation';
 export const resources = {
   en: { [NAMESPACE]: en },
   pt: { [NAMESPACE]: pt },
+  'pt-br': { [NAMESPACE]: ptBr },
+  es: { [NAMESPACE]: es },
 } as const;
 
 /**
@@ -21,13 +25,13 @@ export function i18nOptions(language: AppLocale): InitOptions {
   return {
     resources,
     lng: language,
-    // Anything missing in `pt` renders the English string, never the key.
+    // Anything missing in a translation renders the English string, never the key.
     fallbackLng: DEFAULT_LOCALE,
     supportedLngs: SUPPORTED_LOCALES,
     defaultNS: NAMESPACE,
     ns: [NAMESPACE],
-    // Regionless catalogs, so `pt-BR` must not become a lookup for a `pt-BR` resource.
-    load: 'languageOnly',
+    // `pt-br` is its own catalog. `languageOnly` would collapse it onto `pt`.
+    load: 'currentOnly',
     // React escapes for us, and escaping here mangles apostrophes in the copy.
     interpolation: { escapeValue: false },
   };

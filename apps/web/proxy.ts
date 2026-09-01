@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
+import { canonicalizeAcceptLanguage } from "./i18n/negotiate";
 import { routing } from "./i18n/routing";
 import {
   accessTokenNeedsRefresh,
@@ -59,9 +60,26 @@ export default async function proxy(request: NextRequest) {
     return response;
   }
 
-  const response = intlMiddleware(request);
+  const response = intlMiddleware(withCanonicalAcceptLanguage(request));
   await attachRefreshedSession(request, response);
   return response;
+}
+
+/**
+ * next-intl's matcher treats any `pt-*` region as `pt-br` because that is the
+ * only regional Portuguese id we ship. Rewrite the header to our locale ids
+ * first so `pt-PT` stays European `pt` (docs/i18n.md).
+ */
+function withCanonicalAcceptLanguage(request: NextRequest): NextRequest {
+  const accept = request.headers.get("accept-language");
+  if (!accept) return request;
+
+  const canonical = canonicalizeAcceptLanguage(accept);
+  if (canonical === accept) return request;
+
+  const headers = new Headers(request.headers);
+  headers.set("accept-language", canonical);
+  return new NextRequest(request, { headers });
 }
 
 function rscQueryValue(request: NextRequest): string | null {

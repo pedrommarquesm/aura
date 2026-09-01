@@ -1,0 +1,280 @@
+{
+  "common": {
+    "aura": "Aura",
+    "auraAmount": "{amount, number} Aura",
+    "actions": {
+      "retry": "Intentar de nuevo",
+      "cancel": "Cancelar",
+      "share": "Compartir",
+      "refresh": "Actualizar"
+    },
+    "avatarAlt": "Avatar de {username}"
+  },
+  "nav": {
+    "home": "Inicio",
+    "discover": "Descubrir",
+    "create": "Crear",
+    "rank": "Ranking",
+    "profile": "Perfil",
+    "a11y": {
+      "create": "Crear un post"
+    }
+  },
+  "feed": {
+    "ranking": {
+      "latest": "Recientes",
+      "trending": "En tendencia"
+    },
+    "empty": {
+      "title": "Todavía no hay nada aquí",
+      "body": "Publica algo y Aura empieza a moverse."
+    },
+    "error": {
+      "title": "No se pudo cargar el feed"
+    },
+    "post": {
+      "likes": "{count, plural, one {# aura} other {# auras}}",
+      "comments": "{count, plural, one {# comentario} other {# comentarios}}",
+      "seeMore": "Ver más",
+      "auraGain": "+{amount, number} Aura",
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar"
+      },
+      "edit": {
+        "title": "Editar la descripción"
+      },
+      "delete": {
+        "title": "¿Eliminar este post?",
+        "body": "Esto no se puede deshacer. La Aura que rindió se revierte.",
+        "confirm": "Eliminar"
+      },
+      "a11y": {
+        "like": "Dar aura",
+        "unlike": "Quitar aura",
+        "comment": "Comentar",
+        "doubleTap": "Dos toques para dar aura",
+        "doubleTapSound": "Dos toques para dar aura. Un toque para el sonido",
+        "mute": "Silenciar",
+        "unmute": "Activar sonido",
+        "options": "Opciones del post",
+        "profile": "Ver @{username}"
+      }
+    }
+  },
+  "discover": {
+    "title": "Descubrir",
+    "subtitle": "Encuentra Aura antes que todos",
+    "challenges": {
+      "title": "Retos de hoy",
+      "endsIn": "{hours, plural, one {queda #h} other {quedan #h}}",
+      "entries": "{count, plural, one {# participación} other {# participaciones}}"
+    },
+    "trending": {
+      "title": "En tendencia ahora"
+    },
+    "battles": {
+      "title": "Aura Battles",
+      "subtitle": "Votación cara a cara. Llega en V1 (roadmap API-32)."
+    }
+  },
+  "create": {
+    "title": "Publica algo con Aura",
+    "subtitle": "Cada aura que recibes te sube en el ranking. Cada punto de Aura cuenta.",
+    "actions": {
+      "takePhoto": "Tomar una foto",
+      "takePhotoHint": "La cámara llega en una versión más adelante.",
+      "choosePhoto": "Elegir foto",
+      "chooseVideo": "Elegir video",
+      "chooseDifferent": "Elegir otro",
+      "post": "Publicar"
+    },
+    "caption": {
+      "label": "Descripción",
+      "placeholder": "Di algo"
+    },
+    "a11y": {
+      "mute": "Silenciar",
+      "unmute": "Activar sonido"
+    },
+    "videoPicked": "Video listo para publicar",
+    "videoDuration": "{seconds, plural, one {# segundo} other {# segundos}}",
+    "progress": {
+      "preparing": "Preparando…",
+      "uploading": "Subiendo {percent, number}%",
+      "processing": "Procesando…"
+    },
+    "errors": {
+      "cameraPermission": "Permite el acceso a la cámara para tomar una foto.",
+      "libraryPermission": "Permite el acceso a las fotos para elegir de tu galería.",
+      "unreadable": "No se pudo leer ese archivo. Prueba otro.",
+      "optimize": "No se pudo preparar ese archivo. Prueba otro.",
+      "tooLarge": "Ese archivo es demasiado grande. Prueba otro.",
+      "tooLong": "Los videos pueden durar 60 segundos como máximo. Prueba otro.",
+      "processing": "Ese post falló al procesarse. Inténtalo de nuevo."
+    }
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Global · de siempre",
+    "rank": "#{rank, number}",
+    "place": "{rank, selectordinal, other {#.º lugar}}",
+    "you": "Tú",
+    "empty": {
+      "title": "Todavía nadie en el ranking",
+      "body": "Publica algo con Aura y el ranking empieza a moverse."
+    },
+    "error": {
+      "title": "No se pudo cargar el ranking"
+    }
+  },
+  "profile": {
+    "globalRank": "{rank, selectordinal, other {#.º}} del mundo",
+    "stats": {
+      "posts": "Posts",
+      "followers": "Seguidores",
+      "streak": "Racha"
+    },
+    "actions": {
+      "edit": "Editar perfil"
+    },
+    "avatar": {
+      "edit": "Editar foto",
+      "title": "Foto de perfil",
+      "hint": "Pellizca para ampliar. Arrastra para mover.",
+      "use": "Usar foto",
+      "cancel": "Cancelar"
+    },
+    "posts": {
+      "title": "Posts",
+      "empty": "Todavía no publicaste nada. La grilla se llena a medida que publicas.",
+      "emptyOther": "@{username} todavía no publicó nada.",
+      "open": "Abrir post"
+    },
+    "error": {
+      "title": "No se pudo cargar este perfil"
+    },
+    "comingSoon": "Aura Sense y Vote Power se unen a esta tarjeta en V1 (roadmap AURA-11, AURA-10)."
+  },
+  "post": {
+    "title": "Post",
+    "error": {
+      "title": "No se pudo cargar este post"
+    },
+    "comments": {
+      "title": "Comentarios",
+      "empty": "Todavía no hay comentarios. Di algo.",
+      "placeholder": "Escribe un comentario",
+      "post": "Publicar",
+      "more": "Cargar más",
+      "error": "No se pudieron cargar los comentarios"
+    }
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Salir",
+    "notNow": "Ahora no",
+    "providers": {
+      "apple": "Continuar con Apple",
+      "google": "Continuar con Google"
+    },
+    "reasons": {
+      "like": {
+        "title": "Entra para dar Aura",
+        "body": "Las auras son el puntaje. Apple o Google — sin contraseña — y esta aura cuenta."
+      },
+      "create": {
+        "title": "Entra para publicar",
+        "body": "Tu post empieza en cero Aura. Entra y empieza la subida."
+      },
+      "profile": {
+        "title": "Empieza a farmear Aura",
+        "body": "Entra para elegir un username, publicar y subir en el ranking."
+      },
+      "comment": {
+        "title": "Entra para comentar",
+        "body": "Apple o Google — sin contraseña — y puedes dejar un comentario."
+      },
+      "generic": {
+        "title": "Entra a Aura",
+        "body": "Apple o Google. Sin contraseña."
+      }
+    },
+    "unavailable": {
+      "apple": "Iniciar sesión con Apple no está disponible en este dispositivo.",
+      "google": "Google Sign-In todavía no está configurado en este build.",
+      "googleDevBuild": "Google Sign-In necesita un development build en este iPhone. Expo Go no puede hospedar un cliente Google iOS."
+    },
+    "username": {
+      "title": "Elige tu username",
+      "body": "Así es como apareces en el ranking. 3–30 letras, números o underscore.",
+      "placeholder": "username",
+      "submit": "Reservar username",
+      "taken": "Ese username ya está ocupado.",
+      "reserved": "Ese username no está disponible.",
+      "invalid": "3–30 caracteres. Letras, números o underscore."
+    }
+  },
+  "hashtag": {
+    "search": "Buscar hashtag",
+    "empty": "Todavía no hay posts con #{tag}.",
+    "invalid": "Ese hashtag no es válido.",
+    "error": {
+      "title": "No se pudo cargar este hashtag"
+    },
+    "a11y": {
+      "open": "Abrir #{tag}"
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "open": "Ajustes",
+    "back": "Atrás",
+    "language": {
+      "title": "Idioma",
+      "subtitle": "Gana al idioma del dispositivo.",
+      "options": {
+        "system": "Dispositivo",
+        "en": "English",
+        "pt": "Português",
+        "pt-br": "Português (Brasil)",
+        "es": "Español"
+      }
+    }
+  },
+  "notFound": {
+    "title": "No hay nada aquí",
+    "body": "Esta pantalla no existe, lo cual es una pena porque no tiene Aura.",
+    "backToFeed": "Volver al feed"
+  },
+  "errors": {
+    "unknown": "Algo salió mal. Inténtalo de nuevo.",
+    "network": "Sin conexión. Revisa tu internet e inténtalo de nuevo.",
+    "bad_request": "Eso no funcionó. Inténtalo de nuevo.",
+    "validation_failed": "Revisa lo que escribiste e inténtalo de nuevo.",
+    "unauthorized": "Entra para hacer eso.",
+    "forbidden": "No tienes permiso para hacer eso.",
+    "not_found": "Eso ya no está aquí.",
+    "conflict": "Algo cambió. Actualiza e inténtalo de nuevo.",
+    "rate_limited": "Baja un segundo y vuelve a intentar.",
+    "internal_error": "Esa fue nuestra. Inténtalo en un momento.",
+    "service_unavailable": "Aura está caída por un momento. Inténtalo en un rato.",
+    "invalid_token": "Tu sesión no es válida. Entra de nuevo.",
+    "token_expired": "Tu sesión expiró. Entra de nuevo.",
+    "refresh_reuse_detected": "Te sacamos para proteger tu cuenta. Entra de nuevo.",
+    "account_suspended": "Esta cuenta está suspendida.",
+    "account_banned": "Esta cuenta fue baneada.",
+    "upload_expired": "La subida expiró. Elige otra vez la foto o el video.",
+    "upload_too_large": "Ese archivo es demasiado grande.",
+    "unsupported_media_type": "Ese tipo de archivo no está soportado.",
+    "post_not_published": "Ese post todavía no está al aire.",
+    "already_liked": "Ya le diste like a este post.",
+    "not_liked": "Todavía no le diste like a este post.",
+    "cannot_like_own_post": "No puedes darte like a tu propio post. Buen intento.",
+    "already_reported": "Ya reportaste eso.",
+    "already_blocked": "Ya bloqueaste esa cuenta.",
+    "cannot_block_self": "No puedes bloquearte a ti mismo.",
+    "cannot_report_self": "No puedes reportarte a ti mismo."
+  }
+}

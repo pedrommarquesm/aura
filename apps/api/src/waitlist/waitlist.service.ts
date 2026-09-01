@@ -277,7 +277,7 @@ export class WaitlistService {
         await this.mail.enqueue({
           template: 'waitlist_referral',
           to: paid.email,
-          locale: paid.locale === 'pt' ? 'pt' : 'en',
+          locale: resolveLocale(paid.locale) ?? 'en',
           payload: {
             aura: paid.aura,
             referralCount: paid.referralCount,

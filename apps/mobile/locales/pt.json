@@ -237,7 +237,9 @@
       "options": {
         "system": "Dispositivo",
         "en": "English",
-        "pt": "Português"
+        "pt": "Português",
+        "pt-br": "Português (Brasil)",
+        "es": "Español"
       }
     }
   },
