@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { hashPassword, looksLikeEmail, normalizeEmail, verifyPassword } from './password';
+import {
+  hashPassword,
+  linkableOauthEmail,
+  looksLikeEmail,
+  normalizeEmail,
+  verifyPassword,
+} from './password';
 
 describe('hashPassword / verifyPassword', () => {
   it('accepts the original password and rejects a wrong one', async () => {
@@ -26,5 +32,16 @@ describe('looksLikeEmail', () => {
   it('splits identifier routing on @', () => {
     expect(looksLikeEmail('alice')).toBe(false);
     expect(looksLikeEmail('alice@aura.test')).toBe(true);
+  });
+});
+
+describe('linkableOauthEmail', () => {
+  it('accepts a real inbox the user could have typed', () => {
+    expect(linkableOauthEmail('  Tester@Aura.TEST  ')).toBe('tester@aura.test');
+  });
+
+  it('refuses Apple Hide My Email and a missing address', () => {
+    expect(linkableOauthEmail(null)).toBeNull();
+    expect(linkableOauthEmail('abc@privaterelay.appleid.com')).toBeNull();
   });
 });

@@ -71,6 +71,12 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
         {t(REASON_COPY[reason].body)}
       </Text>
 
+      {/*
+        Apple Hide My Email (`@privaterelay.appleid.com`) is not the inbox a
+        user types below. The API only attaches Apple/Google to a password
+        account when the token carries a real address. See
+        docs/backend-architecture.md §12.3.
+      */}
       <View className="gap-3 pt-4">
         {appleAvailable ? (
           <AppleAuthentication.AppleAuthenticationButton

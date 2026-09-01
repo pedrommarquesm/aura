@@ -64,3 +64,30 @@ export function normalizeEmail(raw: string): string {
 export function looksLikeEmail(raw: string): boolean {
   return raw.includes('@');
 }
+
+/** Apple Hide My Email. Not a stable address and not the inbox the user typed. */
+export const APPLE_PRIVATE_RELAY_SUFFIX = '@privaterelay.appleid.com';
+
+/**
+ * Email we may use to attach a first Apple/Google sign-in to a password
+ * account. Returns null when there is no email, or when it is Apple's
+ * private relay — those addresses are not a reliable identity key.
+ *
+ * Why Apple email is unreliable:
+ * - Hide My Email issues `…@privaterelay.appleid.com`. It is unique per app
+ *   and is not the address the user would type into a password form.
+ * - Apple sends email (and name) only on the first authorization. Later
+ *   sign-ins often have no email at all.
+ * - The user can turn Hide My Email on or off, or revoke the app, and the
+ *   next token's email changes or disappears.
+ *
+ * So we never key OAuth identity on email. We only *link* when the token
+ * carries a non-relay address that already exists as a password identity.
+ */
+export function linkableOauthEmail(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const email = normalizeEmail(raw);
+  if (!email.includes('@')) return null;
+  if (email.endsWith(APPLE_PRIVATE_RELAY_SUFFIX)) return null;
+  return email;
+}

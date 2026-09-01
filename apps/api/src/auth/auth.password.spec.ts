@@ -8,20 +8,20 @@ import { hashPassword } from './password';
 
 function createDb(identity?: Record<string, unknown>, user?: Record<string, unknown>) {
   const insertValues = vi.fn();
-  const tx = {
-    insert: vi.fn((table: { insert?: unknown }) => ({
-      values: vi.fn((row: unknown) => {
-        insertValues(table, row);
-        return {
-          returning: vi.fn().mockResolvedValue([
-            user ?? { id: 'u_new', username: 'tester', status: 'active' },
-          ]),
-        };
-      }),
-    })),
-  };
+  const insert = vi.fn(() => ({
+    values: vi.fn((row: unknown) => {
+      insertValues(row);
+      return {
+        returning: vi.fn().mockResolvedValue([
+          user ?? { id: 'u_new', username: 'tester', status: 'active' },
+        ]),
+      };
+    }),
+  }));
+  const tx = { insert };
 
   return {
+    insert,
     query: {
       authIdentities: {
         findFirst: vi.fn().mockResolvedValue(identity),
@@ -47,7 +47,11 @@ function createDb(identity?: Record<string, unknown>, user?: Record<string, unkn
   };
 }
 
-function createService(db: ReturnType<typeof createDb>, envOverrides: Record<string, unknown> = {}) {
+function createService(
+  db: ReturnType<typeof createDb>,
+  envOverrides: Record<string, unknown> = {},
+  oauth: { provider?: 'apple' | 'google'; email?: string | undefined; subject?: string } = {},
+) {
   const env = {
     APP_ENV: 'local',
     PASSWORD_AUTH_MAX: 20,
@@ -63,6 +67,12 @@ function createService(db: ReturnType<typeof createDb>, envOverrides: Record<str
     }),
   };
   const waitlist = { claimForAccount: vi.fn().mockResolvedValue(0) };
+  const verified = {
+    subject: oauth.subject ?? 'google-sub-1',
+    email: oauth.email,
+  };
+  const apple = { verify: vi.fn().mockResolvedValue(verified) };
+  const google = { verify: vi.fn().mockResolvedValue(verified) };
 
   return {
     service: new AuthService(
@@ -70,8 +80,8 @@ function createService(db: ReturnType<typeof createDb>, envOverrides: Record<str
       env as never,
       redis as never,
       tokens as never,
-      {} as never,
-      {} as never,
+      apple as never,
+      google as never,
       waitlist as never,
     ),
     tokens,
@@ -141,5 +151,48 @@ describe('AuthService password', () => {
     await expect(
       service.signInWithPassword('tester@aura.test', 'long-enough'),
     ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('attaches a first Google sign-in to the password account with the same email', async () => {
+    const passwordAccount = { id: 'u_1', username: 'tester', status: 'active' };
+    const db = createDb(undefined, passwordAccount);
+    db.query.authIdentities.findFirst
+      .mockResolvedValueOnce(undefined)
+      .mockResolvedValueOnce({
+        id: 'id_pw',
+        userId: 'u_1',
+        provider: 'password',
+        providerSub: 'tester@aura.test',
+      });
+    const { service, tokens } = createService(db, {}, { email: 'tester@aura.test' });
+
+    const result = await service.signInWithProvider('google', 'id-token');
+
+    expect(result.user.id).toBe('u_1');
+    expect(result.needsUsername).toBe(false);
+    expect(tokens.issue).toHaveBeenCalledWith('u_1', {});
+    expect(db.insertValues).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u_1',
+        provider: 'google',
+        providerSub: 'google-sub-1',
+      }),
+    );
+    expect(db.transaction).not.toHaveBeenCalled();
+  });
+
+  it('does not link when Apple only sends a Hide My Email relay', async () => {
+    const db = createDb(undefined, { id: 'u_new', username: 'aura_abc', status: 'active' });
+    db.query.authIdentities.findFirst.mockResolvedValue(undefined);
+    const { service } = createService(
+      db,
+      {},
+      { email: 'abc@privaterelay.appleid.com', subject: 'apple-sub' },
+    );
+
+    const result = await service.signInWithProvider('apple', 'id-token');
+
+    expect(result.needsUsername).toBe(true);
+    expect(db.transaction).toHaveBeenCalled();
   });
 });

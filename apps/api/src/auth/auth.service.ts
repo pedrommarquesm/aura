@@ -16,6 +16,7 @@ import { WaitlistService } from '../waitlist/waitlist.service';
 import { consumePasswordSlot } from './password-rate-limit';
 import {
   hashPassword,
+  linkableOauthEmail,
   looksLikeEmail,
   normalizeEmail,
   verifyPassword,
@@ -106,33 +107,40 @@ export class AuthService {
         .set({ lastLoginAt: new Date() })
         .where(eq(authIdentities.id, existing.id));
     } else {
-      const created = await this.db.transaction(async (tx) => {
-        const [newUser] = await tx
-          .insert(users)
-          .values({
-            id: newId(),
-            username: this.generatePlaceholderUsername(),
-            locale: resolveLocale(options.locale) ?? 'en',
-          })
-          .returning();
+      const linked = await this.linkOauthToPasswordAccount(providerName, identity);
 
-        await tx.insert(authIdentities).values({
-          id: newId(),
-          userId: newUser!.id,
-          provider: providerName,
-          providerSub: identity.subject,
-          // Apple sends name and email only on the very first authorization.
-          // If it is not captured here it is gone for good, and the only way
-          // back is the user revoking the app in system settings.
-          emailAtSignup: identity.email ?? null,
-          lastLoginAt: new Date(),
+      if (linked) {
+        user = linked;
+        needsUsername = false;
+      } else {
+        const created = await this.db.transaction(async (tx) => {
+          const [newUser] = await tx
+            .insert(users)
+            .values({
+              id: newId(),
+              username: this.generatePlaceholderUsername(),
+              locale: resolveLocale(options.locale) ?? 'en',
+            })
+            .returning();
+
+          await tx.insert(authIdentities).values({
+            id: newId(),
+            userId: newUser!.id,
+            provider: providerName,
+            providerSub: identity.subject,
+            // Apple sends name and email only on the very first authorization.
+            // If it is not captured here it is gone for good, and the only way
+            // back is the user revoking the app in system settings.
+            emailAtSignup: identity.email ?? null,
+            lastLoginAt: new Date(),
+          });
+
+          return newUser!;
         });
 
-        return newUser!;
-      });
-
-      user = created;
-      needsUsername = true;
+        user = created;
+        needsUsername = true;
+      }
     }
 
     assertAccountActive(user.status);
@@ -253,6 +261,43 @@ export class AuthService {
 
     const issued = await this.tokens.issue(user.id, options.device ?? {});
     return { ...issued, user, needsUsername: false };
+  }
+
+  /**
+   * First Apple/Google sign-in: if the token carries a real (non-relay) email
+   * that already belongs to a password account, attach this provider to that
+   * user instead of creating a second one.
+   */
+  private async linkOauthToPasswordAccount(
+    providerName: 'apple' | 'google',
+    identity: { subject: string; email?: string },
+  ): Promise<User | undefined> {
+    const email = linkableOauthEmail(identity.email);
+    if (!email) return undefined;
+
+    const passwordIdentity = await this.db.query.authIdentities.findFirst({
+      where: (table, { and: both, eq: equals }) =>
+        both(equals(table.provider, 'password'), equals(table.providerSub, email)),
+    });
+
+    if (!passwordIdentity) return undefined;
+
+    const user = await this.db.query.users.findFirst({
+      where: (table, { eq: equals }) => equals(table.id, passwordIdentity.userId),
+    });
+
+    if (!user) return undefined;
+
+    await this.db.insert(authIdentities).values({
+      id: newId(),
+      userId: user.id,
+      provider: providerName,
+      providerSub: identity.subject,
+      emailAtSignup: identity.email ?? null,
+      lastLoginAt: new Date(),
+    });
+
+    return user;
   }
 
   private async findPasswordIdentity(identifier: string) {

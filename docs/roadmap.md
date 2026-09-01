@@ -291,6 +291,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | First Apple/Google sign-in attaches to an existing password account when the token email is a non-relay address that already exists. Apple Hide My Email does not merge — relay addresses are not a stable inbox | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | 2026-09-01 | Password login/register for e2e on local and staging. `auth_identities.password_hash` (scrypt). Production still Apple/Google only | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | 2026-09-01 | Public host is `www.auraclimb.com`. API `api.auraclimb.com`. CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` and `PUBLIC_SITE_URL` match. Old `aurarankd.com` hostnames are detached | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | 2026-08-31 | Landing hero and play demos use the mobile feed card chrome: full-bleed photo, top-right Aura pill, right-side 🗿 / comments / share / more, bottom overlay with username + title. A like is a 🗿, not a heart | [#73](https://github.com/pedrommarquesm/aura/pull/73) |

@@ -22,14 +22,16 @@ export const authIdentities = pgTable(
 
     provider: authProvider('provider').notNull(),
     /**
-     * The provider's stable subject id. Identity keys on this and never on
-     * email: Apple's private relay addresses make email unreliable.
+     * The provider's stable subject id. OAuth identity keys on this, never on
+     * email. For `password` this is the normalized email the user typed.
      */
     providerSub: text('provider_sub').notNull(),
 
     /**
      * Apple returns name and email only on the very first authorization, so
-     * whatever arrived then is persisted here. It may be a relay address.
+     * whatever arrived then is persisted here. It may be Hide My Email
+     * (`@privaterelay.appleid.com`) — not a stable inbox and not used to
+     * match accounts. See backend-architecture §12.3.
      */
     emailAtSignup: text('email_at_signup'),
 

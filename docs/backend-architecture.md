@@ -812,18 +812,22 @@ That keeps the funnel frictionless while making like-rings costly. It fits the e
 
 **Apple gotchas to handle on day one:**
 
-- Apple returns the user's name and email **only on the very first authorization**. If we don't persist it in that first callback, it is gone forever and the only recovery is the user manually revoking the app in iOS settings.
-- Apple's private relay (`@privaterelay.appleid.com`) means email is not a reliable identity key. **Key on provider `sub`**, never on email.
-- The same human may sign in with Apple on iPhone and Google on Android. Support linking multiple provider identities to one user from the start.
+- Apple returns the user's name and email **only on the very first authorization**. Later tokens often have no email. If we don't persist it in that first callback, it is gone forever and the only recovery is the user manually revoking the app in iOS settings.
+- **Hide My Email** issues `…@privaterelay.appleid.com`. That address is unique per app, is not the inbox the user would type into a password form, and can change if they toggle Hide My Email or revoke the app. Email is therefore not a reliable identity key. **OAuth identity keys on provider `sub`**, never on email.
+- A first Apple/Google sign-in may **attach** to an existing password account only when the token carries a **non-relay** email that already exists as a `password` identity. A relay address, a missing email, or a different inbox creates a new user. That is why "same person, Apple Hide My Email" will not merge with an email+password account.
+- The same human may sign in with Apple on iPhone and Google on Android. Multiple `AuthIdentity` rows per user are the linking model.
+
+**Password → OAuth (one account):** register with email+password, then Continue with Google using that same inbox → one `users` row, two identities. Apple only joins that path if the user shared their real email, not Hide My Email.
 
 ### 12.4 Data model
 
 ```text
 AuthIdentity
   id, userId
-  provider              -- apple | google | phone
-  providerSub           -- provider's stable subject id
-  emailAtSignup         -- may be a relay address; not an identity key
+  provider              -- apple | google | phone | password
+  providerSub           -- provider's stable subject id; for password, the normalized email
+  emailAtSignup         -- may be a Hide My Email relay; not an OAuth identity key
+  passwordHash          -- scrypt; only when provider = password
   UNIQUE (provider, providerSub)
 
 DeviceSession
