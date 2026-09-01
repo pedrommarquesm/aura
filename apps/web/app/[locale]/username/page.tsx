@@ -18,8 +18,6 @@ import {
   safeReturnPath,
 } from "@/lib/auth/return-to";
 import { getSession } from "@/lib/auth/session";
-import { isPostId } from "@/lib/likes/ids";
-import { applyPendingLike } from "@/lib/likes/server";
 import { webAuthEnabled } from "@/lib/launch";
 import { buildMetadata } from "@/lib/seo";
 
@@ -40,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function UsernamePage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; like?: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
   if (!webAuthEnabled) {
     redirect("/");
@@ -48,17 +46,15 @@ export default async function UsernamePage({
 
   const locale = await getLocale();
   const t = await getTranslations("auth.username");
-  const { next, like } = await searchParams;
+  const { next } = await searchParams;
   const returnTo = safeReturnPath(next) ?? defaultSignedInPath(locale);
-  const pendingLike = isPostId(like) ? like : null;
   const session = await getSession();
 
   if (!session) {
-    redirect(authContinueHref(locale, "login", returnTo, pendingLike));
+    redirect(authContinueHref(locale, "login", returnTo));
   }
 
   if (session && !session.needsUsername) {
-    await applyPendingLike(session.accessToken, pendingLike);
     redirect(returnTo);
   }
 
@@ -75,7 +71,7 @@ export default async function UsernamePage({
               <CardDescription>{t("body")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <UsernameClaimForm next={returnTo} like={pendingLike} />
+              <UsernameClaimForm next={returnTo} />
             </CardContent>
           </Card>
         </Container>

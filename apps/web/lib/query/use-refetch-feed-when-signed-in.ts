@@ -8,7 +8,7 @@ import { queryKeys, type FeedRanking } from "@/lib/query/keys";
 
 /**
  * `[locale]` is statically generated (next-intl `generateStaticParams`), so the
- * dehydrated feed can be a guest snapshot — `likedByMe: false` for everyone.
+ * dehydrated feed can be a guest snapshot — `votedByMe: false` for everyone.
  * The permalink lives outside that tree and loads the session per request.
  *
  * When we know the viewer, refetch `/api/feed` (cookie-aware BFF, not a Server

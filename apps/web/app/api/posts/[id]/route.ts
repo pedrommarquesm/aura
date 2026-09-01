@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { ApiError } from "@/lib/api/errors";
 import { readSessionCookiesFromRequest } from "@/lib/auth/cookies";
-import { isPostId } from "@/lib/likes/ids";
+import { isPostId } from "@/lib/api/ids";
 import { readPostById } from "@/lib/query/load";
 
 export async function GET(
