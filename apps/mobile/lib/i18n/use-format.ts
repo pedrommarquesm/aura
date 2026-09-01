@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_LOCALE, resolveLocale, type AppLocale } from './locales';
-import { formatAura, formatCount, formatNumber } from '@/lib/format';
+import { formatAura, formatCount, formatNumber, formatSigned } from '@/lib/format';
 
 /** The locale the UI is currently rendering in. Re-renders when it changes. */
 export function useLocale(): AppLocale {
@@ -16,6 +16,7 @@ export type Format = {
   aura: (value: number) => string;
   count: (value: number) => string;
   number: (value: number) => string;
+  signed: (value: number) => string;
 };
 
 /**
@@ -30,6 +31,7 @@ export function useFormat(): Format {
       aura: (value: number) => formatAura(value, locale),
       count: (value: number) => formatCount(value, locale),
       number: (value: number) => formatNumber(value, locale),
+      signed: (value: number) => formatSigned(value, locale),
     }),
     [locale],
   );

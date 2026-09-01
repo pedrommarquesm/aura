@@ -40,8 +40,8 @@ export function applyAvatarUrl(
     { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapInfinite(current, input.userId, input.avatarUrl),
   );
-  // `postComments` is `['post', id, 'comments']`. A prefix match on `['post']`
-  // would walk those thread pages, read `author` on `{ pages, pageParams }`,
+  // `postVotes` is `['post', id, 'votes']`. A prefix match on `['post']`
+  // would walk those ledger pages, read `author` on `{ pages, pageParams }`,
   // and throw — the crop screen then shows `errors.unknown` after a 200 complete.
   queryClient.setQueriesData<PostDetail>(
     { predicate: (query) => query.queryKey[0] === 'post' && query.queryKey.length === 2 },

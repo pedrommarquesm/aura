@@ -10,10 +10,7 @@ import type {
 
 export const USER_POSTS_PAGE_SIZE = 12;
 
-export function fetchPublicProfile(
-  username: string,
-  signal?: AbortSignal,
-): Promise<PublicProfile> {
+export function fetchPublicProfile(username: string, signal?: AbortSignal): Promise<PublicProfile> {
   const handle = username.startsWith('@') ? username.slice(1) : username;
   return api.get<PublicProfile>(`/users/${encodeURIComponent(handle)}`, {
     signal,

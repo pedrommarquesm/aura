@@ -29,7 +29,7 @@ describe('Profile photo', () => {
     expect(routerMocks().push).toHaveBeenCalledWith('/avatar-edit');
   });
 
-  it('does not show the pencil on someone else\'s profile', async () => {
+  it("does not show the pencil on someone else's profile", async () => {
     asGuest();
     routerMocks().params = { username: 'alice' };
     api.fetchPublicProfile.mockResolvedValue(

@@ -43,26 +43,40 @@ export type FeedCard = {
   author: FeedAuthor;
   media: FeedMedia;
   caption: string | null;
-  likeCount: number;
-  commentCount: number;
-  /** Aura this post has earned, not the author's total. */
+  voteCount: number;
+  /** Signed. This post may be in Aura Debt (negative). Not the author's total. */
   aura: number;
-  likedByMe: boolean;
+  votedByMe: boolean;
+  /** The viewer's own vote amount, if they cast one. There is no unvote. */
+  myAmount: number | null;
   createdAt: string;
 };
 
-export type CommentAuthor = FeedAuthor;
+export type VoteAuthor = FeedAuthor;
 
-export type CommentCard = {
-  id: string;
-  body: string;
+/** One row on the receipt ledger. Every vote appears here, with or without text. */
+export type VoteReceipt = {
+  amount: number;
+  receipt: string | null;
   createdAt: string;
-  author: CommentAuthor;
+  author: VoteAuthor;
 };
 
-export type CreateCommentResult = {
-  comment: CommentCard;
-  commentCount: number;
+export type CastVoteResult = {
+  amount: number;
+  receipt: string | null;
+  createdAt: string;
+  voteCount: number;
+  postAura: number;
+  creatorAura: number;
+  /** True when the caller had already voted — `amount` above is the original, unchanged. */
+  alreadyVoted: boolean;
+};
+
+export type SetReceiptResult = {
+  amount: number;
+  receipt: string;
+  createdAt: string;
 };
 
 export type LeaderboardEntry = {
@@ -117,14 +131,6 @@ export type SignInResponse = AuthTokens & {
   user: PublicUser;
 };
 
-export type LikeResult = {
-  liked: boolean;
-  likeCount: number;
-  postAura: number;
-  creatorAura: number;
-  actorAuraDelta: number;
-};
-
 export type CreateUploadRequest = {
   contentType: string;
   byteSize: number;
@@ -172,4 +178,3 @@ export type CompleteAvatarResponse = {
 export type PostDetail = FeedCard & {
   status: 'uploading' | 'processing' | 'published' | 'failed' | 'removed';
 };
-

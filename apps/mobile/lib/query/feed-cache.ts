@@ -1,25 +1,28 @@
 import type { InfiniteData, QueryClient } from '@tanstack/react-query';
 
 import type {
-  CommentCard,
-  CreateCommentResult,
+  CastVoteResult,
   CursorPage,
   FeedCard,
-  LikeResult,
   PostDetail,
   PublicProfile,
+  SetReceiptResult,
+  VoteReceipt,
 } from '@/lib/api/types';
 import { isInfiniteCardQuery, queryKeys } from '@/lib/query/keys';
 
 type InfiniteCards = InfiniteData<CursorPage<FeedCard>, string | null>;
 
-function patchCard(card: FeedCard, result: LikeResult): FeedCard {
-  if (card.likedByMe === result.liked && card.likeCount === result.likeCount) return card;
+function patchCard(card: FeedCard, result: CastVoteResult): FeedCard {
+  if (card.votedByMe && card.myAmount === result.amount && card.voteCount === result.voteCount) {
+    return card;
+  }
 
   return {
     ...card,
-    likedByMe: result.liked,
-    likeCount: result.likeCount,
+    votedByMe: true,
+    myAmount: result.amount,
+    voteCount: result.voteCount,
     aura: result.postAura,
     author: { ...card.author, aura: result.creatorAura },
   };
@@ -28,7 +31,7 @@ function patchCard(card: FeedCard, result: LikeResult): FeedCard {
 function mapInfinite(
   current: InfiniteCards | undefined,
   postId: string,
-  result: LikeResult,
+  result: CastVoteResult,
 ): InfiniteCards | undefined {
   if (!current) return current;
   return {
@@ -41,11 +44,14 @@ function mapInfinite(
 }
 
 /**
- * Writes a like/unlike into every list that already shows this post, plus the
+ * Writes a cast vote into every list that already shows this post, plus the
  * permalink. The home feed was not enough — opening a post from a profile
  * reads `['post', id]` and the grid reads `['user', id, 'posts']`.
+ *
+ * There is no unvote, so unlike the old like this only ever locks a vote in —
+ * it never needs to roll a card back to an unvoted state.
  */
-export function applyLikeResult(queryClient: QueryClient, postId: string, result: LikeResult) {
+export function applyVoteResult(queryClient: QueryClient, postId: string, result: CastVoteResult) {
   queryClient.setQueriesData<InfiniteCards>(
     { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
     (current) => mapInfinite(current, postId, result),
@@ -70,67 +76,49 @@ export function applyLikeResult(queryClient: QueryClient, postId: string, result
   }
 }
 
-function patchCommentCount(card: FeedCard, commentCount: number): FeedCard {
-  if (card.commentCount === commentCount) return card;
-  return { ...card, commentCount };
-}
+type InfiniteVotes = InfiniteData<CursorPage<VoteReceipt>, string | null>;
 
-function mapCommentCount(
-  current: InfiniteCards | undefined,
-  postId: string,
-  commentCount: number,
-): InfiniteCards | undefined {
-  if (!current) return current;
-  return {
-    ...current,
-    pages: current.pages.map((page) => ({
-      ...page,
-      items: page.items.map((item) =>
-        item.id === postId ? patchCommentCount(item, commentCount) : item,
-      ),
-    })),
-  };
-}
-
-type InfiniteComments = InfiniteData<CursorPage<CommentCard>, string | null>;
-
-function appendComment(
-  current: InfiniteComments | undefined,
-  comment: CommentCard,
-): InfiniteComments {
+/** Prepends a just-cast vote to the ledger's first page — it is newest-first (Q6). */
+function prependVote(current: InfiniteVotes | undefined, row: VoteReceipt): InfiniteVotes {
   if (!current || current.pages.length === 0) {
     return {
       pageParams: [null],
-      pages: [{ items: [comment], nextCursor: null, hasMore: false }],
+      pages: [{ items: [row], nextCursor: null, hasMore: false }],
     };
   }
 
   const pages = [...current.pages];
-  const last = pages.length - 1;
-  const page = pages[last]!;
-  pages[last] = { ...page, items: [...page.items, comment] };
+  const first = pages[0]!;
+  pages[0] = { ...first, items: [row, ...first.items] };
   return { ...current, pages };
 }
 
-/** Writes the denormalized comment count into every list that already shows this post. */
-export function applyCommentCount(queryClient: QueryClient, postId: string, commentCount: number) {
-  queryClient.setQueriesData<InfiniteCards>(
-    { predicate: (query) => isInfiniteCardQuery(query.queryKey) },
-    (current) => mapCommentCount(current, postId, commentCount),
-  );
-  queryClient.setQueryData<PostDetail>(queryKeys.post(postId), (current) =>
-    current ? { ...patchCommentCount(current, commentCount), status: current.status } : current,
+/** Adds the vote just cast to the ledger cache so it appears without a refetch. */
+export function applyVoteToLedger(queryClient: QueryClient, postId: string, row: VoteReceipt) {
+  queryClient.setQueryData<InfiniteVotes>(queryKeys.postVotes(postId), (current) =>
+    prependVote(current, row),
   );
 }
 
-/** Appends a just-posted comment to the thread and bumps every card's count. */
-export function applyCreatedComment(
+/** Freezes the just-added receipt text onto the matching ledger row (Q3). */
+export function applyReceiptResult(
   queryClient: QueryClient,
   postId: string,
-  result: CreateCommentResult,
+  authorId: string,
+  result: SetReceiptResult,
 ) {
-  applyCommentCount(queryClient, postId, result.commentCount);
-  queryClient.setQueryData<InfiniteComments>(queryKeys.postComments(postId), (current) =>
-    appendComment(current, result.comment),
-  );
+  queryClient.setQueryData<InfiniteVotes>(queryKeys.postVotes(postId), (current) => {
+    if (!current) return current;
+    return {
+      ...current,
+      pages: current.pages.map((page) => ({
+        ...page,
+        items: page.items.map((row) =>
+          row.author.id === authorId && row.amount === result.amount
+            ? { ...row, receipt: result.receipt }
+            : row,
+        ),
+      })),
+    };
+  });
 }

@@ -15,23 +15,20 @@ const REASON_COPY: Record<
   AuthReason,
   {
     title:
-      | 'auth.reasons.like.title'
+      | 'auth.reasons.vote.title'
       | 'auth.reasons.create.title'
       | 'auth.reasons.profile.title'
-      | 'auth.reasons.comment.title'
       | 'auth.reasons.generic.title';
     body:
-      | 'auth.reasons.like.body'
+      | 'auth.reasons.vote.body'
       | 'auth.reasons.create.body'
       | 'auth.reasons.profile.body'
-      | 'auth.reasons.comment.body'
       | 'auth.reasons.generic.body';
   }
 > = {
-  like: { title: 'auth.reasons.like.title', body: 'auth.reasons.like.body' },
+  vote: { title: 'auth.reasons.vote.title', body: 'auth.reasons.vote.body' },
   create: { title: 'auth.reasons.create.title', body: 'auth.reasons.create.body' },
   profile: { title: 'auth.reasons.profile.title', body: 'auth.reasons.profile.body' },
-  comment: { title: 'auth.reasons.comment.title', body: 'auth.reasons.comment.body' },
   generic: { title: 'auth.reasons.generic.title', body: 'auth.reasons.generic.body' },
 };
 

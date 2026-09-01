@@ -19,7 +19,6 @@ describe('Guest browses the feed', () => {
     expect(screen.getByText('Trending')).toBeTruthy();
     expect(await screen.findByText('golden hour hits different when you are winning')).toBeTruthy();
     expect(screen.getByText('absolute cinema')).toBeTruthy();
-    expect(screen.getAllByHintText('Give aura').length).toBeGreaterThan(0);
   });
 
   it('loads Trending when they switch the chip', async () => {
@@ -36,23 +35,14 @@ describe('Guest browses the feed', () => {
 
   it('keeps the posts on screen while the feed refetches', async () => {
     const { queryClient } = await renderApp(<HomeScreen />);
-    expect(await screen.findByText('golden hour hits different when you are winning')).toBeOnTheScreen();
+    expect(
+      await screen.findByText('golden hour hits different when you are winning'),
+    ).toBeOnTheScreen();
 
     await act(async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.feed.ranking('latest') });
     });
 
     expect(screen.getByText('golden hour hits different when you are winning')).toBeOnTheScreen();
-  });
-
-  it('asks them to sign in when they try to like — and does not award Aura', async () => {
-    const user = userEvent.setup();
-    await renderApp(<HomeScreen />);
-    const like = await screen.findAllByHintText('Give aura');
-
-    await user.press(like[0]!);
-
-    expect(await screen.findByText('Sign in to award Aura')).toBeOnTheScreen();
-    expect(api.likePost).not.toHaveBeenCalled();
   });
 });

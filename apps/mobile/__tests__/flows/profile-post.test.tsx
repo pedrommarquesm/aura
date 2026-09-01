@@ -4,7 +4,7 @@ import HomeScreen from '@/app/(tabs)/index';
 import ProfileScreen from '@/app/(tabs)/profile';
 import PostScreen from '@/app/post/[id]';
 
-import { api, feedPage, likeResult, ownPost } from '../helpers/api';
+import { api, feedPage, ownPost } from '../helpers/api';
 import { renderApp } from '../helpers/render';
 import { asGuest, asSignedIn, routerMocks } from '../helpers/session';
 
@@ -27,7 +27,7 @@ describe('Profile post view and post menu', () => {
     expect(screen.queryByLabelText('Post options')).toBeNull();
   });
 
-  it('hides the post menu on other people\'s posts', async () => {
+  it("hides the post menu on other people's posts", async () => {
     asSignedIn();
     await renderApp(<HomeScreen />);
     await screen.findByText('golden hour hits different when you are winning');
@@ -76,55 +76,6 @@ describe('Profile post view and post menu', () => {
       expect(api.deletePost).toHaveBeenCalledWith('post-own');
     });
     expect(routerMocks().back).toHaveBeenCalled();
-  });
-
-  it('unlikes a post opened from a profile and keeps it unliked', async () => {
-    asSignedIn();
-    const post = {
-      ...ownPost({
-        id: '01j0000000000000000000001',
-        likedByMe: true,
-        likeCount: 1_284,
-        author: {
-          id: 'u-alice',
-          username: 'alice',
-          avatarUrl: null,
-          aura: 82_421,
-          title: 'Aura Lord',
-        },
-      }),
-    };
-    routerMocks().params = { id: post.id };
-    api.fetchPost.mockResolvedValue(post);
-    api.unlikePost.mockResolvedValue(likeResult(false));
-    const user = userEvent.setup();
-    await renderApp(<PostScreen />);
-
-    await user.press((await screen.findAllByHintText('Remove aura'))[0]!);
-
-    await waitFor(() => {
-      expect(api.unlikePost).toHaveBeenCalledWith(post.id);
-    });
-    expect((await screen.findAllByHintText('Give aura')).length).toBeGreaterThan(0);
-    expect(screen.queryAllByHintText('Remove aura')).toHaveLength(0);
-  });
-
-  it('keeps comments in the drawer instead of under the post', async () => {
-    asSignedIn();
-    const post = ownPost();
-    routerMocks().params = { id: post.id };
-    api.fetchPost.mockResolvedValue(post);
-    const user = userEvent.setup();
-    await renderApp(<PostScreen />);
-    await screen.findByText('my golden hour');
-
-    expect(screen.queryByTestId('comment-body')).toBeNull();
-    expect(screen.queryByText('No comments yet. Say something.')).toBeNull();
-
-    await user.press(screen.getAllByHintText('Comment')[0]!);
-
-    expect(await screen.findByTestId('comment-body')).toBeOnTheScreen();
-    expect(screen.getByText('No comments yet. Say something.')).toBeOnTheScreen();
   });
 
   it('pulls to refresh the profile', async () => {

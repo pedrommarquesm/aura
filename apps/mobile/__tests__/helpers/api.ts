@@ -2,27 +2,26 @@ import type { ImagePickerAsset } from 'expo-image-picker';
 
 import { mockFeed } from '@/mocks/feed';
 import type {
+  CastVoteResult,
   CompleteAvatarResponse,
-  CommentCard,
   CompleteUploadResponse,
   CreateAvatarUploadResponse,
-  CreateCommentResult,
   CreateUploadResponse,
   CursorPage,
   FeedCard,
   LeaderboardPage,
-  LikeResult,
   PostDetail,
   PublicProfile,
   PublicUser,
+  SetReceiptResult,
   SignInResponse,
+  VoteReceipt,
 } from '@/lib/api';
 import type { OptimizedVideo } from '@/lib/media/optimize-video';
 
 import { fetchFeedPage } from '@/lib/api/feed';
 import { fetchHashtagPage } from '@/lib/api/hashtags';
-import { createComment, fetchComments } from '@/lib/api/comments';
-import { likePost, unlikePost } from '@/lib/api/likes';
+import { castVote, fetchVoteLedger, fetchVoteOverlay, setVoteReceipt } from '@/lib/api/votes';
 import {
   completeUpload,
   createUpload,
@@ -40,7 +39,12 @@ import {
   signInWithPassword,
   signInWithProvider,
 } from '@/lib/api/auth';
-import { completeAvatarUpload, createAvatarUpload, fetchPublicProfile, fetchUserPosts } from '@/lib/api/users';
+import {
+  completeAvatarUpload,
+  createAvatarUpload,
+  fetchPublicProfile,
+  fetchUserPosts,
+} from '@/lib/api/users';
 import { cropAvatarPhoto } from '@/lib/media/crop-avatar';
 import { pickPhotoFromLibrary } from '@/lib/media/pick-photo';
 import { pickVideoFromLibrary } from '@/lib/media/pick-video';
@@ -51,10 +55,10 @@ import { putPresignedObject } from '@/lib/upload/put-presigned';
 export const api = {
   fetchFeedPage: fetchFeedPage as jest.MockedFunction<typeof fetchFeedPage>,
   fetchHashtagPage: fetchHashtagPage as jest.MockedFunction<typeof fetchHashtagPage>,
-  likePost: likePost as jest.MockedFunction<typeof likePost>,
-  unlikePost: unlikePost as jest.MockedFunction<typeof unlikePost>,
-  fetchComments: fetchComments as jest.MockedFunction<typeof fetchComments>,
-  createComment: createComment as jest.MockedFunction<typeof createComment>,
+  castVote: castVote as jest.MockedFunction<typeof castVote>,
+  setVoteReceipt: setVoteReceipt as jest.MockedFunction<typeof setVoteReceipt>,
+  fetchVoteLedger: fetchVoteLedger as jest.MockedFunction<typeof fetchVoteLedger>,
+  fetchVoteOverlay: fetchVoteOverlay as jest.MockedFunction<typeof fetchVoteOverlay>,
   createUpload: createUpload as jest.MockedFunction<typeof createUpload>,
   refreshUpload: refreshUpload as jest.MockedFunction<typeof refreshUpload>,
   completeUpload: completeUpload as jest.MockedFunction<typeof completeUpload>,
@@ -115,14 +119,14 @@ export function feedPage(items: FeedCard[] = mockFeed): CursorPage<FeedCard> {
   return { items, nextCursor: null, hasMore: false };
 }
 
-export function commentsPage(items: CommentCard[] = []): CursorPage<CommentCard> {
+export function ledgerPage(items: VoteReceipt[] = []): CursorPage<VoteReceipt> {
   return { items, nextCursor: null, hasMore: false };
 }
 
-export function sampleComment(overrides: Partial<CommentCard> = {}): CommentCard {
+export function sampleVoteReceipt(overrides: Partial<VoteReceipt> = {}): VoteReceipt {
   return {
-    id: 'comment-1',
-    body: 'this is fire',
+    amount: 45,
+    receipt: 'this is fire',
     createdAt: '2026-08-30T12:00:00.000Z',
     author: {
       id: testUser.id,
@@ -136,11 +140,26 @@ export function sampleComment(overrides: Partial<CommentCard> = {}): CommentCard
   };
 }
 
-export function createdComment(
-  body = 'this is fire',
-  commentCount = 1,
-): CreateCommentResult {
-  return { comment: sampleComment({ body }), commentCount };
+export function castVoteResult(overrides: Partial<CastVoteResult> = {}): CastVoteResult {
+  return {
+    amount: 45,
+    receipt: null,
+    createdAt: '2026-08-30T12:00:00.000Z',
+    voteCount: 1,
+    postAura: 12_885,
+    creatorAura: 82_466,
+    alreadyVoted: false,
+    ...overrides,
+  };
+}
+
+export function setReceiptResult(overrides: Partial<SetReceiptResult> = {}): SetReceiptResult {
+  return {
+    amount: 45,
+    receipt: 'this is fire',
+    createdAt: '2026-08-30T12:00:00.000Z',
+    ...overrides,
+  };
 }
 
 export const signInResponse: SignInResponse = {
@@ -150,14 +169,6 @@ export const signInResponse: SignInResponse = {
   needsUsername: false,
   user: testUser,
 };
-
-export const likeResult = (liked = true): LikeResult => ({
-  liked,
-  likeCount: liked ? 1_285 : 1_283,
-  postAura: liked ? 12_850 : 12_830,
-  creatorAura: 82_431,
-  actorAuraDelta: 0,
-});
 
 export const uploadResponse: CreateUploadResponse = {
   postId: 'post-new',
@@ -183,7 +194,9 @@ export const avatarUploadResponse: CreateAvatarUploadResponse = {
   expiresAt: '2099-01-01T00:00:00.000Z',
 };
 
-export function avatarCompleteResponse(avatarUrl = 'https://cdn.auraclimb.com/avatars/u-tester/v.jpg'): CompleteAvatarResponse {
+export function avatarCompleteResponse(
+  avatarUrl = 'https://cdn.auraclimb.com/avatars/u-tester/v.jpg',
+): CompleteAvatarResponse {
   return { user: { ...testUser, avatarUrl } };
 }
 
@@ -271,10 +284,10 @@ export function resetApiMocks() {
 
   api.fetchFeedPage.mockResolvedValue(feedPage());
   api.fetchHashtagPage.mockResolvedValue(feedPage());
-  api.likePost.mockResolvedValue(likeResult(true));
-  api.unlikePost.mockResolvedValue(likeResult(false));
-  api.fetchComments.mockResolvedValue(commentsPage());
-  api.createComment.mockResolvedValue(createdComment());
+  api.castVote.mockResolvedValue(castVoteResult());
+  api.setVoteReceipt.mockResolvedValue(setReceiptResult());
+  api.fetchVoteLedger.mockResolvedValue(ledgerPage());
+  api.fetchVoteOverlay.mockResolvedValue([]);
   api.createUpload.mockResolvedValue(uploadResponse);
   api.refreshUpload.mockResolvedValue(uploadResponse);
   api.completeUpload.mockResolvedValue(completeResponse);

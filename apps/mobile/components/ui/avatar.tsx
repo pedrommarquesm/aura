@@ -21,6 +21,11 @@ export type AvatarProps = {
   size?: AvatarSize;
   /** Gradient ring. Earned status only — top ranks, live challenge entrants. */
   ring?: boolean;
+  /**
+   * Square avatars are receipts and the ledger only (docs/redesign-tracker.md
+   * Q16) — profile and feed avatars stay circular. Not combinable with `ring`.
+   */
+  shape?: 'circle' | 'square';
   /** Hide from the a11y tree when the avatar sits inside another button. */
   accessible?: boolean;
   className?: string;
@@ -31,16 +36,19 @@ export function Avatar({
   username,
   size = 'md',
   ring = false,
+  shape = 'circle',
   accessible = true,
   className,
 }: AvatarProps) {
   const { t } = useTranslation();
   const sizing = sizes[size];
+  const rounded = shape === 'square' ? 'rounded-sm' : 'rounded-full';
 
   const face = (
     <View
       className={cn(
-        'items-center justify-center overflow-hidden rounded-full bg-surface-elevated',
+        'items-center justify-center overflow-hidden bg-surface-elevated',
+        rounded,
         sizing.box,
         !ring && className,
       )}

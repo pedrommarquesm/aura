@@ -12,15 +12,12 @@ jest.mock('@/lib/api/hashtags', () => ({
   HASHTAG_PAGE_SIZE: 12,
 }));
 
-jest.mock('@/lib/api/likes', () => ({
-  likePost: jest.fn(),
-  unlikePost: jest.fn(),
-}));
-
-jest.mock('@/lib/api/comments', () => ({
-  fetchComments: jest.fn(),
-  createComment: jest.fn(),
-  COMMENTS_PAGE_SIZE: 20,
+jest.mock('@/lib/api/votes', () => ({
+  castVote: jest.fn(),
+  setVoteReceipt: jest.fn(),
+  fetchVoteLedger: jest.fn(),
+  fetchVoteOverlay: jest.fn(),
+  VOTE_LEDGER_PAGE_SIZE: 20,
 }));
 
 jest.mock('@/lib/api/posts', () => ({

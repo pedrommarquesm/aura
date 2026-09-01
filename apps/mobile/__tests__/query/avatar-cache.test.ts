@@ -2,16 +2,18 @@ import { applyAvatarUrl } from '@/lib/query/avatar-cache';
 import { queryKeys } from '@/lib/query/keys';
 import { mockFeed } from '@/mocks/feed';
 
-import { createdComment, feedPage, testUser } from '../helpers/api';
+import { feedPage, sampleVoteReceipt, testUser } from '../helpers/api';
 import { createTestQueryClient } from '../helpers/query-client';
 
 describe('applyAvatarUrl', () => {
-  it('updates the author on the permalink and leaves the comment thread alone', () => {
+  it('updates the author on the permalink and leaves the vote ledger alone', () => {
     const post = { ...mockFeed[0]!, author: { ...mockFeed[0]!.author, id: testUser.id } };
     const nextUrl = 'https://cdn.auraclimb.com/avatars/u-tester/new.jpg';
     const client = createTestQueryClient();
-    const thread = {
-      pages: [{ items: [createdComment('keep me', 1).comment], nextCursor: null, hasMore: false }],
+    const ledger = {
+      pages: [
+        { items: [sampleVoteReceipt({ receipt: 'keep me' })], nextCursor: null, hasMore: false },
+      ],
       pageParams: [null],
     };
 
@@ -20,10 +22,14 @@ describe('applyAvatarUrl', () => {
       pageParams: [null],
     });
     client.setQueryData(queryKeys.post(post.id), { ...post, status: 'published' });
-    client.setQueryData(queryKeys.postComments(post.id), thread);
+    client.setQueryData(queryKeys.postVotes(post.id), ledger);
 
     expect(() =>
-      applyAvatarUrl(client, { userId: testUser.id, username: testUser.username, avatarUrl: nextUrl }),
+      applyAvatarUrl(client, {
+        userId: testUser.id,
+        username: testUser.username,
+        avatarUrl: nextUrl,
+      }),
     ).not.toThrow();
 
     const detail = client.getQueryData<{ author: { avatarUrl: string | null } }>(
@@ -36,6 +42,6 @@ describe('applyAvatarUrl', () => {
     }>(queryKeys.feed.ranking('latest'));
     expect(feed?.pages[0]?.items[0]?.author.avatarUrl).toBe(nextUrl);
 
-    expect(client.getQueryData(queryKeys.postComments(post.id))).toEqual(thread);
+    expect(client.getQueryData(queryKeys.postVotes(post.id))).toEqual(ledger);
   });
 });

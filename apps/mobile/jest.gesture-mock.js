@@ -22,6 +22,9 @@ function pinch() {
 function pan() {
   const gesture = {
     minDistance: () => gesture,
+    maxPointers: () => gesture,
+    enabled: () => gesture,
+    onStart: () => gesture,
     onUpdate: () => gesture,
     onEnd: () => gesture,
   };
