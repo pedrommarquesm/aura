@@ -36,7 +36,7 @@ export interface AdminStats {
     createdLast7Days: number;
   };
   posts: { published: number; removed: number; createdLast7Days: number };
-  likes: { total: number; last7Days: number };
+  votes: { total: number; last7Days: number };
   reports: { open: number; dismissed: number; actioned: number };
   staff: { total: number; active: number };
 }
@@ -67,7 +67,7 @@ export interface AdminPostRow {
   caption: string | null;
   status: PostStatus;
   mediaType: "photo" | "video";
-  likeCount: number;
+  voteCount: number;
   aura: number;
   createdAt: string;
   publishedAt: string | null;

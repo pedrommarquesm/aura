@@ -106,7 +106,7 @@ export function UserDetail({ userId }: { userId: string }) {
             <div className="min-w-0">
               <p className="truncate text-label">{post.caption || "Untitled"}</p>
               <p className="text-caption text-text-muted">
-                {post.mediaType} · {formatNumber(post.likeCount)} likes · {formatDate(post.createdAt)}
+                {post.mediaType} · {formatNumber(post.voteCount)} votes · {formatDate(post.createdAt)}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
