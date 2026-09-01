@@ -79,7 +79,9 @@ The waitlist is a list of emails. There is no in-product “you’re invited, he
 | 9 | **A way to see the waitlist** | Admin has no waitlist UI. Query `waitlist_entries` or add a staff page before wave 2. |
 | 10 | **Fix the “two weeks” promise** | Welcome mail currently says Aura drops in two weeks. Either ship a date you mean, or change the copy to “we’ll write when the app opens.” |
 
-Still not required for early beta: `WEB-07` store links, production, analytics (`ANL-01`), deploy pipeline (`OPS-02`), FND-03 monorepo, in-app camera, web login, password login in production.
+Still not required for early beta: `WEB-07` store links, production, deploy pipeline (`OPS-02`), FND-03 monorepo, in-app camera, web login, password login in production. OpenTelemetry (`API-06`) waits until latency is a real question.
+
+Sentry, PostHog, and admin waitlist/contact/outbox/thumbs are tracker rows (`OPS-17`, `MOB-77`, `WEB-34`, `ANL-01`–`ANL-04`, `API-43`, `TS-13`–`TS-15`). Do them before waitlist wave 1, not before the first 20 friends.
 
 ---
 

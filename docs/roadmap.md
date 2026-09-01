@@ -36,6 +36,7 @@ ID prefixes:
 | `AURA` | Aura ledger, leaderboards, economy |
 | `TS` | Trust, safety, anti-abuse |
 | `OPS` | Infra, deploy, observability |
+| `ANL` | Product analytics |
 
 ---
 
@@ -43,9 +44,9 @@ ID prefixes:
 
 **Now** — Early beta, not a store launch. Public site stays the waitlist. Next work is a private install path (TestFlight / internal Android), Apple Sign In on staging, a seeded feed, and claiming `@auraclimb`. Plan: [early-beta-launch.md](./early-beta-launch.md).
 
-**Next** — Invite waitlist in waves. Light waitlist marketing (CTA = join, never download). Store links (`WEB-07`) and production (`OPS-07`) wait until we actually ship.
+**Next** — Daily ops before waitlist wave 1: Sentry (`OPS-17`, `MOB-77`, `WEB-34`), PostHog (`ANL-01`–`ANL-04`), admin waitlist / contact / mail / thumbs / comments (`API-43`, `API-44`, `TS-13`–`TS-15`). Then invite the list. Store links (`WEB-07`) and production (`OPS-07`) wait until we actually ship.
 
-**Later** — V1 competition systems. The seams are designed; do not build them yet. The store-launch marketing pack is later too.
+**Later** — V1 competition systems. OpenTelemetry (`API-06`) when feed/like latency needs traces. The store-launch marketing pack is later too.
 
 Worth doing early rather than late: `FND-03`, and the three things waiting on it — `FND-04` (API types), `FND-09` (design tokens), and `FND-11` (message catalogs). Each client currently holds its own copy of all three, so every parallel PR widens the gap.
 
@@ -259,8 +260,25 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | Done | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | OPS-15 | Waitlist emails send through Resend. `RESEND_API_KEY` on api + worker; outbox still records every message | Done | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | Done | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
-| ANL-01 | Analytics SDK + core loop events | Not started | |
-| ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
+| OPS-17 | Sentry on api + worker. Tag `requestId`. Ignore expected 401 / `invalid_credentials` | Not started | |
+| MOB-77 | Sentry on Expo preview/dev builds (JS + native). Upload debug files on EAS. Not Expo Go | Not started | |
+| WEB-34 | Sentry on Next.js (browser + server runtime) | Not started | |
+| ANL-01 | PostHog on mobile: `session_started`, `signup`, `like`, `unlike`, `post_started` / `post_published` / `post_failed`, `comment`. Identify with our user id, not email | Not started | |
+| ANL-02 | North star: (likes + posts) / active user / day. D1 when volume exists. Do not emit V1 events (super like, battle, challenge) | Not started | |
+| ANL-03 | PostHog on the waitlist site: `landing_view`, `waitlist_join` (± referral), locale | Not started | |
+| ANL-04 | API also captures `like` and `post_published` to PostHog so the client SDK cannot undercount. Ledger stays the Aura source of truth | Not started | |
+
+### Admin daily ops
+
+The backoffice can suspend, ban, and take down posts. It cannot run the waitlist or see the media it is deleting.
+
+| ID | Task | Status | PR |
+|---|---|---|---|
+| API-43 | Staff list endpoints: waitlist entries, contact messages, email outbox (`queued` / `sent` / `failed`) | Not started | |
+| API-44 | Report target `comment` + staff delete comment. `REPORT_TARGETS` is user/post only today | Not started | |
+| TS-13 | Admin: waitlist (search, claimed vs not, referral counts) + contact inbox + email outbox | Not started | |
+| TS-14 | Admin: thumb + caption on post rows and post reports (`thumbUrl` is already on the API) | Not started | |
+| TS-15 | Admin: act on comments (queue + delete). Depends on API-44 | Not started | |
 
 ---
 
@@ -296,6 +314,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
 | 2026-09-01 | Waitlist welcome and referral emails send through Resend. `email_outbox` still records every message. Unset `RESEND_API_KEY` parks sending as `queued`. Contact form stays persist-only | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
