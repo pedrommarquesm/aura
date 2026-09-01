@@ -5,18 +5,11 @@ jest.mock('react-native-gesture-handler', () => require('./jest.gesture-mock'));
 // Node already has Intl. The FormatJS polyfills are ESM and only needed on Hermes.
 jest.mock('@/lib/i18n/intl', () => ({}));
 
-jest.mock('react-native/Libraries/Interaction/InteractionManager', () => {
-  const run = (task: (() => void) | { gen?: () => void }) => {
-    if (typeof task === 'function') task();
-    else task.gen?.();
-    return {
-      then: (onfulfilled?: () => void) => Promise.resolve().then(onfulfilled),
-      done: () => undefined,
-      cancel: () => undefined,
-    };
-  };
-  return { __esModule: true, default: { runAfterInteractions: run }, runAfterInteractions: run };
-});
+globalThis.requestIdleCallback = ((callback: IdleRequestCallback) => {
+  callback({ didTimeout: false, timeRemaining: () => 5 });
+  return 0;
+}) as typeof requestIdleCallback;
+globalThis.cancelIdleCallback = (() => undefined) as typeof cancelIdleCallback;
 
 jest.mock('expo-font', () => ({
   loadAsync: jest.fn(async () => undefined),

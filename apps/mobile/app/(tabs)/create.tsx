@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  InteractionManager,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -50,9 +49,9 @@ type Picked = {
 
 type Phase = 'idle' | 'preparing' | 'uploading' | 'processing' | 'done';
 
-function afterInteractions(): Promise<void> {
+function afterIdle(): Promise<void> {
   return new Promise((resolve) => {
-    InteractionManager.runAfterInteractions(() => resolve());
+    requestIdleCallback(() => resolve());
   });
 }
 
@@ -122,7 +121,7 @@ export default function CreateScreen() {
     // Let the Reanimated press animation finish before presenting UIKit.
     // Presenting PHPicker from an in-flight AnimatedPressable has killed the
     // process on iOS (SpringBoard, no JS redbox).
-    await afterInteractions();
+    await afterIdle();
 
     let asset;
     try {
@@ -159,7 +158,7 @@ export default function CreateScreen() {
     setProgress(0);
     setPreviewMuted(true);
 
-    const job = afterInteractions()
+    const job = afterIdle()
       .then(() => optimizePickedPhoto(draft))
       .then((optimized) => {
         const next: Picked = {
@@ -191,7 +190,7 @@ export default function CreateScreen() {
 
   async function chooseVideo() {
     setError(null);
-    await afterInteractions();
+    await afterIdle();
 
     let asset;
     try {
@@ -239,7 +238,7 @@ export default function CreateScreen() {
     }
 
     setShrinking(true);
-    const job = afterInteractions()
+    const job = afterIdle()
       .then(() => optimizePickedVideo(draft))
       .then((optimized) => {
         const next: Picked = {
