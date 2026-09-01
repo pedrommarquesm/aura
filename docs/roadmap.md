@@ -6,6 +6,7 @@ Single source of truth for what is planned, in flight, and done.
 - Brand & naming: [brand.md](./brand.md)
 - Backend architecture: [backend-architecture.md](./backend-architecture.md)
 - Client media (pick → shrink → PUT): [client-media.md](./client-media.md)
+- Early-beta launch: [early-beta-launch.md](./early-beta-launch.md)
 
 ---
 
@@ -40,11 +41,11 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Pre-launch. We have **not launched**. The public site is the waitlist landing: early-beta join, referral share (`/r/…`), legal pages. Web login stays hidden. Join +10 Aura; referral +10 when the friend creates a real account. Welcome/referral mail goes through Resend. The app is not in the stores.
+**Now** — Early beta, not a store launch. Public site stays the waitlist. Next work is a private install path (TestFlight / internal Android), Apple Sign In on staging, a seeded feed, and claiming `@auraclimb`. Plan: [early-beta-launch.md](./early-beta-launch.md).
 
-**Next** — Real App Store / Play links (`WEB-07`) when we actually ship. Native builds for testers. Production (`OPS-07`) does not exist yet.
+**Next** — Invite waitlist in waves. Light waitlist marketing (CTA = join, never download). Store links (`WEB-07`) and production (`OPS-07`) wait until we actually ship.
 
-**Later** — V1 competition systems. The seams are designed; do not build them yet.
+**Later** — V1 competition systems. The seams are designed; do not build them yet. The store-launch marketing pack is later too.
 
 Worth doing early rather than late: `FND-03`, and the three things waiting on it — `FND-04` (API types), `FND-09` (design tokens), and `FND-11` (message catalogs). Each client currently holds its own copy of all three, so every parallel PR widens the gap.
 
@@ -257,6 +258,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
 | OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | Done | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | OPS-15 | Waitlist emails send through Resend. `RESEND_API_KEY` on api + worker; outbox still records every message | Done | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
+| OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | In review | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -294,6 +296,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
 | 2026-09-01 | Waitlist welcome and referral emails send through Resend. `email_outbox` still records every message. Unset `RESEND_API_KEY` parks sending as `queued`. Contact form stays persist-only | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | 2026-09-01 | Password login/register for e2e on local and staging. `auth_identities.password_hash` (scrypt). Production still Apple/Google only | [#78](https://github.com/pedrommarquesm/aura/pull/78) |

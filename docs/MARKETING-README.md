@@ -1,6 +1,8 @@
 # Aura Marketing Launch Package
 
-Your complete go-to-market strategy and content library.
+**Current phase is early beta, not a store launch.** Follow [early-beta-launch.md](./early-beta-launch.md). Public CTA is join the waitlist. Testers get a private build. Do not post “we’re live” creatives or run install ads yet.
+
+The pack below is a **later** store-launch library. A lot of it mentions battles, daily challenges, and download CTAs we have not built.
 
 ## What You Got
 
