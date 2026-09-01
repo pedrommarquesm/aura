@@ -258,7 +258,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
 | OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | Done | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | OPS-15 | Waitlist emails send through Resend. `RESEND_API_KEY` on api + worker; outbox still records every message | Done | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
-| OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | In review | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
+| OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | Done | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
