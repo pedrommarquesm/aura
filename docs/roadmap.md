@@ -156,6 +156,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-40 | Waitlist join + referral Aura (paid when the friend signs up), email outbox, claim onto account at first sign-in | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | Done | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
+| MOB-80 | Mobile E2E: Maestro flows against a dedicated `e2e` environment (sign-up, vote slider drag, receipt, ledger, create-post, own-post guard). Closes the gesture-testing gap from `RDX-46`. Plan: [testing-strategy.md](./testing-strategy.md) | Not started | |
+| MOB-81 | Nightly CI workflow running the Maestro suite, screenshot/recording artifacts uploaded. Plan: [testing-strategy.md](./testing-strategy.md) | Not started | |
 
 ### Media pipeline
 
@@ -277,6 +279,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-17 | Sentry on api + worker. Tag `requestId`. Ignore expected 401 / `invalid_credentials` | Not started | |
 | MOB-77 | Sentry on Expo preview/dev builds (JS + native). Upload debug files on EAS. Not Expo Go | Not started | |
 | WEB-34 | Sentry on Next.js (browser + server runtime) | Not started | |
+| OPS-18 | Dedicated `e2e` environment (Postgres + Redis + api/worker, staging-shaped config) for `MOB-80`, kept up continuously and reset on a slow cadence, never per test. Plan: [testing-strategy.md](./testing-strategy.md) | Not started | |
+| OPS-19 | Ephemeral `load` environment, provisioned per load-test run and torn down after. Plan: [testing-strategy.md](./testing-strategy.md) | Not started | |
+| OPS-20 | k6 load-test scripts (`load-testing/`) + additive/parameterized bulk-seed mode for `apps/api/src/db/seed.ts`. Plan: [testing-strategy.md](./testing-strategy.md) | Not started | |
 | ANL-01 | PostHog on mobile: `session_started`, `signup`, `like`, `unlike`, `post_started` / `post_published` / `post_failed`, `comment`. Identify with our user id, not email | Not started | |
 | ANL-02 | North star: (likes + posts) / active user / day. D1 when volume exists. Do not emit V1 events (super like, battle, challenge) | Not started | |
 | ANL-03 | PostHog on the waitlist site: `landing_view`, `waitlist_join` (± referral), locale | Not started | |
@@ -341,6 +346,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Testing strategy plan: mobile E2E on Maestro (dedicated `e2e` env, per-run namespaced fixtures, no per-test reset) and load testing on k6 (protocol-level, session-shaped scripts, not raw endpoint hammering; dedicated ephemeral `load` env). Plan only, nothing implemented: [testing-strategy.md](./testing-strategy.md) | — |
 | 2026-09-01 | Landing page rebuilt around the vote/receipts redesign (hero + join form, Live Check/Slider/Ledger demo strip, numbered feature cards). Waitlist join now reserves a username alongside email — same 3-30 char rule as the app's claim screen — and auto-claims it onto a brand-new account on first sign-in. Web radius + type-weight tokens sharpened to finish the Neo-Brutalism parity with mobile | [#89](https://github.com/pedrommarquesm/aura/pull/89) |
 | 2026-09-01 | Vote & receipts redesign shipped. `likes` / `comments` tables dropped, `votes` is the only object; migration history squashed to a fresh init — deploying requires dropping the database. Mobile has a vertical slider (haptics, receipts, ledger sheet); web is read-only. Full breakdown: [redesign-tracker.md](./redesign-tracker.md) | [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 | 2026-09-01 | Design screenshots 01–09 in `docs/redesign-screens/`. Home swipe is COOKED ← LIVE CHECK → CERTIFIED. Bottom bar is HOME \| PROFILE | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
