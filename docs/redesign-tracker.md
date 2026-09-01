@@ -9,7 +9,7 @@ Single source of truth for the redesign whose **user-visible change is comments 
 - Screenshot drop: [redesign-screens/](./redesign-screens/)
 - Main work plan: [roadmap.md](./roadmap.md) (early-beta ops, push, admin). This file owns the redesign rows.
 
-**Q1–Q20 are locked.** `RDX-02` is done. Mobile slider/receipts UI (`RDX-30+`) still waits on screenshots. The vote API and schema (`RDX-10`–`RDX-21`) can start: we have not launched, so this is a **greenfield rewrite**, not a data port.
+**Q1–Q20 are locked.** `RDX-02` is done. Screenshots are in [redesign-screens/](./redesign-screens/) (`RDX-00`). Do not implement UI in this PR. Vote API (`RDX-10`–`RDX-21`) is greenfield.
 
 ---
 
@@ -31,11 +31,11 @@ Prefix: **`RDX`** — this redesign only. Keep `AURA` / `MOB` / `API` IDs on the
 
 ## Now / Next / Later
 
-**Now** — Product questions are locked (below). Schema/API work is a **new stack**: drop `likes` / `comments`, no backfill, staging may be wiped. Spec rewrite is `RDX-03`.
+**Now** — Screenshots are in `docs/redesign-screens/`. Product questions are locked. Schema/API work is a **new stack**: drop `likes` / `comments`, no backfill.
 
-**Next** — Vote API (`RDX-10`–`RDX-21`). Slider + receipts UI (`RDX-30`–`RDX-46`) after screenshots land (`RDX-00`).
+**Next** — Vote API (`RDX-10`–`RDX-21`), then slider + receipts UI against the screenshots (`RDX-30`–`RDX-46`). Home swipe `COOKED` ← `LIVE CHECK` → `CERTIFIED` is `RDX-51`.
 
-**Later, and only if screenshots show them** — three swipe feeds, 24h expiry, Certified/Cooked halls, 3-tab nav, calibration onboarding, create-button restyle (`RDX-50`–`RDX-58`). The manifesto describes those. The instruction for this cut is that they stay as they are until design proves otherwise.
+**Later** — 24h expiry, Certified/Cooked *inject* thresholds, calibration, in-app camera (`RDX-52`–`RDX-56`) still need screens. The **header swipe** itself is specced (screen 09).
 
 ---
 
@@ -55,7 +55,7 @@ What does **not** change in this cut (keep building as-is):
 - Profile grid, caption edit, delete, other people's profiles
 - Reports, blocks, suspend/ban, post takedown
 - Public web as waitlist; posting stays in the app
-- Discover and Rank tabs, latest/trending Home, global leaderboard — until a screenshot removes them
+- Global leaderboard API can stay; it is no longer a bottom tab (screen 01)
 - Following (still not built). “No follower counts” is already true
 - Locales: `en` / `pt` / `pt-br` / `es`. **Aura** stays untranslated ([i18n.md](./i18n.md))
 
@@ -79,7 +79,7 @@ Horizontal swipe: `COOKED` ← `LIVE CHECK` → `CERTIFIED`.
 - **Certified (right):** posts that cross a high positive threshold (example: +5,000 Aura). Permanent. Neon green accents. Hall of unbothered cool.
 - **Cooked (left):** posts that sink into Aura Debt (example: −5,000 Aura). Permanent. Pure red accents. Hall of fumbles.
 
-**This cut:** do not build the three feeds or the timer until screenshots confirm them (`RDX-50`–`RDX-54`). Today's Home feed is still latest / trending.
+**This cut:** the **header swipe** is confirmed (screen 09, `RDX-51`). 24h expiry and Certified/Cooked *inject* thresholds stay parked (`RDX-52`–`RDX-54`, Q13–Q14).
 
 ### 3. The Aura economy & slider
 
@@ -102,7 +102,7 @@ Do not lock the feed. Do not penalise friend invites.
 - **Judge first:** all feeds + voting on day one (after sign-in for the write; guests still browse).
 - **Persistent “0”:** profile tab shows a gray `0` until the user has a non-zero score.
 
-**This cut:** calibration, 3-tab bar, and the gray `0` badge wait on screenshots (`RDX-50`, `RDX-55`). Guest browse + auth-on-first-vote already exists (`MOB-12`).
+**This cut:** calibration still needs a screen (`RDX-55`). The gray `0` badge is on the PROFILE tab in screen 08. Guest browse + auth-on-first-vote already exists (`MOB-12`).
 
 ### 5. Navigation & create
 
@@ -110,7 +110,7 @@ Do not lock the feed. Do not penalise friend invites.
 - **Create:** heavy utilitarian `[ ● ]` — solid white circle inside thick brackets.
 - **Gallery import** + **in-app recording**. **Zero editing tools** besides trim. Post into Live Check.
 
-**This cut:** keep the five-tab shell (Home, Discover, Create, Rank, Profile). Create already has gallery pick; in-app camera is still disabled (`MOB-52`). Do not restyle or drop tabs until screenshots say so.
+**This cut:** bottom bar is **HOME \| PROFILE** (screen 01, `RDX-50`). Create is POST BASELINE on the empty profile, not a centre tab. Create already has gallery pick; in-app camera is still disabled (`MOB-52` / `RDX-56`).
 
 ---
 
@@ -230,18 +230,21 @@ Locked 2026-09-01. Implementation PRs follow this table. Do not re-open a row in
 
 ## Screenshot checklist (`RDX-01`)
 
-When files land in `docs/redesign-screens/`, record a row per screen. Copy is enough; no need for a gallery README beyond that folder.
+Landed 2026-09-01 in [redesign-screens/](./redesign-screens/). Index and notes: [README](./redesign-screens/README.md).
 
-| Screen | File | Matches manifesto? | Notes |
+| Screen | File | Matches manifesto / locks? | Notes |
 |---|---|---|---|
-| Feed idle | | | |
-| Slider + | | | |
-| Slider − | | | |
-| Receipt prompt | | | |
-| Floating receipts | | | |
-| Ledger sheet | | | |
-| Profile 0 | | | |
-| *(add rows)* | | | |
+| Bottom nav | `01_tab_bar_home_profile.png` | Partial | **HOME \| PROFILE** only. No Create in the bar. Active = neon green icon + label + top hairline. |
+| Live Check feed | `02_live_check_feed_ledger.png` | Yes (chrome) | Header `LIVE CHECK` + gear. Right-edge slider. Floating receipts (square avatar). In-frame **RECEIPT LEDGER** (not only a 70% sheet). Mock amounts `+200` / `+500` / `−150` are **over ±100** — implement Q7. |
+| Slider idle | `03_slider_state_01_stationary.png` | Yes | Grey track, grey mid thumb, no number. |
+| Slider active at 0 | `04_slider_state_02_active.png` | Yes | Neon green, `+0`. Release = cancel (Q2). |
+| Slider positive | `05_slider_state_03_positive.png` | Cap conflict | Neon green fill + large `+N`. Mock `+450` — **clamp to +100**. |
+| Slider cook / negative | `06_slider_state_04_cook.png` | Yes | Pure red `−85`, “DROP A RECEIPT” cue. In range. |
+| Receipt composer | `07_receipt_composer_negative.png` | Optional vs required | Box over video at `−85`. Mock says required; **Q3/Q4 = optional**. |
+| Profile 0 | `08_profile_blank_slate.png` | Yes (blank slate) | Massive **0 AURA**, POST BASELINE, empty posts. Square portrait with corner brackets (Q16 said circular on profile — follow this screen when implementing profile). PROFILE tab has a `0` badge. |
+| Feed swipe header | `09_feed_header_cooked_live_check_certified.png` | Yes | **Left → right:** `COOKED` · `LIVE CHECK` (active, large white) · `CERTIFIED`. This is Home’s three pages, not the bottom bar. |
+
+Mock copy that fights a lock (`+200`, `+450`, `+500`, “REQUIRED”): **keep the lock**, restyle the number/copy. Do not reopen Q5–Q7 from a mock.
 
 ---
 
@@ -249,8 +252,8 @@ When files land in `docs/redesign-screens/`, record a row per screen. Copy is en
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-00 | Screenshots in `docs/redesign-screens/` covering the checklist in that folder's README | Blocked | waiting on upload |
-| RDX-01 | Diff each screenshot against the manifesto; fill the checklist above | Blocked | waits on RDX-00 |
+| RDX-00 | Screenshots in `docs/redesign-screens/` (01–09) | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
+| RDX-01 | Diff each screenshot against the manifesto; fill the checklist above | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | RDX-02 | Lock Q1–Q20 | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | RDX-03 | Rewrite product-spec like/comment sections and architecture §5/§7 for votes + receipts + Aura Debt + greenfield drop of likes/comments. Changelog both files | Not started | waits on this lock |
 | RDX-04 | Design tokens: `success` = neon green (positive Aura), `danger` = pure red (debt / negative). Slider, receipt overlay, square avatar radius for receipts only (Q16) | Not started | Q15 locked; still no Certified/Cooked tokens |
@@ -280,41 +283,41 @@ New code. Drop likes/comments. No backfill.
 
 ## Milestone R2 — Slider & receipts (mobile)
 
-Depends on R1 for the real API; UI waits on `RDX-00` screenshots.
+Depends on R1 for the real API. Visuals: [redesign-screens/](./redesign-screens/).
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-30 | Vertical slider track on the right edge of the feed card. Does not steal vertical paging | Not started | waits on RDX-00 |
-| RDX-31 | Charge gesture: floating ±N (step 1). Up = light/fast pulse. Down = heavy/sluggish (`MOB-07` already wired) | Not started | waits on RDX-00 |
-| RDX-32 | Release: 0 = cancel (no prompt). Else clamp, commit once, optimistic score, rollback on failure. Second gesture is inert | Not started | waits on RDX-00 |
-| RDX-33 | Guests: existing auth gate, pending vote `{ postId, amount, receipt? }` replayed after username claim | Not started | waits on RDX-00 |
-| RDX-34 | Remove moai/heart like control and double-tap like from the feed card and permalink | Not started | waits on RDX-00 |
-| RDX-35 | Live score large, bold, bottom-left, tabular figures, signed, ticks instead of snapping (`MOB-41` pattern). Neon green / pure red (Q15) | Not started | waits on RDX-00 |
-| RDX-40 | Optional “Drop a receipt...” after a successful **nonzero** commit. Skip leaves the vote. One later fill if skipped (Q3) | Not started | waits on RDX-00 |
-| RDX-41 | Floating receipts, left side, only rows with text (Q19). Square avatar + `@user: TEXT (+N)` in-range | Not started | waits on RDX-00 |
-| RDX-42 | Ledger sheet ~70%, semi-transparent, every vote newest-first, colour-coded amount | Not started | waits on RDX-00 |
-| RDX-43 | Tap score or a floating receipt opens the ledger. Comment icon goes away | Not started | waits on RDX-00 |
-| RDX-44 | Square avatar variant for receipts/ledger only (Q16) | Not started | waits on RDX-00 |
-| RDX-45 | Copy in `en` / `pt` / `pt-br` / `es`. Vernacular (receipt, Aura Debt) stays English unless a later decision says otherwise | Not started | waits on RDX-00 |
-| RDX-46 | Replace `MOB-74` flow tests: slider ±, 0-cancel, cap, one-shot, receipt optional + one fill, ledger, guest gate | Not started | waits on RDX-00 |
+| RDX-30 | Vertical slider track on the right edge of the feed card. States 01–04 in screens 03–06. Does not steal the Home feed swipe | Not started | |
+| RDX-31 | Charge gesture: floating ±N (step 1). Up = light/fast pulse. Down = heavy/sluggish (`MOB-07` already wired) | Not started | |
+| RDX-32 | Release: 0 = cancel (no prompt). Else clamp **±100**, commit once, optimistic score, rollback on failure. Second gesture is inert | Not started | |
+| RDX-33 | Guests: existing auth gate, pending vote `{ postId, amount, receipt? }` replayed after username claim | Not started | |
+| RDX-34 | Remove moai/heart like control and double-tap like from the feed card and permalink | Not started | |
+| RDX-35 | Live score: signed, tabular, neon green / pure red (Q15). Placement per screen 02 | Not started | |
+| RDX-40 | Optional “Drop a receipt...” after a successful **nonzero** commit (screens 06–07). Skip leaves the vote. One later fill if skipped (Q3). Ignore mock “REQUIRED” | Not started | |
+| RDX-41 | Floating receipts, left side, only rows with text (Q19). Square avatar + `@user: TEXT (+N)` in-range | Not started | |
+| RDX-42 | Receipt ledger: screen 02 shows an in-frame collapsible list. Build that, plus a sheet if we still need one for overflow | Not started | |
+| RDX-43 | Tap score or a floating receipt expands/focuses the ledger. Comment icon goes away | Not started | |
+| RDX-44 | Square avatars on receipts + ledger (screen 02). Profile portrait is also square in screen 08 — follow the screen | Not started | |
+| RDX-45 | Copy in `en` / `pt` / `pt-br` / `es`. Vernacular (receipt, cooked, certified, live check, aura debt) stays English | Not started | |
+| RDX-46 | Replace `MOB-74` flow tests: slider ±, 0-cancel, cap, one-shot, receipt optional + one fill, ledger, guest gate | Not started | |
 
 ---
 
 ## Milestone R3 — Adjacent manifesto (screenshot-gated)
 
-Do not pick these up because the manifesto mentions them. Pick them up when a screenshot in `docs/redesign-screens/` shows the surface.
+Screens 01, 08, 09 landed. Still do not implement these in the first vote-API PR.
 
 | ID | Task | Status | PR |
 |---|---|---|---|
-| RDX-50 | 3-tab bar: Home, Create `[ ● ]`, Profile with gray `0` while Aura is 0. Drop Discover + Rank from the bar (Rank can remain a stack screen) | Blocked | needs screenshot |
-| RDX-51 | Horizontal swipe feeds: Cooked ← Live Check → Certified | Blocked | needs screenshot |
-| RDX-52 | Live Check 24h public expiry; post remains on the author's profile | Blocked | needs screenshot |
-| RDX-53 | Certified inject at a remote-config positive threshold, neon green chrome | Blocked | needs screenshot |
-| RDX-54 | Cooked inject at a remote-config negative threshold, red chrome | Blocked | needs screenshot |
+| RDX-50 | Bottom bar is **HOME \| PROFILE** (screen 01), not a 3-tab Create button. Drop Discover + Rank from the bar. Create is **POST BASELINE** on the empty profile (screen 08) | Not started | screenshot landed |
+| RDX-51 | Horizontal swipe on Home, **left → right**: `COOKED` ← `LIVE CHECK` → `CERTIFIED` (screen 09). Active title is large white; neighbours are dim | Not started | screenshot landed |
+| RDX-52 | Live Check 24h public expiry; post remains on the author's profile | Blocked | Q14 parked; no screenshot of the timer |
+| RDX-53 | Certified inject at a remote-config positive threshold, neon green chrome | Blocked | Q13 parked; header exists, hall-of-fame screen does not |
+| RDX-54 | Cooked inject at a remote-config negative threshold, red chrome | Blocked | Q13 parked; header exists, hall-of-shame screen does not |
 | RDX-55 | Calibration: 3 curated clips on first open, slider + receipt in <15s, then blank-slate profile | Blocked | needs screenshot |
 | RDX-56 | In-app record + trim-only create. Camera is currently disabled; gallery already works | Blocked | needs screenshot |
 | RDX-57 | Landing / OG / waitlist demo card: slider + receipts instead of 🗿 like | Blocked | after R2, or with a landing screenshot |
-| RDX-58 | Profile: hide rank/title/Vote Power chrome if the screenshot is a blank 0 Aura card. Do not delete the API fields | Blocked | needs screenshot |
+| RDX-58 | Profile blank slate (screen 08): 0 Aura, no rank/title/Vote Power chrome, POST BASELINE, empty posts. Do not delete the API fields | Not started | screenshot landed |
 
 ---
 
@@ -337,9 +340,10 @@ Keep PRs inside one prefix cluster so this file does not become a merge battlefi
 1. **Spec lock** — `RDX-03`, `RDX-04`, `RDX-60`, `RDX-61`, `RDX-64` (docs only).
 2. **New vote schema + API** — `RDX-10`–`RDX-13`, `RDX-15`, `RDX-16`, `RDX-20`. Drop likes/comments in the same PR. Tests hit the API. Staging wipe is expected.
 3. **Feed projection + trending + leaderboard + takedown** — `RDX-14`, `RDX-17`–`RDX-19`.
-4. **Slider** — `RDX-30`–`RDX-35` (after screenshots).
-5. **Receipts + ledger** — `RDX-40`–`RDX-46` (after screenshots).
+4. **Slider** — `RDX-30`–`RDX-35` against screens 03–06.
+5. **Receipts + ledger** — `RDX-40`–`RDX-46` against screens 02, 06, 07.
 6. **Web read-only** — `RDX-21`.
+7. **Home swipe + 2-tab bar + blank profile** — `RDX-50`, `RDX-51`, `RDX-58` against screens 01, 08, 09. Not in the first vote-API PR.
 
 Do not combine 2 and 4 in one PR. The ledger has to be right before the slider can be honest. Do not ship a likes→votes backfill.
 
@@ -349,5 +353,6 @@ Do not combine 2 and 4 in one PR. The ledger has to be right before the slider c
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Screenshots 01–09 in `docs/redesign-screens/`. Last file is Home swipe COOKED ← LIVE CHECK → CERTIFIED. Mock +200/+450/+500 stay over-cap; implement ±100 | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Q1–Q20 locked. Greenfield: **no data port**; drop `likes`/`comments`. Receipt max 80, one fill if empty, newest-first ledger, web read-only, ±100 hard cap, Aura Debt colours neon green / pure red | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Redesign cut is **votes + receipts**. Manifesto feeds/nav/onboarding are tracked but screenshot-gated. Implementation waits on files in `docs/redesign-screens/` | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
