@@ -19,6 +19,7 @@
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx src/db/reset.ts",
     "db:rebuild-leaderboard": "tsx src/db/rebuild-leaderboard.ts"
   },
   "keywords": [],

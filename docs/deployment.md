@@ -167,6 +167,33 @@ Do not leave the seed in any start or pre-deploy command. It **truncates every
 table** before inserting, which is fine for a disposable staging database and
 catastrophic anywhere else.
 
+### Full reset (drop everything, start from `0000_init.sql`)
+
+Squashed migration history (the redesign — `docs/redesign-tracker.md`) means
+there is no upgrade path from an old schema. The one-time migration this
+repo ships (`0000_init.sql`) only applies to an **empty** database — running
+it against one that still has the previous tables fails with "relation
+already exists".
+
+`npm run db:reset` (`src/db/reset.ts`) drops the `public` schema (every
+table) and the `drizzle` schema (drizzle-orm's own migration-tracking table,
+so the next migrate run does not think `0000_init.sql` was already applied),
+then recreates an empty `public`. Same guard as the seed: refuses
+`APP_ENV=production`.
+
+Staging's Postgres has no public proxy (same constraint as seeding), so run
+it on the platform:
+
+1. Temporarily set the `worker` service's start command to `node dist/db/reset.js`
+2. Deploy it and wait for `[reset] done` in the logs
+3. Restore the start command
+4. Deploy `api` (and `worker`) normally — the pre-deploy `node dist/db/migrate.js`
+   step now applies `0000_init.sql` to the empty database
+5. Optionally reseed (see above)
+
+Do not leave `db:reset` in any start or pre-deploy command, for the same
+reason as the seed — it is one CLI typo away from wiping a real database.
+
 To add a migration:
 
 ```bash
