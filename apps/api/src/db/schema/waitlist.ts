@@ -78,10 +78,10 @@ export type WaitlistEntry = typeof waitlistEntries.$inferSelect;
 export type NewWaitlistEntry = typeof waitlistEntries.$inferInsert;
 
 /**
- * Outbound mail we could not send yet (no SMTP), or that we sent.
+ * Outbound mail we queued, sent, or failed to send.
  *
- * The waitlist must not lose a welcome or referral email because the mail
- * server is still being stood up. Queue here; flush when SMTP lands.
+ * The waitlist must not lose a welcome or referral email because Resend is
+ * down. Persist first, then deliver; `queued` means no API key yet.
  */
 export const emailOutbox = pgTable(
   'email_outbox',

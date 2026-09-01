@@ -341,6 +341,19 @@ Create the webhook in the Mux dashboard against
 `video.asset.errored`. Playback policy is `public`; video quality is `basic`.
 Mux keys never go in clients or `NEXT_PUBLIC_*`.
 
+Waitlist mail uses Resend. Set these in the dashboard (`preserve()` for the
+key in IaC — do not `config apply` just to add it):
+
+| Variable | Service | What it is |
+|---|---|---|
+| `RESEND_API_KEY` | api + worker | Send-only Resend key. **Never** in git or `NEXT_PUBLIC_*` |
+| `MAIL_FROM` | api + worker | From header. Staging is `Aura <hello@auraclimb.com>` |
+
+The sending domain must be verified in the Resend dashboard. Unset
+`RESEND_API_KEY` parks delivery: rendered messages stay in `email_outbox` as
+`queued`. A send error marks the row `failed` and does not fail the waitlist
+join. Contact form submissions stay persist-only.
+
 ## Current environment
 
 Project `aura`, environment **`staging`**, region `europe-west4`.
