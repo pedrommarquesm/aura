@@ -8,6 +8,7 @@ Single source of truth for what is planned, in flight, and done.
 - Client media (pick → shrink → PUT): [client-media.md](./client-media.md)
 - Early-beta launch: [early-beta-launch.md](./early-beta-launch.md)
 - Push notifications: [push-notifications.md](./push-notifications.md)
+- Aura Battles (head-to-head, proposed): [aura-battles-plan.md](./aura-battles-plan.md)
 
 ---
 
@@ -35,6 +36,7 @@ ID prefixes:
 | `API` | Backend service (NestJS) |
 | `MEDIA` | Upload, processing, CDN |
 | `AURA` | Aura ledger, leaderboards, economy |
+| `BATL` | Aura Battles: challenges, votes, Aura Cup ([aura-battles-plan.md](./aura-battles-plan.md)) |
 | `TS` | Trust, safety, anti-abuse |
 | `OPS` | Infra, deploy, observability |
 | `ANL` | Product analytics |
@@ -47,7 +49,7 @@ ID prefixes:
 
 **Next** — Daily ops before waitlist wave 1: Sentry (`OPS-17`, `MOB-77`, `WEB-34`), PostHog (`ANL-01`–`ANL-04`), admin waitlist / contact / mail / thumbs / comments (`API-43`, `API-44`, `TS-13`–`TS-15`). Then invite the list. Store links (`WEB-07`) and production (`OPS-07`) wait until we actually ship.
 
-**Later** — Push after testers exist: comments + like digest ([push-notifications.md](./push-notifications.md)). V1 competition systems. OpenTelemetry (`API-06`) when feed/like latency needs traces. The store-launch marketing pack is later too.
+**Later** — Push after testers exist: comments + like digest ([push-notifications.md](./push-notifications.md)). V1 competition systems, now designed in detail as head-to-head challenges rather than a placeholder — see [aura-battles-plan.md](./aura-battles-plan.md) (`BATL-*`). OpenTelemetry (`API-06`) when feed/like latency needs traces. The store-launch marketing pack is later too.
 
 Worth doing early rather than late: `FND-03`, and the three things waiting on it — `FND-04` (API types), `FND-09` (design tokens), and `FND-11` (message catalogs). Each client currently holds its own copy of all three, so every parallel PR widens the gap.
 
@@ -298,10 +300,19 @@ Not week 0. After TestFlight and after people post. Never one push per like. Pla
 
 ## Milestone M2 — V1 competition
 
-Not started, and deliberately not designed in detail yet. Listed so the V0 seams stay honest.
+Not started. `AURA-10`–`16` are still deliberately undesigned. Battles now
+have a real design in [aura-battles-plan.md](./aura-battles-plan.md) — the
+`BATL-*` rows below are proposed, sequenced after early beta, not started.
 
 | ID | Task | Status | PR |
 |---|---|---|---|
+| BATL-01 | Lock open decisions in aura-battles-plan.md §11 (lifetime Aura on loss, `challengeable` default, photo vs video, audience focus) | Not started | |
+| BATL-02 | `battles` / `battle_votes` schema + ledger `BATTLE_WIN` / `BATTLE_LOSS` event types | Not started | |
+| BATL-03 | `POST /v1/posts/:id/challenge`, `POST /v1/battles/:id/vote`, `POST /v1/battles/:id/decline` | Not started | |
+| BATL-04 | Mobile: Challenge button, VS card in feed, Lineage view on post detail | Not started | |
+| BATL-05 | Rebuttal rounds (`parent_battle_id`), challenge notifications, web voting + public battle permalinks | Not started | |
+| BATL-06 | Aura Cup: `aura_cups` / bracket schema, staff cup creation, `advanceCupRound` worker, shareable recap card | Not started | |
+| BATL-07 | Landing page "How Battles Work" section + live vote demo (aura-battles-plan.md §9) | Not started | |
 | AURA-10 | Vote Power — **requires the economics guardrails in architecture §7.5** | Not started | |
 | AURA-11 | Aura Sense (prediction quality) | Not started | |
 | AURA-12 | Voter rewards worker | Not started | |
@@ -328,6 +339,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | V1 competition is designed as **Aura Battles**: opt-in head-to-head challenges, crowd-voted, champion/lineage instead of a flat leaderboard-only climb, plus app-run Aura Cup brackets for cold start. Battle losses never move lifetime Aura — only the battle record. Plan: [aura-battles-plan.md](./aura-battles-plan.md) (`BATL-*`) | |
 | 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md) | [#85](https://github.com/pedrommarquesm/aura/pull/85) |
 | 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
