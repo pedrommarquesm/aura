@@ -251,7 +251,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | Done | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
 | OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | In review | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
-| OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | In review | |
+| OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | In review | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -289,7 +289,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Public host is `www.auraclimb.com`. API `api.auraclimb.com`. CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` and `PUBLIC_SITE_URL` match. Old `aurarankd.com` hostnames are detached | |
+| 2026-09-01 | Public host is `www.auraclimb.com`. API `api.auraclimb.com`. CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` and `PUBLIC_SITE_URL` match. Old `aurarankd.com` hostnames are detached | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | 2026-08-31 | Landing hero and play demos use the mobile feed card chrome: full-bleed photo, top-right Aura pill, right-side 🗿 / comments / share / more, bottom overlay with username + title. A like is a 🗿, not a heart | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Referral Aura pays when the friend creates a real account, not when they join the waitlist. Join still gives the joiner +10. Waitlist submits are limited per IP, per email, and globally so a fake-inbox flood cannot mint referrals or DDoS the form | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | 2026-08-31 | Web launch is a waitlist. Login is hidden and the GIS client is not imported from a reachable page. Early-join Aura (+10) and referral Aura (+10) live on `waitlist_entries` until sign-up ports them as a ledger `BONUS`. Emails render into `email_outbox` until SMTP exists | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
