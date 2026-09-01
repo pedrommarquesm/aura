@@ -32,6 +32,17 @@ export const waitlistEntries = pgTable(
     email: varchar('email', { length: 320 }).notNull(),
 
     /**
+     * Reserved at join time — the form now asks for this up front instead of
+     * deferring it to first sign-in. Same 3-30 letters/numbers/underscore
+     * rule as the app's claim screen (`users/username.ts`), checked against
+     * both this table and `users` so a reservation can never collide with a
+     * real account. First sign-in with a matching email auto-claims it onto
+     * the new account (`AuthService.signInWithProvider`); if it was taken in
+     * the meantime the user just gets the normal claim-a-username prompt.
+     */
+    username: varchar('username', { length: 30 }).notNull(),
+
+    /**
      * Public share token. Short and unambiguous so it survives being read
      * aloud or typed from a screenshot. Generated, never chosen.
      */
@@ -68,6 +79,7 @@ export const waitlistEntries = pgTable(
   },
   (table) => [
     uniqueIndex('waitlist_entries_email_lower_idx').on(sql`lower(${table.email})`),
+    uniqueIndex('waitlist_entries_username_lower_idx').on(sql`lower(${table.username})`),
     uniqueIndex('waitlist_entries_referral_code_idx').on(table.referralCode),
     uniqueIndex('waitlist_entries_claimed_user_idx').on(table.claimedUserId),
     index('waitlist_entries_referred_by_idx').on(table.referredById),

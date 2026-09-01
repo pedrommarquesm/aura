@@ -11,6 +11,7 @@ import { DB, type Database } from '../db/db.module';
 import { authIdentities, users, type User } from '../db/schema';
 import { resolveLocale } from '../i18n/locales';
 import { REDIS } from '../redis/redis.module';
+import { isReservedUsername, isValidUsernameFormat } from '../users/username';
 import { WaitlistService } from '../waitlist/waitlist.service';
 
 import { consumePasswordSlot } from './password-rate-limit';
@@ -38,21 +39,6 @@ export interface SignInResult extends IssuedTokens {
   /** True on first sign-in, when the account still has a generated handle. */
   needsUsername: boolean;
 }
-
-const RESERVED_USERNAMES = new Set([
-  'admin',
-  'aura',
-  'api',
-  'support',
-  'help',
-  'about',
-  'settings',
-  'me',
-  'you',
-  'root',
-  'system',
-  'moderator',
-]);
 
 @Injectable()
 export class AuthService {
@@ -147,9 +133,15 @@ export class AuthService {
 
     if (identity.email) {
       try {
-        await this.waitlist.claimForAccount(user.id, identity.email);
+        // Only a brand-new account (still on its generated placeholder) may
+        // have its waitlist-reserved username auto-claimed here — an
+        // existing account's real username is never touched.
+        const claim = await this.waitlist.claimForAccount(user.id, identity.email, {
+          claimReservedUsername: needsUsername,
+        });
         const refreshed = await this.findUserById(user.id);
         if (refreshed) user = refreshed;
+        if (claim.claimedUsername) needsUsername = false;
       } catch {
         // Claiming early-beta Aura must never block sign-in. The waitlist
         // row stays unclaimed and the next sign-in retries.
@@ -363,11 +355,11 @@ export class AuthService {
   private requireClaimableUsername(requested: string): string {
     const username = requested.trim();
 
-    if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+    if (!isValidUsernameFormat(username)) {
       throw AppError.badRequest('Username must be 3-30 characters, letters, numbers or underscore');
     }
 
-    if (RESERVED_USERNAMES.has(username.toLowerCase())) {
+    if (isReservedUsername(username)) {
       throw AppError.conflict(ErrorCode.CONFLICT, 'That username is not available');
     }
 

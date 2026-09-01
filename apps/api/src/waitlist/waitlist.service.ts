@@ -8,10 +8,11 @@ import { ErrorCode } from '../common/errors/error-codes';
 import { newId } from '../common/ids';
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
-import { waitlistEntries, type WaitlistEntry } from '../db/schema';
+import { users, waitlistEntries, type WaitlistEntry } from '../db/schema';
 import { resolveLocale, type Locale } from '../i18n/locales';
 import { MailService } from '../mail/mail.service';
 import { REDIS } from '../redis/redis.module';
+import { isReservedUsername, isValidUsernameFormat } from '../users/username';
 
 import {
   generateReferralCode,
@@ -24,6 +25,7 @@ import {
 import { parseWaitlistEmail } from './waitlist-email';
 
 export interface WaitlistPublic {
+  username: string;
   referralCode: string;
   aura: number;
   referralCount: number;
@@ -34,6 +36,8 @@ export interface WaitlistPublic {
 
 export interface JoinWaitlistInput {
   email: string;
+  /** Reserved, not yet a real account. See `db/schema/waitlist.ts`. */
+  username: string;
   referralCode?: string | null;
   locale?: string | null;
 }
@@ -56,6 +60,7 @@ export class WaitlistService {
 
   toPublic(entry: WaitlistEntry, extras: { alreadyJoined: boolean; awardedAura: number }): WaitlistPublic {
     return {
+      username: entry.username,
       referralCode: entry.referralCode,
       aura: entry.aura,
       referralCount: entry.referralCount,
@@ -85,11 +90,13 @@ export class WaitlistService {
 
     await this.assertJoinLimits(ip, email);
 
+    const username = await this.reserveUsername(input.username);
     const locale = resolveLocale(input.locale) ?? 'en';
     const referrer = await this.resolveReferrer(input.referralCode, email);
 
     const created = await this.insertWithCode({
       email,
+      username,
       locale,
       referredById: referrer?.id ?? null,
       aura: JOIN_AURA,
@@ -118,12 +125,16 @@ export class WaitlistService {
    * Aura for the person who shared the link. Idempotent: a second sign-in
    * with the same email is a no-op. Matching is by email only.
    */
-  async claimForAccount(userId: string, email: string | null | undefined): Promise<number> {
+  async claimForAccount(
+    userId: string,
+    email: string | null | undefined,
+    options: { claimReservedUsername?: boolean } = {},
+  ): Promise<{ awardedAura: number; claimedUsername: string | null }> {
     const normalized = email ? parseWaitlistEmail(email) : null;
-    if (!normalized) return 0;
+    if (!normalized) return { awardedAura: 0, claimedUsername: null };
 
     const entry = await this.findByEmail(normalized);
-    if (!entry) return 0;
+    if (!entry) return { awardedAura: 0, claimedUsername: null };
 
     try {
       await this.creditReferrerOnClaim(entry);
@@ -135,7 +146,16 @@ export class WaitlistService {
       );
     }
 
-    if (entry.claimedUserId || entry.aura <= 0) return 0;
+    // Only offered for a brand-new account still on its generated
+    // placeholder (see AuthService.signInWithProvider) — a real, chosen
+    // username is never overwritten. Best-effort: if the reservation lost
+    // the race to a real account in the meantime, the user just falls back
+    // to the normal claim-a-username prompt.
+    const claimedUsername = options.claimReservedUsername
+      ? await this.tryClaimReservedUsername(userId, entry.username)
+      : null;
+
+    if (entry.claimedUserId || entry.aura <= 0) return { awardedAura: 0, claimedUsername };
 
     const [marked] = await this.db
       .update(waitlistEntries)
@@ -147,7 +167,7 @@ export class WaitlistService {
       .where(and(eq(waitlistEntries.id, entry.id), isNull(waitlistEntries.claimedUserId)))
       .returning();
 
-    if (!marked || marked.claimedUserId !== userId) return 0;
+    if (!marked || marked.claimedUserId !== userId) return { awardedAura: 0, claimedUsername };
 
     try {
       const result = await this.ledger.apply({
@@ -163,7 +183,7 @@ export class WaitlistService {
       });
 
       this.logger.log(`claimed ${entry.aura} waitlist Aura onto ${userId}`);
-      return result.deduplicated ? 0 : entry.aura;
+      return { awardedAura: result.deduplicated ? 0 : entry.aura, claimedUsername };
     } catch (error) {
       this.logger.warn(
         `waitlist claim ledger write failed for ${userId}: ${
@@ -181,8 +201,70 @@ export class WaitlistService {
           updatedAt: new Date(),
         })
         .where(and(eq(waitlistEntries.id, entry.id), eq(waitlistEntries.claimedUserId, userId)));
-      return 0;
+      return { awardedAura: 0, claimedUsername };
     }
+  }
+
+  /** Best-effort. Returns the username on success, null if it lost the race. */
+  private async tryClaimReservedUsername(userId: string, username: string): Promise<string | null> {
+    try {
+      const [updated] = await this.db
+        .update(users)
+        .set({ username, updatedAt: new Date() })
+        .where(eq(users.id, userId))
+        .returning({ username: users.username });
+      return updated?.username ?? null;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      if (message.includes('users_username_lower_idx')) return null;
+      this.logger.warn(
+        `waitlist username claim failed for ${userId}: ${
+          error instanceof Error ? error.message : 'unknown'
+        }`,
+      );
+      return null;
+    }
+  }
+
+  /**
+   * Validates and reserves a username at join time. Same rule as the app's
+   * claim screen (`users/username.ts`), checked against both live accounts
+   * and other waitlist reservations so two joiners can never sit on the same
+   * handle, and a reservation can never collide with someone already using
+   * that handle in the app.
+   */
+  private async reserveUsername(raw: string): Promise<string> {
+    const username = raw.trim();
+
+    if (!isValidUsernameFormat(username)) {
+      throw new AppError(
+        ErrorCode.VALIDATION_FAILED,
+        'Username must be 3-30 characters, letters, numbers or underscore',
+        400,
+      );
+    }
+
+    if (isReservedUsername(username)) {
+      throw AppError.conflict(ErrorCode.CONFLICT, 'That username is not available');
+    }
+
+    const [takenByAccount] = await this.db
+      .select({ id: users.id })
+      .from(users)
+      .where(sql`lower(${users.username}) = lower(${username})`);
+    if (takenByAccount) {
+      throw AppError.conflict(ErrorCode.CONFLICT, 'That username is taken');
+    }
+
+    const [takenOnWaitlist] = await this.db
+      .select({ id: waitlistEntries.id })
+      .from(waitlistEntries)
+      .where(sql`lower(${waitlistEntries.username}) = lower(${username})`);
+    if (takenOnWaitlist) {
+      throw AppError.conflict(ErrorCode.CONFLICT, 'That username is taken');
+    }
+
+    return username;
   }
 
   private async findByEmail(email: string): Promise<WaitlistEntry | undefined> {
@@ -212,6 +294,7 @@ export class WaitlistService {
 
   private async insertWithCode(input: {
     email: string;
+    username: string;
     locale: Locale;
     referredById: string | null;
     aura: number;
@@ -224,6 +307,7 @@ export class WaitlistService {
           .values({
             id: newId(),
             email: input.email,
+            username: input.username,
             referralCode,
             referredById: input.referredById,
             locale: input.locale,
@@ -237,6 +321,9 @@ export class WaitlistService {
         if (message.includes('waitlist_entries_email_lower_idx')) {
           const existing = await this.findByEmail(input.email);
           if (existing) return existing;
+        }
+        if (message.includes('waitlist_entries_username_lower_idx')) {
+          throw AppError.conflict(ErrorCode.CONFLICT, 'That username is taken');
         }
         throw error;
       }

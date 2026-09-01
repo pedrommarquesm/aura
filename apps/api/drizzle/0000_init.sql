@@ -215,6 +215,7 @@ CREATE TABLE "email_outbox" (
 CREATE TABLE "waitlist_entries" (
 	"id" text PRIMARY KEY NOT NULL,
 	"email" varchar(320) NOT NULL,
+	"username" varchar(30) NOT NULL,
 	"referral_code" varchar(12) NOT NULL,
 	"referred_by_id" text,
 	"locale" varchar(10) DEFAULT 'en' NOT NULL,
@@ -284,6 +285,7 @@ CREATE INDEX "contact_messages_created_idx" ON "contact_messages" USING btree ("
 CREATE INDEX "email_outbox_status_idx" ON "email_outbox" USING btree ("status","created_at");--> statement-breakpoint
 CREATE INDEX "email_outbox_to_idx" ON "email_outbox" USING btree ("to_email","created_at" DESC NULLS LAST);--> statement-breakpoint
 CREATE UNIQUE INDEX "waitlist_entries_email_lower_idx" ON "waitlist_entries" USING btree (lower("email"));--> statement-breakpoint
+CREATE UNIQUE INDEX "waitlist_entries_username_lower_idx" ON "waitlist_entries" USING btree (lower("username"));--> statement-breakpoint
 CREATE UNIQUE INDEX "waitlist_entries_referral_code_idx" ON "waitlist_entries" USING btree ("referral_code");--> statement-breakpoint
 CREATE UNIQUE INDEX "waitlist_entries_claimed_user_idx" ON "waitlist_entries" USING btree ("claimed_user_id");--> statement-breakpoint
 CREATE INDEX "waitlist_entries_referred_by_idx" ON "waitlist_entries" USING btree ("referred_by_id");
