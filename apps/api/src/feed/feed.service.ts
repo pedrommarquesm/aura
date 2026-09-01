@@ -3,7 +3,7 @@ import { and, desc, eq, inArray, lt, ne, notInArray, or, sql } from 'drizzle-orm
 
 import { ENV, type Env } from '../config/env';
 import { DB, type Database } from '../db/db.module';
-import { likes, mediaAssets, postHashtags, posts, users } from '../db/schema';
+import { mediaAssets, postHashtags, posts, users, votes } from '../db/schema';
 import { MediaUrlResolver } from '../media/media-url.resolver';
 import { SafetyService } from '../safety/safety.service';
 
@@ -44,10 +44,12 @@ export interface FeedCard {
     posterUrl: string | null;
     hlsUrl: string | null;
   };
-  likeCount: number;
-  commentCount: number;
+  voteCount: number;
+  /** Signed. This post may be in Aura Debt (negative). */
   aura: number;
-  likedByMe: boolean;
+  votedByMe: boolean;
+  /** The viewer's own vote amount, if they cast one. There is no unvote. */
+  myAmount: number | null;
 }
 
 export interface FeedPage {
@@ -87,12 +89,12 @@ export class FeedService {
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
 
-    const likedIds = await this.likedPostIds(
+    const myVotes = await this.myVotes(
       query.viewerId,
       page.map((row) => row.postId),
     );
 
-    const items = page.map((row) => this.toCard(row, likedIds.has(row.postId)));
+    const items = page.map((row) => this.toCard(row, myVotes.get(row.postId)));
 
     const last = page.at(-1);
     const nextCursor =
@@ -159,8 +161,7 @@ export class FeedService {
         postId: posts.id,
         caption: posts.caption,
         mediaType: posts.mediaType,
-        likeCount: posts.likeCount,
-        commentCount: posts.commentCount,
+        voteCount: posts.voteCount,
         aura: posts.aura,
         trendingScore: posts.trendingScore,
         publishedAt: posts.publishedAt,
@@ -199,26 +200,26 @@ export class FeedService {
   }
 
   /**
-   * Batched `likedByMe`.
+   * Batched `votedByMe` / `myAmount`.
    *
    * One query for the whole page. Checking per card would be an N+1 on the
    * most-requested endpoint in the product.
    */
-  private async likedPostIds(
+  private async myVotes(
     viewerId: string | undefined,
     postIds: string[],
-  ): Promise<Set<string>> {
-    if (!viewerId || postIds.length === 0) return new Set();
+  ): Promise<Map<string, number>> {
+    if (!viewerId || postIds.length === 0) return new Map();
 
     const rows = await this.db
-      .select({ postId: likes.postId })
-      .from(likes)
-      .where(and(eq(likes.userId, viewerId), inArray(likes.postId, postIds)));
+      .select({ postId: votes.postId, amount: votes.amount })
+      .from(votes)
+      .where(and(eq(votes.userId, viewerId), inArray(votes.postId, postIds)));
 
-    return new Set(rows.map((row) => row.postId));
+    return new Map(rows.map((row) => [row.postId, row.amount]));
   }
 
-  private toCard(row: FeedRow, likedByMe: boolean): FeedCard {
+  private toCard(row: FeedRow, myAmount: number | undefined): FeedCard {
     const variants = row.assetVariants ?? {};
     const location =
       row.assetProvider && row.assetBucket
@@ -249,10 +250,10 @@ export class FeedService {
           externalProvider: row.assetExternalProvider,
         }),
       },
-      likeCount: row.likeCount,
-      commentCount: row.commentCount,
+      voteCount: row.voteCount,
       aura: row.aura,
-      likedByMe,
+      votedByMe: myAmount !== undefined,
+      myAmount: myAmount ?? null,
     };
   }
 
@@ -269,8 +270,7 @@ export class FeedService {
         postId: posts.id,
         caption: posts.caption,
         mediaType: posts.mediaType,
-        likeCount: posts.likeCount,
-        commentCount: posts.commentCount,
+        voteCount: posts.voteCount,
         aura: posts.aura,
         trendingScore: posts.trendingScore,
         publishedAt: posts.publishedAt,
@@ -299,8 +299,8 @@ export class FeedService {
     if (!row) return null;
     if (row.authorStatus === 'banned') return null;
 
-    const likedIds = await this.likedPostIds(viewerId, [row.postId]);
-    return { card: this.toCard(row, likedIds.has(row.postId)), authorId: row.authorId, status: row.status };
+    const myVotes = await this.myVotes(viewerId, [row.postId]);
+    return { card: this.toCard(row, myVotes.get(row.postId)), authorId: row.authorId, status: row.status };
   }
 
   async countPublished(): Promise<number> {

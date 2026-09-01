@@ -33,12 +33,12 @@ function invoke(exception: unknown): { status: number; body: ErrorEnvelope } {
 describe('AllExceptionsFilter', () => {
   it('preserves the code and status of an AppError', () => {
     const result = invoke(
-      new AppError(ErrorCode.ALREADY_LIKED, 'Already liked', HttpStatus.CONFLICT),
+      new AppError(ErrorCode.RECEIPT_ALREADY_SET, 'Receipt is already set', HttpStatus.CONFLICT),
     );
 
     expect(result.status).toBe(409);
-    expect(result.body.error.code).toBe(ErrorCode.ALREADY_LIKED);
-    expect(result.body.error.message).toBe('Already liked');
+    expect(result.body.error.code).toBe(ErrorCode.RECEIPT_ALREADY_SET);
+    expect(result.body.error.message).toBe('Receipt is already set');
     expect(result.body.error.requestId).toBe('req-1');
   });
 

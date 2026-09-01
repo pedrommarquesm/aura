@@ -26,10 +26,12 @@ export const posts = pgTable(
     mediaType: mediaType('media_type').notNull(),
     status: postStatus('status').notNull().default('uploading'),
 
-    // Denormalized read models. The ledger and the likes table remain
+    // Denormalized read models. The ledger and the votes table remain
     // authoritative; these exist so the feed never aggregates on read.
-    likeCount: integer('like_count').notNull().default(0),
-    commentCount: integer('comment_count').notNull().default(0),
+    // `voteCount` only ever grows (there is no unvote). `aura` is the signed
+    // sum of every vote amount and may go negative — Aura Debt is a real
+    // product state, not a bug. See docs/redesign-tracker.md.
+    voteCount: integer('vote_count').notNull().default(0),
     aura: bigint('aura', { mode: 'number' }).notNull().default(0),
 
     /** Maintained by the trending worker, never computed during a feed read. */

@@ -48,12 +48,13 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
 
   /**
-   * Per-user like budget. Separate from the IP-wide HTTP limiter so a feed
-   * prefetch burst cannot spend the like quota, and a like-ring cannot hide
-   * behind a shared NAT.
+   * Per-user vote budget. Separate from the IP-wide HTTP limiter so a feed
+   * prefetch burst cannot spend the vote quota, and a vote-ring cannot hide
+   * behind a shared NAT. Tighter than the old like limit by default — every
+   * vote is now a permanent, capped economic event, not a togglable like.
    */
-  LIKE_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
-  LIKE_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
+  VOTE_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
+  VOTE_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
 
   // Trending recompute cadence. Lag here is invisible to users; see
   // docs/backend-architecture.md §8.2.
@@ -64,8 +65,9 @@ const envSchema = z.object({
   TRENDING_MAX_AGE_HOURS: z.coerce.number().positive().default(168),
   /**
    * Cold-start floor. With a pure velocity term every post scores zero until
-   * someone likes it, which would leave the trending feed unordered on a quiet
-   * day. A small floor makes recency and engagement break the tie instead.
+   * someone votes on it, which would leave the trending feed unordered on a
+   * quiet day. A small floor makes recency and engagement break the tie
+   * instead.
    */
   TRENDING_BASE_VELOCITY: z.coerce.number().nonnegative().default(0.05),
 

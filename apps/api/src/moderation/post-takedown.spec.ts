@@ -7,14 +7,14 @@ describe('takedownReversalAmount', () => {
     expect(takedownReversalAmount(30)).toBe(-30);
   });
 
-  it('writes nothing when the post never earned Aura', () => {
+  it('writes nothing when the post is exactly at zero', () => {
     expect(takedownReversalAmount(0)).toBeNull();
   });
 
-  it('does not invent a positive grant if the counter already went negative', () => {
-    // A leftover negative would mean a prior reversal overshot. Writing a
-    // compensating LIKE here would hide that bug in the ledger.
-    expect(takedownReversalAmount(-10)).toBeNull();
+  it('reverses a negative balance (Aura Debt) back up to zero', () => {
+    // A "Cooked" post in debt must contribute 0 net Aura once removed, the
+    // same as a post that earned positive Aura.
+    expect(takedownReversalAmount(-10)).toBe(10);
   });
 
   it('refuses a fractional amount rather than rounding it', () => {

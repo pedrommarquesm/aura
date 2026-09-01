@@ -64,10 +64,8 @@ export const processingStatus = pgEnum('processing_status', [
  */
 export const storageProvider = pgEnum('storage_provider', ['r2', 's3', 'bunny', 'local']);
 
-export const likeKind = pgEnum('like_kind', ['like', 'super_like']);
-
 /**
- * Every movement of Aura. REVERSAL covers unlikes and moderation takedowns.
+ * Every movement of Aura. REVERSAL covers takedowns and any other correction.
  */
 export const reportTargetType = pgEnum('report_target_type', ['user', 'post']);
 
@@ -80,9 +78,15 @@ export const reportReason = pgEnum('report_reason', [
   'other',
 ]);
 
+/**
+ * `VOTE` replaced the old flat `LIKE` / `SUPER_LIKE` events in the vote &
+ * receipts redesign (docs/redesign-tracker.md). A vote's amount is the
+ * voter's chosen signed integer (-100..100, never 0), clamped server-side —
+ * see `aura/vote-amount.ts`. `BATTLE_WIN` / `CHALLENGE` / `VOTER_REWARD` stay
+ * defined for the parked V1 competition systems (`RDX-60`).
+ */
 export const auraEventType = pgEnum('aura_event_type', [
-  'LIKE',
-  'SUPER_LIKE',
+  'VOTE',
   'BATTLE_WIN',
   'CHALLENGE',
   'VOTER_REWARD',

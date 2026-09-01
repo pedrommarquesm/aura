@@ -32,10 +32,9 @@ export const ErrorCode = {
   UNSUPPORTED_MEDIA_TYPE: 'unsupported_media_type',
   POST_NOT_PUBLISHED: 'post_not_published',
 
-  // Aura
-  ALREADY_LIKED: 'already_liked',
-  NOT_LIKED: 'not_liked',
-  CANNOT_LIKE_OWN_POST: 'cannot_like_own_post',
+  // Aura / votes
+  CANNOT_VOTE_OWN_POST: 'cannot_vote_own_post',
+  RECEIPT_ALREADY_SET: 'receipt_already_set',
 
   // Trust and safety
   ALREADY_REPORTED: 'already_reported',

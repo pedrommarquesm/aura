@@ -15,8 +15,8 @@ describe('loadEnv', () => {
     expect(env.PORT).toBe(3000);
     expect(env.HOST).toBe('0.0.0.0');
     expect(env.RATE_LIMIT_MAX).toBe(300);
-    expect(env.LIKE_RATE_LIMIT_MAX).toBe(60);
-    expect(env.LIKE_RATE_LIMIT_WINDOW_MS).toBe(60_000);
+    expect(env.VOTE_RATE_LIMIT_MAX).toBe(30);
+    expect(env.VOTE_RATE_LIMIT_WINDOW_MS).toBe(60_000);
     expect(env.PASSWORD_AUTH_MAX).toBe(20);
     expect(passwordAuthEnabled(env)).toBe(true);
     expect(env.MEDIA_DAILY_UPLOAD_QUOTA).toBe(20);

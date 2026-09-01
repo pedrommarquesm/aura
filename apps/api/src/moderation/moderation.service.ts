@@ -98,7 +98,7 @@ export class ModerationService {
   /**
    * Soft-delete a post and reverse the Aura it earned.
    *
-   * Status flips to `removed` first so the feed and new likes stop seeing it.
+   * Status flips to `removed` first so the feed and new votes stop seeing it.
    * The ledger write then zeros the remaining balance. A second pass catches
    * a like that raced the flip. Authors and moderators share this path so a
    * deleted popular post cannot keep its Aura.
