@@ -83,6 +83,10 @@ Exemplos:
 
 A web application tem duas responsabilidades principais:
 
+**Pre-launch (current):** we have not launched. The public site is a waitlist landing — early-beta join with a referral code (`/r/…`). Web login is hidden (`NEXT_PUBLIC_WEB_AUTH_ENABLED`). Store download CTAs are placeholders. Join Aura (+10) and referral Aura (+10, paid when the friend creates an account) live on `waitlist_entries` until first sign-in. Welcome mail goes through Resend.
+
+**At launch:** the primary CTA becomes Get the app, and web login can come back.
+
 ### A. Landing page
 
 Objetivo:
@@ -101,9 +105,11 @@ Sections:
 - Leaderboard preview
 - Download CTA
 
-CTA principal:
+CTA principal (at launch):
 
 > **Get the Aura app**
+
+Until then the primary CTA is **join the early beta**.
 
 A landing page deve ser extremamente visual e rápida.
 

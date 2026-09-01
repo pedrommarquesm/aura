@@ -18,7 +18,7 @@ The product brand is **Auraclimb**. Aura is the score and the spoken name. Namin
 |---|---|
 | [`apps/api`](apps/api) | Backend API and worker (NestJS on Fastify, Postgres, Redis) |
 | [`apps/mobile`](apps/mobile) | Mobile app (Expo, React Native) |
-| [`apps/web`](apps/web) | Landing page and public read-only feed (Next.js) |
+| [`apps/web`](apps/web) | Public site: pre-launch waitlist landing (early-beta join + referral) and read-only feed (Next.js). Web login is hidden. |
 | [`apps/admin`](apps/admin) | Staff backoffice (Next.js, NextAuth + React Query) |
 
 Every PR updates at least one row in the tracker. Copy `apps/<app>/.env.example`
