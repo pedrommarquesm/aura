@@ -18,6 +18,19 @@ const SECTION_IDS = {
     "pt-br": "como-funciona",
     es: "como-funciona",
   },
+  liveCheck: {
+    en: "live-check",
+    pt: "live-check",
+    "pt-br": "live-check",
+    es: "live-check",
+  },
+  slider: { en: "slider", pt: "slider", "pt-br": "slider", es: "slider" },
+  ledger: {
+    en: "ledger",
+    pt: "livro-razao",
+    "pt-br": "livro-razao",
+    es: "libro-mayor",
+  },
   join: { en: "join", pt: "entrar", "pt-br": "entrar", es: "unirse" },
   play: { en: "play", pt: "jogar", "pt-br": "jogar", es: "jugar" },
   trending: {

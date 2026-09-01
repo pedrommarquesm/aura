@@ -5,7 +5,7 @@ import { upstream } from "@/lib/api/upstream";
 import type { WaitlistPublic } from "@/lib/waitlist";
 
 export async function POST(request: Request) {
-  let body: { email?: string; referralCode?: string; locale?: string };
+  let body: { email?: string; username?: string; referralCode?: string; locale?: string };
 
   try {
     body = (await request.json()) as typeof body;
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       method: "POST",
       body: {
         email: body.email,
+        username: body.username,
         referralCode: body.referralCode ?? null,
         locale: body.locale ?? null,
       },

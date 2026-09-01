@@ -1,5 +1,5 @@
 {
-  "id": "cdcab593-9daf-4010-8771-092963c00199",
+  "id": "ed7ba46a-1d77-4120-93ee-3510438ffae7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2147,6 +2147,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "username": {
+          "name": "username",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "referral_code": {
           "name": "referral_code",
           "type": "varchar(12)",
@@ -2219,6 +2225,21 @@
           "columns": [
             {
               "expression": "lower(\"email\")",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "waitlist_entries_username_lower_idx": {
+          "name": "waitlist_entries_username_lower_idx",
+          "columns": [
+            {
+              "expression": "lower(\"username\")",
               "asc": true,
               "isExpression": true,
               "nulls": "last"

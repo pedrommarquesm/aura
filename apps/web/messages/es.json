@@ -88,6 +88,9 @@
       "label": "Secciones",
       "whatIsAura": "Qué es Aura",
       "howItWorks": "Cómo funciona",
+      "liveCheck": "Live Check",
+      "slider": "El Slider",
+      "ledger": "El Libro Mayor",
       "feed": "Feed",
       "trending": "En tendencia",
       "leaderboard": "Clasificación",
@@ -115,9 +118,9 @@
   },
   "landing": {
     "hero": {
-      "badge": "Lanzamiento en 2 semanas",
-      "title": "Tu vibe,<break></break><accent>ranqueada.</accent>",
-      "body": "Sube el momento. La gente da like, ganas Aura. Todos ven en qué lugar estás. Sin conteo de seguidores. Sin escondite. Solo el puntaje.",
+      "badge": "Aura Public Square",
+      "title": "Establece tu<break></break>baseline.",
+      "body": "Un puntaje en tiempo real basado en el juicio de la comunidad. Desliza hacia arriba para dar puntos, hacia abajo para restar. Deja un recibo para justificar tu voto.",
       "leader": "Ahora mismo #{rank, number} en el mundo",
       "preview": {
         "title": "En tendencia",
@@ -134,24 +137,66 @@
         "share": "+{aura, number} Aura cuando un amigo cree cuenta por ti",
         "port": "Cuando la app abra, esta Aura cae en tu cuenta"
       },
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@username",
       "emailLabel": "Tu email",
-      "emailPlaceholder": "tu@mail.com",
-      "submit": "Entrar a la beta",
+      "emailPlaceholder": "email@dominio.com",
+      "submit": "Reservar username y entrar",
       "submitting": "Reservando tu lugar…",
       "invited": "Alguien te mandó. Entra ahora — ellos ganan Aura cuando abras la app.",
-      "finePrint": "Te avisamos por email cuando abra. Sin spam. Sales cuando quieras.",
+      "finePrint": "Comparte tu link. Recibe +{referral, number} Aura inicial por cada amigo que se una.",
       "success": {
         "eyebrow": "Ya estás dentro",
-        "title": "Bien. Acabas de farmear tu primera Aura.",
+        "title": "Bienvenido, @{username}.",
         "body": "+{aura, number} Aura por entrar temprano. Comparte este link. Ganas +{referral, number} Aura cuando un amigo cree cuenta y abra la app.",
         "againEyebrow": "Ya estás en la lista",
-        "againTitle": "Este email ya está en la lista.",
+        "againTitle": "@{username} ya está en la lista.",
         "againBody": "Tu Aura anticipada sigue aquí: {aura, number}. El mismo link. Sigue compartiendo.",
         "score": "🗿 {aura, number}",
         "referrals": "{count, plural, one {# amigo creó cuenta por ti} other {# amigos crearon cuenta por ti}}",
         "copy": "Copiar tu link",
         "copied": "Copiado",
         "shareHint": "Mándalo por WhatsApp. Por mensaje. En stories. Solo cuenta cuando ellos creen cuenta de verdad."
+      }
+    },
+    "demo": {
+      "liveCheck": {
+        "badge": "REC 00:14",
+        "receipts": [
+          { "username": "user_99", "body": "Esto está fuera de línea. Restando." },
+          { "username": "admin_x", "body": "Falta contexto. En espera." }
+        ],
+        "aura": "+3.840 AURA"
+      },
+      "slider": {
+        "value": "+85",
+        "hint": "Desliza hacia arriba o abajo en el borde de la pantalla"
+      },
+      "ledger": {
+        "title": "Libro mayor",
+        "entries": [
+          { "username": "c_smith", "body": "Acción verificada. Buena ejecución.", "amount": "+100" },
+          { "username": "anon_44", "body": "Falta contexto. No convence.", "amount": "-50" },
+          { "username": "judex", "body": "Aceptable.", "amount": "+25" },
+          { "username": "sys_bot", "body": "Se abstuvo.", "amount": "0" }
+        ]
+      }
+    },
+    "features": {
+      "liveCheck": {
+        "eyebrow": "01",
+        "title": "Live Check",
+        "body": "Cada subida entra en una ventana de 24 horas donde la comunidad vota tu clip."
+      },
+      "slider": {
+        "eyebrow": "02",
+        "title": "El Slider",
+        "body": "Vota en una escala de -100 a +100 con un solo gesto en el borde de tu pantalla."
+      },
+      "ledger": {
+        "eyebrow": "03",
+        "title": "El Libro Mayor",
+        "body": "Historial de votación transparente. Toca cualquier post para ver quién votó, cuántos puntos dio, y por qué."
       }
     },
     "play": {

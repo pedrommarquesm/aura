@@ -4,7 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 
-import { Button } from "@/components/ui";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { ApiError } from "@/lib/api/errors";
 import { sectionHash } from "@/i18n/sections";
@@ -12,12 +11,16 @@ import type { AppLocale } from "@/i18n/routing";
 import { JOIN_AURA, REFERRAL_AURA, REF_QUERY, REF_STORAGE_KEY, readReferralCode } from "@/lib/launch";
 import { joinWaitlist, type WaitlistPublic } from "@/lib/waitlist";
 
+/** Same rule as the app's username claim screen (docs/redesign-tracker.md). */
+const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,30}$/;
+
 export function WaitlistForm() {
   const locale = useLocale();
   const t = useTranslations("landing.waitlist");
   const errors = useTranslations("errors");
   const search = useSearchParams();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,11 +40,19 @@ export function WaitlistForm() {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    const cleanUsername = username.trim().replace(/^@/, "");
+    if (!USERNAME_PATTERN.test(cleanUsername)) {
+      setError(errors("validation_failed"));
+      return;
+    }
+
     setBusy(true);
     setError(null);
     try {
       const joined = await joinWaitlist({
         email,
+        username: cleanUsername,
         referralCode,
         locale,
       });
@@ -70,24 +81,22 @@ export function WaitlistForm() {
 
   if (result) {
     return (
-      <div className="relative overflow-hidden rounded-xl border border-aura/40 bg-surface p-6 shadow-aura-glow sm:p-8">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_120%_at_100%_0%,var(--color-aura-deep),transparent_60%)] opacity-70"
-        />
+      <div className="relative overflow-hidden border border-aura bg-surface p-6 sm:p-8">
         <div className="relative flex flex-col gap-4">
-          <p className="text-caption tracking-[0.18em] text-aura-bright uppercase">
+          <p className="text-caption tracking-[0.18em] text-aura uppercase">
             {result.alreadyJoined ? t("success.againEyebrow") : t("success.eyebrow")}
           </p>
           <h3 className="text-title text-balance">
-            {result.alreadyJoined ? t("success.againTitle") : t("success.title")}
+            {result.alreadyJoined
+              ? t("success.againTitle", { username: result.username })
+              : t("success.title", { username: result.username })}
           </h3>
           <p className="text-body text-text-secondary">
             {result.alreadyJoined
               ? t("success.againBody", { aura: result.aura })
               : t("success.body", { aura: JOIN_AURA, referral: REFERRAL_AURA })}
           </p>
-          <p className="aura-numerals text-display text-aura-gradient">
+          <p className="aura-numerals text-display text-aura">
             {t("success.score", { aura: result.aura })}
           </p>
           {result.referralCount > 0 ? (
@@ -96,12 +105,16 @@ export function WaitlistForm() {
             </p>
           ) : null}
           <div className="flex flex-col gap-3 sm:flex-row">
-            <code className="min-w-0 flex-1 truncate rounded-full border border-border bg-bg px-4 py-3 text-caption text-text-secondary">
+            <code className="min-w-0 flex-1 truncate border border-border bg-bg px-4 py-3 text-caption text-text-secondary">
               {result.referralUrl}
             </code>
-            <Button type="button" onClick={() => void copyLink()}>
+            <button
+              type="button"
+              onClick={() => void copyLink()}
+              className="h-12 shrink-0 border border-text bg-text px-6 text-label font-bold tracking-wide text-bg uppercase transition-colors duration-(--motion-quick) ease-out hover:bg-aura hover:border-aura"
+            >
               {copied ? t("success.copied") : t("success.copy")}
-            </Button>
+            </button>
           </div>
           <p className="text-caption text-text-muted">{t("success.shareHint")}</p>
         </div>
@@ -114,15 +127,30 @@ export function WaitlistForm() {
       method="post"
       action={sectionHash(locale as AppLocale, "join")}
       onSubmit={(event) => void onSubmit(event)}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-3"
     >
       {referralCode ? (
-        <p className="rounded-lg border border-aura/30 bg-surface px-4 py-3 text-label text-text-secondary">
+        <p className="border border-aura/40 bg-surface px-4 py-3 text-label text-text-secondary">
           {t("invited")}
         </p>
       ) : null}
-      <label className="flex flex-col gap-2">
-        <span className="text-caption text-text-secondary">{t("emailLabel")}</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="sr-only">{t("usernameLabel")}</span>
+        <input
+          type="text"
+          name="username"
+          required
+          autoCapitalize="none"
+          autoCorrect="off"
+          autoComplete="off"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          placeholder={t("usernamePlaceholder")}
+          className="h-14 border border-border bg-surface px-5 text-body text-text outline-none transition-colors duration-(--motion-quick) ease-out placeholder:text-text-muted focus:border-aura"
+        />
+      </label>
+      <label className="flex flex-col gap-1.5">
+        <span className="sr-only">{t("emailLabel")}</span>
         <input
           type="email"
           name="email"
@@ -132,18 +160,22 @@ export function WaitlistForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder={t("emailPlaceholder")}
-          className="h-14 rounded-full border border-border bg-surface px-5 text-body text-text outline-none transition-colors duration-(--motion-quick) ease-out placeholder:text-text-muted focus:border-aura"
+          className="h-14 border border-border bg-surface px-5 text-body text-text outline-none transition-colors duration-(--motion-quick) ease-out placeholder:text-text-muted focus:border-aura"
         />
       </label>
-      <Button type="submit" size="lg" disabled={busy}>
+      <button
+        type="submit"
+        disabled={busy}
+        className="mt-1 h-14 border border-text bg-text text-label font-bold tracking-wide text-bg uppercase transition-colors duration-(--motion-quick) ease-out hover:bg-aura hover:border-aura disabled:pointer-events-none disabled:opacity-50"
+      >
         {busy ? t("submitting") : t("submit")}
-      </Button>
+      </button>
       {error ? (
         <p className="text-caption text-danger" role="alert">
           {error}
         </p>
       ) : null}
-      <p className="text-caption text-text-muted">{t("finePrint")}</p>
+      <p className="text-caption text-text-muted">{t("finePrint", { referral: REFERRAL_AURA })}</p>
     </form>
   );
 }

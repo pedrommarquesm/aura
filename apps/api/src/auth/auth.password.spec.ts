@@ -66,7 +66,9 @@ function createService(
       expiresIn: 900,
     }),
   };
-  const waitlist = { claimForAccount: vi.fn().mockResolvedValue(0) };
+  const waitlist = {
+    claimForAccount: vi.fn().mockResolvedValue({ awardedAura: 0, claimedUsername: null }),
+  };
   const verified = {
     subject: oauth.subject ?? 'google-sub-1',
     email: oauth.email,

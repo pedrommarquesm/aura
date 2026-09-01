@@ -82,6 +82,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 | FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | Done | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
 | FND-13 | Vote & receipts redesign: tracker, greenfield schema, vote API, mobile slider/receipts/ledger, web read-only. Deploy requires dropping the database — see `RDX-15` | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87), [#88](https://github.com/pedrommarquesm/aura/pull/88) |
+| FND-14 | Web design token parity finished — radius + type weight now match `apps/mobile/theme/tokens.js` (colors matched from FND-13) | Done | [#89](https://github.com/pedrommarquesm/aura/pull/89) |
 
 ### Mobile bootstrap
 
@@ -118,6 +119,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-31 | Public T&C, FAQ, contact form pages | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-32 | Landing post mocks match the mobile TikTok feed card (full-bleed, 🗿 actions, overlay chrome) | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-33 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs, routes, and locale switcher | Done | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
+| WEB-35 | Landing page rebuilt around the vote/receipts redesign: hero + join form, Live Check / Slider / Ledger demo strip, numbered feature cards | Done | [#89](https://github.com/pedrommarquesm/aura/pull/89) |
 
 ---
 
@@ -339,6 +341,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | Landing page rebuilt around the vote/receipts redesign (hero + join form, Live Check/Slider/Ledger demo strip, numbered feature cards). Waitlist join now reserves a username alongside email — same 3-30 char rule as the app's claim screen — and auto-claims it onto a brand-new account on first sign-in. Web radius + type-weight tokens sharpened to finish the Neo-Brutalism parity with mobile | [#89](https://github.com/pedrommarquesm/aura/pull/89) |
 | 2026-09-01 | Vote & receipts redesign shipped. `likes` / `comments` tables dropped, `votes` is the only object; migration history squashed to a fresh init — deploying requires dropping the database. Mobile has a vertical slider (haptics, receipts, ledger sheet); web is read-only. Full breakdown: [redesign-tracker.md](./redesign-tracker.md) | [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 | 2026-09-01 | Design screenshots 01–09 in `docs/redesign-screens/`. Home swipe is COOKED ← LIVE CHECK → CERTIFIED. Bottom bar is HOME \| PROFILE | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Q1–Q20 locked. Greenfield: drop `likes`/`comments`, no data port. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |

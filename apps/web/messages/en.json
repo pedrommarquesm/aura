@@ -88,6 +88,9 @@
       "label": "Sections",
       "whatIsAura": "What is Aura",
       "howItWorks": "How it works",
+      "liveCheck": "Live Check",
+      "slider": "The Slider",
+      "ledger": "The Ledger",
       "feed": "Feed",
       "trending": "Trending",
       "leaderboard": "Leaderboard",
@@ -115,9 +118,9 @@
   },
   "landing": {
     "hero": {
-      "badge": "Launching in 2 weeks",
-      "title": "Your vibe,<break></break><accent>ranked.</accent>",
-      "body": "Post the moment. People like it, you gain Aura. Everyone can see where you stand. No follower count. No hiding. Just the score.",
+      "badge": "Aura Public Square",
+      "title": "Establish your<break></break>baseline.",
+      "body": "A real-time score based on community judgment. Slide up to grant points, down to deduct. Drop a receipt to justify your vote.",
       "leader": "Currently #{rank, number} globally",
       "preview": {
         "title": "Trending",
@@ -134,24 +137,66 @@
         "share": "+{aura, number} Aura when a friend signs up through you",
         "port": "When the app opens, this Aura lands on your account"
       },
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@username",
       "emailLabel": "Your email",
-      "emailPlaceholder": "you@mail.com",
-      "submit": "Join early beta",
+      "emailPlaceholder": "email@domain.com",
+      "submit": "Claim username & join",
       "submitting": "Locking it in…",
       "invited": "Someone sent you. Join now — they get Aura when you open the app.",
-      "finePrint": "We'll email you when it opens. No spam. Unsubscribe whenever.",
+      "finePrint": "Share your link. Receive +{referral, number} starting Aura for every friend who joins.",
       "success": {
         "eyebrow": "You're in",
-        "title": "Congrats. You just farmed your first Aura.",
+        "title": "Welcome, @{username}.",
         "body": "+{aura, number} Aura for joining early. Share this link. You'll get +{referral, number} Aura when a friend signs up and opens the app.",
         "againEyebrow": "Already in",
-        "againTitle": "This email is already on the list.",
+        "againTitle": "@{username} is already on the list.",
         "againBody": "Your early Aura is still here: {aura, number}. Same link. Keep sharing.",
         "score": "🗿 {aura, number}",
         "referrals": "{count, plural, one {# friend signed up through you} other {# friends signed up through you}}",
         "copy": "Copy your link",
         "copied": "Copied",
         "shareHint": "WhatsApp it. Text it. Story it. You farm Aura when they actually sign up."
+      }
+    },
+    "demo": {
+      "liveCheck": {
+        "badge": "REC 00:14",
+        "receipts": [
+          { "username": "user_99", "body": "This is out of line. Deducting." },
+          { "username": "admin_x", "body": "Context needed. Holding." }
+        ],
+        "aura": "+3,840 AURA"
+      },
+      "slider": {
+        "value": "+85",
+        "hint": "Slide up or down on the edge of the screen"
+      },
+      "ledger": {
+        "title": "Ledger",
+        "entries": [
+          { "username": "c_smith", "body": "Verified action. Good execution.", "amount": "+100" },
+          { "username": "anon_44", "body": "Lacking context. Not buying it.", "amount": "-50" },
+          { "username": "judex", "body": "Acceptable.", "amount": "+25" },
+          { "username": "sys_bot", "body": "Abstained.", "amount": "0" }
+        ]
+      }
+    },
+    "features": {
+      "liveCheck": {
+        "eyebrow": "01",
+        "title": "Live Check",
+        "body": "Every upload enters a 24-hour window where the community votes on your clip."
+      },
+      "slider": {
+        "eyebrow": "02",
+        "title": "The Slider",
+        "body": "Cast your vote on a scale of -100 to +100 using a single gesture on the edge of your screen."
+      },
+      "ledger": {
+        "eyebrow": "03",
+        "title": "The Ledger",
+        "body": "Transparent voting history. Tap any post to see who voted, how many points they gave, and why."
       }
     },
     "play": {

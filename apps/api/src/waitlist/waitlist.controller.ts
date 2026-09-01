@@ -6,6 +6,7 @@ import { WaitlistService, type WaitlistPublic } from './waitlist.service';
 
 const joinSchema = z.object({
   email: z.string().min(3).max(320),
+  username: z.string().min(3).max(30),
   referralCode: z.string().max(16).optional().nullable(),
   locale: z.string().max(16).optional().nullable(),
 });

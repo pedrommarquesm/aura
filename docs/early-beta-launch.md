@@ -63,6 +63,7 @@ Tell testers, in writing:
 - Library only — **Take a picture is disabled**
 - Posting is in the app, not the website
 - Early Aura from the waitlist lands on the account at **first sign-in with the same email**
+- The username they picked on the waitlist form is reserved, not claimed — it lands automatically on first sign-in if it's still free, otherwise the app just asks them to pick one
 - Apple Hide My Email will **not** merge with a typed inbox
 - This is a beta on staging. Data can be wiped.
 

@@ -120,3 +120,41 @@ export function MoreIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** Filter funnel — the ledger's demo header, landing page only. */
+export function FilterIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <path d="M4 5h16M7 12h10M10.5 19h3" />
+    </svg>
+  );
+}
+
+/** A dragging hand — the slider demo's gesture hint, landing page only. */
+export function DragHandIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <path d="M9 11.5V6a1.5 1.5 0 0 1 3 0v4.5" />
+      <path d="M12 10V5a1.5 1.5 0 0 1 3 0v5.5" />
+      <path d="M15 10.5V8a1.5 1.5 0 0 1 3 0v6c0 3.5-2 6.5-6 6.5s-6.5-2-7.5-5L3.7 12a1.4 1.4 0 0 1 2-2l2.3 2" />
+    </svg>
+  );
+}
