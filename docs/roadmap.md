@@ -81,7 +81,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | FND-10 | i18n contract ([i18n.md](./i18n.md)): locales, ICU, key naming, translation boundary | Done | [#9](https://github.com/pedrommarquesm/aura/pull/9) |
 | FND-11 | Merge the per-app message catalogs into a shared package (follows FND-03) | Not started | |
 | FND-12 | Brand & naming lock ([brand.md](./brand.md)): Auraclimb product, Aura score | Done | [#74](https://github.com/pedrommarquesm/aura/pull/74) |
-| FND-13 | Vote & receipts redesign: tracker, greenfield schema, vote API, mobile slider/receipts/ledger, web read-only. Deploy requires dropping the database — see `RDX-15` | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87), *this PR* |
+| FND-13 | Vote & receipts redesign: tracker, greenfield schema, vote API, mobile slider/receipts/ledger, web read-only. Deploy requires dropping the database — see `RDX-15` | Done | [#87](https://github.com/pedrommarquesm/aura/pull/87), [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 
 ### Mobile bootstrap
 
@@ -339,7 +339,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Vote & receipts redesign shipped. `likes` / `comments` tables dropped, `votes` is the only object; migration history squashed to a fresh init — deploying requires dropping the database. Mobile has a vertical slider (haptics, receipts, ledger sheet); web is read-only. Full breakdown: [redesign-tracker.md](./redesign-tracker.md) | *this PR* |
+| 2026-09-01 | Vote & receipts redesign shipped. `likes` / `comments` tables dropped, `votes` is the only object; migration history squashed to a fresh init — deploying requires dropping the database. Mobile has a vertical slider (haptics, receipts, ledger sheet); web is read-only. Full breakdown: [redesign-tracker.md](./redesign-tracker.md) | [#88](https://github.com/pedrommarquesm/aura/pull/88) |
 | 2026-09-01 | Design screenshots 01–09 in `docs/redesign-screens/`. Home swipe is COOKED ← LIVE CHECK → CERTIFIED. Bottom bar is HOME \| PROFILE | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | Q1–Q20 locked. Greenfield: drop `likes`/`comments`, no data port. Vote Power (`AURA-10`) parked so it cannot multiply a chosen amount | [#87](https://github.com/pedrommarquesm/aura/pull/87) |
 | 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md). Will be retargeted at receipts + net-Aura digest in `RDX-61` | [#85](https://github.com/pedrommarquesm/aura/pull/85) |
