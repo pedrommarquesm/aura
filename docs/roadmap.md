@@ -258,7 +258,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
 | OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | Done | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | OPS-15 | Waitlist emails send through Resend. `RESEND_API_KEY` on api + worker; outbox still records every message | Done | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
-| OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | In review | |
+| OPS-16 | Early-beta launch plan: private TestFlight/internal builds, then waitlist waves. Store launch is later | In review | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
 | ANL-02 | North star instrumentation: Aura Actions / Active User / Day | Not started | |
 
@@ -296,7 +296,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | |
+| 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
 | 2026-09-01 | Waitlist welcome and referral emails send through Resend. `email_outbox` still records every message. Unset `RESEND_API_KEY` parks sending as `queued`. Contact form stays persist-only | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | 2026-09-01 | Password login/register for e2e on local and staging. `auth_identities.password_hash` (scrypt). Production still Apple/Google only | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
