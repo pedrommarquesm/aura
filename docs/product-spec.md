@@ -843,6 +843,8 @@ Agrupar eventos quando possível.
 
 Não enviar uma push notification por cada like.
 
+**V0 (current plan):** comments on your post, plus a like digest from the ledger. Waitlist stays email. Web has no push. Full competition copy above (battles, challenges, Aura Sense) is M2. See [push-notifications.md](./push-notifications.md).
+
 ---
 
 # 23. Sharing / Viral Loop

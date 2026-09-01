@@ -9,6 +9,7 @@ The product brand is **Auraclimb**. Aura is the score and the spoken name. Namin
 - Backend architecture: [docs/backend-architecture.md](docs/backend-architecture.md)
 - Work plan & tracker: [docs/roadmap.md](docs/roadmap.md)
 - Early-beta launch: [docs/early-beta-launch.md](docs/early-beta-launch.md)
+- Push notifications: [docs/push-notifications.md](docs/push-notifications.md)
 - Design tokens: [docs/design-tokens.md](docs/design-tokens.md)
 - Deployment: [docs/deployment.md](docs/deployment.md)
 - Internationalization: [docs/i18n.md](docs/i18n.md)

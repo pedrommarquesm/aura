@@ -7,6 +7,7 @@ Single source of truth for what is planned, in flight, and done.
 - Backend architecture: [backend-architecture.md](./backend-architecture.md)
 - Client media (pick → shrink → PUT): [client-media.md](./client-media.md)
 - Early-beta launch: [early-beta-launch.md](./early-beta-launch.md)
+- Push notifications: [push-notifications.md](./push-notifications.md)
 
 ---
 
@@ -46,7 +47,7 @@ ID prefixes:
 
 **Next** — Daily ops before waitlist wave 1: Sentry (`OPS-17`, `MOB-77`, `WEB-34`), PostHog (`ANL-01`–`ANL-04`), admin waitlist / contact / mail / thumbs / comments (`API-43`, `API-44`, `TS-13`–`TS-15`). Then invite the list. Store links (`WEB-07`) and production (`OPS-07`) wait until we actually ship.
 
-**Later** — V1 competition systems. OpenTelemetry (`API-06`) when feed/like latency needs traces. The store-launch marketing pack is later too.
+**Later** — Push after testers exist: comments + like digest ([push-notifications.md](./push-notifications.md)). V1 competition systems. OpenTelemetry (`API-06`) when feed/like latency needs traces. The store-launch marketing pack is later too.
 
 Worth doing early rather than late: `FND-03`, and the three things waiting on it — `FND-04` (API types), `FND-09` (design tokens), and `FND-11` (message catalogs). Each client currently holds its own copy of all three, so every parallel PR widens the gap.
 
@@ -280,6 +281,19 @@ The backoffice can suspend, ban, and take down posts. It cannot run the waitlist
 | TS-14 | Admin: thumb + caption on post rows and post reports (`thumbUrl` is already on the API) | Not started | |
 | TS-15 | Admin: act on comments (queue + delete). Depends on API-44 | Not started | |
 
+### Push (V0)
+
+Not week 0. After TestFlight and after people post. Never one push per like. Plan: [push-notifications.md](./push-notifications.md).
+
+| ID | Task | Status | PR |
+|---|---|---|---|
+| API-47 | `device_sessions.push_token` (Expo). Cleared on logout / revoke / ban | Not started | |
+| API-48 | `notifications` table + `GET /v1/notifications` + mark read. Types: `comment`, `like_digest`, `waitlist_claim` | Not started | |
+| API-49 | Comment on your post → worker → Expo Push + inbox row. Locale from `users.locale`. Skip self, banned, removed posts | Not started | |
+| API-50 | Like digest from the ledger (15–30 min window). One push / one collapsed inbox row. Never on the like request | Not started | |
+| MOB-78 | `expo-notifications` on preview/dev builds. Permission after first like or post. Register token with the session | Not started | |
+| MOB-79 | Tap push / inbox row opens the post or comments. Badge = unread | Not started | |
+
 ---
 
 ## Milestone M2 — V1 competition
@@ -299,7 +313,7 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | API-31 | Comments | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
 | API-32 | Aura Battles | Not started | |
 | API-33 | Daily Challenges | Not started | |
-| API-34 | Notifications, aggregated (never one push per like) | Not started | |
+| API-34 | V1 competition pushes: rank change, battles, challenges. Still never one push per like. V0 slice is API-47–50 | Not started | |
 | API-35 | Hashtag index + `GET /v1/hashtags/:tag` | Done | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
 | TS-10 | Like-ring / multi-account detection over the ledger | Not started | |
 | TS-11 | NSFW + spam detection in the media worker. On hold: third-party classifier on `ProcessMediaJob` (architecture §6.5), fail closed, user only sees generic vs `content_rejected` | Blocked | |
@@ -314,6 +328,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | V0 push is comments + like digest after testers exist, never per-like, never waitlist, never web. Plan: [push-notifications.md](./push-notifications.md) | |
 | 2026-09-01 | Early-beta ops on the tracker: Sentry (not Crashlytics), PostHog (not GA / Sentry-as-analytics), admin waitlist + contact + outbox + post thumbs + comment reports. OTEL stays later | [#84](https://github.com/pedrommarquesm/aura/pull/84) |
 | 2026-09-01 | Early beta is a private install + waitlist, not a store launch. Plan in [early-beta-launch.md](./early-beta-launch.md). Paid ads, WEB-07, and the store-launch marketing pack wait | [#82](https://github.com/pedrommarquesm/aura/pull/82) |
 | 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |

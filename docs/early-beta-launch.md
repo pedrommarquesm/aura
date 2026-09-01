@@ -146,6 +146,7 @@ After the first 20 have posted and the feed is not empty:
 - Web login on the public site
 - In-app camera
 - Automatic NSFW/spam in the worker (`TS-11`)
-- Battles, daily challenges, seasons, following, notifications, Vote Power
+- Battles, daily challenges, seasons, following, Vote Power
+- Push notifications — after testers post. Plan: [push-notifications.md](./push-notifications.md)
 - Paid ads
 - Promising a launch week date in ads or in mail unless you will hit it
