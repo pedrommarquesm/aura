@@ -294,7 +294,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
-| 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | |
+| 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
 | 2026-09-01 | Waitlist welcome and referral emails send through Resend. `email_outbox` still records every message. Unset `RESEND_API_KEY` parks sending as `queued`. Contact form stays persist-only | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | 2026-09-01 | Password login/register for e2e on local and staging. `auth_identities.password_hash` (scrypt). Production still Apple/Google only | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | 2026-09-01 | Public host is `www.auraclimb.com`. API `api.auraclimb.com`. CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` and `PUBLIC_SITE_URL` match. Old `aurarankd.com` hostnames are detached | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
