@@ -2,6 +2,8 @@
 
 The product brand is **Auraclimb**. **Aura** is the score and the casual spoken name. Store listing, domain, socials, and legal identifiers are in [brand.md](./brand.md). This spec still says Aura everywhere the user-facing game does.
 
+**Redesign in progress.** Likes and comments are the current shipped objects. They will be replaced by a one-shot signed vote (−100…+100) and optional receipts. Questions are locked in [redesign-tracker.md](./redesign-tracker.md). Do not extend the like/comment model. Do not migrate those tables. Spec sections 7.2, 11, and 21 are `RDX-03`.
+
 ## 1. Introdução
 
 **Aura** é uma rede social mobile centrada numa ideia simples: **farmar Aura**.
