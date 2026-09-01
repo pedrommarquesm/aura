@@ -8,7 +8,7 @@ import { createTestQueryClient } from '../helpers/query-client';
 describe('applyAvatarUrl', () => {
   it('updates the author on the permalink and leaves the comment thread alone', () => {
     const post = { ...mockFeed[0]!, author: { ...mockFeed[0]!.author, id: testUser.id } };
-    const nextUrl = 'https://cdn.aurarankd.com/avatars/u-tester/new.jpg';
+    const nextUrl = 'https://cdn.auraclimb.com/avatars/u-tester/new.jpg';
     const client = createTestQueryClient();
     const thread = {
       pages: [{ items: [createdComment('keep me', 1).comment], nextCursor: null, hasMore: false }],

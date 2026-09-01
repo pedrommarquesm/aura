@@ -43,7 +43,7 @@ describe('Profile photo', () => {
 
   it('uploads the square crop and updates the avatar', async () => {
     asSignedIn();
-    const nextUrl = 'https://cdn.aurarankd.com/avatars/u-tester/new.jpg';
+    const nextUrl = 'https://cdn.auraclimb.com/avatars/u-tester/new.jpg';
     api.completeAvatarUpload.mockResolvedValue(avatarCompleteResponse(nextUrl));
     setPendingAvatarSource({
       uri: samplePhotoAsset.uri,

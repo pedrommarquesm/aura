@@ -89,11 +89,11 @@ const envSchema = z.object({
    * Our own domain in front of whichever CDN is current, so changing vendor is
    * a DNS change and every already-shared link keeps working.
    */
-  MEDIA_CDN_BASE_URL: z.string().default('https://cdn.aurarankd.com'),
+  MEDIA_CDN_BASE_URL: z.string().default('https://cdn.auraclimb.com'),
   /** Selects the edge transform syntax. See docs/backend-architecture.md §6.6. */
   MEDIA_EDGE: z.enum(['cloudflare', 'bunny', 'none']).default('cloudflare'),
   /**
-   * Optional per-provider base URLs as JSON, e.g. {"bunny":"https://b-cdn.aurarankd.com"}.
+   * Optional per-provider base URLs as JSON, e.g. {"bunny":"https://b-cdn.auraclimb.com"}.
    * Lets a storage migration serve old and new assets simultaneously.
    */
   MEDIA_PROVIDER_BASE_URLS: z.string().optional(),
@@ -152,7 +152,7 @@ const envSchema = z.object({
    * Public site origin used in waitlist referral links and emails.
    * Must match the canonical web host.
    */
-  PUBLIC_SITE_URL: z.string().default('https://www.aurarankd.com'),
+  PUBLIC_SITE_URL: z.string().default('https://www.auraclimb.com'),
 
   /** Flip to close the waitlist without a deploy of the form itself. */
   WAITLIST_ENABLED: booleanish.default(true),

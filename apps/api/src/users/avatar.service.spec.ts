@@ -22,14 +22,14 @@ function env() {
   return {
     MEDIA_UPLOAD_TTL_SECONDS: 900,
     MEDIA_AVATAR_MAX_BYTES: 2 * 1024 * 1024,
-    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com',
     MEDIA_EDGE: 'none',
   } as never;
 }
 
 function resolver() {
   return new MediaUrlResolver({
-    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com',
     MEDIA_EDGE: 'none',
   } as never);
 }
@@ -97,14 +97,14 @@ describe('AvatarService', () => {
     const key = avatarKey(actor.id, created.uploadId, 'jpg');
     await store.put(key, Buffer.alloc(40), { contentType: 'image/jpeg' });
 
-    const next = { ...actor, avatarUrl: `https://cdn.aurarankd.com/${key}` };
+    const next = { ...actor, avatarUrl: `https://cdn.auraclimb.com/${key}` };
     db.returning.mockResolvedValue([next]);
 
     const result = await service.complete(actor as never, { uploadId: created.uploadId });
 
-    expect(result.user.avatarUrl).toBe(`https://cdn.aurarankd.com/${key}`);
+    expect(result.user.avatarUrl).toBe(`https://cdn.auraclimb.com/${key}`);
     expect(db.set).toHaveBeenCalledWith(
-      expect.objectContaining({ avatarUrl: `https://cdn.aurarankd.com/${key}` }),
+      expect.objectContaining({ avatarUrl: `https://cdn.auraclimb.com/${key}` }),
     );
   });
 

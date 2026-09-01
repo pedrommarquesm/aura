@@ -180,28 +180,28 @@ Commit the generated SQL. Never edit an applied migration; add a new one.
 
 ## Domains and ports
 
-The public hostnames are on **`aurarankd.com`**. Staging is the only
+The public hostnames are on **`auraclimb.com`**. Staging is the only
 environment, so these point at staging until production exists.
 
 | Hostname | Service | Notes |
 |---|---|---|
-| `www.aurarankd.com` | web | Canonical site. Railway custom domain, port 3000 |
-| `aurarankd.com` | web | Same app. Apex → www is a DNS redirect, not the Next proxy |
-| `api.aurarankd.com` | api | Railway custom domain, port 3000 |
+| `www.auraclimb.com` | web | Canonical site. Railway custom domain, port 3000 |
+| `auraclimb.com` | web | Same app. Apex → www is a DNS redirect, not the Next proxy |
+| `api.auraclimb.com` | api | Railway custom domain, port 3000 |
 | `admin-staging-ea68.up.railway.app` | admin | Staff backoffice. Same Google Web OAuth client as web |
-| `cdn.aurarankd.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
+| `cdn.auraclimb.com` | Cloudflare R2 bucket `aura-media` | Not a Railway domain. Attach in the R2 dashboard |
 
-Railway already has the three HTTP hostnames. DNS for `aurarankd.com`,
-`www.aurarankd.com`, and `api.aurarankd.com` answers; certificates are issued.
+Railway already has the three HTTP hostnames. DNS for `auraclimb.com`,
+`www.auraclimb.com`, and `api.auraclimb.com` answers; certificates are issued.
 The apex → `www` hop is at DNS so the app never 308s Flight (`?_rsc=`) requests.
 
 Generated `*.up.railway.app` URLs keep working. Web and mobile now point at
-`https://api.aurarankd.com`. `NEXT_PUBLIC_*` is inlined at image build time, so
+`https://api.auraclimb.com`. `NEXT_PUBLIC_*` is inlined at image build time, so
 a web rebuild is required after changing it.
 
 ### DNS records to create
 
-Best path: add `aurarankd.com` as a zone on the **same Cloudflare account as
+Best path: add `auraclimb.com` as a zone on the **same Cloudflare account as
 R2**, then point the registrar nameservers at Cloudflare. Apex CNAME needs
 Cloudflare's CNAME flattening (most registrars cannot CNAME `@`). R2 custom
 domains also require the zone to live on that Cloudflare account.
@@ -227,24 +227,23 @@ Cloudflare usually breaks certificate issuance.
 | TXT | `_railway-verify.api` | `railway-verify=5c923769da78d691b7505fb5efa3070106fdd2343be9a92e4e018c330642603d` |
 
 **CDN** — do not CNAME `cdn` at the registrar by guesswork. In Cloudflare:
-R2 → bucket `aura-media` → Custom Domains → add `cdn.aurarankd.com`. If the
+R2 → bucket `aura-media` → Custom Domains → add `cdn.auraclimb.com`. If the
 zone is on this account, Cloudflare writes the record. If it is not, the
 dashboard shows the CNAME target to copy.
 
 After DNS answers (web + api are live):
 
 1. Railway marks the three HTTP domains verified and issues certificates. **Done.**
-2. Set web `NEXT_PUBLIC_API_BASE_URL=https://api.aurarankd.com` and rebuild web.
+2. Set web `NEXT_PUBLIC_API_BASE_URL=https://api.auraclimb.com` and rebuild web.
    The IaC value is set; the running image still needs a **new Docker build**,
    not a restart of the old image.
-3. Point a new mobile build at `https://api.aurarankd.com/v1`.
-4. Attach `cdn.aurarankd.com` to the R2 bucket `aura-media` as a custom domain.
-   Staging currently emits `https://cdn.aura.app/...` for media; public reads
-   on `cdn.aurarankd.com` stay 404 until that hostname is Active **and**
-   `MEDIA_CDN_BASE_URL` on api + worker matches it.
+3. Point a new mobile build at `https://api.auraclimb.com/v1`.
+4. Attach `cdn.auraclimb.com` to the R2 bucket `aura-media` as a custom domain.
+   Public reads on `cdn.auraclimb.com` stay 404 until that hostname is Active
+   **and** `MEDIA_CDN_BASE_URL` on api + worker matches it.
 
 Google Cloud Console, Web application OAuth client: add Authorized JavaScript
-origins `https://aurarankd.com` and `https://www.aurarankd.com` (keep
+origins `https://auraclimb.com` and `https://www.auraclimb.com` (keep
 `http://localhost:3000` and the current Railway web URL). The admin app uses
 that same client — add origin
 `https://admin-staging-ea68.up.railway.app` and redirect
@@ -319,7 +318,7 @@ Media lives on Cloudflare R2. The **api** and **worker** both need
 (`aura-media`), and `R2_ENDPOINT`. Those are secrets except the bucket name —
 `preserve()` in the IaC file. Clients PUT directly to a presigned URL; the API
 never sees the bytes. Public reads go through `MEDIA_CDN_BASE_URL`, which is
-`https://cdn.aurarankd.com` once that hostname is attached to the bucket as an
+`https://cdn.auraclimb.com` once that hostname is attached to the bucket as an
 R2 custom domain. Until then, enable the bucket's `r2.dev` public development
 URL and point `MEDIA_CDN_BASE_URL` at it. `MEDIA_EDGE=none` until Cloudflare
 Image Resizing is on — we store our own 1080 / 400 JPEG variants.
@@ -338,7 +337,7 @@ Video uses Mux. Set these in the dashboard (`preserve()` in IaC — do not
 | `MUX_WEBHOOK_SECRET` | **api only** | HMAC for `POST /v1/webhooks/mux` |
 
 Create the webhook in the Mux dashboard against
-`https://api.aurarankd.com/v1/webhooks/mux` for `video.asset.ready` and
+`https://api.auraclimb.com/v1/webhooks/mux` for `video.asset.ready` and
 `video.asset.errored`. Playback policy is `public`; video quality is `basic`.
 Mux keys never go in clients or `NEXT_PUBLIC_*`.
 
@@ -348,10 +347,10 @@ Project `aura`, environment **`staging`**, region `europe-west4`.
 
 | Service | Generated URL | Custom domain (after DNS) |
 |---|---|---|
-| api | https://api-production-aa71.up.railway.app | https://api.aurarankd.com |
-| web | https://web-production-e1282.up.railway.app | https://www.aurarankd.com (apex → www at DNS) |
+| api | https://api-production-aa71.up.railway.app | https://api.auraclimb.com |
+| web | https://web-production-e1282.up.railway.app | https://www.auraclimb.com (apex → www at DNS) |
 | admin | https://admin-staging-ea68.up.railway.app | — |
-| media | — | https://cdn.aurarankd.com |
+| media | — | https://cdn.auraclimb.com |
 
 The generated hostnames still read `-production-` because Railway created them
 before the environment was renamed and does not rewrite existing domains. They

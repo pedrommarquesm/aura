@@ -7,7 +7,7 @@ export const apiConfig = {
    */
   publicBaseUrl: (publicBase && publicBase.length > 0
     ? publicBase
-    : "https://api.aurarankd.com"
+    : "https://api.auraclimb.com"
   ).replace(/\/$/, ""),
   /**
    * Server-side NextAuth callbacks. Falls back to the public URL so a
@@ -17,6 +17,6 @@ export const apiConfig = {
     ? serverBase
     : publicBase && publicBase.length > 0
       ? publicBase
-      : "https://api.aurarankd.com"
+      : "https://api.auraclimb.com"
   ).replace(/\/$/, ""),
 } as const;

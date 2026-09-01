@@ -165,7 +165,7 @@ export const avatarUploadResponse: CreateAvatarUploadResponse = {
   expiresAt: '2099-01-01T00:00:00.000Z',
 };
 
-export function avatarCompleteResponse(avatarUrl = 'https://cdn.aurarankd.com/avatars/u-tester/v.jpg'): CompleteAvatarResponse {
+export function avatarCompleteResponse(avatarUrl = 'https://cdn.auraclimb.com/avatars/u-tester/v.jpg'): CompleteAvatarResponse {
   return { user: { ...testUser, avatarUrl } };
 }
 
