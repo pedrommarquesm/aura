@@ -80,6 +80,7 @@ export default function CreateScreen() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [previewMuted, setPreviewMuted] = useState(true);
+  const [previewHeight, setPreviewHeight] = useState(0);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [shrinking, setShrinking] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -379,6 +380,10 @@ export default function CreateScreen() {
             <Pressable
               disabled={picked.kind !== 'video' || busy}
               onPress={() => setPreviewMuted((current) => !current)}
+              onLayout={(event) => {
+                const next = Math.round(event.nativeEvent.layout.height);
+                if (next > 0) setPreviewHeight(next);
+              }}
               accessibilityRole={picked.kind === 'video' ? 'button' : undefined}
               accessibilityLabel={
                 picked.kind === 'video'
@@ -404,10 +409,7 @@ export default function CreateScreen() {
                   <>
                     <PostVideo key={picked.uri} source={picked.uri} playing muted={previewMuted} />
                     <View style={StyleSheet.absoluteFill} />
-                    <VideoMuteBadge
-                      muted={previewMuted}
-                      label={previewMuted ? t('create.a11y.unmute') : t('create.a11y.mute')}
-                    />
+                    <VideoMuteBadge muted={previewMuted} hostHeight={previewHeight} />
                   </>
               )}
             </Pressable>

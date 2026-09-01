@@ -78,14 +78,23 @@ export function PostOptions({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('feed.post.a11y.options')}
-        hitSlop={8}
+        hitSlop={10}
         onPress={() => {
           setCaption(post.caption ?? '');
           setError(null);
           setSheet('menu');
         }}
       >
-        <Ionicons name="ellipsis-horizontal" size={20} color={colors.text.muted} />
+        <Ionicons
+          name="ellipsis-horizontal"
+          size={22}
+          color={colors.text.DEFAULT}
+          style={{
+            textShadowColor: withAlpha(colors.bg, 0.7),
+            textShadowOffset: { width: 0, height: 1 },
+            textShadowRadius: 4,
+          }}
+        />
       </Pressable>
 
       <Modal visible={sheet !== 'closed'} transparent animationType="fade" onRequestClose={close}>

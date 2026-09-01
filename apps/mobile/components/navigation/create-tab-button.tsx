@@ -6,7 +6,6 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { AuraGradient, Text } from '@/components/ui';
 import { useAuthGateStore } from '@/store/auth-gate';
 import { useSessionStore } from '@/store/session';
-import { auraGlow } from '@/theme/glow';
 import { instant } from '@/theme/motion';
 import { colors } from '@/theme/tokens';
 
@@ -17,9 +16,8 @@ export type CreateTabButtonProps = {
 };
 
 /**
- * Create is the product's primary action, so it does not look like a tab: it is an
- * elevated gradient pill that breaks the tab bar's top edge. The glow is one of the few
- * places we spend it — this is the thing we want the thumb to find without looking.
+ * Create is the product's primary action, so it keeps the aura gradient. It
+ * still sits in the same icon + label row as the other tabs.
  */
 export function CreateTabButton({ onPress }: CreateTabButtonProps) {
   const { t } = useTranslation();
@@ -37,13 +35,19 @@ export function CreateTabButton({ onPress }: CreateTabButtonProps) {
         onPress={onPress}
         onPressIn={() => press.set(withTiming(1, instant))}
         onPressOut={() => press.set(withTiming(0, instant))}
-        style={[styles.button, animatedStyle, auraGlow('strong')]}
+        style={[styles.button, animatedStyle]}
       >
         <AuraGradient />
-        <Ionicons name="add" size={30} color={colors.text.DEFAULT} />
+        <Ionicons name="add" size={22} color={colors.text.DEFAULT} />
       </AnimatedPressable>
 
-      <Text variant="caption" tone="muted" style={styles.label} numberOfLines={1}>
+      <Text
+        variant="caption"
+        tone="muted"
+        style={styles.label}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.2}
+      >
         {t('nav.create')}
       </Text>
     </View>
@@ -69,24 +73,24 @@ export function GuardedCreateTab({ onPress }: { onPress?: PressableProps['onPres
   );
 }
 
+const ICON = 28;
+
 const styles = StyleSheet.create({
   slot: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingTop: 2,
   },
   button: {
-    marginTop: -24,
-    height: 56,
-    width: 56,
+    height: ICON,
+    width: ICON,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: colors.bg,
+    borderRadius: ICON / 2,
   },
   label: {
-    marginTop: -4,
+    marginTop: 2,
   },
 });

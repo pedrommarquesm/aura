@@ -45,7 +45,7 @@ function formatDuration(durationMs: number): string {
   return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
 }
 
-const ACTION = 52;
+const ACTION = 44;
 const MOAI = 80;
 const LIFT = 28;
 const zoomIn = { duration: 90, easing: Easing.out(Easing.cubic) };
@@ -202,6 +202,7 @@ export const FeedPostCard = memo(function FeedPostCard({
   const likeRef = useRef<LikeButtonHandle>(null);
   const [burst, setBurst] = useState(0);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
+  const [captionHeight, setCaptionHeight] = useState(96);
   const muted = usePreferencesStore((state) => state.feedMuted);
   const toggleFeedMuted = usePreferencesStore((state) => state.toggleFeedMuted);
 
@@ -212,7 +213,6 @@ export const FeedPostCard = memo(function FeedPostCard({
   const playing = isVideo && isActiveVideo && Boolean(playbackUrl);
 
   const cardHeight = heightProp ?? windowHeight - insets.top;
-  const auraTop = overlayInsetTop > 0 ? overlayInsetTop + 8 : 16;
 
   // Caption truncation - show 2 lines
   const captionLines = 2;
@@ -297,13 +297,6 @@ export const FeedPostCard = memo(function FeedPostCard({
 
           <View style={StyleSheet.absoluteFill} collapsable={false} />
 
-          {playing ? (
-            <VideoMuteBadge
-              muted={muted}
-              label={muted ? t('feed.post.a11y.unmute') : t('feed.post.a11y.mute')}
-            />
-          ) : null}
-
           {isVideo && media.durationMs && !playing ? (
             <View className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full px-2 py-1" style={onMedia}>
               <Ionicons name="play" size={10} color={colors.text.DEFAULT} />
@@ -313,13 +306,23 @@ export const FeedPostCard = memo(function FeedPostCard({
 
           <DoubleTapMoai burst={burst} origin={origin} />
 
-          <View style={[styles.auraPill, { top: auraTop }, onMedia]}>
-            <Text variant="label" tone="aura" className="font-extrabold tracking-aura">
-              {format.count(post.aura)} 🗿
-            </Text>
-          </View>
+          {overlayInsetTop > 0 ? null : (
+            <View style={[styles.auraSpread, { top: 16 }]}>
+              <View style={styles.auraPill}>
+                <Text variant="caption" style={styles.auraLabel}>
+                  {format.count(post.aura)} 🗿
+                </Text>
+              </View>
+            </View>
+          )}
 
-          <View className="absolute bottom-0 left-0 right-0">
+          <View
+            className="absolute bottom-0 left-0 right-0"
+            onLayout={(event) => {
+              const next = Math.round(event.nativeEvent.layout.height);
+              if (next > 0) setCaptionHeight(next);
+            }}
+          >
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('feed.post.a11y.profile', { username: author.username })}
@@ -364,7 +367,7 @@ export const FeedPostCard = memo(function FeedPostCard({
             </Pressable>
           </View>
 
-          <View style={styles.actions}>
+          <View style={[styles.actions, { bottom: captionHeight + 8 }]}>
             <View className="items-center">
               <Pressable
                 accessibilityRole="button"
@@ -380,7 +383,8 @@ export const FeedPostCard = memo(function FeedPostCard({
                   }
                   likeRef.current?.toggle();
                 }}
-                style={[styles.actionBtn, onMedia]}
+                hitSlop={8}
+                style={styles.actionBtn}
               >
                 <RNText
                   allowFontScaling={false}
@@ -388,6 +392,14 @@ export const FeedPostCard = memo(function FeedPostCard({
                 >
                   🗿
                 </RNText>
+                <Text
+                  variant="caption"
+                  tone={post.likedByMe ? 'aura' : 'default'}
+                  className="font-semibold"
+                  style={styles.actionCount}
+                >
+                  {format.count(post.likeCount)}
+                </Text>
               </Pressable>
               <View style={{ height: 0, overflow: 'hidden' }}>
                 <LikeButton
@@ -408,52 +420,37 @@ export const FeedPostCard = memo(function FeedPostCard({
                   }}
                 />
               </View>
-              <Text
-                variant="caption"
-                tone={post.likedByMe ? 'aura' : 'secondary'}
-                className="pt-1 font-semibold"
-                style={{ fontVariant: ['tabular-nums'] }}
-              >
-                {format.count(post.likeCount)}
-              </Text>
             </View>
 
-            <View className="items-center">
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
-                accessibilityHint={t('feed.post.a11y.comment')}
-                onPress={openDrawer}
-                style={[styles.actionBtn, onMedia]}
-              >
-                <Ionicons name="chatbubble-outline" size={24} color={colors.text.DEFAULT} />
-              </Pressable>
-              <Text
-                variant="caption"
-                tone="secondary"
-                className="pt-1 font-semibold"
-                style={{ fontVariant: ['tabular-nums'] }}
-              >
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('feed.post.comments', { count: post.commentCount ?? 0 })}
+              accessibilityHint={t('feed.post.a11y.comment')}
+              onPress={openDrawer}
+              hitSlop={8}
+              style={styles.actionBtn}
+            >
+              <Ionicons name="chatbubble-outline" size={22} color={colors.text.DEFAULT} style={styles.actionIcon} />
+              <Text variant="caption" tone="default" className="font-semibold" style={styles.actionCount}>
                 {format.count(post.commentCount ?? 0)}
               </Text>
-            </View>
+            </Pressable>
 
-            <View className="items-center">
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('common.actions.share')}
-                style={[styles.actionBtn, onMedia]}
-              >
-                <Ionicons name="arrow-redo-outline" size={24} color={colors.text.DEFAULT} />
-              </Pressable>
-            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('common.actions.share')}
+              hitSlop={8}
+              style={styles.actionBtn}
+            >
+              <Ionicons name="arrow-redo-outline" size={22} color={colors.text.DEFAULT} style={styles.actionIcon} />
+            </Pressable>
 
-            <View className="items-center pt-1">
-              <PostOptions post={post} onDeleted={onDeleted} />
-            </View>
+            <PostOptions post={post} onDeleted={onDeleted} />
           </View>
         </View>
       </GestureDetector>
+
+      {playing ? <VideoMuteBadge muted={muted} hostHeight={cardHeight} /> : null}
 
       <FeedCommentsSheet post={post} sheetRef={bottomSheetRef} onOpenAuthor={openAuthor} />
     </View>
@@ -479,32 +476,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.bg,
   },
-  auraPill: {
+  auraSpread: {
     position: 'absolute',
-    right: 16,
+    right: 12,
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: withAlpha(colors.bg, 0.65),
+    shadowColor: colors.aura.DEFAULT,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    elevation: 10,
+  },
+  auraPill: {
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    shadowColor: colors.aura.DEFAULT,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 5,
+  },
+  auraLabel: {
+    color: colors.text.DEFAULT,
+    fontWeight: '700',
   },
   actions: {
     position: 'absolute',
     right: 12,
-    bottom: 16,
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   actionBtn: {
-    height: ACTION,
-    width: ACTION,
-    borderRadius: ACTION / 2,
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: ACTION,
+  },
+  actionIcon: {
+    textShadowColor: withAlpha(colors.bg, 0.7),
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  actionCount: {
+    marginTop: 2,
+    fontSize: 11,
+    lineHeight: 13,
+    fontVariant: ['tabular-nums'],
+    textShadowColor: withAlpha(colors.bg, 0.7),
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   moai: {
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: 24,
+    lineHeight: 28,
     textAlign: 'center',
     includeFontPadding: false,
+    textShadowColor: withAlpha(colors.bg, 0.7),
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   smashMoai: {
     fontSize: 56,

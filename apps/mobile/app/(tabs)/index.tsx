@@ -4,13 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedPostCard, FeedPostSkeleton } from '@/components/feed';
 import { TAB_BAR_CONTENT_HEIGHT } from '@/components/navigation/tab-bar';
 import { Button, Text } from '@/components/ui';
 import { fetchFeedPage, messageForError, type FeedCard, type FeedRanking } from '@/lib/api';
+import { useFormat } from '@/lib/i18n';
 import { useScrollToTopOnTabPress } from '@/lib/navigation/use-scroll-to-top-on-tab-press';
 import { queryKeys } from '@/lib/query/keys';
 import { usePullToRefresh } from '@/lib/query/use-pull-to-refresh';
@@ -31,39 +32,50 @@ const VIDEO_VIEWABILITY = {
   minimumViewTime: 250,
 };
 
-function FeedHeader() {
+function FeedHeader({ aura }: { aura?: number }) {
   const { t } = useTranslation();
+  const format = useFormat();
   const ranking = usePreferencesStore((state) => state.feedRanking);
   const setRanking = usePreferencesStore((state) => state.setFeedRanking);
 
   return (
-    <View className="px-gutter pb-1 pt-2">
-      <View className="flex-row items-center justify-between">
-        <Text variant="title" className="tracking-aura">
-          {t('common.aura')}
-        </Text>
-      </View>
-
-      <View className="flex-row gap-2 pt-3">
-        {RANKINGS.map((option) => {
+    <View className="px-gutter py-2" style={styles.header}>
+      <View className="flex-row items-center justify-center">
+        {RANKINGS.map((option, index) => {
           const active = option.value === ranking;
 
           return (
-            <Pressable
-              key={option.value}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: active }}
-              onPress={() => setRanking(option.value)}
-              className="rounded-full px-3 py-1.5"
-              style={{ backgroundColor: active ? colors.aura.deep : colors.surface.elevated }}
-            >
-              <Text variant="label" tone={active ? 'default' : 'muted'}>
-                {t(option.labelKey)}
-              </Text>
-            </Pressable>
+            <View key={option.value} className="flex-row items-center">
+              {index > 0 ? (
+                <Text variant="label" className="px-3" style={styles.rankSep}>
+                  |
+                </Text>
+              ) : null}
+              <Pressable
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                hitSlop={10}
+                onPress={() => setRanking(option.value)}
+              >
+                <Text variant="label" style={active ? styles.rankActive : styles.rankIdle}>
+                  {t(option.labelKey)}
+                </Text>
+              </Pressable>
+            </View>
           );
         })}
       </View>
+      {aura != null ? (
+        <View pointerEvents="none" style={styles.rankAuraWrap}>
+          <View style={styles.rankAuraSpread}>
+            <View style={styles.rankAuraPill}>
+              <Text variant="caption" style={styles.rankAura}>
+                {format.count(aura)} 🗿
+              </Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -104,9 +116,12 @@ export default function HomeScreen() {
   const posts = data?.pages.flatMap((page) => page.items) ?? [];
   const pageCount = data?.pages.length ?? 0;
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+  const [activePostId, setActivePostId] = useState<string | null>(null);
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken<FeedCard>[] }) => {
+      const visible = viewableItems.find((token) => token.isViewable);
+      if (visible?.item) setActivePostId(visible.item.id);
       const video = viewableItems.find(
         (token) => token.isViewable && token.item.media.type === 'video',
       );
@@ -131,6 +146,8 @@ export default function HomeScreen() {
   useScrollToTopOnTabPress(scrollToTop);
 
   const playingVideoId = isFocused ? activeVideoId : null;
+  const currentPost = posts.find((post) => post.id === activePostId) ?? posts[0];
+  const currentAura = currentPost?.aura;
 
   // The tab scene is already above the tab bar. Cards must match this viewport
   // exactly — a guessed height (window minus status bar minus ~80) was short,
@@ -185,15 +202,29 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1 bg-bg" onLayout={onViewportLayout}>
-      {/* Floating Header Overlay */}
-      <LinearGradient
-        colors={[withAlpha(colors.bg, 0.8), 'transparent']}
+    <View className="flex-1 bg-bg" onLayout={onViewportLayout} style={{ overflow: 'visible' }}>
+      {/* Floating Header Overlay — gradient is a sibling so the aura glow is not clipped */}
+      <View
+        pointerEvents="box-none"
         onLayout={onHeaderLayout}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, paddingTop: insets.top }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          paddingTop: insets.top,
+          paddingBottom: 16,
+          overflow: 'visible',
+        }}
       >
-        <FeedHeader />
-      </LinearGradient>
+        <LinearGradient
+          colors={[withAlpha(colors.bg, 0.8), 'transparent']}
+          pointerEvents="none"
+          style={StyleSheet.absoluteFill}
+        />
+        <FeedHeader aura={currentAura} />
+      </View>
 
       <FlashList
         ref={listRef}
@@ -245,3 +276,59 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+const rankShadow = {
+  textShadowColor: withAlpha(colors.bg, 0.8),
+  textShadowOffset: { width: 0, height: 1 },
+  textShadowRadius: 6,
+};
+
+const styles = StyleSheet.create({
+  header: {
+    overflow: 'visible',
+  },
+  rankActive: {
+    ...rankShadow,
+    color: colors.text.DEFAULT,
+    fontWeight: '700',
+  },
+  rankIdle: {
+    ...rankShadow,
+    color: withAlpha(colors.text.DEFAULT, 0.82),
+    fontWeight: '500',
+  },
+  rankSep: {
+    ...rankShadow,
+    color: withAlpha(colors.text.DEFAULT, 0.55),
+  },
+  rankAuraWrap: {
+    position: 'absolute',
+    right: 12,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  rankAuraSpread: {
+    borderRadius: 999,
+    backgroundColor: withAlpha(colors.bg, 0.65),
+    shadowColor: colors.aura.DEFAULT,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    elevation: 10,
+  },
+  rankAuraPill: {
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    shadowColor: colors.aura.DEFAULT,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 5,
+  },
+  rankAura: {
+    color: colors.text.DEFAULT,
+    fontWeight: '700',
+  },
+});

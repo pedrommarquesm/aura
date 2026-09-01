@@ -246,12 +246,7 @@ export const FeedPostCard = memo(function FeedPostCard({
               actually receives the press. */}
           <View style={StyleSheet.absoluteFill} collapsable={false} />
 
-          {playing ? (
-            <VideoMuteBadge
-              muted={muted}
-              label={muted ? t('feed.post.a11y.unmute') : t('feed.post.a11y.mute')}
-            />
-          ) : null}
+          {playing ? <VideoMuteBadge muted={muted} hostHeight={screenHeight} /> : null}
 
           {isVideo && media.durationMs && !playing ? (
             <View className="absolute bottom-3 left-3 flex-row items-center gap-1 rounded-full bg-bg/70 px-2 py-1">
