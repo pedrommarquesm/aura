@@ -182,6 +182,8 @@ Commit the generated SQL. Never edit an applied migration; add a new one.
 
 The public hostnames are on **`auraclimb.com`**. Staging is the only
 environment, so these point at staging until production exists.
+The product brand is **Auraclimb** (`auraclimb.com`); naming is in
+[brand.md](./brand.md).
 
 | Hostname | Service | Notes |
 |---|---|---|

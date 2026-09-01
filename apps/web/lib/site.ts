@@ -4,13 +4,16 @@ function env(value: string | undefined, fallback: string) {
 }
 
 export const siteConfig = {
-  /** Product name, never translated (docs/i18n.md). Copy lives in the catalogs. */
+  /**
+   * Wordmark / spoken product name. Never translated (docs/i18n.md).
+   * Store, domain, and socials are Auraclimb — docs/brand.md.
+   */
   name: "Aura",
   url: env(process.env.NEXT_PUBLIC_SITE_URL, "https://www.auraclimb.com").replace(
     /\/$/,
     "",
   ),
-  twitter: "@auraapp",
+  twitter: "@auraclimb",
   /**
    * Primary CTA target. Empty until a store smart link exists, in which case
    * callers fall back to the localized download section anchor.
@@ -18,11 +21,11 @@ export const siteConfig = {
   appDownloadUrl: env(process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL, ""),
   appStoreUrl: env(
     process.env.NEXT_PUBLIC_APP_STORE_URL,
-    "https://apps.apple.com/app/aura",
+    "https://apps.apple.com/app/auraclimb",
   ),
   playStoreUrl: env(
     process.env.NEXT_PUBLIC_PLAY_STORE_URL,
-    "https://play.google.com/store/apps/details?id=app.aura",
+    "https://play.google.com/store/apps/details?id=app.auraclimb.mobile",
   ),
 } as const;
 

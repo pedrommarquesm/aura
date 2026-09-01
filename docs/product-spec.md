@@ -1,5 +1,7 @@
 # Aura — Product & Technical Specification
 
+The product brand is **Auraclimb**. **Aura** is the score and the casual spoken name. Store listing, domain, socials, and legal identifiers are in [brand.md](./brand.md). This spec still says Aura everywhere the user-facing game does.
+
 ## 1. Introdução
 
 **Aura** é uma rede social mobile centrada numa ideia simples: **farmar Aura**.

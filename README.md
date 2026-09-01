@@ -2,7 +2,10 @@
 
 A mobile-first social game for farming Aura. Users post photos and videos, like content, and climb leaderboards. The social network is the game board.
 
+The product brand is **Auraclimb**. Aura is the score and the spoken name. Naming for the store, domain, socials, and legal entity is in [docs/brand.md](docs/brand.md).
+
 - Product spec: [docs/product-spec.md](docs/product-spec.md)
+- Brand & naming: [docs/brand.md](docs/brand.md)
 - Backend architecture: [docs/backend-architecture.md](docs/backend-architecture.md)
 - Work plan & tracker: [docs/roadmap.md](docs/roadmap.md)
 - Design tokens: [docs/design-tokens.md](docs/design-tokens.md)
