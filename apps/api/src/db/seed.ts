@@ -7,7 +7,9 @@ import { newId } from '../common/ids';
 import { loadEnv } from '../config/env';
 
 import * as schema from './schema';
-import { auraEvents, likes, mediaAssets, posts, users } from './schema';
+import { hashPassword, normalizeEmail } from '../auth/password';
+
+import { auraEvents, authIdentities, likes, mediaAssets, posts, users } from './schema';
 
 /**
  * Development seed.
@@ -84,6 +86,32 @@ async function main(): Promise<void> {
         })),
       )
       .returning();
+
+    if (env.E2E_TEST_PASSWORD) {
+      const email = normalizeEmail(env.E2E_TEST_EMAIL);
+      const [e2e] = await db
+        .insert(users)
+        .values({
+          id: newId(),
+          username: 'e2e',
+          displayName: 'E2E',
+          locale: 'en',
+          aura: 0,
+        })
+        .returning();
+
+      await db.insert(authIdentities).values({
+        id: newId(),
+        userId: e2e!.id,
+        provider: 'password',
+        providerSub: email,
+        emailAtSignup: email,
+        passwordHash: await hashPassword(env.E2E_TEST_PASSWORD),
+      });
+
+      created.push(e2e!);
+      console.log(`[seed] password login: ${email} / username e2e`);
+    }
 
     console.log('[seed] creating posts');
     const createdPosts: Array<{ id: string; authorId: string }> = [];

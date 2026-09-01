@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { loadEnv } from './env';
+import { loadEnv, passwordAuthEnabled } from './env';
 
 const minimal = {
   DATABASE_URL: 'postgres://user:pass@localhost:5432/aura',
@@ -17,6 +17,8 @@ describe('loadEnv', () => {
     expect(env.RATE_LIMIT_MAX).toBe(300);
     expect(env.LIKE_RATE_LIMIT_MAX).toBe(60);
     expect(env.LIKE_RATE_LIMIT_WINDOW_MS).toBe(60_000);
+    expect(env.PASSWORD_AUTH_MAX).toBe(20);
+    expect(passwordAuthEnabled(env)).toBe(true);
     expect(env.MEDIA_DAILY_UPLOAD_QUOTA).toBe(20);
     expect(env.PUBLIC_SITE_URL).toBe('https://www.auraclimb.com');
     expect(env.WAITLIST_ENABLED).toBe(true);
@@ -62,6 +64,16 @@ describe('loadEnv', () => {
 
     expect(staging.NODE_ENV).toBe('production');
     expect(staging.APP_ENV).toBe('staging');
+    expect(passwordAuthEnabled(staging)).toBe(true);
+    expect(
+      passwordAuthEnabled(
+        loadEnv({
+          ...minimal,
+          APP_ENV: 'production',
+          JWT_SECRET: 'a-real-secret-that-is-long-enough-000000',
+        }),
+      ),
+    ).toBe(false);
   });
 
   it('refuses the development JWT secret in any deployed environment', () => {

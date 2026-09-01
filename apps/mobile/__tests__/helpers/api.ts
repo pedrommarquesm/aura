@@ -15,6 +15,7 @@ import type {
   PostDetail,
   PublicProfile,
   PublicUser,
+  SignInResponse,
 } from '@/lib/api';
 import type { OptimizedVideo } from '@/lib/media/optimize-video';
 
@@ -31,7 +32,14 @@ import {
   updatePostCaption,
 } from '@/lib/api/posts';
 import { fetchGlobalLeaderboard } from '@/lib/api/leaderboard';
-import { claimUsername, fetchMe, logout, signInWithProvider } from '@/lib/api/auth';
+import {
+  claimUsername,
+  fetchMe,
+  logout,
+  registerWithPassword,
+  signInWithPassword,
+  signInWithProvider,
+} from '@/lib/api/auth';
 import { completeAvatarUpload, createAvatarUpload, fetchPublicProfile, fetchUserPosts } from '@/lib/api/users';
 import { cropAvatarPhoto } from '@/lib/media/crop-avatar';
 import { pickPhotoFromLibrary } from '@/lib/media/pick-photo';
@@ -65,6 +73,8 @@ export const api = {
   fetchMe: fetchMe as jest.MockedFunction<typeof fetchMe>,
   logout: logout as jest.MockedFunction<typeof logout>,
   signInWithProvider: signInWithProvider as jest.MockedFunction<typeof signInWithProvider>,
+  signInWithPassword: signInWithPassword as jest.MockedFunction<typeof signInWithPassword>,
+  registerWithPassword: registerWithPassword as jest.MockedFunction<typeof registerWithPassword>,
   pickPhotoFromLibrary: pickPhotoFromLibrary as jest.MockedFunction<typeof pickPhotoFromLibrary>,
   pickVideoFromLibrary: pickVideoFromLibrary as jest.MockedFunction<typeof pickVideoFromLibrary>,
   optimizePickedPhoto: optimizePickedPhoto as jest.MockedFunction<typeof optimizePickedPhoto>,
@@ -132,6 +142,14 @@ export function createdComment(
 ): CreateCommentResult {
   return { comment: sampleComment({ body }), commentCount };
 }
+
+export const signInResponse: SignInResponse = {
+  accessToken: 'test-access-token',
+  refreshToken: 'test-refresh-token',
+  expiresIn: 900,
+  needsUsername: false,
+  user: testUser,
+};
 
 export const likeResult = (liked = true): LikeResult => ({
   liked,
@@ -276,6 +294,8 @@ export function resetApiMocks() {
   });
   api.fetchGlobalLeaderboard.mockResolvedValue(leaderboardPage);
   api.logout.mockResolvedValue(undefined);
+  api.signInWithPassword.mockResolvedValue(signInResponse);
+  api.registerWithPassword.mockResolvedValue(signInResponse);
   api.claimUsername.mockImplementation(async (username) => ({
     user: { ...testUser, username },
   }));

@@ -179,10 +179,20 @@
       "apple": "Continuar com a Apple",
       "google": "Continuar com o Google"
     },
+    "password": {
+      "or": "ou",
+      "identifier": "Email ou username",
+      "email": "Email",
+      "password": "Senha",
+      "signIn": "Entrar com email",
+      "create": "Criar conta",
+      "toggleCreate": "Criar uma conta",
+      "toggleSignIn": "Já tenho conta"
+    },
     "reasons": {
       "like": {
         "title": "Entra pra dar Aura",
-        "body": "As auras são a pontuação. Apple ou Google — sem senha — e esta aura conta."
+        "body": "As auras são a pontuação. Apple, Google ou email — e esta aura conta."
       },
       "create": {
         "title": "Entra pra postar",
@@ -194,11 +204,11 @@
       },
       "comment": {
         "title": "Entra pra comentar",
-        "body": "Apple ou Google — sem senha — e você pode deixar um comentário."
+        "body": "Apple, Google ou email — e você pode deixar um comentário."
       },
       "generic": {
         "title": "Entra na Aura",
-        "body": "Apple ou Google. Sem senha."
+        "body": "Apple, Google ou email."
       }
     },
     "unavailable": {
@@ -254,6 +264,8 @@
     "bad_request": "Isso não funcionou. Tenta de novo.",
     "validation_failed": "Confere o que você escreveu e tenta de novo.",
     "unauthorized": "Entra pra fazer isso.",
+    "invalid_credentials": "Email, username ou senha está errada.",
+    "email_taken": "Esse email já está em uso.",
     "forbidden": "Você não tem permissão pra fazer isso.",
     "not_found": "Isso já não está mais aqui.",
     "conflict": "Algo mudou. Atualiza e tenta de novo.",

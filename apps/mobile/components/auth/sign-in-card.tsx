@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { Button, Text } from '@/components/ui';
+import { Button, Text, TextField } from '@/components/ui';
 import { isAppleAvailable } from '@/lib/auth/apple';
 import { googleNeedsDevelopmentBuild, isGoogleConfigured } from '@/lib/auth/google';
 import { useSignIn } from '@/lib/auth/use-sign-in';
@@ -37,8 +37,14 @@ const REASON_COPY: Record<
 
 export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismiss?: () => void }) {
   const { t } = useTranslation();
-  const { signIn, busy, errorMessage, notConfigured } = useSignIn();
+  const { signIn, signInPassword, registerPassword, busy, errorMessage, notConfigured } =
+    useSignIn();
   const [appleAvailable, setAppleAvailable] = useState(false);
+  const [mode, setMode] = useState<'signIn' | 'register'>('signIn');
+  const [identifier, setIdentifier] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     void isAppleAvailable().then(setAppleAvailable);
@@ -46,6 +52,17 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
 
   const googleReady = isGoogleConfigured();
   const googleDevBuild = googleNeedsDevelopmentBuild();
+  const locked = busy !== null;
+
+  const submitPassword = () => {
+    if (mode === 'signIn') {
+      if (!identifier.trim() || password.length < 8) return;
+      void signInPassword(identifier, password);
+      return;
+    }
+    if (!email.trim() || !username.trim() || password.length < 8) return;
+    void registerPassword({ email, username, password });
+  };
 
   return (
     <View className="gap-3">
@@ -54,6 +71,12 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
         {t(REASON_COPY[reason].body)}
       </Text>
 
+      {/*
+        Apple Hide My Email (`@privaterelay.appleid.com`) is not the inbox a
+        user types below. The API only attaches Apple/Google to a password
+        account when the token carries a real address. See
+        docs/backend-architecture.md §12.3.
+      */}
       <View className="gap-3 pt-4">
         {appleAvailable ? (
           <AppleAuthentication.AppleAuthenticationButton
@@ -70,7 +93,7 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
           variant="secondary"
           fullWidth
           busy={busy === 'google'}
-          disabled={busy !== null || !googleReady}
+          disabled={locked || !googleReady}
           icon={<Ionicons name="logo-google" size={18} color={colors.text.DEFAULT} />}
           onPress={() => void signIn('google')}
         />
@@ -92,6 +115,101 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
         </Text>
       ) : null}
 
+      <Text variant="caption" tone="muted" className="pt-2 text-center">
+        {t('auth.password.or')}
+      </Text>
+
+      {mode === 'signIn' ? (
+        <View className="gap-3">
+          <TextField
+            label={t('auth.password.identifier')}
+            placeholder={t('auth.password.identifier')}
+            value={identifier}
+            onChangeText={setIdentifier}
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="username"
+            editable={!locked}
+          />
+          <TextField
+            label={t('auth.password.password')}
+            placeholder={t('auth.password.password')}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="password"
+            editable={!locked}
+          />
+          <Button
+            label={t('auth.password.signIn')}
+            glow
+            fullWidth
+            busy={busy === 'password'}
+            disabled={locked || !identifier.trim() || password.length < 8}
+            onPress={submitPassword}
+          />
+          <Button
+            label={t('auth.password.toggleCreate')}
+            variant="ghost"
+            fullWidth
+            disabled={locked}
+            onPress={() => setMode('register')}
+          />
+        </View>
+      ) : (
+        <View className="gap-3">
+          <TextField
+            label={t('auth.username.placeholder')}
+            placeholder={t('auth.username.placeholder')}
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="username"
+            editable={!locked}
+          />
+          <TextField
+            label={t('auth.password.email')}
+            placeholder={t('auth.password.email')}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="email"
+            keyboardType="email-address"
+            editable={!locked}
+          />
+          <TextField
+            label={t('auth.password.password')}
+            placeholder={t('auth.password.password')}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="password"
+            editable={!locked}
+          />
+          <Button
+            label={t('auth.password.create')}
+            glow
+            fullWidth
+            busy={busy === 'register'}
+            disabled={locked || !email.trim() || !username.trim() || password.length < 8}
+            onPress={submitPassword}
+          />
+          <Button
+            label={t('auth.password.toggleSignIn')}
+            variant="ghost"
+            fullWidth
+            disabled={locked}
+            onPress={() => setMode('signIn')}
+          />
+        </View>
+      )}
+
       {errorMessage ? (
         <Text variant="caption" tone="danger">
           {errorMessage}
@@ -103,7 +221,7 @@ export function SignInCard({ reason, onDismiss }: { reason: AuthReason; onDismis
           label={t('auth.notNow')}
           variant="ghost"
           fullWidth
-          disabled={busy !== null}
+          disabled={locked}
           onPress={onDismiss}
         />
       ) : null}

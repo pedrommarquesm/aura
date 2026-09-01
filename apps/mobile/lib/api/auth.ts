@@ -17,6 +17,27 @@ export function signInWithProvider(
   });
 }
 
+export function signInWithPassword(identifier: string, password: string): Promise<SignInResponse> {
+  return api.post<SignInResponse>('/auth/login', {
+    identifier,
+    password,
+    locale: signInLocale(),
+    device: devicePayload(),
+  });
+}
+
+export function registerWithPassword(input: {
+  email: string;
+  username: string;
+  password: string;
+}): Promise<SignInResponse> {
+  return api.post<SignInResponse>('/auth/register', {
+    ...input,
+    locale: signInLocale(),
+    device: devicePayload(),
+  });
+}
+
 export function fetchMe(signal?: AbortSignal): Promise<{ user: PublicUser }> {
   return api.get<{ user: PublicUser }>('/auth/me', { signal });
 }

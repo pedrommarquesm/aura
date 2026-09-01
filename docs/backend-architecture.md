@@ -720,6 +720,8 @@ Auth: `Authorization: Bearer <access>`. Refresh via `POST /v1/auth/refresh`.
 |---|---|---|
 | POST | `/v1/auth/apple` | verify Apple identity token → issue Aura tokens |
 | POST | `/v1/auth/google` | verify Google ID token → issue Aura tokens |
+| POST | `/v1/auth/login` | email or username + password. Local/staging only. 404 in production |
+| POST | `/v1/auth/register` | email + username + password. Local/staging only. 404 in production |
 | POST | `/v1/auth/refresh` | rotate refresh token, reuse detection |
 | POST | `/v1/auth/logout` | revoke current device session |
 | POST | `/v1/auth/username` | claim handle on first login (onboarding) |
@@ -798,7 +800,7 @@ The device never holds a client secret. Verification is server-side against the 
 |---|---|---|
 | **Sign in with Apple** | **Yes** | Required by App Store rules once we offer Google. One tap, no password. |
 | **Google Sign-In** | **Yes** | Covers Android and most iOS users who avoid Apple ID. |
-| **Email + password** | **Skip in V0** | Worst conversion of the three, and it drags in password reset, email deliverability, and breach liability. Aura's loop dies on signup friction. |
+| **Email + password** | **Local / staging only** | Exists so e2e can sign in without Apple/Google. Production still 404s these routes. No password reset, no email verify. |
 | **Phone / OTP** | **Later, as an anti-abuse tier** | SMS costs real money per signup and invites toll fraud. But a phone number is *expensive to farm*, which makes it the best anti-multi-account signal we have. |
 
 On phone verification, the useful framing is not "how do users log in" but "what does an account have to prove before its Aura counts". Gate **earning and ranking**, not signup:
@@ -810,18 +812,22 @@ That keeps the funnel frictionless while making like-rings costly. It fits the e
 
 **Apple gotchas to handle on day one:**
 
-- Apple returns the user's name and email **only on the very first authorization**. If we don't persist it in that first callback, it is gone forever and the only recovery is the user manually revoking the app in iOS settings.
-- Apple's private relay (`@privaterelay.appleid.com`) means email is not a reliable identity key. **Key on provider `sub`**, never on email.
-- The same human may sign in with Apple on iPhone and Google on Android. Support linking multiple provider identities to one user from the start.
+- Apple returns the user's name and email **only on the very first authorization**. Later tokens often have no email. If we don't persist it in that first callback, it is gone forever and the only recovery is the user manually revoking the app in iOS settings.
+- **Hide My Email** issues `…@privaterelay.appleid.com`. That address is unique per app, is not the inbox the user would type into a password form, and can change if they toggle Hide My Email or revoke the app. Email is therefore not a reliable identity key. **OAuth identity keys on provider `sub`**, never on email.
+- A first Apple/Google sign-in may **attach** to an existing password account only when the token carries a **non-relay** email that already exists as a `password` identity. A relay address, a missing email, or a different inbox creates a new user. That is why "same person, Apple Hide My Email" will not merge with an email+password account.
+- The same human may sign in with Apple on iPhone and Google on Android. Multiple `AuthIdentity` rows per user are the linking model.
+
+**Password → OAuth (one account):** register with email+password, then Continue with Google using that same inbox → one `users` row, two identities. Apple only joins that path if the user shared their real email, not Hide My Email.
 
 ### 12.4 Data model
 
 ```text
 AuthIdentity
   id, userId
-  provider              -- apple | google | phone
-  providerSub           -- provider's stable subject id
-  emailAtSignup         -- may be a relay address; not an identity key
+  provider              -- apple | google | phone | password
+  providerSub           -- provider's stable subject id; for password, the normalized email
+  emailAtSignup         -- may be a Hide My Email relay; not an OAuth identity key
+  passwordHash          -- scrypt; only when provider = password
   UNIQUE (provider, providerSub)
 
 DeviceSession

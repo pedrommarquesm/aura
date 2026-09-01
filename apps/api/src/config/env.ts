@@ -86,6 +86,20 @@ const envSchema = z.object({
   GOOGLE_CLIENT_IDS: z.string().optional(),
 
   /**
+   * Password login / register. Refused when APP_ENV is production regardless
+   * of these numbers — Apple and Google stay the consumer path there.
+   */
+  PASSWORD_AUTH_MAX: z.coerce.number().int().positive().default(20),
+  PASSWORD_AUTH_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
+
+  /**
+   * Optional seed credentials for e2e. When set, `db:seed` creates `e2e` with
+   * this password. Never enable on production (seed already refuses).
+   */
+  E2E_TEST_EMAIL: z.string().email().default('e2e@auraclimb.test'),
+  E2E_TEST_PASSWORD: z.string().min(8).optional(),
+
+  /**
    * Our own domain in front of whichever CDN is current, so changing vendor is
    * a DNS change and every already-shared link keeps working.
    */
@@ -211,3 +225,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
 }
 
 export const ENV = Symbol('ENV');
+
+/** Password routes exist for e2e. Production keeps Apple/Google only. */
+export function passwordAuthEnabled(env: Env): boolean {
+  return env.APP_ENV !== 'production';
+}
