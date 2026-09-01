@@ -40,9 +40,9 @@ ID prefixes:
 
 ## Now / Next / Later
 
-**Now** — Web launch waitlist: login hidden, early-beta join + referral Aura, legal pages. Waitlist emails send through Resend.
+**Now** — Pre-launch. We have **not launched**. The public site is the waitlist landing: early-beta join, referral share (`/r/…`), legal pages. Web login stays hidden. Join +10 Aura; referral +10 when the friend creates a real account. Welcome/referral mail goes through Resend. The app is not in the stores.
 
-**Next** — Store links (`WEB-07`).
+**Next** — Real App Store / Play links (`WEB-07`) when we actually ship. Native builds for testers. Production (`OPS-07`) does not exist yet.
 
 **Later** — V1 competition systems. The seams are designed; do not build them yet.
 
@@ -94,7 +94,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-04 | Base UI primitives matching the mobile visual language | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-05 | SEO baseline: metadata, Open Graph, sitemap, robots | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
 | WEB-06 | Data layer ready for the public API (typed fetch from `contracts`) | Done | [#5](https://github.com/pedrommarquesm/aura/pull/5) |
-| WEB-07 | Real App Store / Play Store links — placeholders today, must be set before any real traffic | Not started | |
+| WEB-07 | Real App Store / Play Store links — placeholders today. Set before we launch the stores; waitlist traffic does not need them | Not started | |
 | WEB-08 | Replace mock vector posters with real content once the feed API exists | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-09 | Containerize the web app and deploy it to Railway | Done | [#8](https://github.com/pedrommarquesm/aura/pull/8) |
 | WEB-20 | i18n: next-intl, English + Portuguese, translated routes | Done | [#14](https://github.com/pedrommarquesm/aura/pull/14) |
@@ -103,7 +103,7 @@ Goal: a repo where four people can work in parallel without stepping on each oth
 | WEB-30 | Waitlist landing: hide web login, early-beta join, referral share, interactive post demo | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-31 | Public T&C, FAQ, contact form pages | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | WEB-32 | Landing post mocks match the mobile TikTok feed card (full-bleed, 🗿 actions, overlay chrome) | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
-| WEB-33 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs, routes, and locale switcher | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
+| WEB-33 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs, routes, and locale switcher | Done | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 
 ---
 
@@ -139,7 +139,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-76 | Sign-in sheet: email/username + password, plus create-account. Same JWT session as Apple/Google | Done | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | API-40 | Waitlist join + referral Aura (paid when the friend signs up), email outbox, claim onto account at first sign-in | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
 | API-41 | Contact form persistence (`contact_messages`) until a delivery target exists | Done | [#73](https://github.com/pedrommarquesm/aura/pull/73) |
-| API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
+| API-42 | Resolve `pt-BR` → `pt-br` and `es-*` → `es`; waitlist emails in Brazilian Portuguese and Spanish | Done | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 
 ### Media pipeline
 
@@ -175,8 +175,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | API-23 | Trending worker + tunable scoring config | Done | [#7](https://github.com/pedrommarquesm/aura/pull/7) |
 | API-24 | `GET /v1/users/:username` — public competitive card (rank, title, Aura, post count) | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
 | API-25 | `GET /v1/users/:id/posts` — published posts, cursor pagination | Done | [#24](https://github.com/pedrommarquesm/aura/pull/24) |
-| API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
-| API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
+| API-26 | Staff module: own tables + Google invite-only auth (`aura-staff` JWT). Owner email seeded | Done | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
+| API-27 | `GET /v1/admin/stats` and paginated consumer user/post lists for the backoffice | Done | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | API-28 | `PATCH /v1/posts/:id` — author-only caption edit. Media stays as it is | Done | [#56](https://github.com/pedrommarquesm/aura/pull/56) |
 | API-29 | `POST /v1/me/avatar/uploads` + `POST /v1/me/avatar/complete`. Square JPEG only. Writes `users.avatarUrl` | Done | [#58](https://github.com/pedrommarquesm/aura/pull/58) |
 | API-31 | `GET|POST /v1/posts/:id/comments`. Flat thread. `commentCount` on the card. Authors may comment. No Aura | Done | [#59](https://github.com/pedrommarquesm/aura/pull/59) |
@@ -194,8 +194,8 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-72 | Do not fetch the feed while session is `restoring`. Key the feed by viewer so a guest snapshot cannot freeze empty hearts | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | MOB-73 | Tapping the Feed tab scrolls the list back to the first post | Done | [#63](https://github.com/pedrommarquesm/aura/pull/63) |
 | MOB-74 | Flow tests match the TikTok feed: Give/Remove aura, comment opens the drawer, one profile control on the card overlay. Moai tap toggles unlike | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
-| API-35 | Extract hashtags from captions into `post_hashtags`. `GET /v1/hashtags/:tag` returns the latest published posts for that tag | In review | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
-| MOB-75 | Create/edit caption colours hashtags with no action. Tapping a tag on a post opens `/hashtag/:tag` (back + pre-filled search, grid of tagged posts) | In review | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
+| API-35 | Extract hashtags from captions into `post_hashtags`. `GET /v1/hashtags/:tag` returns the latest published posts for that tag | Done | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
+| MOB-75 | Create/edit caption colours hashtags with no action. Tapping a tag on a post opens `/hashtag/:tag` (back + pre-filled search, grid of tagged posts) | Done | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
 | WEB-10 | Public read-only feed | Done | [#18](https://github.com/pedrommarquesm/aura/pull/18) |
 | WEB-11 | Public post page `/a/@username/post/:postId` + deep link to app | Done | [#23](https://github.com/pedrommarquesm/aura/pull/23) |
 | WEB-14 | Share path is `/a/:username/post/:id`. A leading `@` 308s away — Next.js treats `@slot` as a parallel route and RSC-prefetches looped | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
@@ -228,7 +228,7 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | MOB-55 | Like overlay and `+10 Aura` last longer — same `burst` / `rise` tokens as web | Done | [#42](https://github.com/pedrommarquesm/aura/pull/42) |
 | MOB-56 | Photo like heart starts at the tap and waves away briefly | Done | [#43](https://github.com/pedrommarquesm/aura/pull/43) |
 | MOB-57 | Language override lives on the Settings screen, not on the profile. Profile opens Settings via a gear | Done | [#46](https://github.com/pedrommarquesm/aura/pull/46) |
-| MOB-60 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs; `pt-BR` no longer collapses onto European `pt` | In review | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
+| MOB-60 | Brazilian Portuguese (`pt-br`) + Spanish (`es`) catalogs; `pt-BR` no longer collapses onto European `pt` | Done | [#76](https://github.com/pedrommarquesm/aura/pull/76) |
 | MOB-41 | Aura counter animation and `+Aura` feedback | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
 | MOB-42 | Leaderboard screen incl. own rank when outside the top 100 | Done | [#15](https://github.com/pedrommarquesm/aura/pull/15) |
 | MOB-43 | Profile as competitive identity card | Done | [#25](https://github.com/pedrommarquesm/aura/pull/25) |
@@ -252,9 +252,9 @@ Goal: **Discover → Like → Gain Aura → Climb → Post → Repeat**, end to 
 | OPS-08 | Seed staging with demo content so the clients have data to integrate against | Not started | |
 | OPS-09 | Custom domain `aurarankd.com` on staging (web, api, `cdn` on R2) | Done | [#20](https://github.com/pedrommarquesm/aura/pull/20) |
 | OPS-10 | `www.aurarankd.com` is the canonical web host. `NEXT_PUBLIC_SITE_URL` matches | Done | [#30](https://github.com/pedrommarquesm/aura/pull/30) |
-| OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | In review | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
+| OPS-11 | Apex → www is DNS-only. The Next proxy no longer 308s the host | Done | [#31](https://github.com/pedrommarquesm/aura/pull/31) |
 | OPS-12 | Deploy `admin` on Railway staging; same Google Web OAuth client as web | Done | [#37](https://github.com/pedrommarquesm/aura/pull/37) |
-| OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | In review | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
+| OPS-13 | Path-filter CI job must `contents: read` — `pull-requests: read` alone makes checkout 404 on private PRs | Done | [#68](https://github.com/pedrommarquesm/aura/pull/68) |
 | OPS-14 | Canonical web host is `www.auraclimb.com`. API `api.auraclimb.com`, CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` / `PUBLIC_SITE_URL` match | Done | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
 | OPS-15 | Waitlist emails send through Resend. `RESEND_API_KEY` on api + worker; outbox still records every message | Done | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | ANL-01 | Analytics SDK + core loop events | Not started | |
@@ -280,10 +280,10 @@ Not started, and deliberately not designed in detail yet. Listed so the V0 seams
 | API-32 | Aura Battles | Not started | |
 | API-33 | Daily Challenges | Not started | |
 | API-34 | Notifications, aggregated (never one push per like) | Not started | |
-| API-35 | Hashtag index + `GET /v1/hashtags/:tag` | In review | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
+| API-35 | Hashtag index + `GET /v1/hashtags/:tag` | Done | [#72](https://github.com/pedrommarquesm/aura/pull/72) |
 | TS-10 | Like-ring / multi-account detection over the ledger | Not started | |
 | TS-11 | NSFW + spam detection in the media worker. On hold: third-party classifier on `ProcessMediaJob` (architecture §6.5), fail closed, user only sees generic vs `content_rejected` | Blocked | |
-| TS-12 | Admin/moderation dashboard | In review | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
+| TS-12 | Admin/moderation dashboard | Done | [#35](https://github.com/pedrommarquesm/aura/pull/35) |
 | MEDIA-10 | Evaluate Bunny (CDN and/or storage) against real traffic — likely R2 origin + Bunny edge | Not started | |
 
 ---
@@ -294,6 +294,7 @@ Notable decisions, newest first. Link the PR that made them.
 
 | Date | Decision | PR |
 |---|---|---|
+| 2026-09-01 | We have not launched. Public web is the pre-launch waitlist (early-beta join + referral). Leftover In-review ticks on merged PRs (#31, #35, #68, #72, #76) marked Done | [#81](https://github.com/pedrommarquesm/aura/pull/81) |
 | 2026-09-01 | Waitlist welcome and referral emails send through Resend. `email_outbox` still records every message. Unset `RESEND_API_KEY` parks sending as `queued`. Contact form stays persist-only | [#79](https://github.com/pedrommarquesm/aura/pull/79) |
 | 2026-09-01 | Password login/register for e2e on local and staging. `auth_identities.password_hash` (scrypt). Production still Apple/Google only | [#78](https://github.com/pedrommarquesm/aura/pull/78) |
 | 2026-09-01 | Public host is `www.auraclimb.com`. API `api.auraclimb.com`. CDN `cdn.auraclimb.com`. `NEXT_PUBLIC_*` and `PUBLIC_SITE_URL` match. Old `aurarankd.com` hostnames are detached | [#77](https://github.com/pedrommarquesm/aura/pull/77) |
