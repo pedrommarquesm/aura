@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "cdn.aurarankd.com" },
+      { protocol: "https", hostname: "cdn.auraclimb.com" },
       { protocol: "https", hostname: "*.r2.dev" },
     ],
   },

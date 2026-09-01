@@ -54,7 +54,7 @@ export const mockFeed: FeedCard[] = [
       type: 'video',
       thumbUrl: `https://picsum.photos/seed/aura-02/64/80`,
       feedUrl: `https://picsum.photos/seed/aura-02/1080/1350`,
-      hlsUrl: 'https://cdn.aurarankd.com/placeholder/manifest.m3u8',
+      hlsUrl: 'https://cdn.auraclimb.com/placeholder/manifest.m3u8',
       width: 1080,
       height: 1350,
       durationMs: 7_400,

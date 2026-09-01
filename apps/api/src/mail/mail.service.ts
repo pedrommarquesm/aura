@@ -91,7 +91,7 @@ export class MailService {
     text: string;
     html: string;
   }): never {
-    const from = this.env.MAIL_FROM ?? 'Aura <hello@aurarankd.com>';
+    const from = this.env.MAIL_FROM ?? 'Aura <hello@auraclimb.com>';
     this.logger.log(`would send "${message.subject}" to ${message.to} from ${from}`);
     // SMTP transport is intentionally not opened here. The outbox is the
     // contract. Wiring nodemailer (or the chosen provider) is a one-file

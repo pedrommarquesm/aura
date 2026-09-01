@@ -75,13 +75,13 @@ export default defineRailway(() => {
     DATABASE_SSL: 'false',
     // Object storage. Secrets stay in the dashboard; applying this file must
     // never clobber them. The public CDN hostname is set; attach
-    // cdn.aurarankd.com to the bucket before feed URLs resolve.
+    // cdn.auraclimb.com to the bucket before feed URLs resolve.
     R2_ACCOUNT_ID: preserve(),
     R2_ACCESS_KEY_ID: preserve(),
     R2_SECRET_ACCESS_KEY: preserve(),
     R2_ENDPOINT: preserve(),
     R2_BUCKET: 'aura-media',
-    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com',
     MEDIA_EDGE: 'none',
     // Break-glass for /v1/moderation/* via X-Moderation-Key. Staff JWTs work
     // without it. Unset parks only the key path.
@@ -91,7 +91,7 @@ export default defineRailway(() => {
     MUX_TOKEN_ID: preserve(),
     MUX_TOKEN_SECRET: preserve(),
     STAFF_OWNER_EMAIL: 'pedrommarquesm@gmail.com',
-    PUBLIC_SITE_URL: 'https://www.aurarankd.com',
+    PUBLIC_SITE_URL: 'https://www.auraclimb.com',
     WAITLIST_ENABLED: 'true',
     WAITLIST_RATE_LIMIT_MAX: '8',
     WAITLIST_EMAIL_RATE_LIMIT_MAX: '5',
@@ -150,11 +150,11 @@ export default defineRailway(() => {
     replicas: { [REGION]: 1 },
     deploy: { restartPolicyMaxRetries: 5 },
     env: {
-      NEXT_PUBLIC_SITE_URL: 'https://www.aurarankd.com',
+      NEXT_PUBLIC_SITE_URL: 'https://www.auraclimb.com',
       PORT: preserve(),
-      // NEXT_PUBLIC_* is inlined at image build time. api.aurarankd.com DNS
+      // NEXT_PUBLIC_* is inlined at image build time. api.auraclimb.com DNS
       // answers; a rebuild is what actually bakes this into the bundle.
-      NEXT_PUBLIC_API_BASE_URL: 'https://api.aurarankd.com',
+      NEXT_PUBLIC_API_BASE_URL: 'https://api.auraclimb.com',
       NEXT_PUBLIC_USE_MOCK_API: 'false',
       // Waitlist launch. Flip to true when web sign-in opens.
       NEXT_PUBLIC_WEB_AUTH_ENABLED: 'false',
@@ -173,8 +173,8 @@ export default defineRailway(() => {
     replicas: { [REGION]: 1 },
     deploy: { restartPolicyMaxRetries: 5 },
     env: {
-      NEXT_PUBLIC_API_BASE_URL: 'https://api.aurarankd.com',
-      API_BASE_URL: 'https://api.aurarankd.com',
+      NEXT_PUBLIC_API_BASE_URL: 'https://api.auraclimb.com',
+      API_BASE_URL: 'https://api.auraclimb.com',
       PORT: preserve(),
       AUTH_TRUST_HOST: 'true',
       AUTH_SECRET: preserve(),

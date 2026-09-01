@@ -24,7 +24,7 @@ export default async function LoginPage({
           <LoginButton />
         </div>
         <p className="mt-6 text-caption text-text-muted">
-          Consumer accounts on aurarankd.com cannot sign in here. Staff lives in
+          Consumer accounts on auraclimb.com cannot sign in here. Staff lives in
           a separate table.
         </p>
       </div>

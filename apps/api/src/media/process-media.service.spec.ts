@@ -42,7 +42,7 @@ function fakeDb(
 
 function resolver() {
   return new MediaUrlResolver({
-    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com',
     MEDIA_EDGE: 'none',
   } as never);
 }
@@ -103,7 +103,7 @@ describe('ProcessMediaService', () => {
 
     expect(result).toEqual({ postId, status: 'processing' });
     expect(mux.createAsset).toHaveBeenCalledWith({
-      sourceUrl: `https://cdn.aurarankd.com/${key}`,
+      sourceUrl: `https://cdn.auraclimb.com/${key}`,
       passthrough: assetId,
     });
     expect(db.updates.some((update) => update.values.status === 'published')).toBe(false);

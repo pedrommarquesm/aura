@@ -6,7 +6,7 @@ import { MediaUrlResolver, type MediaLocation } from './media-url.resolver';
 
 function resolver(overrides: Partial<Env> = {}): MediaUrlResolver {
   return new MediaUrlResolver({
-    MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com',
+    MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com',
     MEDIA_EDGE: 'cloudflare',
     ...overrides,
   } as Env);
@@ -18,7 +18,7 @@ const KEY = 'media/abc/v1/feed.jpg';
 
 describe('MediaUrlResolver', () => {
   it('serves from our own domain, not the storage provider', () => {
-    expect(resolver().url(r2, KEY)).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
+    expect(resolver().url(r2, KEY)).toBe('https://cdn.auraclimb.com/media/abc/v1/feed.jpg');
   });
 
   it('returns null when there is no key rather than a broken URL', () => {
@@ -27,7 +27,7 @@ describe('MediaUrlResolver', () => {
 
   it('uses Cloudflare transform syntax', () => {
     expect(resolver().url(r2, KEY, { width: 1080, quality: 85 })).toBe(
-      'https://cdn.aurarankd.com/cdn-cgi/image/width=1080,quality=85,format=auto/media/abc/v1/feed.jpg',
+      'https://cdn.auraclimb.com/cdn-cgi/image/width=1080,quality=85,format=auto/media/abc/v1/feed.jpg',
     );
   });
 
@@ -35,13 +35,13 @@ describe('MediaUrlResolver', () => {
     // The same caller intent produces different URLs per edge. This is why
     // transform syntax lives here and never in a component.
     expect(resolver({ MEDIA_EDGE: 'bunny' }).url(r2, KEY, { width: 1080 })).toBe(
-      'https://cdn.aurarankd.com/media/abc/v1/feed.jpg?width=1080',
+      'https://cdn.auraclimb.com/media/abc/v1/feed.jpg?width=1080',
     );
   });
 
   it('emits an untransformed URL when no edge transformer is configured', () => {
     expect(resolver({ MEDIA_EDGE: 'none' }).url(r2, KEY, { width: 1080 })).toBe(
-      'https://cdn.aurarankd.com/media/abc/v1/feed.jpg',
+      'https://cdn.auraclimb.com/media/abc/v1/feed.jpg',
     );
   });
 
@@ -49,17 +49,17 @@ describe('MediaUrlResolver', () => {
     // The point of per-asset provenance: assets already on the old provider
     // keep resolving from where they are while new uploads go elsewhere.
     const migrating = resolver({
-      MEDIA_PROVIDER_BASE_URLS: JSON.stringify({ bunny: 'https://b-cdn.aurarankd.com' }),
+      MEDIA_PROVIDER_BASE_URLS: JSON.stringify({ bunny: 'https://b-cdn.auraclimb.com' }),
     });
 
-    expect(migrating.url(r2, KEY)).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
-    expect(migrating.url(bunny, KEY)).toBe('https://b-cdn.aurarankd.com/media/abc/v1/feed.jpg');
+    expect(migrating.url(r2, KEY)).toBe('https://cdn.auraclimb.com/media/abc/v1/feed.jpg');
+    expect(migrating.url(bunny, KEY)).toBe('https://b-cdn.auraclimb.com/media/abc/v1/feed.jpg');
   });
 
   it('ignores a malformed provider override rather than failing a feed render', () => {
     const broken = resolver({ MEDIA_PROVIDER_BASE_URLS: 'not json' });
 
-    expect(broken.url(bunny, KEY)).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
+    expect(broken.url(bunny, KEY)).toBe('https://cdn.auraclimb.com/media/abc/v1/feed.jpg');
   });
 
   it('builds Mux playback URLs from a playback id, not a storage key', () => {
@@ -82,15 +82,15 @@ describe('MediaUrlResolver', () => {
       variants: { hls: 'media/abc/v1/index.m3u8', feed: KEY },
     });
 
-    expect(urls.hlsUrl).toBe('https://cdn.aurarankd.com/media/abc/v1/index.m3u8');
-    expect(urls.feedUrl).toBe('https://cdn.aurarankd.com/media/abc/v1/feed.jpg');
+    expect(urls.hlsUrl).toBe('https://cdn.auraclimb.com/media/abc/v1/index.m3u8');
+    expect(urls.feedUrl).toBe('https://cdn.auraclimb.com/media/abc/v1/feed.jpg');
   });
 
   it('does not double up slashes', () => {
-    const trailing = resolver({ MEDIA_CDN_BASE_URL: 'https://cdn.aurarankd.com/' });
+    const trailing = resolver({ MEDIA_CDN_BASE_URL: 'https://cdn.auraclimb.com/' });
 
     expect(trailing.url(r2, '/media/abc/v1/feed.jpg')).toBe(
-      'https://cdn.aurarankd.com/media/abc/v1/feed.jpg',
+      'https://cdn.auraclimb.com/media/abc/v1/feed.jpg',
     );
   });
 });
