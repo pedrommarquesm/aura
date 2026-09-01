@@ -2,7 +2,7 @@
 
 Plan for V0. Competition pushes (rank, battles, challenges) stay M2 (`API-34`).
 
-Companion: [roadmap.md](./roadmap.md) · [i18n.md](./i18n.md) · [early-beta-launch.md](./early-beta-launch.md) · architecture §13
+Companion: [roadmap.md](./roadmap.md) · [i18n.md](./i18n.md) · [early-beta-launch.md](./early-beta-launch.md) · architecture §13 · [redesign-tracker.md](./redesign-tracker.md) (`RDX-61`)
 
 ---
 
@@ -33,6 +33,8 @@ High signal, low volume. Copy is server-rendered from `users.locale` (`en` / `pt
 **Like digest:** a worker reads the ledger, not the like request. Window on the order of **15–30 minutes** (or “once the user is idle”). One push: “You gained 40 Aura” / “3 people gave Aura to *caption*”. Never “@x liked your post” twenty times.
 
 **Comments:** one push per comment is acceptable at early-beta volume. If a thread explodes, collapse to “5 new comments on your post” in the same aggregator. Do not notify the author for their own comment.
+
+The comment object becomes a **receipt** (optional text on a signed vote). Do not implement this table as-is once [redesign-tracker.md](./redesign-tracker.md) `RDX-61` rewrites it — receipts immediate, Aura as a net digest, still never one push per vote.
 
 Do not notify suspended/banned users. Do not notify for removed posts.
 

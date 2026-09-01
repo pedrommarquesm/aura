@@ -28,6 +28,8 @@ Direction: dark, competitive, a bit gen-z. Instagram's clarity with a leaderboar
 
 Signature gradient (Aura glow): `#8B5CF6 → #6D28D9`, used sparingly for the Create button, rank badges, and CTAs.
 
+The vote/receipts redesign will add tokens for the slider, signed Aura, Aura Debt, and receipt overlays (`RDX-04`). Certified neon green / Cooked red wait on screenshots. Do not invent them in a token PR before [redesign-tracker.md](./redesign-tracker.md) `RDX-04`.
+
 ## Typography
 
 System stack (`SF Pro` on iOS, `Roboto` on Android, `Inter` on web).
